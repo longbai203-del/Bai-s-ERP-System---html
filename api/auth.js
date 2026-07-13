@@ -1,56 +1,26 @@
 /**
- * api/auth.js - 认证 API
+ * api/auth.js - 认证 API（Express Router 版本）
  * POST /api/auth/login
  * POST /api/auth/register
  * GET  /api/auth/me
  * POST /api/auth/logout
  * POST /api/auth/reset-password
+ * 
+ * 增强点：统一使用 Express Router，保持与 orders.js、products.js 等一致
  */
+
+import express from 'express';
 import { supabase, getUserById, safeQuery } from '../shared/lib/supabase.js';
 import { isRequired, isValidPassword, isValidPhone } from '../shared/lib/validation.js';
 import { logger } from '../shared/lib/logger.js';
+import { authenticate } from '../shared/lib/auth.js';
 
-export default async function handler(req, res) {
-    const { method } = req;
-    const { path } = req.query;
+const router = express.Router();
 
-    // 解析路径：/api/auth/login -> login
-    const action = path || req.url.replace('/api/auth/', '').split('?')[0];
-
-    // ===== 登录 =====
-    if (action === 'login' && method === 'POST') {
-        return handleLogin(req, res);
-    }
-
-    // ===== 注册 =====
-    if (action === 'register' && method === 'POST') {
-        return handleRegister(req, res);
-    }
-
-    // ===== 获取当前用户 =====
-    if (action === 'me' && method === 'GET') {
-        return handleMe(req, res);
-    }
-
-    // ===== 登出 =====
-    if (action === 'logout' && method === 'POST') {
-        return handleLogout(req, res);
-    }
-
-    // ===== 重置密码 =====
-    if (action === 'reset-password' && method === 'POST') {
-        return handleResetPassword(req, res);
-    }
-
-    return res.status(404).json({
-        success: false,
-        error: 'Not found',
-        code: 'NOT_FOUND'
-    });
-}
-
-// ===== 登录 =====
-async function handleLogin(req, res) {
+// ============================================================
+// POST /api/auth/login - 登录
+// ============================================================
+router.post('/login', async (req, res) => {
     try {
         const { username, password } = req.body;
 
@@ -93,6 +63,7 @@ async function handleLogin(req, res) {
 
         const user = users[0];
 
+        // 检查用户状态
         if (user.status === 'pending') {
             return res.status(403).json({
                 success: false,
@@ -109,7 +80,7 @@ async function handleLogin(req, res) {
             });
         }
 
-        if (user.status !== 'approved') {
+        if (user.status !== 'approved' && user.status !== 'active') {
             return res.status(403).json({
                 success: false,
                 error: '账号状态异常',
@@ -117,6 +88,7 @@ async function handleLogin(req, res) {
             });
         }
 
+        // 验证密码
         const crypto = await import('crypto-js');
         const hash = crypto.SHA256(password).toString();
 
@@ -128,13 +100,26 @@ async function handleLogin(req, res) {
             });
         }
 
+        // 更新最后登录时间
         await supabase
             .from('users')
             .update({ last_login_at: new Date().toISOString() })
             .eq('id', user.id);
 
-        // 生成临时 token
-        const token = 'temp_' + Date.now() + '_' + user.id;
+        // 生成 JWT
+        const jwt = await import('jsonwebtoken');
+        const JWT_SECRET = process.env.JWT_SECRET || 'default_secret_change_this';
+        const token = jwt.default.sign(
+            {
+                id: user.id,
+                username: user.username,
+                role: user.role,
+                tenant_id: user.tenant_id,
+                store_id: user.store_id
+            },
+            JWT_SECRET,
+            { expiresIn: process.env.JWT_EXPIRES_IN || '7d' }
+        );
 
         return res.status(200).json({
             success: true,
@@ -142,7 +127,7 @@ async function handleLogin(req, res) {
                 user: {
                     id: user.id,
                     username: user.username,
-                    name: user.name,
+                    name: user.name || user.full_name || user.username,
                     role: user.role,
                     status: user.status,
                     email: user.email,
@@ -163,10 +148,12 @@ async function handleLogin(req, res) {
             code: 'INTERNAL_ERROR'
         });
     }
-}
+});
 
-// ===== 注册 =====
-async function handleRegister(req, res) {
+// ============================================================
+// POST /api/auth/register - 注册
+// ============================================================
+router.post('/register', async (req, res) => {
     try {
         const { username, password, name, role, phone, email } = req.body;
 
@@ -189,6 +176,7 @@ async function handleRegister(req, res) {
             });
         }
 
+        // 检查用户名是否已存在
         const { data: existingUsers } = await supabase
             .from('users')
             .select('id')
@@ -200,6 +188,22 @@ async function handleRegister(req, res) {
                 error: '用户名已存在',
                 code: 'USERNAME_EXISTS'
             });
+        }
+
+        // 检查手机号是否已存在
+        if (phone) {
+            const { data: existingPhone } = await supabase
+                .from('users')
+                .select('id')
+                .eq('phone', phone);
+
+            if (existingPhone && existingPhone.length > 0) {
+                return res.status(409).json({
+                    success: false,
+                    error: '手机号已被注册',
+                    code: 'PHONE_EXISTS'
+                });
+            }
         }
 
         const userRole = role || 'employee';
@@ -218,6 +222,7 @@ async function handleRegister(req, res) {
             username: username,
             password_hash: passwordHash,
             name: name || username,
+            full_name: name || username,
             role: userRole,
             status: 'pending',
             phone: phone || null,
@@ -229,7 +234,7 @@ async function handleRegister(req, res) {
         const { data: newUser, error: insertError } = await supabase
             .from('users')
             .insert(userData)
-            .select('id, username, name, role, status, phone, email')
+            .select('id, username, name, full_name, role, status, phone, email')
             .single();
 
         if (insertError) {
@@ -255,29 +260,20 @@ async function handleRegister(req, res) {
             code: 'INTERNAL_ERROR'
         });
     }
-}
+});
 
-// ===== 获取当前用户 =====
-async function handleMe(req, res) {
+// ============================================================
+// GET /api/auth/me - 获取当前用户信息
+// ============================================================
+router.get('/me', authenticate, async (req, res) => {
     try {
-        const authHeader = req.headers.authorization;
-        if (!authHeader) {
-            return res.status(401).json({
-                success: false,
-                error: '未授权',
-                code: 'UNAUTHORIZED'
-            });
-        }
-
-        // 简单解析 token
-        const token = authHeader.replace('Bearer ', '');
-        const userId = token.split('_')[2];
+        const userId = req.user?.id;
 
         if (!userId) {
             return res.status(401).json({
                 success: false,
-                error: '无效的 token',
-                code: 'INVALID_TOKEN'
+                error: '未授权',
+                code: 'UNAUTHORIZED'
             });
         }
 
@@ -290,15 +286,19 @@ async function handleMe(req, res) {
             });
         }
 
+        // 获取用户权限
         const { data: permissions } = await supabase
             .from('user_permissions')
             .select('permission_code')
             .eq('user_id', userId);
 
+        // 移除敏感字段
+        const { password_hash, ...safeUser } = user;
+
         return res.status(200).json({
             success: true,
             data: {
-                ...user,
+                ...safeUser,
                 permissions: permissions ? permissions.map(p => p.permission_code) : []
             }
         });
@@ -311,11 +311,14 @@ async function handleMe(req, res) {
             code: 'INTERNAL_ERROR'
         });
     }
-}
+});
 
-// ===== 登出 =====
-async function handleLogout(req, res) {
+// ============================================================
+// POST /api/auth/logout - 登出
+// ============================================================
+router.post('/logout', async (req, res) => {
     try {
+        // JWT 是无状态的，客户端清除 token 即可
         return res.status(200).json({
             success: true,
             message: '登出成功'
@@ -328,10 +331,12 @@ async function handleLogout(req, res) {
             code: 'INTERNAL_ERROR'
         });
     }
-}
+});
 
-// ===== 重置密码 =====
-async function handleResetPassword(req, res) {
+// ============================================================
+// POST /api/auth/reset-password - 重置密码
+// ============================================================
+router.post('/reset-password', async (req, res) => {
     try {
         const { username, newPassword } = req.body;
 
@@ -365,7 +370,7 @@ async function handleResetPassword(req, res) {
 
         const user = users[0];
 
-        if (user.status !== 'approved') {
+        if (user.status !== 'approved' && user.status !== 'active') {
             return res.status(403).json({
                 success: false,
                 error: '账号未审核通过，无法重置密码',
@@ -394,4 +399,9 @@ async function handleResetPassword(req, res) {
             code: 'INTERNAL_ERROR'
         });
     }
-}
+});
+
+// ============================================================
+// 导出 Router
+// ============================================================
+export default router;

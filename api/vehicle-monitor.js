@@ -1,60 +1,29 @@
 /**
- * api/vehicle-monitor.js - 车辆监控 API
+ * api/vehicle-monitor.js - 车辆监控 API（Express Router 版本）
  * 
- * GET    /api/vehicle-monitor                 - 获取车辆记录列表
- * POST   /api/vehicle-monitor?action=entry   - 车辆进入
- * POST   /api/vehicle-monitor?action=exit    - 车辆离开
- * POST   /api/vehicle-monitor?action=recognize - 车牌识别（模拟）
- * POST   /api/vehicle-monitor?action=webhook - NVR 摄像头 Webhook
+ * GET    /api/vehicle-monitor - 获取车辆记录列表
+ * GET    /api/vehicle-monitor/:id - 获取车辆记录详情
+ * POST   /api/vehicle-monitor/entry - 车辆进入
+ * POST   /api/vehicle-monitor/exit - 车辆离开
+ * POST   /api/vehicle-monitor/recognize - 车牌识别（模拟）
+ * POST   /api/vehicle-monitor/webhook - NVR 摄像头 Webhook
+ * GET    /api/vehicle-monitor/stats/summary - 车辆统计
+ * 
+ * 增强点：统一使用 Express Router，补充详情和统计接口
  */
+
+import express from 'express';
 import { supabase, getPagination, safeQuery, getUserById } from '../shared/lib/supabase.js';
-import { authMiddleware, roleMiddleware } from '../shared/lib/auth.js';
+import { authenticate, requireRole } from '../shared/lib/auth.js';
 import { isRequired, validateVehicleRecord } from '../shared/lib/validation.js';
 import { logger } from '../shared/lib/logger.js';
 
-// ============================================================
-// 主 Handler
-// ============================================================
-async function handler(req, res) {
-    const { method } = req;
-    const { action } = req.query;
-
-    // GET /api/vehicle-monitor - 列表
-    if (method === 'GET' && !action) {
-        return handleList(req, res);
-    }
-
-    // POST /api/vehicle-monitor?action=entry - 进入
-    if (method === 'POST' && action === 'entry') {
-        return handleEntry(req, res);
-    }
-
-    // POST /api/vehicle-monitor?action=exit - 离开
-    if (method === 'POST' && action === 'exit') {
-        return handleExit(req, res);
-    }
-
-    // POST /api/vehicle-monitor?action=recognize - 识别
-    if (method === 'POST' && action === 'recognize') {
-        return handleRecognize(req, res);
-    }
-
-    // POST /api/vehicle-monitor?action=webhook - NVR Webhook
-    if (method === 'POST' && action === 'webhook') {
-        return handleWebhook(req, res);
-    }
-
-    return res.status(405).json({
-        success: false,
-        error: 'Method not allowed',
-        code: 'METHOD_NOT_ALLOWED'
-    });
-}
+const router = express.Router();
 
 // ============================================================
-// 1. 车辆记录列表
+// GET /api/vehicle-monitor - 车辆记录列表
 // ============================================================
-async function handleList(req, res) {
+router.get('/', authenticate, requireRole(['owner', 'admin']), async (req, res) => {
     try {
         const userId = req.user?.id;
         const { page = 1, limit = 20, date, plate, status } = req.query;
@@ -119,17 +88,65 @@ async function handleList(req, res) {
             code: 'INTERNAL_ERROR'
         });
     }
-}
+});
 
 // ============================================================
-// 2. 车辆进入
+// GET /api/vehicle-monitor/:id - 车辆记录详情
 // ============================================================
-async function handleEntry(req, res) {
+router.get('/:id', authenticate, requireRole(['owner', 'admin']), async (req, res) => {
+    try {
+        const { id } = req.params;
+        const userId = req.user?.id;
+
+        const user = await getUserById(userId);
+        if (!user) {
+            return res.status(401).json({
+                success: false,
+                error: '未授权',
+                code: 'UNAUTHORIZED'
+            });
+        }
+
+        let query = supabase.from('vehicle_records').select('*').eq('id', id);
+
+        if (user?.tenant_id) {
+            query = query.eq('tenant_id', user.tenant_id);
+        }
+
+        const result = await safeQuery(() => query.single());
+
+        if (!result.success) {
+            return res.status(404).json({
+                success: false,
+                error: '车辆记录不存在',
+                code: 'RECORD_NOT_FOUND'
+            });
+        }
+
+        return res.status(200).json({
+            success: true,
+            data: result.data
+        });
+
+    } catch (error) {
+        logger.error('[VehicleMonitor] 获取车辆记录详情失败:', error);
+        return res.status(500).json({
+            success: false,
+            error: '获取车辆记录详情失败',
+            code: 'INTERNAL_ERROR'
+        });
+    }
+});
+
+// ============================================================
+// POST /api/vehicle-monitor/entry - 车辆进入
+// ============================================================
+router.post('/entry', authenticate, requireRole(['owner', 'admin']), async (req, res) => {
     try {
         const userId = req.user?.id;
         const { plate, vehicle_type, note, plate_color, vehicle_brand, vehicle_model, vehicle_color } = req.body;
 
-        const errors = validateVehicleRecord({ plate });
+        const errors = validateVehicleRecord({ plate, vehicle_type });
         if (errors.length > 0) {
             return res.status(400).json({
                 success: false,
@@ -181,7 +198,8 @@ async function handleEntry(req, res) {
             operator_id: userId,
             tenant_id: user?.tenant_id || null,
             store_id: user?.store_id || null,
-            created_at: now.toISOString()
+            created_at: now.toISOString(),
+            updated_at: now.toISOString()
         };
 
         const result = await safeQuery(() =>
@@ -210,12 +228,12 @@ async function handleEntry(req, res) {
             code: 'INTERNAL_ERROR'
         });
     }
-}
+});
 
 // ============================================================
-// 3. 车辆离开
+// POST /api/vehicle-monitor/exit - 车辆离开
 // ============================================================
-async function handleExit(req, res) {
+router.post('/exit', authenticate, requireRole(['owner', 'admin']), async (req, res) => {
     try {
         const { plate, note } = req.body;
 
@@ -288,12 +306,12 @@ async function handleExit(req, res) {
             code: 'INTERNAL_ERROR'
         });
     }
-}
+});
 
 // ============================================================
-// 4. 车牌识别（模拟）
+// POST /api/vehicle-monitor/recognize - 车牌识别（模拟）
 // ============================================================
-async function handleRecognize(req, res) {
+router.post('/recognize', authenticate, requireRole(['owner', 'admin']), async (req, res) => {
     try {
         const { image } = req.body;
 
@@ -340,18 +358,19 @@ async function handleRecognize(req, res) {
             code: 'INTERNAL_ERROR'
         });
     }
-}
+});
 
 // ============================================================
-// 5. NVR Webhook（从 webhooks/nvr.js 合并）
+// POST /api/vehicle-monitor/webhook - NVR Webhook
 // ============================================================
-async function handleWebhook(req, res) {
+router.post('/webhook', async (req, res) => {
     try {
         // 验证 Webhook 密钥
         const secret = req.headers['x-webhook-secret'];
         const expectedSecret = process.env.NVR_WEBHOOK_SECRET;
 
         if (expectedSecret && secret !== expectedSecret) {
+            logger.warn('[Webhook] 无效的 Webhook 密钥');
             return res.status(401).json({
                 success: false,
                 error: 'Invalid webhook secret',
@@ -397,7 +416,8 @@ async function handleWebhook(req, res) {
             confidence: plateResult?.confidence || 0,
             image_url: savedImageUrl,
             source: 'camera',
-            status: 'pending'
+            status: 'pending',
+            created_at: new Date().toISOString()
         };
 
         logger.info('📝 准备保存:', {
@@ -437,7 +457,77 @@ async function handleWebhook(req, res) {
             detail: error.message
         });
     }
-}
+});
+
+// ============================================================
+// GET /api/vehicle-monitor/stats/summary - 车辆统计
+// ============================================================
+router.get('/stats/summary', authenticate, requireRole(['owner', 'admin']), async (req, res) => {
+    try {
+        const userId = req.user?.id;
+        const { date } = req.query;
+
+        const user = await getUserById(userId);
+        if (!user) {
+            return res.status(401).json({
+                success: false,
+                error: '未授权',
+                code: 'UNAUTHORIZED'
+            });
+        }
+
+        const targetDate = date || new Date().toISOString().split('T')[0];
+
+        let query = supabase.from('vehicle_records').select('*');
+
+        if (user?.tenant_id) {
+            query = query.eq('tenant_id', user.tenant_id);
+        }
+
+        if (targetDate) {
+            query = query.eq('date', targetDate);
+        }
+
+        const { data, error } = await query;
+
+        if (error) {
+            return res.status(500).json({
+                success: false,
+                error: '查询车辆统计失败',
+                code: 'DB_ERROR'
+            });
+        }
+
+        const total = data?.length || 0;
+        const inside = data?.filter(r => r.exit_time === null).length || 0;
+        const outside = data?.filter(r => r.exit_time !== null).length || 0;
+
+        // 计算平均停留时长
+        const completed = data?.filter(r => r.duration_minutes !== null) || [];
+        const avgDuration = completed.length > 0
+            ? Math.round(completed.reduce((sum, r) => sum + (r.duration_minutes || 0), 0) / completed.length)
+            : 0;
+
+        return res.status(200).json({
+            success: true,
+            data: {
+                date: targetDate,
+                total: total,
+                inside: inside,
+                outside: outside,
+                avg_duration_minutes: avgDuration
+            }
+        });
+
+    } catch (error) {
+        logger.error('[VehicleMonitor] 获取车辆统计失败:', error);
+        return res.status(500).json({
+            success: false,
+            error: '获取车辆统计失败',
+            code: 'INTERNAL_ERROR'
+        });
+    }
+});
 
 // ============================================================
 // 辅助函数：从 Base64 识别车牌
@@ -521,7 +611,4 @@ async function recognizePlateFromUrl(imageUrl) {
     }
 }
 
-// ============================================================
-// 导出（仅 owner 和 admin 可访问）
-// ============================================================
-export default authMiddleware(roleMiddleware(['owner', 'admin'])(handler));
+export default router;

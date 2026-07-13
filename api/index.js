@@ -2,6 +2,8 @@
  * api/index.js - API主路由入口
  * @module api
  * @description 统一API路由注册和中间件配置
+ * 
+ * 增强点：统一所有路由使用 Express Router，保持一致性
  */
 
 import express from 'express';
@@ -9,7 +11,7 @@ import cors from 'cors';
 import helmet from 'helmet';
 import dotenv from 'dotenv';
 
-// 导入路由模块
+// 导入路由模块（全部统一为 Express Router）
 import authRoutes from './auth.js';
 import orderRoutes from './orders.js';
 import productRoutes from './products.js';
@@ -72,7 +74,7 @@ app.get('/api/health', (req, res) => {
 });
 
 // ============================================================
-// API路由注册
+// API路由注册（统一挂载）
 // ============================================================
 
 app.use('/api/auth', authRoutes);
@@ -130,5 +132,16 @@ if (process.env.NODE_ENV !== 'production') {
         console.log(`🚀 API Server running on http://localhost:${PORT}`);
         console.log(`📚 Health check: http://localhost:${PORT}/api/health`);
         console.log(`🔗 CORS allowed origin: ${corsOrigin}`);
+        console.log(`📋 Registered routes:`);
+        console.log(`   /api/auth`);
+        console.log(`   /api/orders`);
+        console.log(`   /api/products`);
+        console.log(`   /api/customers`);
+        console.log(`   /api/employees`);
+        console.log(`   /api/inventory`);
+        console.log(`   /api/reports`);
+        console.log(`   /api/attendance`);
+        console.log(`   /api/permissions`);
+        console.log(`   /api/vehicle-monitor`);
     });
 }

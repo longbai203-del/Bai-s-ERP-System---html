@@ -1,57 +1,28 @@
 /**
- * api/orders.js - 订单 API
- * GET    /api/orders
- * GET    /api/orders/:id
- * POST   /api/orders
- * PUT    /api/orders/:id
- * DELETE /api/orders/:id
+ * api/reports.js - 报表 API（Express Router 版本）
+ * GET /api/reports/daily - 日报
+ * GET /api/reports/monthly - 月报
+ * GET /api/reports/sales - 销售报表
+ * 
+ * 增强点：统一使用 Express Router，补充销售报表
  */
-import { supabase, getPagination, safeQuery, getUserById } from '../shared/lib/supabase.js';
-import { authMiddleware } from '../shared/lib/auth.js';
-import { validateOrder } from '../shared/lib/validation.js';
+
+import express from 'express';
+import { supabase, safeQuery, getUserById } from '../shared/lib/supabase.js';
+import { authenticate, requireRole } from '../shared/lib/auth.js';
 import { logger } from '../shared/lib/logger.js';
 
-async function handler(req, res) {
-    const { method } = req;
-    const { id } = req.query;
+const router = express.Router();
 
-    // GET /api/orders - 列表
-    if (method === 'GET' && !id) {
-        return handleList(req, res);
-    }
-
-    // GET /api/orders/:id - 详情
-    if (method === 'GET' && id) {
-        return handleGet(req, res);
-    }
-
-    // POST /api/orders - 创建
-    if (method === 'POST') {
-        return handleCreate(req, res);
-    }
-
-    // PUT /api/orders/:id - 更新
-    if (method === 'PUT' && id) {
-        return handleUpdate(req, res);
-    }
-
-    // DELETE /api/orders/:id - 删除
-    if (method === 'DELETE' && id) {
-        return handleDelete(req, res);
-    }
-
-    return res.status(405).json({
-        success: false,
-        error: 'Method not allowed',
-        code: 'METHOD_NOT_ALLOWED'
-    });
-}
-
-// ===== 订单列表 =====
-async function handleList(req, res) {
+// ============================================================
+// GET /api/reports/daily - 日报
+// ============================================================
+router.get('/daily', authenticate, requireRole(['owner', 'admin', 'manager']), async (req, res) => {
     try {
         const userId = req.user?.id;
-        const { page = 1, limit = 20, status, date, customer_id } = req.query;
+        const { date } = req.query;
+
+        const reportDate = date || new Date().toISOString().split('T')[0];
 
         const user = await getUserById(userId);
         if (!user) {
@@ -62,66 +33,71 @@ async function handleList(req, res) {
             });
         }
 
-        let query = supabase.from('orders').select('*', { count: 'exact' });
+        let ordersQuery = supabase
+            .from('orders')
+            .select('*')
+            .eq('date', reportDate);
 
         if (user?.tenant_id) {
-            query = query.eq('tenant_id', user.tenant_id);
+            ordersQuery = ordersQuery.eq('tenant_id', user.tenant_id);
+        }
+        if (user?.store_id) {
+            ordersQuery = ordersQuery.eq('store_id', user.store_id);
         }
 
-        if (user?.store_id && user?.role !== 'owner' && user?.role !== 'admin') {
-            query = query.eq('store_id', user.store_id);
-        }
+        const { data: orders } = await ordersQuery;
 
-        if (status && status !== 'all') {
-            query = query.eq('status', status);
-        }
+        const totalRevenue = (orders || []).reduce((sum, o) => sum + (o.total || o.total_amount || 0), 0);
+        const totalOrders = (orders || []).length;
+        const pendingOrders = (orders || []).filter(o => o.status === 'pending' || o.status === 'confirmed').length;
+        const completedOrders = (orders || []).filter(o => o.status === 'completed').length;
+        const cancelledOrders = (orders || []).filter(o => o.status === 'cancelled').length;
 
-        if (date) {
-            query = query.eq('date', date);
-        }
-
-        if (customer_id) {
-            query = query.eq('customer_id', customer_id);
-        }
-
-        const { from, to } = getPagination(parseInt(page), parseInt(limit));
-        query = query.order('created_at', { ascending: false }).range(from, to);
-
-        const result = await safeQuery(() => query);
-
-        if (!result.success) {
-            return res.status(500).json({
-                success: false,
-                error: '查询订单失败',
-                code: 'DB_ERROR'
-            });
-        }
+        const paymentStats = {};
+        (orders || []).forEach(o => {
+            const method = o.payment_method || 'other';
+            paymentStats[method] = (paymentStats[method] || 0) + (o.total || o.total_amount || 0);
+        });
 
         return res.status(200).json({
             success: true,
-            data: result.data || [],
-            pagination: {
-                page: parseInt(page),
-                limit: parseInt(limit),
-                total: result.data?.length || 0
+            data: {
+                date: reportDate,
+                summary: {
+                    totalRevenue: totalRevenue,
+                    totalOrders: totalOrders,
+                    pendingOrders: pendingOrders,
+                    completedOrders: completedOrders,
+                    cancelledOrders: cancelledOrders,
+                    avgOrderValue: totalOrders > 0 ? totalRevenue / totalOrders : 0
+                },
+                paymentBreakdown: paymentStats,
+                orders: orders || []
             }
         });
 
     } catch (error) {
-        logger.error('[Orders] 获取订单列表失败:', error);
+        logger.error('[Reports] 获取日报失败:', error);
         return res.status(500).json({
             success: false,
-            error: '获取订单列表失败',
+            error: '获取日报失败',
             code: 'INTERNAL_ERROR'
         });
     }
-}
+});
 
-// ===== 订单详情 =====
-async function handleGet(req, res) {
+// ============================================================
+// GET /api/reports/monthly - 月报
+// ============================================================
+router.get('/monthly', authenticate, requireRole(['owner', 'admin', 'manager']), async (req, res) => {
     try {
-        const { id } = req.query;
         const userId = req.user?.id;
+        const { month } = req.query;
+
+        const reportMonth = month || new Date().toISOString().slice(0, 7);
+        const startDate = `${reportMonth}-01`;
+        const lastDay = new Date(parseInt(reportMonth.split('-')[0]), parseInt(reportMonth.split('-')[1]), 0).getDate();
+        const endDate = `${reportMonth}-${String(lastDay).padStart(2, '0')}`;
 
         const user = await getUserById(userId);
         if (!user) {
@@ -132,52 +108,70 @@ async function handleGet(req, res) {
             });
         }
 
-        let query = supabase.from('orders').select('*').eq('id', id);
+        let ordersQuery = supabase
+            .from('orders')
+            .select('*')
+            .gte('date', startDate)
+            .lte('date', endDate);
 
         if (user?.tenant_id) {
-            query = query.eq('tenant_id', user.tenant_id);
+            ordersQuery = ordersQuery.eq('tenant_id', user.tenant_id);
         }
 
-        const result = await safeQuery(() => query.single());
+        const { data: orders } = await ordersQuery;
 
-        if (!result.success) {
-            return res.status(404).json({
-                success: false,
-                error: '订单不存在',
-                code: 'ORDER_NOT_FOUND'
-            });
-        }
+        const totalRevenue = (orders || []).reduce((sum, o) => sum + (o.total || o.total_amount || 0), 0);
+        const totalOrders = (orders || []).length;
+
+        const dailyTrend = {};
+        (orders || []).forEach(o => {
+            const d = o.date || o.created_at?.split('T')[0];
+            if (d) {
+                if (!dailyTrend[d]) {
+                    dailyTrend[d] = { revenue: 0, count: 0 };
+                }
+                dailyTrend[d].revenue += (o.total || o.total_amount || 0);
+                dailyTrend[d].count += 1;
+            }
+        });
+
+        // 按日期排序
+        const sortedDailyTrend = Object.keys(dailyTrend).sort().reduce((acc, key) => {
+            acc[key] = dailyTrend[key];
+            return acc;
+        }, {});
 
         return res.status(200).json({
             success: true,
-            data: result.data
+            data: {
+                month: reportMonth,
+                summary: {
+                    totalRevenue: totalRevenue,
+                    totalOrders: totalOrders,
+                    avgOrderValue: totalOrders > 0 ? totalRevenue / totalOrders : 0
+                },
+                dailyTrend: sortedDailyTrend,
+                orders: orders || []
+            }
         });
 
     } catch (error) {
-        logger.error('[Orders] 获取订单失败:', error);
+        logger.error('[Reports] 获取月报失败:', error);
         return res.status(500).json({
             success: false,
-            error: '获取订单失败',
+            error: '获取月报失败',
             code: 'INTERNAL_ERROR'
         });
     }
-}
+});
 
-// ===== 创建订单 =====
-async function handleCreate(req, res) {
+// ============================================================
+// GET /api/reports/sales - 销售报表（按产品/服务）
+// ============================================================
+router.get('/sales', authenticate, requireRole(['owner', 'admin', 'manager']), async (req, res) => {
     try {
         const userId = req.user?.id;
-        const body = req.body;
-
-        const errors = validateOrder(body);
-        if (errors.length > 0) {
-            return res.status(400).json({
-                success: false,
-                error: '参数验证失败',
-                errors: errors,
-                code: 'VALIDATION_ERROR'
-            });
-        }
+        const { startDate, endDate, limit = 20 } = req.query;
 
         const user = await getUserById(userId);
         if (!user) {
@@ -188,139 +182,83 @@ async function handleCreate(req, res) {
             });
         }
 
-        const today = new Date().toISOString().split('T')[0];
-        const { data: todayOrders } = await supabase
-            .from('orders')
-            .select('order_number')
-            .eq('date', today)
-            .order('created_at', { ascending: false })
-            .limit(1);
+        let query = supabase
+            .from('order_items')
+            .select(`
+                product_id,
+                product_name,
+                quantity,
+                unit_price,
+                total_price,
+                orders:order_id (created_at, status)
+            `);
 
-        let orderNumber = `ORD-${today.replace(/-/g, '')}-0001`;
-        if (todayOrders && todayOrders.length > 0) {
-            const lastNumber = parseInt(todayOrders[0].order_number.split('-')[2]);
-            orderNumber = `ORD-${today.replace(/-/g, '')}-${String(lastNumber + 1).padStart(4, '0')}`;
+        if (user?.tenant_id) {
+            query = query.eq('orders.tenant_id', user.tenant_id);
         }
 
-        const orderData = {
-            order_number: orderNumber,
-            date: today,
-            customer_id: body.customer_id || null,
-            plate_number: body.plate_number || null,
-            employee_id: userId,
-            staff_name: user?.name || '系统',
-            service_name: body.service_name || '',
-            amount: body.amount || 0,
-            discount: body.discount || 0,
-            vat: body.vat || 0,
-            total: body.total || 0,
-            payment_method: body.payment_method || 'cash',
-            status: body.status || 'pending',
-            note: body.note || '',
-            tenant_id: user?.tenant_id || null,
-            store_id: user?.store_id || null,
-            created_at: new Date().toISOString(),
-            paid_at: body.paid_at || null
-        };
+        if (startDate) {
+            query = query.gte('orders.created_at', startDate);
+        }
+        if (endDate) {
+            query = query.lte('orders.created_at', endDate);
+        }
 
-        const result = await safeQuery(() =>
-            supabase.from('orders').insert(orderData).select().single()
-        );
+        query = query.eq('orders.status', 'completed');
 
-        if (!result.success) {
+        const { data, error } = await query;
+
+        if (error) {
             return res.status(500).json({
                 success: false,
-                error: '创建订单失败',
+                error: '查询销售数据失败',
                 code: 'DB_ERROR'
             });
         }
 
-        return res.status(201).json({
-            success: true,
-            data: result.data,
-            message: '订单创建成功'
+        // 汇总产品销量
+        const productStats = {};
+        (data || []).forEach(item => {
+            const key = item.product_id || item.product_name;
+            if (!productStats[key]) {
+                productStats[key] = {
+                    product_id: item.product_id,
+                    product_name: item.product_name,
+                    quantity: 0,
+                    revenue: 0,
+                    orders: new Set()
+                };
+            }
+            productStats[key].quantity += item.quantity || 0;
+            productStats[key].revenue += item.total_price || 0;
+            if (item.order_id) {
+                productStats[key].orders.add(item.order_id);
+            }
         });
 
-    } catch (error) {
-        logger.error('[Orders] 创建订单失败:', error);
-        return res.status(500).json({
-            success: false,
-            error: '创建订单失败',
-            code: 'INTERNAL_ERROR'
-        });
-    }
-}
-
-// ===== 更新订单 =====
-async function handleUpdate(req, res) {
-    try {
-        const { id } = req.query;
-        const { status, payment_method, note } = req.body;
-
-        const updateData = {};
-        if (status) updateData.status = status;
-        if (payment_method) updateData.payment_method = payment_method;
-        if (note !== undefined) updateData.note = note;
-        updateData.updated_at = new Date().toISOString();
-
-        const result = await safeQuery(() =>
-            supabase.from('orders').update(updateData).eq('id', id).select().single()
-        );
-
-        if (!result.success) {
-            return res.status(500).json({
-                success: false,
-                error: '更新订单失败',
-                code: 'DB_ERROR'
-            });
-        }
+        // 排序并限制数量
+        const sorted = Object.values(productStats)
+            .map(p => ({
+                ...p,
+                order_count: p.orders.size
+            }))
+            .sort((a, b) => b.revenue - a.revenue)
+            .slice(0, parseInt(limit));
 
         return res.status(200).json({
             success: true,
-            data: result.data,
-            message: '订单更新成功'
+            data: sorted,
+            total: sorted.length
         });
 
     } catch (error) {
-        logger.error('[Orders] 更新订单失败:', error);
+        logger.error('[Reports] 获取销售报表失败:', error);
         return res.status(500).json({
             success: false,
-            error: '更新订单失败',
+            error: '获取销售报表失败',
             code: 'INTERNAL_ERROR'
         });
     }
-}
+});
 
-// ===== 删除订单 =====
-async function handleDelete(req, res) {
-    try {
-        const { id } = req.query;
-
-        const result = await safeQuery(() =>
-            supabase.from('orders').delete().eq('id', id)
-        );
-
-        if (!result.success) {
-            return res.status(500).json({
-                success: false,
-                error: '删除订单失败',
-                code: 'DB_ERROR'
-            });
-        }
-
-        return res.status(200).json({
-            success: true,
-            message: '订单删除成功'
-        });
-
-    } catch (error) {
-        logger.error('[Orders] 删除订单失败:', error);
-        return res.status(500).json({
-            success: false,
-            error: '删除订单失败',
-            code: 'INTERNAL_ERROR'
-        });
-    }
-}
-
-export default authMiddleware(handler);
+export default router;
