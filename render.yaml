@@ -7,15 +7,15 @@ services:
     startCommand: node api/index.js
     envVars:
       - key: SUPABASE_URL
-        sync: false
+        value: https://dpciflpdlpouenzqeutc.supabase.co
       - key: SUPABASE_ANON_KEY
-        sync: false
+        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRwY2lmbHBkbHBvdWVuenFldXRjIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODM5NDUzNTMsImV4cCI6MjA5OTUyMTM1M30.jSTUG2zMqVlN9z7z-GKzuk7225hW83yoEF_tozpNaec.
       - key: SUPABASE_SERVICE_ROLE_KEY
-        sync: false
+        value: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRwY2lmbHBkbHBvdWVuenFldXRjIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4Mzk0NTM1MywiZXhwIjoyMDk5NTIxMzUzfQ.OvMvKQBXXMU-jyCXAUCZpJ58VHi7cTxRP_GbtcTjbDo
       - key: JWT_SECRET
-        sync: false
+        value: 1d199fa23059d91fa54fb4c6ced0ec224f7eb1320786e1c0602d319d8a37e279
       - key: CORS_ORIGIN
-        sync: false
+        value: https://bai-s-erp-system.vercel.app
       - key: NODE_ENV
         value: production
     healthCheckPath: /api/health
