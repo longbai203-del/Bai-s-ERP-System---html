@@ -8,7 +8,7 @@
  */
 
 import express from 'express';
-import {  getCurrentUser } from '../shared/lib/auth.js';
+import { getCurrentUser, requireRole } from '../shared/lib/auth.js';
 import { supabase } from '../shared/lib/supabase.js';
 import { logger } from '../shared/lib/logger.js';
 
