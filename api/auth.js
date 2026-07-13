@@ -11,7 +11,7 @@
 
 import express from 'express';
 import { supabase, getUserById, safeQuery } from '../shared/lib/supabase.js';
-import { isRequired, isValidPassword, isValidPhone } from '../shared/lib/validation.js';
+import { isRequired, isValidPassword, isValidPhone } from '../shared/validation/index.js';
 import { logger } from '../shared/lib/logger.js';
 import { authMiddleware } from '../shared/lib/auth.js';  // ✅ 修复：改为 authMiddleware
 

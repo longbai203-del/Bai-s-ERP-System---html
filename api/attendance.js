@@ -11,7 +11,7 @@
 import express from 'express';
 import { supabase, getPagination, safeQuery, getUserById } from '../shared/lib/supabase.js';
 import { authenticate, requireRole } from '../shared/lib/auth.js';
-import { isRequired, validateAttendance } from '../shared/lib/validation.js';
+import { isRequired, validateAttendance } from '../shared/validation/index.js';
 import { logger } from '../shared/lib/logger.js';
 
 const router = express.Router();
