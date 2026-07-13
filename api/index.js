@@ -2,14 +2,14 @@
  * api/index.js - API主路由入口
  * @module api
  * @description 统一API路由注册和中间件配置
- * 
- * 增强点：统一所有路由使用 Express Router，保持一致性
  */
+
+import dotenv from 'dotenv';
+dotenv.config();
 
 import express from 'express';
 import cors from 'cors';
 import helmet from 'helmet';
-import dotenv from 'dotenv';
 
 // 导入路由模块（全部统一为 Express Router）
 import authRoutes from './auth.js';
@@ -23,7 +23,7 @@ import attendanceRoutes from './attendance.js';
 import permissionRoutes from './permissions.js';
 import vehicleMonitorRoutes from './vehicle-monitor.js';
 
-dotenv.config();
+console.log('[API] ✅ 所有路由模块已加载');
 
 const app = express();
 
@@ -77,16 +77,39 @@ app.get('/api/health', (req, res) => {
 // API路由注册（统一挂载）
 // ============================================================
 
+console.log('[API] 开始注册路由...');
+
 app.use('/api/auth', authRoutes);
+console.log('[API] ✅ /api/auth 已注册');
+
 app.use('/api/orders', orderRoutes);
+console.log('[API] ✅ /api/orders 已注册');
+
 app.use('/api/products', productRoutes);
+console.log('[API] ✅ /api/products 已注册');
+
 app.use('/api/customers', customerRoutes);
+console.log('[API] ✅ /api/customers 已注册');
+
 app.use('/api/employees', employeeRoutes);
+console.log('[API] ✅ /api/employees 已注册');
+
 app.use('/api/inventory', inventoryRoutes);
+console.log('[API] ✅ /api/inventory 已注册');
+
 app.use('/api/reports', reportRoutes);
+console.log('[API] ✅ /api/reports 已注册');
+
 app.use('/api/attendance', attendanceRoutes);
+console.log('[API] ✅ /api/attendance 已注册');
+
 app.use('/api/permissions', permissionRoutes);
+console.log('[API] ✅ /api/permissions 已注册');
+
 app.use('/api/vehicle-monitor', vehicleMonitorRoutes);
+console.log('[API] ✅ /api/vehicle-monitor 已注册');
+
+console.log('[API] ✅ 所有路由注册完成');
 
 // ============================================================
 // 404处理
@@ -125,23 +148,47 @@ app.use((err, req, res, next) => {
 
 export default app;
 
-// 本地开发服务器
-if (process.env.NODE_ENV !== 'production') {
-    const PORT = process.env.PORT || 3001;
-    app.listen(PORT, () => {
-        console.log(`🚀 API Server running on http://localhost:${PORT}`);
-        console.log(`📚 Health check: http://localhost:${PORT}/api/health`);
-        console.log(`🔗 CORS allowed origin: ${corsOrigin}`);
-        console.log(`📋 Registered routes:`);
-        console.log(`   /api/auth`);
-        console.log(`   /api/orders`);
-        console.log(`   /api/products`);
-        console.log(`   /api/customers`);
-        console.log(`   /api/employees`);
-        console.log(`   /api/inventory`);
-        console.log(`   /api/reports`);
-        console.log(`   /api/attendance`);
-        console.log(`   /api/permissions`);
-        console.log(`   /api/vehicle-monitor`);
-    });
-}
+// ============================================================
+// 启动服务器（所有环境）
+// ============================================================
+const PORT = process.env.PORT || 3001;
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`🚀 API Server running on port ${PORT}`);
+    console.log(`📚 Health check: http://localhost:${PORT}/api/health`);
+    console.log(`🔗 CORS allowed origin: ${corsOrigin}`);
+    console.log(`📋 Registered routes:`);
+    console.log(`   /api/auth`);
+    console.log(`   /api/orders`);
+    console.log(`   /api/products`);
+    console.log(`   /api/customers`);
+    console.log(`   /api/employees`);
+    console.log(`   /api/inventory`);
+    console.log(`   /api/reports`);
+    console.log(`   /api/attendance`);
+    console.log(`   /api/permissions`);
+    console.log(`   /api/vehicle-monitor`);
+});
+
+// 处理进程信号 - 优雅关闭
+process.on('SIGTERM', () => {
+    console.log('[API] 收到 SIGTERM 信号，正在关闭...');
+    process.exit(0);
+});
+
+process.on('SIGINT', () => {
+    console.log('[API] 收到 SIGINT 信号，正在关闭...');
+    process.exit(0);
+});
+
+// 捕获未处理的异常
+process.on('uncaughtException', (err) => {
+    console.error('[API] ❌ 未捕获的异常:', err.message);
+    console.error(err.stack);
+    process.exit(1);
+});
+
+process.on('unhandledRejection', (reason, promise) => {
+    console.error('[API] ❌ 未处理的 Promise 拒绝:', reason);
+    console.error('Promise:', promise);
+    process.exit(1);
+});
