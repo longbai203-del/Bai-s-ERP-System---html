@@ -6,7 +6,7 @@
 
 import { store } from './core/store.js';
 import { router } from './core/router.js';
-import { apiClient } from './core/api/api-client.js';
+import { apiClient } from '../api/api-client.js';
 import { loadModule, loadAllModules, initServices } from './services/services.js';
 import { initSidebar } from './core/sidebar.js';
 import { initTheme, initLanguage, initNotifications } from './core/init.js';

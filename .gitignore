@@ -32,4 +32,22 @@ Thumbs.db
 tree.txt
 file-tree.txt
 folders.txt
-fix-modules.ps1
+fix-modules.ps1# 临时文件和备份
+*.bak
+*.tmp
+*.swp
+*~
+
+# 项目分析文件（已移到docs）
+file-tree.txt
+folders.txt
+
+# 开发工具脚本（已移到scripts/archive）
+generate-all-pages.js
+refactor-to-v2.js
+
+# 空目录（保留结构）
+**/empty/
+
+# PowerShell 脚本输出
+*.ps1
