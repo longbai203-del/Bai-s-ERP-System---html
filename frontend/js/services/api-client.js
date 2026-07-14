@@ -1,224 +1,325 @@
 /**
- * frontend/js/api-client.js - 前端 API 调用客户端
- * 统一管理所有后端 API 调用
+ * @file api-client.js
+ * @description API 客户端 - 处理所有 HTTP 请求
+ * @version 2.0.0
  */
-(function() {
-    'use strict';
 
-    window.ApiClient = {
-        _baseUrl: '/api',
+// ============================================================
+// 1. 配置
+// ============================================================
+
+const API_BASE_URL = '/api';
+const DEFAULT_TIMEOUT = 30000; // 30秒
+
+// ============================================================
+// 2. 工具函数
+// ============================================================
+
+/**
+ * 构建查询字符串
+ */
+function buildQueryString(params) {
+    if (!params || Object.keys(params).length === 0) return '';
+    const searchParams = new URLSearchParams();
+    Object.entries(params).forEach(([key, value]) => {
+        if (value !== undefined && value !== null && value !== '') {
+            searchParams.append(key, value);
+        }
+    });
+    const query = searchParams.toString();
+    return query ? `?${query}` : '';
+}
+
+/**
+ * 获取认证 Token
+ */
+function getAuthToken() {
+    try {
+        const session = localStorage.getItem('supabase.auth.token');
+        if (session) {
+            const parsed = JSON.parse(session);
+            return parsed?.access_token || null;
+        }
+        return null;
+    } catch {
+        return null;
+    }
+}
+
+/**
+ * 获取请求头
+ */
+function getHeaders(options = {}) {
+    const headers = {
+        'Content-Type': 'application/json',
+        'Accept': 'application/json',
+        ...options.headers
+    };
+
+    // 添加认证 Token
+    const token = options.token || getAuthToken();
+    if (token) {
+        headers['Authorization'] = `Bearer ${token}`;
+    }
+
+    return headers;
+}
+
+/**
+ * 超时控制
+ */
+function withTimeout(fetchPromise, timeout = DEFAULT_TIMEOUT) {
+    return Promise.race([
+        fetchPromise,
+        new Promise((_, reject) => {
+            setTimeout(() => reject(new Error('请求超时')), timeout);
+        })
+    ]);
+}
+
+// ============================================================
+// 3. 核心请求函数
+// ============================================================
+
+/**
+ * 通用请求函数
+ */
+async function request(endpoint, options = {}) {
+    const queryString = buildQueryString(options.params);
+    const url = `${API_BASE_URL}${endpoint}${queryString}`;
+    
+    const config = {
+        method: options.method || 'GET',
+        headers: getHeaders(options),
+        ...options
+    };
+
+    // 如果有 body，添加到请求中
+    if (options.body && options.method !== 'GET' && options.method !== 'HEAD') {
+        config.body = typeof options.body === 'string' ? options.body : JSON.stringify(options.body);
+    }
+
+    try {
+        const response = await withTimeout(fetch(url, config), options.timeout || DEFAULT_TIMEOUT);
         
-        /**
-         * 获取认证 Token
-         */
-        _getToken: function() {
-            try {
-                const session = localStorage.getItem('cw_session');
-                if (session) {
-                    const s = JSON.parse(session);
-                    return s.token || null;
-                }
-            } catch(e) {}
-            return null;
-        },
+        // 处理非 JSON 响应
+        const contentType = response.headers.get('content-type');
+        let data;
+        if (contentType && contentType.includes('application/json')) {
+            data = await response.json();
+        } else {
+            data = await response.text();
+        }
 
-        /**
-         * 通用请求方法
-         */
-        request: async function(endpoint, options = {}) {
-            const url = this._baseUrl + endpoint;
-            const headers = {
-                'Content-Type': 'application/json',
-                ...options.headers
-            };
+        if (!response.ok) {
+            const error = data?.error || data?.message || `HTTP ${response.status}: ${response.statusText}`;
+            throw new Error(error);
+        }
 
-            // 添加认证 Token
-            const token = this._getToken();
-            if (token) {
-                headers['Authorization'] = 'Bearer ' + token;
+        return data;
+    } catch (error) {
+        console.error('[API Client] 请求错误:', {
+            url,
+            method: options.method || 'GET',
+            error: error.message
+        });
+        throw error;
+    }
+}
+
+// ============================================================
+// 4. API 客户端对象
+// ============================================================
+
+export const apiClient = {
+    /**
+     * GET 请求
+     * @param {string} endpoint - API 端点
+     * @param {Object} options - 选项 { params, headers, timeout }
+     */
+    get: (endpoint, options = {}) => {
+        return request(endpoint, { ...options, method: 'GET' });
+    },
+
+    /**
+     * POST 请求
+     * @param {string} endpoint - API 端点
+     * @param {Object} data - 请求数据
+     * @param {Object} options - 选项 { params, headers, timeout }
+     */
+    post: (endpoint, data, options = {}) => {
+        return request(endpoint, {
+            ...options,
+            method: 'POST',
+            body: data
+        });
+    },
+
+    /**
+     * PUT 请求
+     * @param {string} endpoint - API 端点
+     * @param {Object} data - 请求数据
+     * @param {Object} options - 选项 { params, headers, timeout }
+     */
+    put: (endpoint, data, options = {}) => {
+        return request(endpoint, {
+            ...options,
+            method: 'PUT',
+            body: data
+        });
+    },
+
+    /**
+     * DELETE 请求
+     * @param {string} endpoint - API 端点
+     * @param {Object} options - 选项 { params, headers, timeout }
+     */
+    delete: (endpoint, options = {}) => {
+        return request(endpoint, { ...options, method: 'DELETE' });
+    },
+
+    /**
+     * PATCH 请求
+     * @param {string} endpoint - API 端点
+     * @param {Object} data - 请求数据
+     * @param {Object} options - 选项 { params, headers, timeout }
+     */
+    patch: (endpoint, data, options = {}) => {
+        return request(endpoint, {
+            ...options,
+            method: 'PATCH',
+            body: data
+        });
+    },
+
+    /**
+     * 上传文件
+     * @param {string} endpoint - API 端点
+     * @param {FormData} formData - 表单数据
+     * @param {Object} options - 选项 { params, timeout }
+     */
+    upload: (endpoint, formData, options = {}) => {
+        const headers = options.headers || {};
+        // 上传文件时不设置 Content-Type，让浏览器自动设置
+        delete headers['Content-Type'];
+        
+        const token = getAuthToken();
+        if (token) {
+            headers['Authorization'] = `Bearer ${token}`;
+        }
+
+        const queryString = buildQueryString(options.params);
+        const url = `${API_BASE_URL}${endpoint}${queryString}`;
+
+        return withTimeout(
+            fetch(url, {
+                method: 'POST',
+                headers,
+                body: formData
+            }),
+            options.timeout || DEFAULT_TIMEOUT
+        ).then(async (response) => {
+            const contentType = response.headers.get('content-type');
+            let data;
+            if (contentType && contentType.includes('application/json')) {
+                data = await response.json();
+            } else {
+                data = await response.text();
             }
 
-            const response = await fetch(url, {
-                ...options,
-                headers: headers,
-                credentials: 'include'
-            });
-
-            const data = await response.json().catch(() => ({}));
-
             if (!response.ok) {
-                // 处理特定错误码
-                if (response.status === 401) {
-                    // 未授权，清除 session
-                    localStorage.removeItem('cw_session');
-                    if (window.AppAuth && window.AppAuth.logout) {
-                        window.AppAuth.logout();
-                    }
-                }
-                throw new Error(data.error || `HTTP ${response.status}`);
+                const error = data?.error || data?.message || `HTTP ${response.status}`;
+                throw new Error(error);
             }
 
             return data;
-        },
+        });
+    }
+};
 
-        /**
-         * GET 请求
-         */
-        get: function(endpoint, params = {}) {
-            const queryString = new URLSearchParams(params).toString();
-            const url = queryString ? endpoint + '?' + queryString : endpoint;
-            return this.request(url, { method: 'GET' });
-        },
+// ============================================================
+// 5. 便捷导出（兼容旧版本）
+// ============================================================
 
-        /**
-         * POST 请求
-         */
-        post: function(endpoint, data = {}) {
-            return this.request(endpoint, {
-                method: 'POST',
-                body: JSON.stringify(data)
-            });
-        },
+// 导出默认对象
+export default apiClient;
 
-        /**
-         * PUT 请求
-         */
-        put: function(endpoint, data = {}) {
-            return this.request(endpoint, {
-                method: 'PUT',
-                body: JSON.stringify(data)
-            });
-        },
+// 导出单个函数（兼容旧版本）
+export const get = apiClient.get;
+export const post = apiClient.post;
+export const put = apiClient.put;
+export const del = apiClient.delete;
+export const patch = apiClient.patch;
 
-        /**
-         * DELETE 请求
-         */
-        delete: function(endpoint) {
-            return this.request(endpoint, { method: 'DELETE' });
-        },
+// 也导出为 request（兼容性）
+export const requestFn = request;
 
-        /**
-         * PATCH 请求
-         */
-        patch: function(endpoint, data = {}) {
-            return this.request(endpoint, {
-                method: 'PATCH',
-                body: JSON.stringify(data)
-            });
-        },
+// ============================================================
+// 6. 拦截器支持（可选）
+// ============================================================
 
-        // ============================================================
-        // API 分组
-        // ============================================================
+let requestInterceptors = [];
+let responseInterceptors = [];
 
-        auth: {
-            login: (username, password) => 
-                ApiClient.post('/auth/login', { username, password }),
-            
-            register: (data) => 
-                ApiClient.post('/auth/register', data),
-            
-            me: () => 
-                ApiClient.get('/auth/me'),
-            
-            logout: () => 
-                ApiClient.post('/auth/logout'),
-            
-            resetPassword: (username, newPassword) =>
-                ApiClient.post('/auth/reset-password', { username, newPassword })
-        },
+/**
+ * 添加请求拦截器
+ */
+export function addRequestInterceptor(interceptor) {
+    requestInterceptors.push(interceptor);
+}
 
-        orders: {
-            list: (params = {}) => 
-                ApiClient.get('/orders', params),
-            
-            get: (id) => 
-                ApiClient.get(`/orders/${id}`),
-            
-            create: (data) => 
-                ApiClient.post('/orders/create', data),
-            
-            update: (id, data) => 
-                ApiClient.put(`/orders/${id}`, data),
-            
-            delete: (id) => 
-                ApiClient.delete(`/orders/${id}`)
-        },
+/**
+ * 添加响应拦截器
+ */
+export function addResponseInterceptor(interceptor) {
+    responseInterceptors.push(interceptor);
+}
 
-        customers: {
-            list: (params = {}) => 
-                ApiClient.get('/customers', params),
-            
-            get: (id) => 
-                ApiClient.get(`/customers/${id}`),
-            
-            create: (data) => 
-                ApiClient.post('/customers/create', data),
-            
-            update: (id, data) => 
-                ApiClient.put(`/customers/${id}`, data)
-        },
-
-        inventory: {
-            list: (params = {}) => 
-                ApiClient.get('/inventory', params),
-            
-            get: (id) => 
-                ApiClient.get(`/inventory/${id}`),
-            
-            update: (id, data) => 
-                ApiClient.put(`/inventory/${id}`, data)
-        },
-
-        employees: {
-            list: (params = {}) => 
-                ApiClient.get('/employees', params),
-            
-            approve: (userId, status, note = '') =>
-                ApiClient.post('/employees/approve', { userId, status, note })
-        },
-
-        attendance: {
-            list: (params = {}) => 
-                ApiClient.get('/attendance', params),
-            
-            clockIn: (data = {}) => 
-                ApiClient.post('/attendance/clock', { ...data, type: 'in' }),
-            
-            clockOut: (data = {}) => 
-                ApiClient.post('/attendance/clock', { ...data, type: 'out' })
-        },
-
-        reports: {
-            daily: (date) => 
-                ApiClient.get('/reports/daily', { date }),
-            
-            monthly: (month) => 
-                ApiClient.get('/reports/monthly', { month })
-        },
-
-        permissions: {
-            roles: () => 
-                ApiClient.get('/permissions/roles'),
-            
-            menus: () => 
-                ApiClient.get('/permissions/menus')
-        },
-
-        vehicleMonitor: {
-            list: (params = {}) => 
-                ApiClient.get('/vehicle-monitor', params),
-            
-            entry: (data) => 
-                ApiClient.post('/vehicle-monitor/entry', data),
-            
-            exit: (data) => 
-                ApiClient.post('/vehicle-monitor/exit', data),
-            
-            recognize: (imageData) => 
-                ApiClient.post('/vehicle-monitor/recognize', { image: imageData })
+/**
+ * 带拦截器的请求
+ */
+export async function requestWithInterceptors(endpoint, options = {}) {
+    let config = { endpoint, ...options };
+    
+    // 执行请求拦截器
+    for (const interceptor of requestInterceptors) {
+        config = await interceptor(config);
+    }
+    
+    try {
+        let result = await request(config.endpoint, config);
+        
+        // 执行响应拦截器
+        for (const interceptor of responseInterceptors) {
+            result = await interceptor(result);
         }
-    };
+        
+        return result;
+    } catch (error) {
+        throw error;
+    }
+}
 
-    console.log('[ApiClient] ✅ 加载完成');
-})();
+// ============================================================
+// 7. 初始化日志
+// ============================================================
+
+console.log('✅ [API Client] 已初始化');
+
+// ============================================================
+// 8. 导出清单
+// ============================================================
+
+export default {
+    apiClient,
+    get: apiClient.get,
+    post: apiClient.post,
+    put: apiClient.put,
+    delete: apiClient.delete,
+    patch: apiClient.patch,
+    upload: apiClient.upload,
+    request,
+    requestWithInterceptors,
+    addRequestInterceptor,
+    addResponseInterceptor
+};
