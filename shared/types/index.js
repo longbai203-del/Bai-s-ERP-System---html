@@ -5,6 +5,10 @@
  * @module types
  */
 
+// ============================================================
+// 核心实体类型定义
+// ============================================================
+
 /**
  * @typedef {Object} User
  * @property {string} id - 用户ID (UUID)
@@ -198,88 +202,10 @@
  * @property {string[]} [errors] - 错误列表
  */
 
-/**
- * @typedef {Object} PaginationParams
- * @property {number} page - 当前页码 (默认1)
- * @property {number} limit - 每页数量 (默认20)
- */
-
-/**
- * @typedef {Object} PaginationResult
- * @property {number} page - 当前页码
- * @property {number} limit - 每页数量
- * @property {number} total - 总记录数
- * @property {number} totalPages - 总页数
- */
-
 // ============================================================
-// 导出类型 (供 JSDoc 引用)
+// 类型别名/枚举常量
 // ============================================================
 
-/**
- * 角色类型
- * @typedef {'owner' | 'admin' | 'manager' | 'cashier' | 'employee'} UserRole
- */
-
-/**
- * 订单状态
- * @typedef {'pending' | 'processing' | 'completed' | 'cancelled'} OrderStatus
- */
-
-/**
- * 支付状态
- * @typedef {'unpaid' | 'paid' | 'partially'} PaymentStatus
- */
-
-/**
- * 客户等级
- * @typedef {'vip' | 'gold' | 'silver' | 'bronze'} CustomerLevel
- */
-
-/**
- * 用户状态
- * @typedef {'pending' | 'approved' | 'rejected' | 'suspended'} UserStatus
- */
-
-/**
- * 支付方式
- * @typedef {'cash' | 'mada' | 'visa' | 'mastercard' | 'apple_pay' | 'google_pay' | 'bank_transfer'} PaymentMethod
- */
-
-export default {
-    // 这里只是为了导出模块，实际类型通过 JSDoc 使用
-};
-// ============================================================
-// 导出模块（供 import 使用）
-// ============================================================
-
-/**
- * 创建类型定义对象，方便 IDE 识别
- * @param {T} value - 类型定义值
- * @returns {T}
- * @template T
- */
-export function createType(value) {
-    return value;
-}
-
-// 导出所有类型，供其他模块引用
-export const Types = {
-    User: null,
-    Customer: null,
-    Product: null,
-    Order: null,
-    OrderItem: null,
-    Employee: null,
-    InventoryItem: null,
-    VehicleRecord: null,
-    Attendance: null,
-    ApiResponse: null,
-    PaginationParams: null,
-    PaginationResult: null
-};
-
-// 导出常用类型别名
 export const UserRole = {
     OWNER: 'owner',
     ADMIN: 'admin',
@@ -316,4 +242,20 @@ export const PaymentMethod = {
     APPLE_PAY: 'apple_pay',
     GOOGLE_PAY: 'google_pay',
     BANK_TRANSFER: 'bank_transfer'
+};
+
+export const UserStatus = {
+    PENDING: 'pending',
+    APPROVED: 'approved',
+    REJECTED: 'rejected',
+    SUSPENDED: 'suspended'
+};
+
+export default {
+    UserRole,
+    OrderStatus,
+    PaymentStatus,
+    CustomerLevel,
+    PaymentMethod,
+    UserStatus
 };
