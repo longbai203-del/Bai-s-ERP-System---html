@@ -1,200 +1,59 @@
 /**
- * shared/lib/supabase.js - 服务端 Supabase 客户端
- * 使用 Service Role Key 获得完整数据库访问权限
- * 供 api/ 目录下的 Vercel Serverless Functions 使用
+ * @file supabase.js
+ * @description Supabase 客户端配置和工具函数
  */
+
 import { createClient } from '@supabase/supabase-js';
+import dotenv from 'dotenv';
 
-// 从环境变量读取配置
+// 加载环境变量
+dotenv.config();
+
 const supabaseUrl = process.env.SUPABASE_URL;
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.SUPABASE_ANON_KEY;
 
-if (!supabaseUrl || !supabaseServiceKey) {
+if (!supabaseUrl || !supabaseKey) {
     console.error('❌ [Supabase] 环境变量未设置: SUPABASE_URL 或 SUPABASE_SERVICE_ROLE_KEY');
+    console.error('   请检查 .env 文件是否存在并包含必要的配置');
 }
 
-// 创建服务端客户端（使用 Service Role Key）
-export const supabase = createClient(supabaseUrl, supabaseServiceKey, {
-    auth: {
-        autoRefreshToken: false,
-        persistSession: false
-    }
-});
+// 创建 Supabase 客户端
+export const supabase = createClient(supabaseUrl, supabaseKey);
 
-console.log('[Supabase] ✅ 服务端客户端已加载');
+// 导出配置信息（用于调试）
+export const supabaseConfig = {
+    url: supabaseUrl ? supabaseUrl.substring(0, 20) + '...' : '未设置',
+    key: supabaseKey ? '已设置' : '未设置'
+};
 
-// ============================================================
-// 用户相关函数
-// ============================================================
-
-/**
- * 从请求中获取用户信息（通过 JWT）
- */
-export async function getUserFromRequest(req) {
-    try {
-        const authHeader = req.headers.authorization;
-        if (!authHeader) return null;
-        
-        const token = authHeader.replace('Bearer ', '');
-        if (!token) return null;
-        
-        const { data: { user }, error } = await supabase.auth.getUser(token);
-        if (error) {
-            console.warn('[Supabase] 获取用户失败:', error.message);
-            return null;
-        }
-        return user;
-    } catch (error) {
-        console.error('[Supabase] 获取用户异常:', error);
-        return null;
-    }
-}
+console.log('✅ [Supabase] 客户端初始化完成');
+console.log('   URL: ' + supabaseConfig.url);
+console.log('   密钥: ' + supabaseConfig.key);
 
 /**
- * 根据用户ID获取用户信息（从 users 表）
+ * 查询数据
  */
-export async function getUserById(userId) {
-    try {
-        const { data, error } = await supabase
-            .from('users')
-            .select('*')
-            .eq('id', userId)
-            .single();
-        
-        if (error) throw error;
-        return data;
-    } catch (error) {
-        console.error('[Supabase] 获取用户失败:', error);
-        return null;
-    }
-}
-
-/**
- * 检查用户是否有指定权限
- */
-export async function checkPermission(userId, permissionCode) {
-    try {
-        // 先获取用户角色
-        const user = await getUserById(userId);
-        if (!user) return false;
-        
-        // Owner 和 Admin 拥有所有权限
-        if (user.role === 'owner' || user.role === 'admin') return true;
-        
-        // 查询用户权限
-        const { data, error } = await supabase
-            .from('user_permissions')
-            .select('permission_code')
-            .eq('user_id', userId)
-            .eq('permission_code', permissionCode);
-        
-        if (error) return false;
-        return data && data.length > 0;
-    } catch (error) {
-        console.error('[Supabase] 检查权限失败:', error);
-        return false;
-    }
-}
-
-/**
- * 检查用户是否有指定角色
- */
-export async function checkRole(userId, roleCode) {
-    try {
-        const user = await getUserById(userId);
-        if (!user) return false;
-        return user.role === roleCode;
-    } catch (error) {
-        console.error('[Supabase] 检查角色失败:', error);
-        return false;
-    }
-}
-
-/**
- * 获取用户的租户ID和门店ID
- */
-export async function getUserContext(userId) {
-    try {
-        const user = await getUserById(userId);
-        if (!user) return { tenantId: null, storeId: null };
-        return {
-            tenantId: user.tenant_id || null,
-            storeId: user.store_id || null
-        };
-    } catch (error) {
-        console.error('[Supabase] 获取用户上下文失败:', error);
-        return { tenantId: null, storeId: null };
-    }
-}
-
-// ============================================================
-// 分页工具
-// ============================================================
-
-/**
- * 生成分页查询参数
- */
-export function getPagination(page = 1, limit = 20) {
-    const start = (page - 1) * limit;
-    const end = start + limit - 1;
-    return { from: start, to: end };
-}
-
-// ============================================================
-// 安全查询包装器
-// ============================================================
-
-/**
- * 安全执行查询，统一错误处理
- */
-export async function safeQuery(queryFn) {
-    try {
-        const result = await queryFn();
-        if (result.error) {
-            console.error('[Supabase] 查询错误:', result.error);
-            return { success: false, error: result.error.message, data: null };
-        }
-        return { success: true, data: result.data, error: null };
-    } catch (error) {
-        console.error('[Supabase] 查询异常:', error);
-        return { success: false, error: error.message, data: null };
-    }
-}
-
-// ============================================================
-// 通用 CRUD 操作（可选，直接使用 supabase 对象也可以）
-// ============================================================
-
-/**
- * 查询数据（带过滤、排序、分页）
- */
-export async function queryTable(table, options = {}) {
+export async function queryRows(table, filters = {}, options = {}) {
     try {
         let query = supabase.from(table).select(options.select || '*');
-
-        if (options.filter) {
-            Object.keys(options.filter).forEach(key => {
-                query = query.eq(key, options.filter[key]);
-            });
-        }
-        if (options.order) {
-            query = query.order(options.order.by, {
-                ascending: options.order.ascending || false
-            });
-        }
-        if (options.limit) {
-            query = query.limit(options.limit);
-        }
-        if (options.page) {
-            const { from, to } = getPagination(options.page, options.limit || 20);
-            query = query.range(from, to);
-        }
-
+        
+        // 应用过滤条件
+        Object.entries(filters).forEach(([key, value]) => {
+            if (value !== undefined && value !== null) {
+                query = query.eq(key, value);
+            }
+        });
+        
+        // 分页
+        if (options.limit) query = query.limit(options.limit);
+        if (options.offset) query = query.range(options.offset, options.offset + options.limit - 1);
+        if (options.orderBy) query = query.order(options.orderBy, { ascending: options.ascending !== false });
+        
         const result = await query;
         if (result.error) throw result.error;
-        return { success: true, data: result.data, error: null };
+        return { success: true, data: result.data, error: null, count: result.count };
     } catch (error) {
-        console.error('[Supabase] queryTable 错误:', error);
+        console.error('[Supabase] queryRows 错误:', error);
         return { success: false, data: null, error: error.message };
     }
 }
@@ -238,5 +97,87 @@ export async function deleteRow(table, id) {
     } catch (error) {
         console.error('[Supabase] deleteRow 错误:', error);
         return { success: false, error: error.message };
+    }
+}
+
+/**
+ * 测试连接
+ */
+export async function testSupabaseConnection() {
+    try {
+        const { data, error } = await supabase.from('_test').select('*').limit(1);
+        if (error) {
+            console.warn('⚠️ [Supabase] 连接测试失败:', error.message);
+            return false;
+        }
+        console.log('✅ [Supabase] 连接测试成功');
+        return true;
+    } catch (err) {
+        console.warn('⚠️ [Supabase] 连接测试异常:', err.message);
+        return false;
+    }
+}
+
+export default supabase;
+/**
+ * 从请求中获取用户信息
+ */
+export async function getUserFromRequest(req) {
+    try {
+        // 从 Authorization header 获取 token
+        const authHeader = req.headers.authorization;
+        if (!authHeader || !authHeader.startsWith('Bearer ')) {
+            return { user: null, error: '未提供认证令牌' };
+        }
+        
+        const token = authHeader.split(' ')[1];
+        const { data: { user }, error } = await supabase.auth.getUser(token);
+        
+        if (error) {
+            return { user: null, error: error.message };
+        }
+        
+        return { user, error: null };
+    } catch (error) {
+        console.error('[Supabase] getUserFromRequest 错误:', error);
+        return { user: null, error: error.message };
+    }
+}
+
+/**
+ * 获取用户会话
+ */
+export async function getSession(token) {
+    try {
+        const { data: { session }, error } = await supabase.auth.getSession(token);
+        if (error) throw error;
+        return { session, error: null };
+    } catch (error) {
+        console.error('[Supabase] getSession 错误:', error);
+        return { session: null, error: error.message };
+    }
+}
+
+/**
+ * 验证用户权限
+ */
+export async function verifyUserPermission(userId, permission) {
+    try {
+        // 这里可以根据需要实现权限验证逻辑
+        const { data, error } = await supabase
+            .from('user_permissions')
+            .select('*')
+            .eq('user_id', userId)
+            .eq('permission', permission)
+            .single();
+            
+        if (error) {
+            return { hasPermission: false, error: error.message };
+        }
+        
+        return { hasPermission: !!data, error: null };
+    } catch (error) {
+        console.error('[Supabase] verifyUserPermission 错误:', error);
+        return { hasPermission: false, error: error.message };
     }
 }
