@@ -11,7 +11,7 @@
  * @version 1.0.0
  */
 
-import { apiClient } from '../../../js/core/api-client.js';
+import { apiClient } from '../../../js/services/api-client.js';
 import { store } from '../../../js/core/store.js';
 import { showToast } from '../../../js/core/init.js';
 import { formatNumber, formatDate, getRelativeTime } from '../../../js/core/helpers.js';

@@ -19,8 +19,8 @@
  */
 
 import { store } from './store.js';
-import { apiClient } from './api/api-client.js';
-import { loadModule } from './services.js';
+import { apiClient } from '../../api/api-client.js';
+import { loadModule } from '../services/services.js';
 
 /**
  * @typedef {Object} RouteConfig

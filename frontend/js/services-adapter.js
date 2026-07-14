@@ -8,7 +8,7 @@ import {
     getOrderService,
     getCustomerService,
     getDashboardService
-} from './services/supabase.js';
+} from './core/supabase.js';
 
 // ============================================================
 // 适配器 - 将 Supabase 服务适配为统一接口

@@ -8,7 +8,7 @@
  */
 
 import { showToast, showLoading } from '../../js/core/init.js';
-import { apiClient } from '../../js/core/api-client.js';
+import { apiClient } from '../../js/services/api-client.js';
 import { formatNumber, formatDate, getRelativeTime } from '../../js/core/helpers.js';
 
 /**

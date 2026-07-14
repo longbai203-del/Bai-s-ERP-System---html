@@ -12,7 +12,7 @@ import {
     formatCurrency,
     formatDateTime,
     showToast
-} from '../../../js/services/supabase.js';
+} from '../../../js/core/supabase.js';
 
 // ============================================================
 // 2. 状态管理

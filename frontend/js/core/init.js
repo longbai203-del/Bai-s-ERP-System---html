@@ -9,7 +9,7 @@
 
 import { store } from './store.js';
 import { router } from './router.js';
-import { apiClient } from './api-client.js';
+import { apiClient } from '../services/api-client.js';
 
 /**
  * @typedef {Object} AppConfig
