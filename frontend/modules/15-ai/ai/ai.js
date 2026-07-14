@@ -1,5 +1,5 @@
 /**
- * modules/01-dashboard/ai/ai.js
+ * modules/15-ai/ai/ai.js
  * AI 智能助手 - 支持流式响应
  */
 
