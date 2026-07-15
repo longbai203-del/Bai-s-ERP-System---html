@@ -13,7 +13,8 @@ export default defineConfig({
             '@utils': path.resolve(__dirname, './src/utils'),
             '@modules': path.resolve(__dirname, './src/modules'),
             '@views': path.resolve(__dirname, './src/views'),
-            '@assets': path.resolve(__dirname, './src/assets')
+            '@assets': path.resolve(__dirname, './src/assets'),
+            '@compatibility': path.resolve(__dirname, './src/compatibility')
         }
     },
     server: {
@@ -22,17 +23,6 @@ export default defineConfig({
             '/api': {
                 target: 'http://localhost:3000',
                 changeOrigin: true
-            }
-        }
-    },
-    build: {
-        outDir: 'dist',
-        sourcemap: false,
-        rollupOptions: {
-            output: {
-                manualChunks: {
-                    vendor: ['vue', 'axios']
-                }
             }
         }
     }
