@@ -1,13 +1,23 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>仪表盘 - BAI ERP</title>
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background: #f7fafc; }
-        .app-container { display: flex; min-height: 100vh; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            background: #f7fafc;
+        }
+        .app-container {
+            display: flex;
+            min-height: 100vh;
+        }
         .sidebar {
             width: 260px;
             background: #1a202c;
@@ -27,12 +37,31 @@
             align-items: center;
             gap: 0.75rem;
         }
-        .sidebar-brand span { color: #4299e1; }
-        .sidebar-nav { padding: 1rem 0; overflow-y: auto; flex: 1; }
-        .sidebar-nav::-webkit-scrollbar { width: 4px; }
-        .sidebar-nav::-webkit-scrollbar-thumb { background: #4a5568; border-radius: 2px; }
-        .menu-list { list-style: none; }
-        .menu-item { margin-bottom: 0.25rem; }
+        .sidebar-brand span {
+            background: linear-gradient(135deg, #4299e1, #2b6cb0);
+            background-clip: text;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+        }
+        .sidebar-nav {
+            padding: 1rem 0;
+            overflow-y: auto;
+            flex: 1;
+        }
+        .sidebar-nav::-webkit-scrollbar {
+            width: 4px;
+        }
+        .sidebar-nav::-webkit-scrollbar-thumb {
+            background: #4a5568;
+            border-radius: 2px;
+        }
+        .menu-list {
+            list-style: none;
+        }
+        .menu-item {
+            margin-bottom: 0.25rem;
+        }
         .menu-link {
             display: flex;
             align-items: center;
@@ -43,19 +72,38 @@
             transition: all 0.2s;
             gap: 0.75rem;
         }
-        .menu-link:hover { background: #2d3748; color: white; }
-        .menu-link.active { background: #2b6cb0; color: white; }
-        .menu-icon { font-size: 1.1rem; width: 24px; }
-        .menu-label { flex: 1; font-size: 0.9rem; }
-        .menu-arrow { transition: transform 0.2s; font-size: 0.7rem; }
-        .menu-item.open .menu-arrow { transform: rotate(180deg); }
+        .menu-link:hover {
+            background: #2d3748;
+            color: white;
+        }
+        .menu-link.active {
+            background: #2b6cb0;
+            color: white;
+        }
+        .menu-icon {
+            font-size: 1.1rem;
+            width: 24px;
+        }
+        .menu-label {
+            flex: 1;
+            font-size: 0.9rem;
+        }
+        .menu-arrow {
+            transition: transform 0.2s;
+            font-size: 0.7rem;
+        }
+        .menu-item.open .menu-arrow {
+            transform: rotate(180deg);
+        }
         .sub-menu {
             list-style: none;
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.3s ease;
         }
-        .menu-item.open .sub-menu { max-height: 500px; }
+        .menu-item.open .sub-menu {
+            max-height: 500px;
+        }
         .sub-menu-link {
             display: block;
             padding: 0.4rem 1.5rem 0.4rem 3.5rem;
@@ -65,10 +113,19 @@
             cursor: pointer;
             transition: all 0.2s;
         }
-        .sub-menu-link:hover { color: white; background: #2d3748; }
-        .sub-menu-link.active { color: #63b3ed; }
+        .sub-menu-link:hover {
+            color: white;
+            background: #2d3748;
+        }
+        .sub-menu-link.active {
+            color: #63b3ed;
+        }
 
-        .main-content { flex: 1; display: flex; flex-direction: column; }
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
         .topbar {
             background: white;
             padding: 0.75rem 1.5rem;
@@ -78,7 +135,11 @@
             border-bottom: 1px solid #e2e8f0;
             flex-shrink: 0;
         }
-        .topbar-left { display: flex; align-items: center; gap: 1rem; }
+        .topbar-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
         .topbar-btn {
             background: none;
             border: none;
@@ -87,11 +148,29 @@
             color: #4a5568;
             padding: 0.25rem 0.5rem;
         }
-        .topbar-btn:hover { color: #1a202c; }
-        .topbar-right { display: flex; align-items: center; gap: 1rem; }
-        .user-name { font-size: 0.9rem; color: #4a5568; }
-        .logout-btn { color: #e53e3e; font-size: 0.85rem; }
-        .logout-btn:hover { color: #c53030; }
+        .topbar-btn:hover {
+            color: #1a202c;
+        }
+        .topbar-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        .user-name {
+            font-size: 0.9rem;
+            color: #4a5568;
+        }
+        .logout-btn {
+            color: #e53e3e;
+            font-size: 0.85rem;
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 0.25rem 0.5rem;
+        }
+        .logout-btn:hover {
+            color: #c53030;
+        }
 
         .page-content {
             flex: 1;
@@ -99,17 +178,95 @@
             overflow-y: auto;
         }
 
-        .sidebar-collapsed .sidebar { width: 60px; }
+        .sidebar-collapsed .sidebar {
+            width: 60px;
+        }
         .sidebar-collapsed .sidebar-brand span,
         .sidebar-collapsed .menu-label,
         .sidebar-collapsed .menu-arrow,
-        .sidebar-collapsed .sub-menu { display: none; }
-        .sidebar-collapsed .menu-link { justify-content: center; padding: 0.6rem 0; }
+        .sidebar-collapsed .sub-menu {
+            display: none;
+        }
+        .sidebar-collapsed .menu-link {
+            justify-content: center;
+            padding: 0.6rem 0;
+        }
 
         @media (max-width: 768px) {
-            .sidebar { width: 60px; }
-            .sidebar-brand span, .menu-label, .menu-arrow, .sub-menu { display: none; }
-            .menu-link { justify-content: center; padding: 0.6rem 0; }
+            .sidebar {
+                width: 60px;
+            }
+            .sidebar-brand span,
+            .menu-label,
+            .menu-arrow,
+            .sub-menu {
+                display: none;
+            }
+            .menu-link {
+                justify-content: center;
+                padding: 0.6rem 0;
+            }
+        }
+
+        .welcome-banner {
+            background: linear-gradient(135deg, #4299e1, #2b6cb0);
+            border-radius: 12px;
+            padding: 2rem;
+            color: white;
+            margin-bottom: 1.5rem;
+        }
+        .welcome-banner h1 {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .welcome-banner p {
+            opacity: 0.9;
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        .stat-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 12px;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+        .stat-card .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #2d3748;
+        }
+        .stat-card .stat-label {
+            color: #718096;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+
+        .loading-spinner {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 60vh;
+            color: #a0aec0;
+            font-size: 1.1rem;
+        }
+        .loading-spinner::after {
+            content: '';
+            width: 30px;
+            height: 30px;
+            border: 3px solid #e2e8f0;
+            border-top-color: #4299e1;
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-left: 1rem;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
         }
     </style>
 </head>
@@ -132,9 +289,7 @@
                 </div>
             </header>
             <section id="pageContent" class="page-content">
-                <div style="display:flex;justify-content:center;align-items:center;height:60vh;color:#a0aec0;font-size:1.1rem;">
-                    加载中...
-                </div>
+                <div class="loading-spinner">加载中...</div>
             </section>
         </main>
     </div>
@@ -146,289 +301,225 @@
             }
         }
     </script>
+
     <script type="module">
         import { createClient } from '@supabase/supabase-js';
 
-        // Supabase 配置（请替换为您的实际配置）
-        const SUPABASE_URL = 'https://your-project.supabase.co';
-        const SUPABASE_ANON_KEY = 'your-anon-key';
+        // ============================================================
+        // Supabase 配置
+        // ============================================================
+        const SUPABASE_URL = 'https://sthrubrefavbomjlobew.supabase.co';
+        const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN0aHJ1YnJlZmF2Ym9tamxvYmV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQxMzM4MzksImV4cCI6MjA5OTcwOTgzOX0.LtBBe_QWq_5WXwVw7ELIQJuy9M7fzHd-R6VTMVkXqyg';
+
         const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-        // ====== 菜单配置 ======
+        // ============================================================
+        // 菜单配置
+        // ============================================================
         const MENU = [
-            { id: 'dashboard', label: '仪表盘', icon: '📊', path: '/dashboard', children: [
-                { label: '总览', path: '/dashboard' },
-                { label: '执行看板', path: '/dashboard/executive' },
-                { label: '财务看板', path: '/dashboard/finance' },
-                { label: '库存看板', path: '/dashboard/inventory' }
-            ]},
-            { id: 'pos', label: 'POS 收银', icon: '🛒', path: '/pos', children: [
-                { label: '触屏收银', path: '/pos' },
-                { label: '收银台', path: '/pos/register' },
-                { label: '快速销售', path: '/pos/quick-sale' },
-                { label: '退换货', path: '/pos/returns' }
-            ]},
-            { id: 'orders', label: '订单管理', icon: '📋', path: '/orders', children: [
-                { label: '订单列表', path: '/orders' },
-                { label: '订单详情', path: '/orders/detail' },
-                { label: '退款管理', path: '/orders/refunds' }
-            ]},
-            { id: 'products', label: '商品管理', icon: '📦', path: '/products', children: [
-                { label: '商品列表', path: '/products' },
-                { label: '分类管理', path: '/products/categories' },
-                { label: '品牌管理', path: '/products/brands' }
-            ]},
-            { id: 'customers', label: '客户管理', icon: '👥', path: '/customers', children: [
-                { label: '客户列表', path: '/customers' },
-                { label: '会员管理', path: '/customers/membership' },
-                { label: '车辆管理', path: '/customers/vehicles' }
-            ]},
-            { id: 'marketing', label: '营销中心', icon: '📣', path: '/marketing', children: [
-                { label: '促销活动', path: '/marketing' },
-                { label: '营销活动', path: '/marketing/campaigns' },
-                { label: '忠诚度计划', path: '/marketing/loyalty' }
-            ]},
-            { id: 'inventory', label: '库存管理', icon: '🏪', path: '/inventory', children: [
-                { label: '库存查询', path: '/inventory' },
-                { label: '仓库管理', path: '/inventory/warehouses' },
-                { label: '库存调整', path: '/inventory/adjustments' }
-            ]},
-            { id: 'purchase', label: '采购管理', icon: '📥', path: '/purchase', children: [
-                { label: '采购订单', path: '/purchase' },
-                { label: '供应商管理', path: '/purchase/suppliers' },
-                { label: '采购入库', path: '/purchase/receiving' }
-            ]},
-            { id: 'finance', label: '财务管理', icon: '💰', path: '/finance', children: [
-                { label: '资产负债表', path: '/finance' },
-                { label: '收支管理', path: '/finance/payments' },
-                { label: '发票管理', path: '/finance/invoices' }
-            ]},
-            { id: 'hr', label: '人力资源管理', icon: '👔', path: '/hr', children: [
-                { label: '员工管理', path: '/hr' },
-                { label: '考勤管理', path: '/hr/attendance' },
-                { label: '薪资管理', path: '/hr/payroll' }
-            ]},
-            { id: 'saas', label: 'SaaS 管理', icon: '☁️', path: '/saas', children: [
-                { label: '订阅管理', path: '/saas' },
-                { label: '租户管理', path: '/saas/tenants' },
-                { label: '套餐管理', path: '/saas/plans' }
-            ]},
-            { id: 'system', label: '系统管理', icon: '⚙️', path: '/system', children: [
-                { label: '系统设置', path: '/system' },
-                { label: '权限管理', path: '/system/permissions' },
-                { label: '审计日志', path: '/system/audit-logs' }
-            ]},
-            { id: 'analytics', label: '数据分析', icon: '📈', path: '/analytics', children: [
-                { label: '报表中心', path: '/analytics' },
-                { label: '业务健康', path: '/analytics/business-health' },
-                { label: '预测分析', path: '/analytics/forecast' }
-            ]},
-            { id: 'settings', label: '个人设置', icon: '🔧', path: '/settings', children: [
-                { label: '个人资料', path: '/settings' },
-                { label: '公司信息', path: '/settings/company' },
-                { label: '偏好设置', path: '/settings/preferences' }
-            ]},
-            { id: 'ai', label: 'AI 智能中心', icon: '🤖', path: '/ai', children: [
-                { label: 'AI 助手', path: '/ai' },
-                { label: 'CRM 智能', path: '/ai/crm' }
-            ]}
+            { id: 'dashboard', label: '仪表盘', icon: '📊', path: '/dashboard' },
+            { id: 'pos', label: 'POS 收银', icon: '🛒', path: '/pos' },
+            { id: 'orders', label: '订单管理', icon: '📋', path: '/orders' },
+            { id: 'products', label: '商品管理', icon: '📦', path: '/products' },
+            { id: 'customers', label: '客户管理', icon: '👥', path: '/customers' },
+            { id: 'marketing', label: '营销中心', icon: '📣', path: '/marketing' },
+            { id: 'inventory', label: '库存管理', icon: '🏪', path: '/inventory' },
+            { id: 'purchase', label: '采购管理', icon: '📥', path: '/purchase' },
+            { id: 'finance', label: '财务管理', icon: '💰', path: '/finance' },
+            { id: 'hr', label: '人力资源管理', icon: '👔', path: '/hr' },
+            { id: 'saas', label: 'SaaS 管理', icon: '☁️', path: '/saas' },
+            { id: 'system', label: '系统管理', icon: '⚙️', path: '/system' },
+            { id: 'analytics', label: '数据分析', icon: '📈', path: '/analytics' },
+            { id: 'settings', label: '个人设置', icon: '🔧', path: '/settings' },
+            { id: 'ai', label: 'AI 智能中心', icon: '🤖', path: '/ai' }
         ];
 
-        // ====== 路由表 ======
-        const ROUTES = {
-            '/': '01-dashboard/dashboard',
-            '/dashboard': '01-dashboard/dashboard',
-            '/dashboard/executive': '01-dashboard/executive',
-            '/dashboard/finance': '01-dashboard/finance',
-            '/dashboard/inventory': '01-dashboard/inventory',
-            '/pos': '02-pos/touch-pos',
-            '/pos/register': '02-pos/cash-register',
-            '/pos/quick-sale': '02-pos/quick-sale',
-            '/pos/returns': '02-pos/returns',
-            '/orders': '03-orders/list',
-            '/orders/detail': '03-orders/detail',
-            '/orders/refunds': '03-orders/refunds',
-            '/products': '04-products/products',
-            '/products/categories': '04-products/categories',
-            '/products/brands': '04-products/brands',
-            '/customers': '05-customers/customers',
-            '/customers/membership': '05-customers/membership',
-            '/customers/vehicles': '05-customers/vehicles',
-            '/marketing': '06-marketing/promotions',
-            '/marketing/campaigns': '06-marketing/campaigns',
-            '/marketing/loyalty': '06-marketing/loyalty',
-            '/inventory': '07-inventory/stock',
-            '/inventory/warehouses': '07-inventory/warehouses',
-            '/inventory/adjustments': '07-inventory/adjustments',
-            '/purchase': '08-purchase/orders',
-            '/purchase/suppliers': '08-purchase/suppliers',
-            '/purchase/receiving': '08-purchase/receiving',
-            '/finance': '09-finance/balance-sheet',
-            '/finance/payments': '09-finance/payments',
-            '/finance/invoices': '09-finance/invoices',
-            '/hr': '10-hr/employees',
-            '/hr/attendance': '10-hr/attendance',
-            '/hr/payroll': '10-hr/payroll',
-            '/saas': '11-saas/subscriptions',
-            '/saas/tenants': '11-saas/tenants',
-            '/saas/plans': '11-saas/plans',
-            '/system': '12-system/settings',
-            '/system/permissions': '12-system/permissions',
-            '/system/audit-logs': '12-system/audit-logs',
-            '/analytics': '13-analytics/reports',
-            '/analytics/business-health': '13-analytics/business-health',
-            '/analytics/forecast': '13-analytics/forecast',
-            '/settings': '14-settings/profile',
-            '/settings/company': '14-settings/company',
-            '/settings/preferences': '14-settings/preferences',
-            '/ai': '15-ai/ai',
-            '/ai/crm': '15-ai/crm'
-        };
+        // ============================================================
+        // DOM 引用
+        // ============================================================
+        const container = document.getElementById('pageContent');
+        const pageTitle = document.getElementById('pageTitle');
 
-        const DEFAULT_MODULE = '01-dashboard/dashboard';
+        // ============================================================
+        // 检查登录状态
+        // ============================================================
+        async function checkAuth() {
+            try {
+                const { data, error } = await supabase.auth.getSession();
 
-        // ====== 侧边栏 ======
-        function loadSidebar() {
+                if (error || !data?.session) {
+                    const localUser = localStorage.getItem('sb-user');
+                    if (!localUser) {
+                        window.location.href = '/login.html';
+                        return null;
+                    }
+                    try {
+                        const parsed = JSON.parse(localUser);
+                        if (!parsed?.access_token) {
+                            window.location.href = '/login.html';
+                            return null;
+                        }
+                        return parsed;
+                    } catch (e) {
+                        window.location.href = '/login.html';
+                        return null;
+                    }
+                }
+
+                return data.session.user;
+            } catch (err) {
+                console.error('认证检查失败:', err);
+                window.location.href = '/login.html';
+                return null;
+            }
+        }
+
+        // ============================================================
+        // 渲染侧边栏
+        // ============================================================
+        function renderSidebar() {
             const nav = document.getElementById('sidebar-nav');
             let html = '<ul class="menu-list">';
             for (const item of MENU) {
-                const hasChildren = item.children?.length > 0;
                 html += `<li class="menu-item">`;
                 html += `<a class="menu-link" data-path="${item.path}">`;
                 html += `<span class="menu-icon">${item.icon}</span>`;
                 html += `<span class="menu-label">${item.label}</span>`;
-                if (hasChildren) html += `<span class="menu-arrow">▾</span>`;
                 html += `</a>`;
-                if (hasChildren) {
-                    html += `<ul class="sub-menu">`;
-                    for (const child of item.children) {
-                        html += `<li><a class="sub-menu-link" data-path="${child.path}">${child.label}</a></li>`;
-                    }
-                    html += `</ul>`;
-                }
                 html += `</li>`;
             }
             html += '</ul>';
             nav.innerHTML = html;
 
-            // 事件绑定
-            nav.querySelectorAll('[data-path]').forEach(link => {
+            nav.querySelectorAll('.menu-link').forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
                     const path = link.dataset.path;
-                    window.location.hash = path;
-                    navigateTo(path);
-                    if (window.innerWidth < 768) {
-                        document.getElementById('app').classList.add('sidebar-collapsed');
-                    }
+                    loadModule(path);
+                    document.querySelectorAll('.menu-link').forEach(el => el.classList.remove('active'));
+                    link.classList.add('active');
                 });
-            });
-
-            // 展开/折叠
-            nav.querySelectorAll('.menu-item > .menu-link').forEach(link => {
-                link.addEventListener('click', (e) => {
-                    const parent = link.closest('.menu-item');
-                    if (parent.querySelector('.sub-menu')) {
-                        e.preventDefault();
-                        parent.classList.toggle('open');
-                    }
-                });
-            });
-
-            // 高亮当前
-            const currentPath = window.location.hash.slice(1) || '/';
-            highlightMenu(currentPath);
-        }
-
-        function highlightMenu(path) {
-            document.querySelectorAll('.menu-link, .sub-menu-link').forEach(el => {
-                el.classList.remove('active');
-                if (el.dataset.path === path) {
-                    el.classList.add('active');
-                    const parent = el.closest('.menu-item');
-                    if (parent) parent.classList.add('open');
-                }
             });
         }
 
-        // ====== 路由导航 ======
-        async function navigateTo(path) {
-            const container = document.getElementById('pageContent');
-            const modulePath = ROUTES[path] || DEFAULT_MODULE;
+        // ============================================================
+        // 加载模块
+        // ============================================================
+        async function loadModule(path) {
+            const moduleName = path.replace('/', '') || 'dashboard';
+            pageTitle.textContent = moduleName.charAt(0).toUpperCase() + moduleName.slice(1);
+
+            // 显示加载状态
+            container.innerHTML = `<div class="loading-spinner">加载 ${moduleName} 模块...</div>`;
 
             try {
+                // 尝试加载模块页面
+                const modulePath = path === '/dashboard' ? '01-dashboard/dashboard' : `modules${path}`;
                 const response = await fetch(`/modules/${modulePath}/index.html`);
-                if (!response.ok) throw new Error('模块不存在');
+
+                if (!response.ok) {
+                    // 如果模块不存在，显示欢迎页
+                    showWelcomePage();
+                    return;
+                }
+
                 const html = await response.text();
                 container.innerHTML = html;
 
-                // 更新标题
-                const titleEl = document.getElementById('pageTitle');
-                const parts = modulePath.split('/');
-                const moduleName = parts[0]?.replace(/^\d+-/, '') || '模块';
-                const subName = parts[1] || '首页';
-                titleEl.textContent = `${moduleName} · ${subName}`;
-
-                // 尝试加载 JS
+                // 尝试加载对应的 JS
                 try {
                     const jsModule = await import(`/modules/${modulePath}/index.js`);
-                    if (jsModule.onLoad) jsModule.onLoad(container);
-                } catch (e) { /* 忽略 */ }
+                    if (jsModule.onLoad) {
+                        jsModule.onLoad(container);
+                    }
+                } catch (e) {
+                    // 没有 JS 文件，忽略
+                }
 
             } catch (error) {
-                container.innerHTML = `
-                    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:60vh;">
-                        <h2 style="color:#e53e3e;">加载失败</h2>
-                        <p style="color:#718096;">模块 ${modulePath} 不存在</p>
-                        <a href="#" onclick="navigateTo('/dashboard')" style="color:#4299e1;text-decoration:none;margin-top:1rem;">← 返回仪表盘</a>
-                    </div>
-                `;
+                console.warn('模块加载失败，显示欢迎页:', error);
+                showWelcomePage();
             }
-            highlightMenu(path);
         }
 
-        // ====== 初始化 ======
-        async function initApp() {
-            // 检查登录状态
-            const session = await supabase.auth.getSession();
-            if (!session.data.session) {
+        // ============================================================
+        // 显示欢迎页
+        // ============================================================
+        function showWelcomePage() {
+            const user = document.getElementById('userDisplay').textContent || '管理员';
+            container.innerHTML = `
+                <div class="welcome-banner">
+                    <h1>👋 欢迎回来，${user}！</h1>
+                    <p>BAI ERP 智能企业管理系统 v1.0.0</p>
+                </div>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number">0</div>
+                        <div class="stat-label">今日订单</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">0</div>
+                        <div class="stat-label">待处理任务</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">0</div>
+                        <div class="stat-label">库存预警</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number">0</div>
+                        <div class="stat-label">本月营收</div>
+                    </div>
+                </div>
+                <div style="background:white;padding:2rem;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
+                    <h3 style="margin-bottom:1rem;color:#2d3748;">📌 快速开始</h3>
+                    <p style="color:#718096;">选择左侧菜单进入各个功能模块。系统已连接 Supabase 数据库，请创建数据库表以启用完整功能。</p>
+                </div>
+            `;
+        }
+
+        // ============================================================
+        // 退出登录
+        // ============================================================
+        async function logout() {
+            try {
+                await supabase.auth.signOut();
+                localStorage.removeItem('sb-user');
+                sessionStorage.removeItem('sb-user');
                 window.location.href = '/login.html';
-                return;
+            } catch (err) {
+                console.error('退出失败:', err);
+                localStorage.removeItem('sb-user');
+                window.location.href = '/login.html';
             }
+        }
 
-            // 显示用户
-            const user = session.data.session.user;
-            document.getElementById('userDisplay').textContent = user.email || '用户';
+        // ============================================================
+        // 初始化
+        // ============================================================
+        async function init() {
+            const user = await checkAuth();
+            if (!user) return;
 
-            // 加载侧边栏
-            loadSidebar();
+            const displayName = user.email || user.user_metadata?.full_name || '管理员';
+            document.getElementById('userDisplay').textContent = displayName;
 
-            // 路由
-            window.navigateTo = navigateTo;
-            window.addEventListener('hashchange', () => {
-                const path = window.location.hash.slice(1) || '/';
-                navigateTo(path);
-            });
-
-            // 初始导航
-            const initialPath = window.location.hash.slice(1) || '/dashboard';
-            navigateTo(initialPath);
+            renderSidebar();
+            loadModule('/dashboard');
 
             // 侧边栏切换
             document.getElementById('toggleSidebar').addEventListener('click', () => {
                 document.getElementById('app').classList.toggle('sidebar-collapsed');
             });
 
-            // 登出
-            document.getElementById('logoutBtn').addEventListener('click', async () => {
-                await supabase.auth.signOut();
-                localStorage.removeItem('sb-user');
-                window.location.href = '/login.html';
-            });
+            // 退出登录
+            document.getElementById('logoutBtn').addEventListener('click', logout);
+
+            console.log('%c🚗 BAI ERP 仪表盘已加载', 'font-size:16px;font-weight:bold;color:#4299e1;');
+            console.log('%c👤 当前用户:', displayName);
+            console.log('%c📊 系统已连接 Supabase 数据库', 'color:#38a169;');
         }
 
-        // 启动
-        initApp();
+        init();
     </script>
 </body>
 </html>
