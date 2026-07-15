@@ -1,0 +1,434 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>仪表盘 - BAI ERP</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif; background: #f7fafc; }
+        .app-container { display: flex; min-height: 100vh; }
+        .sidebar {
+            width: 260px;
+            background: #1a202c;
+            color: #a0aec0;
+            flex-shrink: 0;
+            transition: width 0.3s;
+            display: flex;
+            flex-direction: column;
+        }
+        .sidebar-brand {
+            padding: 1.25rem 1.5rem;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: white;
+            border-bottom: 1px solid #2d3748;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+        .sidebar-brand span { color: #4299e1; }
+        .sidebar-nav { padding: 1rem 0; overflow-y: auto; flex: 1; }
+        .sidebar-nav::-webkit-scrollbar { width: 4px; }
+        .sidebar-nav::-webkit-scrollbar-thumb { background: #4a5568; border-radius: 2px; }
+        .menu-list { list-style: none; }
+        .menu-item { margin-bottom: 0.25rem; }
+        .menu-link {
+            display: flex;
+            align-items: center;
+            padding: 0.6rem 1.5rem;
+            color: #a0aec0;
+            text-decoration: none;
+            cursor: pointer;
+            transition: all 0.2s;
+            gap: 0.75rem;
+        }
+        .menu-link:hover { background: #2d3748; color: white; }
+        .menu-link.active { background: #2b6cb0; color: white; }
+        .menu-icon { font-size: 1.1rem; width: 24px; }
+        .menu-label { flex: 1; font-size: 0.9rem; }
+        .menu-arrow { transition: transform 0.2s; font-size: 0.7rem; }
+        .menu-item.open .menu-arrow { transform: rotate(180deg); }
+        .sub-menu {
+            list-style: none;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease;
+        }
+        .menu-item.open .sub-menu { max-height: 500px; }
+        .sub-menu-link {
+            display: block;
+            padding: 0.4rem 1.5rem 0.4rem 3.5rem;
+            color: #a0aec0;
+            text-decoration: none;
+            font-size: 0.85rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .sub-menu-link:hover { color: white; background: #2d3748; }
+        .sub-menu-link.active { color: #63b3ed; }
+
+        .main-content { flex: 1; display: flex; flex-direction: column; }
+        .topbar {
+            background: white;
+            padding: 0.75rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid #e2e8f0;
+            flex-shrink: 0;
+        }
+        .topbar-left { display: flex; align-items: center; gap: 1rem; }
+        .topbar-btn {
+            background: none;
+            border: none;
+            font-size: 1.25rem;
+            cursor: pointer;
+            color: #4a5568;
+            padding: 0.25rem 0.5rem;
+        }
+        .topbar-btn:hover { color: #1a202c; }
+        .topbar-right { display: flex; align-items: center; gap: 1rem; }
+        .user-name { font-size: 0.9rem; color: #4a5568; }
+        .logout-btn { color: #e53e3e; font-size: 0.85rem; }
+        .logout-btn:hover { color: #c53030; }
+
+        .page-content {
+            flex: 1;
+            padding: 1.5rem;
+            overflow-y: auto;
+        }
+
+        .sidebar-collapsed .sidebar { width: 60px; }
+        .sidebar-collapsed .sidebar-brand span,
+        .sidebar-collapsed .menu-label,
+        .sidebar-collapsed .menu-arrow,
+        .sidebar-collapsed .sub-menu { display: none; }
+        .sidebar-collapsed .menu-link { justify-content: center; padding: 0.6rem 0; }
+
+        @media (max-width: 768px) {
+            .sidebar { width: 60px; }
+            .sidebar-brand span, .menu-label, .menu-arrow, .sub-menu { display: none; }
+            .menu-link { justify-content: center; padding: 0.6rem 0; }
+        }
+    </style>
+</head>
+<body>
+    <div id="app" class="app-container">
+        <aside id="sidebar" class="sidebar">
+            <div class="sidebar-brand">🚗 <span>BAI</span></div>
+            <nav id="sidebar-nav" class="sidebar-nav"></nav>
+        </aside>
+
+        <main class="main-content">
+            <header class="topbar">
+                <div class="topbar-left">
+                    <button id="toggleSidebar" class="topbar-btn">☰</button>
+                    <h2 id="pageTitle" style="font-size:1.1rem;color:#2d3748;">仪表盘</h2>
+                </div>
+                <div class="topbar-right">
+                    <span id="userDisplay" class="user-name"></span>
+                    <button id="logoutBtn" class="topbar-btn logout-btn">退出</button>
+                </div>
+            </header>
+            <section id="pageContent" class="page-content">
+                <div style="display:flex;justify-content:center;align-items:center;height:60vh;color:#a0aec0;font-size:1.1rem;">
+                    加载中...
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <script type="importmap">
+        {
+            "imports": {
+                "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2"
+            }
+        }
+    </script>
+    <script type="module">
+        import { createClient } from '@supabase/supabase-js';
+
+        // Supabase 配置（请替换为您的实际配置）
+        const SUPABASE_URL = 'https://your-project.supabase.co';
+        const SUPABASE_ANON_KEY = 'your-anon-key';
+        const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+        // ====== 菜单配置 ======
+        const MENU = [
+            { id: 'dashboard', label: '仪表盘', icon: '📊', path: '/dashboard', children: [
+                { label: '总览', path: '/dashboard' },
+                { label: '执行看板', path: '/dashboard/executive' },
+                { label: '财务看板', path: '/dashboard/finance' },
+                { label: '库存看板', path: '/dashboard/inventory' }
+            ]},
+            { id: 'pos', label: 'POS 收银', icon: '🛒', path: '/pos', children: [
+                { label: '触屏收银', path: '/pos' },
+                { label: '收银台', path: '/pos/register' },
+                { label: '快速销售', path: '/pos/quick-sale' },
+                { label: '退换货', path: '/pos/returns' }
+            ]},
+            { id: 'orders', label: '订单管理', icon: '📋', path: '/orders', children: [
+                { label: '订单列表', path: '/orders' },
+                { label: '订单详情', path: '/orders/detail' },
+                { label: '退款管理', path: '/orders/refunds' }
+            ]},
+            { id: 'products', label: '商品管理', icon: '📦', path: '/products', children: [
+                { label: '商品列表', path: '/products' },
+                { label: '分类管理', path: '/products/categories' },
+                { label: '品牌管理', path: '/products/brands' }
+            ]},
+            { id: 'customers', label: '客户管理', icon: '👥', path: '/customers', children: [
+                { label: '客户列表', path: '/customers' },
+                { label: '会员管理', path: '/customers/membership' },
+                { label: '车辆管理', path: '/customers/vehicles' }
+            ]},
+            { id: 'marketing', label: '营销中心', icon: '📣', path: '/marketing', children: [
+                { label: '促销活动', path: '/marketing' },
+                { label: '营销活动', path: '/marketing/campaigns' },
+                { label: '忠诚度计划', path: '/marketing/loyalty' }
+            ]},
+            { id: 'inventory', label: '库存管理', icon: '🏪', path: '/inventory', children: [
+                { label: '库存查询', path: '/inventory' },
+                { label: '仓库管理', path: '/inventory/warehouses' },
+                { label: '库存调整', path: '/inventory/adjustments' }
+            ]},
+            { id: 'purchase', label: '采购管理', icon: '📥', path: '/purchase', children: [
+                { label: '采购订单', path: '/purchase' },
+                { label: '供应商管理', path: '/purchase/suppliers' },
+                { label: '采购入库', path: '/purchase/receiving' }
+            ]},
+            { id: 'finance', label: '财务管理', icon: '💰', path: '/finance', children: [
+                { label: '资产负债表', path: '/finance' },
+                { label: '收支管理', path: '/finance/payments' },
+                { label: '发票管理', path: '/finance/invoices' }
+            ]},
+            { id: 'hr', label: '人力资源管理', icon: '👔', path: '/hr', children: [
+                { label: '员工管理', path: '/hr' },
+                { label: '考勤管理', path: '/hr/attendance' },
+                { label: '薪资管理', path: '/hr/payroll' }
+            ]},
+            { id: 'saas', label: 'SaaS 管理', icon: '☁️', path: '/saas', children: [
+                { label: '订阅管理', path: '/saas' },
+                { label: '租户管理', path: '/saas/tenants' },
+                { label: '套餐管理', path: '/saas/plans' }
+            ]},
+            { id: 'system', label: '系统管理', icon: '⚙️', path: '/system', children: [
+                { label: '系统设置', path: '/system' },
+                { label: '权限管理', path: '/system/permissions' },
+                { label: '审计日志', path: '/system/audit-logs' }
+            ]},
+            { id: 'analytics', label: '数据分析', icon: '📈', path: '/analytics', children: [
+                { label: '报表中心', path: '/analytics' },
+                { label: '业务健康', path: '/analytics/business-health' },
+                { label: '预测分析', path: '/analytics/forecast' }
+            ]},
+            { id: 'settings', label: '个人设置', icon: '🔧', path: '/settings', children: [
+                { label: '个人资料', path: '/settings' },
+                { label: '公司信息', path: '/settings/company' },
+                { label: '偏好设置', path: '/settings/preferences' }
+            ]},
+            { id: 'ai', label: 'AI 智能中心', icon: '🤖', path: '/ai', children: [
+                { label: 'AI 助手', path: '/ai' },
+                { label: 'CRM 智能', path: '/ai/crm' }
+            ]}
+        ];
+
+        // ====== 路由表 ======
+        const ROUTES = {
+            '/': '01-dashboard/dashboard',
+            '/dashboard': '01-dashboard/dashboard',
+            '/dashboard/executive': '01-dashboard/executive',
+            '/dashboard/finance': '01-dashboard/finance',
+            '/dashboard/inventory': '01-dashboard/inventory',
+            '/pos': '02-pos/touch-pos',
+            '/pos/register': '02-pos/cash-register',
+            '/pos/quick-sale': '02-pos/quick-sale',
+            '/pos/returns': '02-pos/returns',
+            '/orders': '03-orders/list',
+            '/orders/detail': '03-orders/detail',
+            '/orders/refunds': '03-orders/refunds',
+            '/products': '04-products/products',
+            '/products/categories': '04-products/categories',
+            '/products/brands': '04-products/brands',
+            '/customers': '05-customers/customers',
+            '/customers/membership': '05-customers/membership',
+            '/customers/vehicles': '05-customers/vehicles',
+            '/marketing': '06-marketing/promotions',
+            '/marketing/campaigns': '06-marketing/campaigns',
+            '/marketing/loyalty': '06-marketing/loyalty',
+            '/inventory': '07-inventory/stock',
+            '/inventory/warehouses': '07-inventory/warehouses',
+            '/inventory/adjustments': '07-inventory/adjustments',
+            '/purchase': '08-purchase/orders',
+            '/purchase/suppliers': '08-purchase/suppliers',
+            '/purchase/receiving': '08-purchase/receiving',
+            '/finance': '09-finance/balance-sheet',
+            '/finance/payments': '09-finance/payments',
+            '/finance/invoices': '09-finance/invoices',
+            '/hr': '10-hr/employees',
+            '/hr/attendance': '10-hr/attendance',
+            '/hr/payroll': '10-hr/payroll',
+            '/saas': '11-saas/subscriptions',
+            '/saas/tenants': '11-saas/tenants',
+            '/saas/plans': '11-saas/plans',
+            '/system': '12-system/settings',
+            '/system/permissions': '12-system/permissions',
+            '/system/audit-logs': '12-system/audit-logs',
+            '/analytics': '13-analytics/reports',
+            '/analytics/business-health': '13-analytics/business-health',
+            '/analytics/forecast': '13-analytics/forecast',
+            '/settings': '14-settings/profile',
+            '/settings/company': '14-settings/company',
+            '/settings/preferences': '14-settings/preferences',
+            '/ai': '15-ai/ai',
+            '/ai/crm': '15-ai/crm'
+        };
+
+        const DEFAULT_MODULE = '01-dashboard/dashboard';
+
+        // ====== 侧边栏 ======
+        function loadSidebar() {
+            const nav = document.getElementById('sidebar-nav');
+            let html = '<ul class="menu-list">';
+            for (const item of MENU) {
+                const hasChildren = item.children?.length > 0;
+                html += `<li class="menu-item">`;
+                html += `<a class="menu-link" data-path="${item.path}">`;
+                html += `<span class="menu-icon">${item.icon}</span>`;
+                html += `<span class="menu-label">${item.label}</span>`;
+                if (hasChildren) html += `<span class="menu-arrow">▾</span>`;
+                html += `</a>`;
+                if (hasChildren) {
+                    html += `<ul class="sub-menu">`;
+                    for (const child of item.children) {
+                        html += `<li><a class="sub-menu-link" data-path="${child.path}">${child.label}</a></li>`;
+                    }
+                    html += `</ul>`;
+                }
+                html += `</li>`;
+            }
+            html += '</ul>';
+            nav.innerHTML = html;
+
+            // 事件绑定
+            nav.querySelectorAll('[data-path]').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    e.preventDefault();
+                    const path = link.dataset.path;
+                    window.location.hash = path;
+                    navigateTo(path);
+                    if (window.innerWidth < 768) {
+                        document.getElementById('app').classList.add('sidebar-collapsed');
+                    }
+                });
+            });
+
+            // 展开/折叠
+            nav.querySelectorAll('.menu-item > .menu-link').forEach(link => {
+                link.addEventListener('click', (e) => {
+                    const parent = link.closest('.menu-item');
+                    if (parent.querySelector('.sub-menu')) {
+                        e.preventDefault();
+                        parent.classList.toggle('open');
+                    }
+                });
+            });
+
+            // 高亮当前
+            const currentPath = window.location.hash.slice(1) || '/';
+            highlightMenu(currentPath);
+        }
+
+        function highlightMenu(path) {
+            document.querySelectorAll('.menu-link, .sub-menu-link').forEach(el => {
+                el.classList.remove('active');
+                if (el.dataset.path === path) {
+                    el.classList.add('active');
+                    const parent = el.closest('.menu-item');
+                    if (parent) parent.classList.add('open');
+                }
+            });
+        }
+
+        // ====== 路由导航 ======
+        async function navigateTo(path) {
+            const container = document.getElementById('pageContent');
+            const modulePath = ROUTES[path] || DEFAULT_MODULE;
+
+            try {
+                const response = await fetch(`/modules/${modulePath}/index.html`);
+                if (!response.ok) throw new Error('模块不存在');
+                const html = await response.text();
+                container.innerHTML = html;
+
+                // 更新标题
+                const titleEl = document.getElementById('pageTitle');
+                const parts = modulePath.split('/');
+                const moduleName = parts[0]?.replace(/^\d+-/, '') || '模块';
+                const subName = parts[1] || '首页';
+                titleEl.textContent = `${moduleName} · ${subName}`;
+
+                // 尝试加载 JS
+                try {
+                    const jsModule = await import(`/modules/${modulePath}/index.js`);
+                    if (jsModule.onLoad) jsModule.onLoad(container);
+                } catch (e) { /* 忽略 */ }
+
+            } catch (error) {
+                container.innerHTML = `
+                    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:60vh;">
+                        <h2 style="color:#e53e3e;">加载失败</h2>
+                        <p style="color:#718096;">模块 ${modulePath} 不存在</p>
+                        <a href="#" onclick="navigateTo('/dashboard')" style="color:#4299e1;text-decoration:none;margin-top:1rem;">← 返回仪表盘</a>
+                    </div>
+                `;
+            }
+            highlightMenu(path);
+        }
+
+        // ====== 初始化 ======
+        async function initApp() {
+            // 检查登录状态
+            const session = await supabase.auth.getSession();
+            if (!session.data.session) {
+                window.location.href = '/login.html';
+                return;
+            }
+
+            // 显示用户
+            const user = session.data.session.user;
+            document.getElementById('userDisplay').textContent = user.email || '用户';
+
+            // 加载侧边栏
+            loadSidebar();
+
+            // 路由
+            window.navigateTo = navigateTo;
+            window.addEventListener('hashchange', () => {
+                const path = window.location.hash.slice(1) || '/';
+                navigateTo(path);
+            });
+
+            // 初始导航
+            const initialPath = window.location.hash.slice(1) || '/dashboard';
+            navigateTo(initialPath);
+
+            // 侧边栏切换
+            document.getElementById('toggleSidebar').addEventListener('click', () => {
+                document.getElementById('app').classList.toggle('sidebar-collapsed');
+            });
+
+            // 登出
+            document.getElementById('logoutBtn').addEventListener('click', async () => {
+                await supabase.auth.signOut();
+                localStorage.removeItem('sb-user');
+                window.location.href = '/login.html';
+            });
+        }
+
+        // 启动
+        initApp();
+    </script>
+</body>
+</html>

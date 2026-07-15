@@ -1,0 +1,29 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BAI ERP - 智能企业管理系统</title>
+    <script>
+        // 检查本地存储中是否有用户会话
+        const user = localStorage.getItem('sb-user');
+        if (user) {
+            try {
+                const { access_token } = JSON.parse(user);
+                if (access_token) {
+                    window.location.href = '/dashboard.html';
+                    return;
+                }
+            } catch (e) {
+                // 忽略解析错误
+            }
+        }
+        window.location.href = '/login.html';
+    </script>
+</head>
+<body>
+    <div style="display:flex;justify-content:center;align-items:center;height:100vh;font-family:sans-serif;color:#666;">
+        加载中...
+    </div>
+</body>
+</html>
