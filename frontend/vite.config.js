@@ -4,6 +4,7 @@ import path from 'path';
 
 export default defineConfig({
     plugins: [vue()],
+    base: '/',
     resolve: {
         alias: {
             '@': path.resolve(__dirname, './src'),
@@ -23,6 +24,17 @@ export default defineConfig({
             '/api': {
                 target: 'http://localhost:3000',
                 changeOrigin: true
+            }
+        }
+    },
+    build: {
+        outDir: 'dist',
+        sourcemap: false,
+        rollupOptions: {
+            output: {
+                manualChunks: {
+                    vendor: ['vue', 'vue-router', 'axios']
+                }
             }
         }
     }
