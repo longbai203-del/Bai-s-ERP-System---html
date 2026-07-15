@@ -1,6 +1,6 @@
 /**
  * @file validator.js
- * @description 数据验证工具
+ * @description 数据验证工具 - 修复版
  * @module utils/validator
  */
 
@@ -94,20 +94,20 @@ export const oneOf = (value, allowedValues, fieldName = '此字段') => {
 };
 
 /**
- * 验证对象 - 修复版本
+ * 验证对象
+ * @param {Object} data - 要验证的对象
+ * @param {Object} schema - 验证规则
+ * @returns {ValidationResult}
  */
 export const validate = (data, schema) => {
     for (const [field, rules] of Object.entries(schema)) {
         const value = data[field];
         for (const rule of rules) {
-            // 如果 rule 是函数，直接调用
-            let result;
-            if (typeof rule === 'function') {
-                result = rule(value, field);
-            } else {
-                // 如果 rule 不是函数，跳过
+            // 确保 rule 是函数
+            if (typeof rule !== 'function') {
                 continue;
             }
+            const result = rule(value, field);
             if (result && result.valid === false) {
                 return result;
             }
