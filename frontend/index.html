@@ -1,94 +1,14 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bai's ERP - 企业资源计划系统</title>
-    
-    <!-- 预加载 -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    
-    <!-- Font Awesome -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    
-    <!-- Google Fonts -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
-    
-    <!-- 应用样式 -->
-    <link rel="stylesheet" href="/src/assets/styles/variables.css">
-    <link rel="stylesheet" href="/src/assets/styles/main.css">
-    
-    <!-- Import Map -->
-    <script type="importmap" src="/importmap.json"></script>
-    
-    <!-- 全局配置 -->
-    <script>
-        window.APP_ENV = {
-            API_BASE_URL: window.location.hostname === 'localhost' 
-                ? 'http://localhost:3000/api' 
-                : 'https://bais-erp-backend.onrender.com/api',
-            APP_NAME: 'Bai\'s ERP',
-            VERSION: '2.0.0'
-        };
-    </script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bai's ERP</title>
+    <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
 </head>
 <body>
-    <!-- ====== 加载遮罩 ====== -->
-    <div id="app-loading" class="app-loading">
-        <div class="loading-container">
-            <div class="loading-logo">
-                <img src="/src/assets/images/logo.svg" alt="Bai's ERP" onerror="this.style.display='none'">
-                <h1>Bai's ERP</h1>
-            </div>
-            <div class="loading-spinner">
-                <div class="spinner"></div>
-                <p id="loading-text">正在加载系统...</p>
-            </div>
-            <div class="loading-tips">
-                <p id="loading-tip">企业资源计划系统 v2.0</p>
-            </div>
-            <div class="loading-progress">
-                <div class="progress-bar">
-                    <div class="progress-fill" id="progress-fill" style="width: 0%;"></div>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ====== 主应用 ====== -->
-    <div id="app" style="display:none;">
-        <!-- 侧边栏 -->
-        <aside id="sidebar-container"></aside>
-        
-        <!-- 主内容 -->
-        <main id="main-content">
-            <!-- 顶部导航 -->
-            <header id="navbar-container"></header>
-            
-            <!-- 页面内容 -->
-            <div id="page-container" class="page-container">
-                <div id="page-content"></div>
-            </div>
-        </main>
-    </div>
-
-    <!-- 模态框容器 -->
-    <div id="modal-container"></div>
-
-    <!-- ====== 应用入口 ====== -->
-    <script type="module">
-        import { app } from '@core/app.js';
-        
-        // 启动应用
-        app.init().then(() => {
-            console.log('✅ 应用启动完成');
-        }).catch((error) => {
-            console.error('❌ 应用启动失败:', error);
-        });
-        
-        // 暴露到全局（兼容旧代码）
-        window.app = app;
-    </script>
+    <div id="app"></div>
+    <script type="module" src="/src/main.js"></script>
 </body>
 </html>
