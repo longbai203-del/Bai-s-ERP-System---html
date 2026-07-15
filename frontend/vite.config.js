@@ -18,6 +18,11 @@ export default defineConfig({
             '@compatibility': path.resolve(__dirname, './src/compatibility')
         }
     },
+    esbuild: {
+        loader: {
+            '.js': 'jsx'
+        }
+    },
     server: {
         port: 5173,
         proxy: {

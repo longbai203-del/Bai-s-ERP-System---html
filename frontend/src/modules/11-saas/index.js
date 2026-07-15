@@ -1,92 +1,143 @@
 /**
  * @file 11-saas/index.js
- * @description 模块 - 入口文件
- * @module modules/11-saas
+ * @description SaaS 模块入口
  */
 
-/**
- * 模块元信息
- */
-export const meta = {
-    name: '',
-    path: '',
-    icon: '',
-    permission: '',
-    enabled: true,
-    order: 
-};
+import { modules } from '../../modules.config.js';
 
-/**
- * 子模块列表
- */
-export const subModules = [
-    'billing', 'feature-limits', 'invoices', 'packages', 'plans', 'storage', 'subscriptions', 'tenants', 'usage'
+const subModules = [
+    { id: 'dashboard', label: '仪表盘', icon: 'fa-chart-line' },
+    { id: 'billing', label: '账单', icon: 'fa-file-invoice' },
+    { id: 'subscriptions', label: '订阅', icon: 'fa-repeat' },
+    { id: 'plans', label: '套餐', icon: 'fa-tags' },
+    { id: 'tenants', label: '租户', icon: 'fa-building' },
+    { id: 'users', label: '用户', icon: 'fa-users' }
 ];
 
-/**
- * 模块状态
- */
-let state = {
-    activeSub: null,
-    loading: false
-};
+let currentSub = 'dashboard';
 
-/**
- * 渲染模块
- * @param {HTMLElement} container - 容器元素
- * @param {Object} params - 渲染参数
- */
-export async function render(container, params = {}) {
-    const sub = params.sub || subModules[0] || 'index';
-    state.activeSub = sub;
+export const render = async (container, params = {}) => {
+    const sub = params.sub || currentSub;
+    currentSub = sub;
 
-    // 更新导航
+    // 更新面包屑
     const navbar = document.querySelector('.navbar-breadcrumb');
     if (navbar) {
-        navbar.innerHTML = <span class="current"></span>;
+        navbar.innerHTML = '<span class="current">SaaS</span>';
     }
 
-    // 加载子模块
-    try {
-        const module = await import(./.js);
-        if (module.render) {
-            await module.render(container, params);
-        } else if (module.init) {
-            await module.init();
-            // 默认渲染内容
-            container.innerHTML = 
-                <div class="page-header">
-                    <h1></h1>
-                </div>
-                <div class="card">
-                    <div class="card-body">
-                        <p style="color:#6B7280;"> 模块已加载</p>
-                    </div>
-                </div>
-            ;
-        }
-    } catch (error) {
-        console.error([] 加载子模块失败:, error);
-        container.innerHTML = 
-            <div class="page-header">
-                <h1></h1>
-            </div>
-            <div class="card">
-                <div class="card-body" style="text-align:center;padding:40px;">
-                    <div style="font-size:48px;margin-bottom:16px;">⚠️</div>
-                    <h3 style="color:#374151;">子模块加载失败</h3>
-                    <p style="color:#6B7280;"></p>
-                </div>
-            </div>
-        ;
-    }
-}
+    // 渲染子模块导航
+    const subNavHtml = `
+        <div style="display:flex;gap:4px;margin-bottom:20px;background:white;padding:8px;border-radius:12px;border:1px solid #E5E7EB;flex-wrap:wrap;">
+            ${subModules.map(sm => `
+                <button class="sub-module-btn ${sm.id === sub ? 'active' : ''}" data-sub="${sm.id}" style="padding:8px 16px;border:none;border-radius:8px;cursor:pointer;background:${sm.id === sub ? '#4F46E5' : 'transparent'};color:${sm.id === sub ? 'white' : '#374151'};font-size:14px;transition:all 0.2s;">
+                    <i class="fas ${sm.icon}"></i> ${sm.label}
+                </button>
+            `).join('')}
+        </div>
+    `;
 
-/**
- * 模块初始化钩子
- */
-export async function init() {
-    console.log('✅ [] 模块已初始化');
-}
+    // 内容区域
+    const contentMap = {
+        dashboard: `
+            <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px;">
+                <div class="stat-card" style="background:white;padding:20px;border-radius:12px;border:1px solid #E5E7EB;">
+                    <div style="font-size:14px;color:#6B7280;">总租户</div>
+                    <div style="font-size:24px;font-weight:700;margin-top:4px;">0</div>
+                </div>
+                <div class="stat-card" style="background:white;padding:20px;border-radius:12px;border:1px solid #E5E7EB;">
+                    <div style="font-size:14px;color:#6B7280;">活跃订阅</div>
+                    <div style="font-size:24px;font-weight:700;margin-top:4px;">0</div>
+                </div>
+                <div class="stat-card" style="background:white;padding:20px;border-radius:12px;border:1px solid #E5E7EB;">
+                    <div style="font-size:14px;color:#6B7280;">月收入</div>
+                    <div style="font-size:24px;font-weight:700;margin-top:4px;">¥0</div>
+                </div>
+                <div class="stat-card" style="background:white;padding:20px;border-radius:12px;border:1px solid #E5E7EB;">
+                    <div style="font-size:14px;color:#6B7280;">总用户</div>
+                    <div style="font-size:24px;font-weight:700;margin-top:4px;">0</div>
+                </div>
+            </div>
+            <div class="card" style="background:white;border-radius:12px;border:1px solid #E5E7EB;">
+                <div class="card-header" style="padding:16px 20px;border-bottom:1px solid #E5E7EB;">
+                    <span style="font-weight:600;">📊 概览</span>
+                </div>
+                <div class="card-body" style="padding:20px;text-align:center;color:#9CA3AF;">
+                    <p>SaaS 管理仪表盘</p>
+                </div>
+            </div>
+        `,
+        billing: `
+            <div class="card" style="background:white;border-radius:12px;border:1px solid #E5E7EB;">
+                <div class="card-header" style="padding:16px 20px;border-bottom:1px solid #E5E7EB;">
+                    <span style="font-weight:600;">账单管理</span>
+                </div>
+                <div class="card-body" style="padding:20px;text-align:center;color:#9CA3AF;">
+                    <p>账单管理功能开发中</p>
+                </div>
+            </div>
+        `,
+        subscriptions: `
+            <div class="card" style="background:white;border-radius:12px;border:1px solid #E5E7EB;">
+                <div class="card-header" style="padding:16px 20px;border-bottom:1px solid #E5E7EB;">
+                    <span style="font-weight:600;">订阅管理</span>
+                </div>
+                <div class="card-body" style="padding:20px;text-align:center;color:#9CA3AF;">
+                    <p>订阅管理功能开发中</p>
+                </div>
+            </div>
+        `,
+        plans: `
+            <div class="card" style="background:white;border-radius:12px;border:1px solid #E5E7EB;">
+                <div class="card-header" style="padding:16px 20px;border-bottom:1px solid #E5E7EB;">
+                    <span style="font-weight:600;">套餐管理</span>
+                </div>
+                <div class="card-body" style="padding:20px;text-align:center;color:#9CA3AF;">
+                    <p>套餐管理功能开发中</p>
+                </div>
+            </div>
+        `,
+        tenants: `
+            <div class="card" style="background:white;border-radius:12px;border:1px solid #E5E7EB;">
+                <div class="card-header" style="padding:16px 20px;border-bottom:1px solid #E5E7EB;">
+                    <span style="font-weight:600;">租户管理</span>
+                </div>
+                <div class="card-body" style="padding:20px;text-align:center;color:#9CA3AF;">
+                    <p>租户管理功能开发中</p>
+                </div>
+            </div>
+        `,
+        users: `
+            <div class="card" style="background:white;border-radius:12px;border:1px solid #E5E7EB;">
+                <div class="card-header" style="padding:16px 20px;border-bottom:1px solid #E5E7EB;">
+                    <span style="font-weight:600;">用户管理</span>
+                </div>
+                <div class="card-body" style="padding:20px;text-align:center;color:#9CA3AF;">
+                    <p>用户管理功能开发中</p>
+                </div>
+            </div>
+        `
+    };
 
-export default { meta, subModules, render, init };
+    container.innerHTML = `
+        <div class="saas-container" style="padding:20px;">
+            <div class="page-header" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;">
+                <h1 style="font-size:24px;font-weight:600;">☁️ SaaS管理</h1>
+            </div>
+            ${subNavHtml}
+            <div id="saasContent">
+                ${contentMap[sub] || '<div style="text-align:center;padding:40px;color:#9CA3AF;">页面开发中</div>'}
+            </div>
+        </div>
+    `;
+
+    // 绑定子模块切换事件
+    container.querySelectorAll('.sub-module-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            const subId = btn.dataset.sub;
+            render(container, { sub: subId });
+        });
+    });
+};
+
+export default { render };
