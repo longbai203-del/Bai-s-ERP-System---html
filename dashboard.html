@@ -26,6 +26,11 @@
             transition: width 0.3s;
             display: flex;
             flex-direction: column;
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            z-index: 100;
         }
         .sidebar-brand {
             padding: 1.25rem 1.5rem;
@@ -36,6 +41,7 @@
             display: flex;
             align-items: center;
             gap: 0.75rem;
+            flex-shrink: 0;
         }
         .sidebar-brand span {
             background: linear-gradient(135deg, #4299e1, #2b6cb0);
@@ -71,6 +77,11 @@
             cursor: pointer;
             transition: all 0.2s;
             gap: 0.75rem;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+            font-size: 0.9rem;
         }
         .menu-link:hover {
             background: #2d3748;
@@ -83,17 +94,11 @@
         .menu-icon {
             font-size: 1.1rem;
             width: 24px;
+            flex-shrink: 0;
         }
         .menu-label {
             flex: 1;
             font-size: 0.9rem;
-        }
-        .menu-arrow {
-            transition: transform 0.2s;
-            font-size: 0.7rem;
-        }
-        .menu-item.open .menu-arrow {
-            transform: rotate(180deg);
         }
         .sub-menu {
             list-style: none;
@@ -112,6 +117,10 @@
             font-size: 0.85rem;
             cursor: pointer;
             transition: all 0.2s;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
         }
         .sub-menu-link:hover {
             color: white;
@@ -125,6 +134,8 @@
             flex: 1;
             display: flex;
             flex-direction: column;
+            margin-left: 260px;
+            min-height: 100vh;
         }
         .topbar {
             background: white;
@@ -134,6 +145,9 @@
             align-items: center;
             border-bottom: 1px solid #e2e8f0;
             flex-shrink: 0;
+            position: sticky;
+            top: 0;
+            z-index: 50;
         }
         .topbar-left {
             display: flex;
@@ -147,6 +161,7 @@
             cursor: pointer;
             color: #4a5568;
             padding: 0.25rem 0.5rem;
+            display: none;
         }
         .topbar-btn:hover {
             color: #1a202c;
@@ -191,6 +206,9 @@
             justify-content: center;
             padding: 0.6rem 0;
         }
+        .sidebar-collapsed .main-content {
+            margin-left: 60px;
+        }
 
         @media (max-width: 768px) {
             .sidebar {
@@ -205,6 +223,12 @@
             .menu-link {
                 justify-content: center;
                 padding: 0.6rem 0;
+            }
+            .main-content {
+                margin-left: 60px;
+            }
+            .topbar-btn {
+                display: block;
             }
         }
 
@@ -268,6 +292,24 @@
                 transform: rotate(360deg);
             }
         }
+        .module-placeholder {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #718096;
+        }
+        .module-placeholder h2 {
+            color: #4299e1;
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+        .module-placeholder p {
+            font-size: 1.1rem;
+        }
+        .module-placeholder .module-icon {
+            font-size: 4rem;
+            display: block;
+            margin-bottom: 1rem;
+        }
     </style>
 </head>
 <body>
@@ -314,7 +356,7 @@
         const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // ============================================================
-        // 菜单配置
+        // 菜单配置（15个模块）
         // ============================================================
         const MENU = [
             { id: 'dashboard', label: '仪表盘', icon: '📊', path: '/dashboard' },
@@ -333,6 +375,69 @@
             { id: 'settings', label: '个人设置', icon: '🔧', path: '/settings' },
             { id: 'ai', label: 'AI 智能中心', icon: '🤖', path: '/ai' }
         ];
+
+        // ============================================================
+        // 模块路径映射（实际目录结构）
+        // ============================================================
+        const MODULE_MAP = {
+            '/dashboard': '01-dashboard/dashboard',
+            '/pos': '02-pos/touch-pos',
+            '/orders': '03-orders/list',
+            '/products': '04-products/products',
+            '/customers': '05-customers/customers',
+            '/marketing': '06-marketing/promotions',
+            '/inventory': '07-inventory/stock',
+            '/purchase': '08-purchase/orders',
+            '/finance': '09-finance/balance-sheet',
+            '/hr': '10-hr/employees',
+            '/saas': '11-saas/subscriptions',
+            '/system': '12-system/settings',
+            '/analytics': '13-analytics/reports',
+            '/settings': '14-settings/profile',
+            '/ai': '15-ai/ai'
+        };
+
+        // ============================================================
+        // 模块名称映射（显示用）
+        // ============================================================
+        const MODULE_LABELS = {
+            '/dashboard': '仪表盘',
+            '/pos': 'POS 收银',
+            '/orders': '订单管理',
+            '/products': '商品管理',
+            '/customers': '客户管理',
+            '/marketing': '营销中心',
+            '/inventory': '库存管理',
+            '/purchase': '采购管理',
+            '/finance': '财务管理',
+            '/hr': '人力资源管理',
+            '/saas': 'SaaS 管理',
+            '/system': '系统管理',
+            '/analytics': '数据分析',
+            '/settings': '个人设置',
+            '/ai': 'AI 智能中心'
+        };
+
+        // ============================================================
+        // 模块图标映射
+        // ============================================================
+        const MODULE_ICONS = {
+            '/dashboard': '📊',
+            '/pos': '🛒',
+            '/orders': '📋',
+            '/products': '📦',
+            '/customers': '👥',
+            '/marketing': '📣',
+            '/inventory': '🏪',
+            '/purchase': '📥',
+            '/finance': '💰',
+            '/hr': '👔',
+            '/saas': '☁️',
+            '/system': '⚙️',
+            '/analytics': '📈',
+            '/settings': '🔧',
+            '/ai': '🤖'
+        };
 
         // ============================================================
         // DOM 引用
@@ -382,70 +487,37 @@
             let html = '<ul class="menu-list">';
             for (const item of MENU) {
                 html += `<li class="menu-item">`;
-                html += `<a class="menu-link" data-path="${item.path}">`;
+                html += `<button class="menu-link" data-path="${item.path}">`;
                 html += `<span class="menu-icon">${item.icon}</span>`;
                 html += `<span class="menu-label">${item.label}</span>`;
-                html += `</a>`;
+                html += `</button>`;
                 html += `</li>`;
             }
             html += '</ul>';
             nav.innerHTML = html;
 
+            // 点击事件
             nav.querySelectorAll('.menu-link').forEach(link => {
                 link.addEventListener('click', (e) => {
                     e.preventDefault();
                     const path = link.dataset.path;
-                    loadModule(path);
+                    // 高亮当前菜单
                     document.querySelectorAll('.menu-link').forEach(el => el.classList.remove('active'));
                     link.classList.add('active');
+                    // 加载模块
+                    loadModule(path);
+                    // 移动端收起侧边栏
+                    if (window.innerWidth < 768) {
+                        document.getElementById('app').classList.add('sidebar-collapsed');
+                    }
                 });
             });
         }
 
         // ============================================================
-        // 加载模块
+        // 显示仪表盘
         // ============================================================
-        async function loadModule(path) {
-            const moduleName = path.replace('/', '') || 'dashboard';
-            pageTitle.textContent = moduleName.charAt(0).toUpperCase() + moduleName.slice(1);
-
-            // 显示加载状态
-            container.innerHTML = `<div class="loading-spinner">加载 ${moduleName} 模块...</div>`;
-
-            try {
-                // 尝试加载模块页面
-                const modulePath = path === '/dashboard' ? '01-dashboard/dashboard' : `modules${path}`;
-                const response = await fetch(`/modules/${modulePath}/index.html`);
-
-                if (!response.ok) {
-                    // 如果模块不存在，显示欢迎页
-                    showWelcomePage();
-                    return;
-                }
-
-                const html = await response.text();
-                container.innerHTML = html;
-
-                // 尝试加载对应的 JS
-                try {
-                    const jsModule = await import(`/modules/${modulePath}/index.js`);
-                    if (jsModule.onLoad) {
-                        jsModule.onLoad(container);
-                    }
-                } catch (e) {
-                    // 没有 JS 文件，忽略
-                }
-
-            } catch (error) {
-                console.warn('模块加载失败，显示欢迎页:', error);
-                showWelcomePage();
-            }
-        }
-
-        // ============================================================
-        // 显示欢迎页
-        // ============================================================
-        function showWelcomePage() {
+        function showDashboard() {
             const user = document.getElementById('userDisplay').textContent || '管理员';
             container.innerHTML = `
                 <div class="welcome-banner">
@@ -478,6 +550,78 @@
         }
 
         // ============================================================
+        // 显示模块占位（开发中）
+        // ============================================================
+        function showModulePlaceholder(path) {
+            const label = MODULE_LABELS[path] || path.replace('/', '');
+            const icon = MODULE_ICONS[path] || '🚧';
+            container.innerHTML = `
+                <div class="module-placeholder">
+                    <span class="module-icon">${icon}</span>
+                    <h2>${label}</h2>
+                    <p>模块正在开发中，敬请期待</p>
+                    <br>
+                    <button onclick="loadModule('/dashboard')" style="padding:0.5rem 1.5rem;background:#4299e1;color:white;border:none;border-radius:8px;cursor:pointer;font-size:1rem;">
+                        ← 返回仪表盘
+                    </button>
+                </div>
+            `;
+        }
+
+        // ============================================================
+        // 加载模块
+        // ============================================================
+        async function loadModule(path) {
+            // 更新标题
+            const label = MODULE_LABELS[path] || path.replace('/', '');
+            pageTitle.textContent = label;
+
+            // 如果是仪表盘，直接显示
+            if (path === '/dashboard') {
+                showDashboard();
+                return;
+            }
+
+            // 显示加载状态
+            container.innerHTML = `<div class="loading-spinner">加载 ${label} 模块...</div>`;
+
+            try {
+                const modulePath = MODULE_MAP[path];
+                if (!modulePath) {
+                    showModulePlaceholder(path);
+                    return;
+                }
+
+                // 尝试加载模块 HTML
+                const response = await fetch(`/modules/${modulePath}/index.html`);
+
+                if (!response.ok) {
+                    // 模块不存在，显示占位
+                    showModulePlaceholder(path);
+                    return;
+                }
+
+                const html = await response.text();
+                container.innerHTML = html;
+
+                // 尝试加载对应的 JS
+                try {
+                    const jsModule = await import(`/modules/${modulePath}/index.js`);
+                    if (jsModule.onLoad) {
+                        jsModule.onLoad(container);
+                    }
+                } catch (e) {
+                    // 没有 JS 文件，忽略
+                    console.log(`${label} 模块无 JS 文件`);
+                }
+
+            } catch (error) {
+                console.warn('模块加载失败:', error);
+                showModulePlaceholder(path);
+            }
+        }
+
+        // ============================================================
         // 退出登录
         // ============================================================
         async function logout() {
@@ -506,7 +650,7 @@
             renderSidebar();
             loadModule('/dashboard');
 
-            // 侧边栏切换
+            // 侧边栏切换（移动端）
             document.getElementById('toggleSidebar').addEventListener('click', () => {
                 document.getElementById('app').classList.toggle('sidebar-collapsed');
             });
@@ -514,9 +658,20 @@
             // 退出登录
             document.getElementById('logoutBtn').addEventListener('click', logout);
 
+            // 窗口 resize 处理
+            window.addEventListener('resize', () => {
+                if (window.innerWidth >= 768) {
+                    document.getElementById('app').classList.remove('sidebar-collapsed');
+                }
+            });
+
+            // 暴露 loadModule 到全局，供 HTML 内联使用
+            window.loadModule = loadModule;
+
             console.log('%c🚗 BAI ERP 仪表盘已加载', 'font-size:16px;font-weight:bold;color:#4299e1;');
             console.log('%c👤 当前用户:', displayName);
             console.log('%c📊 系统已连接 Supabase 数据库', 'color:#38a169;');
+            console.log('%c📂 共 ' + MENU.length + ' 个模块', 'color:#718096;');
         }
 
         init();
