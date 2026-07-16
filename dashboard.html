@@ -541,7 +541,9 @@
         // 1. 导入
         // ============================================================
         import { createClient } from '@supabase/supabase-js';
-        import { MENU_CONFIG, findMenuItemByPath, getLabelByPath } from './config/menu.config.js';
+        import { MODULES, findMenuItemByPath, getLabelByPath, initAllModules } from './modules/index.js';
+// 使用 MODULES 替代 MENU_CONFIG
+const MENU_CONFIG = Object.values(MODULES);
 
         // ============================================================
         // 2. Supabase 配置
@@ -897,3 +899,4 @@
     </script>
 </body>
 </html>
+
