@@ -1,6 +1,6 @@
 ﻿// ============================================================
 // BAI ERP 完整菜单配置
-// 生成时间: 2026-07-16 12:39:50
+// 生成时间: 2026-07-16 13:17:53
 // ============================================================
 
 export const MENU_CONFIG = [
@@ -11,7 +11,7 @@ export const MENU_CONFIG = [
         path: '/dashboard',
         modulePath: '01-dashboard',
         children: [
-            { label: 'Dashboard', path: '/dashboard/dashboard', file: 'index.html', modulePath: '01-dashboard/dashboard' },
+            { label: 'Dashboard', path: '/dashboard/dashboard', file: 'dashboard.html', modulePath: '01-dashboard/dashboard' },
             { label: 'Employee', path: '/dashboard/employee', file: 'employee.html', modulePath: '01-dashboard/employee' },
             { label: 'Executive', path: '/dashboard/executive', file: 'executive.html', modulePath: '01-dashboard/executive' },
             { label: 'Vehicle Monitor', path: '/dashboard/vehicle-monitor', file: 'vehicle-monitor.html', modulePath: '01-dashboard/vehicle-monitor' }
