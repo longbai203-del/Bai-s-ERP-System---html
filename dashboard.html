@@ -726,7 +726,6 @@
     pageTitle.textContent = label || path;
     pagePath.textContent = path;
 
-    // 显示加载状态
     pageContent.innerHTML = `
         <div style="display:flex;flex-direction:column;justify-content:center;align-items:center;height:60vh;color:#a0aec0;gap:1rem;">
             <div style="width:40px;height:40px;border:4px solid #e2e8f0;border-top-color:#4299e1;border-radius:50%;animation:spin 0.8s linear infinite;"></div>
@@ -740,17 +739,39 @@
         if (file) {
             filePath = `/modules/${modulePath}/${file}`;
         } else {
-            // 如果没有指定文件，尝试加载目录名.html
             const moduleName = modulePath.split('/').pop();
             filePath = `/modules/${modulePath}/${moduleName}.html`;
         }
 
-        // 使用 iframe 加载完整的 HTML 页面（包含 JS 自动执行）
+        // 检查文件是否存在
+        const response = await fetch(filePath);
+
+        if (!response.ok) {
+            const menuItem = findMenuItemByPath(path);
+            if (!file && menuItem && menuItem.children && menuItem.children.length > 0) {
+                renderModuleIndex(menuItem);
+                return;
+            }
+            pageContent.innerHTML = `
+                <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:60vh;gap:1rem;">
+                    <span style="font-size:4rem;">📄</span>
+                    <h2 style="color:#e53e3e;">模块不存在</h2>
+                    <p style="color:#718096;">${filePath}</p>
+                    <button onclick="location.reload()" style="padding:0.5rem 1.5rem;background:#4299e1;color:white;border:none;border-radius:8px;cursor:pointer;">
+                        刷新
+                    </button>
+                </div>
+            `;
+            return;
+        }
+
+        // 使用 iframe 加载 HTML（自动执行所有 JS）
         pageContent.innerHTML = `
             <div style="position:relative;width:100%;height:calc(100vh - 120px);">
                 <iframe src="${filePath}" style="width:100%;height:100%;border:none;border-radius:8px;background:white;box-shadow:0 1px 3px rgba(0,0,0,0.1);"></iframe>
             </div>
         `;
+
     } catch (error) {
         console.error('加载失败:', error);
         pageContent.innerHTML = `
@@ -934,6 +955,7 @@
     </script>
 </body>
 </html>
+
 
 
 
