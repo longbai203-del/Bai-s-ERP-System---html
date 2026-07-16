@@ -5,33 +5,47 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>仪表盘 - BAI ERP</title>
     <style>
+        /* ============================================================
+           全局样式
+           ============================================================ */
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
         }
+
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
             background: #f7fafc;
+            height: 100vh;
+            overflow: hidden;
         }
+
+        /* ============================================================
+           应用容器
+           ============================================================ */
         .app-container {
             display: flex;
-            min-height: 100vh;
+            height: 100vh;
         }
+
+        /* ============================================================
+           侧边栏
+           ============================================================ */
         .sidebar {
-            width: 260px;
+            width: 280px;
             background: #1a202c;
             color: #a0aec0;
             flex-shrink: 0;
-            transition: width 0.3s;
             display: flex;
             flex-direction: column;
-            position: fixed;
+            height: 100vh;
+            position: sticky;
             top: 0;
-            left: 0;
-            bottom: 0;
-            z-index: 100;
+            transition: width 0.3s ease;
+            overflow: hidden;
         }
+
         .sidebar-brand {
             padding: 1.25rem 1.5rem;
             font-size: 1.25rem;
@@ -42,7 +56,9 @@
             align-items: center;
             gap: 0.75rem;
             flex-shrink: 0;
+            min-height: 64px;
         }
+
         .sidebar-brand span {
             background: linear-gradient(135deg, #4299e1, #2b6cb0);
             background-clip: text;
@@ -50,11 +66,25 @@
             -webkit-text-fill-color: transparent;
             color: transparent;
         }
-        .sidebar-nav {
-            padding: 1rem 0;
-            overflow-y: auto;
-            flex: 1;
+
+        .sidebar-brand .brand-badge {
+            font-size: 0.6rem;
+            background: #2b6cb0;
+            color: white;
+            padding: 0.1rem 0.5rem;
+            border-radius: 10px;
+            margin-left: auto;
         }
+
+        /* ============================================================
+           侧边栏导航
+           ============================================================ */
+        .sidebar-nav {
+            flex: 1;
+            overflow-y: auto;
+            padding: 0.5rem 0;
+        }
+
         .sidebar-nav::-webkit-scrollbar {
             width: 4px;
         }
@@ -62,119 +92,249 @@
             background: #4a5568;
             border-radius: 2px;
         }
+        .sidebar-nav::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        /* ============================================================
+           菜单样式
+           ============================================================ */
         .menu-list {
             list-style: none;
+            padding: 0;
+            margin: 0;
         }
+
+        /* 主菜单项 */
         .menu-item {
-            margin-bottom: 0.25rem;
+            margin: 0;
         }
+
         .menu-link {
             display: flex;
             align-items: center;
-            padding: 0.6rem 1.5rem;
+            padding: 0.6rem 1.2rem;
             color: #a0aec0;
             text-decoration: none;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
             gap: 0.75rem;
             border: none;
             background: none;
             width: 100%;
             text-align: left;
             font-size: 0.9rem;
+            position: relative;
         }
+
         .menu-link:hover {
             background: #2d3748;
             color: white;
         }
+
         .menu-link.active {
             background: #2b6cb0;
             color: white;
         }
-        .menu-icon {
+
+        .menu-link .menu-icon {
             font-size: 1.1rem;
             width: 24px;
             flex-shrink: 0;
+            text-align: center;
         }
-        .menu-label {
+
+        .menu-link .menu-label {
             flex: 1;
             font-size: 0.9rem;
+            white-space: nowrap;
         }
+
+        .menu-link .menu-arrow {
+            font-size: 0.65rem;
+            transition: transform 0.3s ease;
+            flex-shrink: 0;
+            margin-left: auto;
+        }
+
+        .menu-link .menu-arrow.open {
+            transform: rotate(180deg);
+        }
+
+        .menu-link .menu-badge {
+            font-size: 0.6rem;
+            background: #e53e3e;
+            color: white;
+            padding: 0.05rem 0.5rem;
+            border-radius: 10px;
+            flex-shrink: 0;
+        }
+
+        /* ============================================================
+           子菜单（折叠式）
+           ============================================================ */
         .sub-menu {
             list-style: none;
             max-height: 0;
             overflow: hidden;
-            transition: max-height 0.3s ease;
+            transition: max-height 0.35s ease;
+            background: #0d1117;
         }
-        .menu-item.open .sub-menu {
-            max-height: 500px;
+
+        .sub-menu.open {
+            max-height: 2000px;
         }
+
         .sub-menu-link {
             display: block;
-            padding: 0.4rem 1.5rem 0.4rem 3.5rem;
+            padding: 0.4rem 1.2rem 0.4rem 3.2rem;
             color: #a0aec0;
             text-decoration: none;
             font-size: 0.85rem;
             cursor: pointer;
-            transition: all 0.2s;
+            transition: all 0.2s ease;
             border: none;
             background: none;
             width: 100%;
             text-align: left;
-        }
-        .sub-menu-link:hover {
-            color: white;
-            background: #2d3748;
-        }
-        .sub-menu-link.active {
-            color: #63b3ed;
+            position: relative;
         }
 
+        .sub-menu-link::before {
+            content: '›';
+            position: absolute;
+            left: 2.4rem;
+            opacity: 0.5;
+            font-size: 1.2rem;
+        }
+
+        .sub-menu-link:hover {
+            color: white;
+            background: #1a202c;
+        }
+
+        .sub-menu-link.active {
+            color: #63b3ed;
+            background: #1a202c;
+        }
+
+        /* ============================================================
+           侧边栏折叠状态
+           ============================================================ */
+        .sidebar-collapsed .sidebar {
+            width: 64px;
+        }
+
+        .sidebar-collapsed .sidebar-brand span,
+        .sidebar-collapsed .sidebar-brand .brand-badge,
+        .sidebar-collapsed .menu-label,
+        .sidebar-collapsed .menu-arrow,
+        .sidebar-collapsed .menu-badge,
+        .sidebar-collapsed .sub-menu {
+            display: none;
+        }
+
+        .sidebar-collapsed .menu-link {
+            justify-content: center;
+            padding: 0.7rem 0;
+        }
+
+        .sidebar-collapsed .menu-link .menu-icon {
+            font-size: 1.3rem;
+            width: auto;
+        }
+
+        .sidebar-collapsed .sidebar-nav {
+            overflow-x: hidden;
+        }
+
+        /* ============================================================
+           主内容区域
+           ============================================================ */
         .main-content {
             flex: 1;
             display: flex;
             flex-direction: column;
-            margin-left: 260px;
-            min-height: 100vh;
+            min-width: 0;
+            height: 100vh;
+            overflow: hidden;
         }
+
+        /* ============================================================
+           顶栏
+           ============================================================ */
         .topbar {
             background: white;
-            padding: 0.75rem 1.5rem;
+            padding: 0.6rem 1.5rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 1px solid #e2e8f0;
             flex-shrink: 0;
+            min-height: 56px;
             position: sticky;
             top: 0;
-            z-index: 50;
+            z-index: 10;
         }
+
         .topbar-left {
             display: flex;
             align-items: center;
             gap: 1rem;
         }
+
         .topbar-btn {
             background: none;
             border: none;
-            font-size: 1.25rem;
+            font-size: 1.2rem;
             cursor: pointer;
             color: #4a5568;
             padding: 0.25rem 0.5rem;
-            display: none;
+            border-radius: 6px;
+            transition: background 0.2s;
         }
+
         .topbar-btn:hover {
-            color: #1a202c;
+            background: #f7fafc;
         }
+
+        .topbar-title {
+            font-size: 1.1rem;
+            color: #2d3748;
+            font-weight: 600;
+        }
+
+        .topbar-title .title-path {
+            font-size: 0.75rem;
+            color: #a0aec0;
+            font-weight: 400;
+            margin-left: 0.5rem;
+        }
+
         .topbar-right {
             display: flex;
             align-items: center;
             gap: 1rem;
         }
+
         .user-name {
             font-size: 0.9rem;
             color: #4a5568;
         }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: #4299e1;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
         .logout-btn {
             color: #e53e3e;
             font-size: 0.85rem;
@@ -182,160 +342,159 @@
             border: none;
             cursor: pointer;
             padding: 0.25rem 0.5rem;
-        }
-        .logout-btn:hover {
-            color: #c53030;
+            border-radius: 6px;
+            transition: background 0.2s;
         }
 
+        .logout-btn:hover {
+            background: #fff5f5;
+        }
+
+        /* ============================================================
+           页面内容
+           ============================================================ */
         .page-content {
             flex: 1;
             padding: 1.5rem;
             overflow-y: auto;
+            background: #f7fafc;
         }
 
-        .sidebar-collapsed .sidebar {
-            width: 60px;
+        .page-content::-webkit-scrollbar {
+            width: 6px;
         }
-        .sidebar-collapsed .sidebar-brand span,
-        .sidebar-collapsed .menu-label,
-        .sidebar-collapsed .menu-arrow,
-        .sidebar-collapsed .sub-menu {
-            display: none;
-        }
-        .sidebar-collapsed .menu-link {
-            justify-content: center;
-            padding: 0.6rem 0;
-        }
-        .sidebar-collapsed .main-content {
-            margin-left: 60px;
+        .page-content::-webkit-scrollbar-thumb {
+            background: #cbd5e0;
+            border-radius: 3px;
         }
 
-        @media (max-width: 768px) {
-            .sidebar {
-                width: 60px;
-            }
-            .sidebar-brand span,
-            .menu-label,
-            .menu-arrow,
-            .sub-menu {
-                display: none;
-            }
-            .menu-link {
-                justify-content: center;
-                padding: 0.6rem 0;
-            }
-            .main-content {
-                margin-left: 60px;
-            }
-            .topbar-btn {
-                display: block;
-            }
-        }
-
-        .welcome-banner {
-            background: linear-gradient(135deg, #4299e1, #2b6cb0);
-            border-radius: 12px;
-            padding: 2rem;
-            color: white;
-            margin-bottom: 1.5rem;
-        }
-        .welcome-banner h1 {
-            font-size: 1.5rem;
-            margin-bottom: 0.5rem;
-        }
-        .welcome-banner p {
-            opacity: 0.9;
-        }
-        .stats-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 1rem;
-            margin-bottom: 1.5rem;
-        }
-        .stat-card {
-            background: white;
-            padding: 1.5rem;
-            border-radius: 12px;
-            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-        .stat-card .stat-number {
-            font-size: 2rem;
-            font-weight: 700;
-            color: #2d3748;
-        }
-        .stat-card .stat-label {
-            color: #718096;
-            font-size: 0.875rem;
-            margin-top: 0.25rem;
-        }
-
+        /* ============================================================
+           加载状态
+           ============================================================ */
         .loading-spinner {
             display: flex;
+            flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 60vh;
             color: #a0aec0;
             font-size: 1.1rem;
+            gap: 1rem;
         }
-        .loading-spinner::after {
-            content: '';
-            width: 30px;
-            height: 30px;
-            border: 3px solid #e2e8f0;
+
+        .loading-spinner .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #e2e8f0;
             border-top-color: #4299e1;
             border-radius: 50%;
             animation: spin 0.8s linear infinite;
-            margin-left: 1rem;
         }
+
         @keyframes spin {
             to {
                 transform: rotate(360deg);
             }
         }
-        .module-placeholder {
-            text-align: center;
-            padding: 4rem 2rem;
-            color: #718096;
+
+        /* ============================================================
+           响应式
+           ============================================================ */
+        @media (max-width: 768px) {
+            .sidebar {
+                width: 64px;
+            }
+
+            .sidebar-brand span,
+            .sidebar-brand .brand-badge,
+            .menu-label,
+            .menu-arrow,
+            .menu-badge,
+            .sub-menu {
+                display: none;
+            }
+
+            .menu-link {
+                justify-content: center;
+                padding: 0.7rem 0;
+            }
+
+            .menu-link .menu-icon {
+                font-size: 1.3rem;
+                width: auto;
+            }
+
+            .topbar-title .title-path {
+                display: none;
+            }
+
+            .user-name {
+                display: none;
+            }
         }
-        .module-placeholder h2 {
-            color: #4299e1;
-            font-size: 2rem;
-            margin-bottom: 0.5rem;
-        }
-        .module-placeholder p {
-            font-size: 1.1rem;
-        }
-        .module-placeholder .module-icon {
-            font-size: 4rem;
-            display: block;
-            margin-bottom: 1rem;
+
+        @media (max-width: 480px) {
+            .topbar {
+                padding: 0.4rem 0.8rem;
+            }
+            .page-content {
+                padding: 0.8rem;
+            }
+            .topbar-title {
+                font-size: 0.9rem;
+            }
         }
     </style>
 </head>
 <body>
+
     <div id="app" class="app-container">
+        <!-- ============================================================
+        侧边栏
+        ============================================================ -->
         <aside id="sidebar" class="sidebar">
-            <div class="sidebar-brand">🚗 <span>BAI</span></div>
-            <nav id="sidebar-nav" class="sidebar-nav"></nav>
+            <div class="sidebar-brand">
+                🚗 <span>BAI</span>
+                <span class="brand-badge">v1.0</span>
+            </div>
+            <nav id="sidebarNav" class="sidebar-nav">
+                <!-- JS 动态渲染 -->
+            </nav>
         </aside>
 
+        <!-- ============================================================
+        主内容
+        ============================================================ -->
         <main class="main-content">
+            <!-- 顶栏 -->
             <header class="topbar">
                 <div class="topbar-left">
-                    <button id="toggleSidebar" class="topbar-btn">☰</button>
-                    <h2 id="pageTitle" style="font-size:1.1rem;color:#2d3748;">仪表盘</h2>
+                    <button id="toggleSidebar" class="topbar-btn" title="切换侧边栏">☰</button>
+                    <span class="topbar-title" id="pageTitle">
+                        仪表盘
+                        <span class="title-path" id="pagePath">/dashboard</span>
+                    </span>
                 </div>
                 <div class="topbar-right">
-                    <span id="userDisplay" class="user-name"></span>
-                    <button id="logoutBtn" class="topbar-btn logout-btn">退出</button>
+                    <span class="user-name" id="userDisplay">管理员</span>
+                    <div class="user-avatar" id="userAvatar">管</div>
+                    <button id="logoutBtn" class="logout-btn">退出</button>
                 </div>
             </header>
+
+            <!-- 内容区 -->
             <section id="pageContent" class="page-content">
-                <div class="loading-spinner">加载中...</div>
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    加载中...
+                </div>
             </section>
         </main>
     </div>
 
+    <!-- ============================================================
+    Supabase Import Map
+    ============================================================ -->
     <script type="importmap">
         {
             "imports": {
@@ -344,11 +503,17 @@
         }
     </script>
 
+    <!-- ============================================================
+    主脚本
+    ============================================================ -->
     <script type="module">
+        // ============================================================
+        // 1. 导入
+        // ============================================================
         import { createClient } from '@supabase/supabase-js';
 
         // ============================================================
-        // Supabase 配置
+        // 2. Supabase 配置
         // ============================================================
         const SUPABASE_URL = 'https://sthrubrefavbomjlobew.supabase.co';
         const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InN0aHJ1YnJlZmF2Ym9tamxvYmV3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODQxMzM4MzksImV4cCI6MjA5OTcwOTgzOX0.LtBBe_QWq_5WXwVw7ELIQJuy9M7fzHd-R6VTMVkXqyg';
@@ -356,102 +521,277 @@
         const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // ============================================================
-        // 菜单配置（15个模块）
+        // 3. 完整菜单配置（15个主模块 + 所有子模块）
         // ============================================================
-        const MENU = [
-            { id: 'dashboard', label: '仪表盘', icon: '📊', path: '/dashboard' },
-            { id: 'pos', label: 'POS 收银', icon: '🛒', path: '/pos' },
-            { id: 'orders', label: '订单管理', icon: '📋', path: '/orders' },
-            { id: 'products', label: '商品管理', icon: '📦', path: '/products' },
-            { id: 'customers', label: '客户管理', icon: '👥', path: '/customers' },
-            { id: 'marketing', label: '营销中心', icon: '📣', path: '/marketing' },
-            { id: 'inventory', label: '库存管理', icon: '🏪', path: '/inventory' },
-            { id: 'purchase', label: '采购管理', icon: '📥', path: '/purchase' },
-            { id: 'finance', label: '财务管理', icon: '💰', path: '/finance' },
-            { id: 'hr', label: '人力资源管理', icon: '👔', path: '/hr' },
-            { id: 'saas', label: 'SaaS 管理', icon: '☁️', path: '/saas' },
-            { id: 'system', label: '系统管理', icon: '⚙️', path: '/system' },
-            { id: 'analytics', label: '数据分析', icon: '📈', path: '/analytics' },
-            { id: 'settings', label: '个人设置', icon: '🔧', path: '/settings' },
-            { id: 'ai', label: 'AI 智能中心', icon: '🤖', path: '/ai' }
+        const MENU_CONFIG = [
+            {
+                id: 'dashboard',
+                label: '仪表盘',
+                icon: '📊',
+                path: '/dashboard',
+                modulePath: '01-dashboard/dashboard',
+                children: [
+                    { label: '总览', path: '/dashboard', file: 'dashboard.html' },
+                    { label: '高管视图', path: '/dashboard/executive', file: 'executive.html' },
+                    { label: '车辆监控', path: '/dashboard/vehicle-monitor', file: 'vehicle-monitor.html' },
+                    { label: '员工管理', path: '/dashboard/employee', file: 'employee.html' },
+                    { label: '财务管理', path: '/dashboard/finance', file: 'finance.html' },
+                    { label: '库存管理', path: '/dashboard/inventory', file: 'inventory.html' },
+                    { label: '营销管理', path: '/dashboard/marketing', file: 'marketing.html' }
+                ]
+            },
+            {
+                id: 'pos',
+                label: 'POS 收银',
+                icon: '🛒',
+                path: '/pos',
+                modulePath: '02-pos/touch-pos',
+                children: [
+                    { label: '触屏收银', path: '/pos', file: 'touch-pos.html' },
+                    { label: '收银台', path: '/pos/register', file: 'cash-register.html' },
+                    { label: '收银员', path: '/pos/cashier', file: 'cashier.html' },
+                    { label: '客户显示屏', path: '/pos/customer-display', file: 'customer-display.html' },
+                    { label: '换货', path: '/pos/exchange', file: 'exchange.html' },
+                    { label: '厨房显示', path: '/pos/kitchen-display', file: 'kitchen-display.html' },
+                    { label: '离线收银', path: '/pos/offline', file: 'offline-pos.html' },
+                    { label: '快速销售', path: '/pos/quick-sale', file: 'quick-sale.html' },
+                    { label: '小票', path: '/pos/receipt', file: 'receipt.html' },
+                    { label: '退货', path: '/pos/returns', file: 'returns.html' }
+                ]
+            },
+            {
+                id: 'orders',
+                label: '订单管理',
+                icon: '📋',
+                path: '/orders',
+                modulePath: '03-orders/list',
+                children: [
+                    { label: '订单列表', path: '/orders', file: 'orders.html' },
+                    { label: '订单详情', path: '/orders/detail', file: 'detail.html' },
+                    { label: '退款管理', path: '/orders/refunds', file: 'refunds.html' },
+                    { label: '退货管理', path: '/orders/returns', file: 'returns.html' }
+                ]
+            },
+            {
+                id: 'products',
+                label: '商品管理',
+                icon: '📦',
+                path: '/products',
+                modulePath: '04-products/products',
+                children: [
+                    { label: '商品列表', path: '/products', file: 'products.html' },
+                    { label: '条码管理', path: '/products/barcodes', file: 'barcodes.html' },
+                    { label: '品牌管理', path: '/products/brands', file: 'brands.html' },
+                    { label: '分类管理', path: '/products/categories', file: 'categories.html' },
+                    { label: '套餐管理', path: '/products/combos', file: 'combos.html' },
+                    { label: '修饰符管理', path: '/products/modifiers', file: 'modifiers.html' },
+                    { label: '价格表', path: '/products/price-lists', file: 'price-lists.html' },
+                    { label: '变体管理', path: '/products/variants', file: 'variants.html' }
+                ]
+            },
+            {
+                id: 'customers',
+                label: '客户管理',
+                icon: '👥',
+                path: '/customers',
+                modulePath: '05-customers/customers',
+                children: [
+                    { label: '客户列表', path: '/customers', file: 'customers.html' },
+                    { label: '优惠券', path: '/customers/coupons', file: 'coupons.html' },
+                    { label: '反馈管理', path: '/customers/feedback', file: 'feedback.html' },
+                    { label: '礼品卡', path: '/customers/gift-cards', file: 'gift-cards.html' },
+                    { label: '会员管理', path: '/customers/membership', file: 'membership.html' },
+                    { label: '车辆管理', path: '/customers/vehicles', file: 'vehicles.html' },
+                    { label: '钱包管理', path: '/customers/wallet', file: 'wallet.html' }
+                ]
+            },
+            {
+                id: 'marketing',
+                label: '营销中心',
+                icon: '📣',
+                path: '/marketing',
+                modulePath: '06-marketing/promotions',
+                children: [
+                    { label: '促销活动', path: '/marketing', file: 'promotions.html' },
+                    { label: '营销活动', path: '/marketing/campaigns', file: 'campaigns.html' },
+                    { label: '忠诚度计划', path: '/marketing/loyalty', file: 'loyalty.html' },
+                    { label: '推荐管理', path: '/marketing/referrals', file: 'referrals.html' }
+                ]
+            },
+            {
+                id: 'inventory',
+                label: '库存管理',
+                icon: '🏪',
+                path: '/inventory',
+                modulePath: '07-inventory/stock',
+                children: [
+                    { label: '库存查询', path: '/inventory', file: 'stock.html' },
+                    { label: '库存调整', path: '/inventory/adjustments', file: 'adjustments.html' },
+                    { label: '批次管理', path: '/inventory/batches', file: 'batches.html' },
+                    { label: '盘点管理', path: '/inventory/cycle-counts', file: 'cycle-counts.html' },
+                    { label: '过期管理', path: '/inventory/expiry', file: 'expiry.html' },
+                    { label: '库存历史', path: '/inventory/history', file: 'history.html' },
+                    { label: '低库存预警', path: '/inventory/low-stock', file: 'low-stock.html' },
+                    { label: '序列号管理', path: '/inventory/serial-numbers', file: 'serial-numbers.html' },
+                    { label: '库存转移', path: '/inventory/transfers', file: 'transfers.html' },
+                    { label: '仓库管理', path: '/inventory/warehouses', file: 'warehouses.html' }
+                ]
+            },
+            {
+                id: 'purchase',
+                label: '采购管理',
+                icon: '📥',
+                path: '/purchase',
+                modulePath: '08-purchase/orders',
+                children: [
+                    { label: '采购订单', path: '/purchase', file: 'orders.html' },
+                    { label: '批量导入', path: '/purchase/import', file: 'import.html' },
+                    { label: '询价管理', path: '/purchase/quotations', file: 'quotations.html' },
+                    { label: '采购入库', path: '/purchase/receiving', file: 'receiving.html' },
+                    { label: '采购退货', path: '/purchase/returns', file: 'returns.html' },
+                    { label: '供应商付款', path: '/purchase/supplier-payments', file: 'supplier-payments.html' },
+                    { label: '供应商管理', path: '/purchase/suppliers', file: 'suppliers.html' }
+                ]
+            },
+            {
+                id: 'finance',
+                label: '财务管理',
+                icon: '💰',
+                path: '/finance',
+                modulePath: '09-finance/balance-sheet',
+                children: [
+                    { label: '资产负债表', path: '/finance', file: 'balance-sheet.html' },
+                    { label: '银行管理', path: '/finance/bank', file: 'bank.html' },
+                    { label: '现金流', path: '/finance/cash-flow', file: 'cash-flow.html' },
+                    { label: '费用管理', path: '/finance/expenses', file: 'expenses.html' },
+                    { label: '收入管理', path: '/finance/income', file: 'income.html' },
+                    { label: '发票管理', path: '/finance/invoices', file: 'invoices.html' },
+                    { label: '日记账', path: '/finance/journal', file: 'journal.html' },
+                    { label: '收付款管理', path: '/finance/payments', file: 'payments.html' },
+                    { label: '损益表', path: '/finance/profit-loss', file: 'profit-loss.html' },
+                    { label: '退款管理', path: '/finance/refunds', file: 'refunds.html' },
+                    { label: '结算管理', path: '/finance/settlements', file: 'settlements.html' },
+                    { label: '税务管理', path: '/finance/taxes', file: 'taxes.html' },
+                    { label: '试算平衡表', path: '/finance/trial-balance', file: 'trial-balance.html' },
+                    { label: '增值税管理', path: '/finance/vat', file: 'vat.html' }
+                ]
+            },
+            {
+                id: 'hr',
+                label: '人力资源管理',
+                icon: '👔',
+                path: '/hr',
+                modulePath: '10-hr/employees',
+                children: [
+                    { label: '员工列表', path: '/hr', file: 'employees.html' },
+                    { label: '考勤管理', path: '/hr/attendance', file: 'attendance.html' },
+                    { label: '奖金管理', path: '/hr/bonuses', file: 'bonuses.html' },
+                    { label: '佣金管理', path: '/hr/commissions', file: 'commissions.html' },
+                    { label: '休假管理', path: '/hr/leaves', file: 'leaves.html' },
+                    { label: '薪资管理', path: '/hr/payroll', file: 'payroll.html' },
+                    { label: '处罚管理', path: '/hr/penalties', file: 'penalties.html' },
+                    { label: '绩效管理', path: '/hr/performance', file: 'performance.html' },
+                    { label: '权限管理', path: '/hr/permissions', file: 'permissions.html' },
+                    { label: '排班管理', path: '/hr/schedules', file: 'schedules.html' },
+                    { label: '班次管理', path: '/hr/shifts', file: 'shifts.html' },
+                    { label: '任务管理', path: '/hr/tasks', file: 'tasks.html' }
+                ]
+            },
+            {
+                id: 'saas',
+                label: 'SaaS 管理',
+                icon: '☁️',
+                path: '/saas',
+                modulePath: '11-saas/subscriptions',
+                children: [
+                    { label: '订阅管理', path: '/saas', file: 'subscriptions.html' },
+                    { label: '账单管理', path: '/saas/billing', file: 'billing.html' },
+                    { label: '功能限制', path: '/saas/feature-limits', file: 'feature-limits.html' },
+                    { label: '发票管理', path: '/saas/invoices', file: 'invoices.html' },
+                    { label: '套餐管理', path: '/saas/packages', file: 'packages.html' },
+                    { label: '价格方案', path: '/saas/plans', file: 'plans.html' },
+                    { label: '存储管理', path: '/saas/storage', file: 'storage.html' },
+                    { label: '租户管理', path: '/saas/tenants', file: 'tenants.html' },
+                    { label: '用量统计', path: '/saas/usage', file: 'usage.html' }
+                ]
+            },
+            {
+                id: 'system',
+                label: '系统管理',
+                icon: '⚙️',
+                path: '/system',
+                modulePath: '12-system/settings',
+                children: [
+                    { label: '系统设置', path: '/system', file: 'settings.html' },
+                    { label: 'API Keys', path: '/system/api-keys', file: 'api-keys.html' },
+                    { label: '审计日志', path: '/system/audit-logs', file: 'audit-logs.html' },
+                    { label: '数据备份', path: '/system/backup', file: 'backup.html' },
+                    { label: '集成管理', path: '/system/integrations', file: 'integrations.html' },
+                    { label: '应用市场', path: '/system/marketplace', file: 'marketplace.html' },
+                    { label: '通知管理', path: '/system/notifications', file: 'notifications.html' },
+                    { label: '权限管理', path: '/system/permissions', file: 'permissions.html' },
+                    { label: '数据恢复', path: '/system/restore', file: 'restore.html' },
+                    { label: '角色管理', path: '/system/roles', file: 'roles.html' },
+                    { label: '系统日志', path: '/system/system-logs', file: 'system-logs.html' },
+                    { label: 'Webhooks', path: '/system/webhooks', file: 'webhooks.html' }
+                ]
+            },
+            {
+                id: 'analytics',
+                label: '数据分析',
+                icon: '📈',
+                path: '/analytics',
+                modulePath: '13-analytics/reports',
+                children: [
+                    { label: '报表中心', path: '/analytics', file: 'reports.html' },
+                    { label: '业务健康', path: '/analytics/business-health', file: 'business-health.html' },
+                    { label: '自定义报表', path: '/analytics/custom-reports', file: 'custom-reports.html' },
+                    { label: '预测分析', path: '/analytics/forecast', file: 'forecast.html' },
+                    { label: '智能推荐', path: '/analytics/recommendations', file: 'recommendations.html' },
+                    { label: '可视化', path: '/analytics/visualizations', file: 'visualizations.html' }
+                ]
+            },
+            {
+                id: 'settings',
+                label: '个人设置',
+                icon: '🔧',
+                path: '/settings',
+                modulePath: '14-settings/profile',
+                children: [
+                    { label: '个人资料', path: '/settings', file: 'profile.html' },
+                    { label: '分店管理', path: '/settings/branches', file: 'branches.html' },
+                    { label: '公司信息', path: '/settings/company', file: 'company.html' },
+                    { label: '通用设置', path: '/settings/general', file: 'general.html' },
+                    { label: '偏好设置', path: '/settings/preferences', file: 'preferences.html' }
+                ]
+            },
+            {
+                id: 'ai',
+                label: 'AI 智能中心',
+                icon: '🤖',
+                path: '/ai',
+                modulePath: '15-ai/ai',
+                children: [
+                    { label: 'AI 助手', path: '/ai', file: 'ai.html' },
+                    { label: 'CRM 智能', path: '/ai/crm', file: 'crm.html' }
+                ]
+            }
         ];
 
         // ============================================================
-        // 模块路径映射（实际目录结构）
+        // 4. DOM 引用
         // ============================================================
-        const MODULE_MAP = {
-            '/dashboard': '01-dashboard/dashboard',
-            '/pos': '02-pos/touch-pos',
-            '/orders': '03-orders/list',
-            '/products': '04-products/products',
-            '/customers': '05-customers/customers',
-            '/marketing': '06-marketing/promotions',
-            '/inventory': '07-inventory/stock',
-            '/purchase': '08-purchase/orders',
-            '/finance': '09-finance/balance-sheet',
-            '/hr': '10-hr/employees',
-            '/saas': '11-saas/subscriptions',
-            '/system': '12-system/settings',
-            '/analytics': '13-analytics/reports',
-            '/settings': '14-settings/profile',
-            '/ai': '15-ai/ai'
-        };
-
-        // ============================================================
-        // 模块名称映射（显示用）
-        // ============================================================
-        const MODULE_LABELS = {
-            '/dashboard': '仪表盘',
-            '/pos': 'POS 收银',
-            '/orders': '订单管理',
-            '/products': '商品管理',
-            '/customers': '客户管理',
-            '/marketing': '营销中心',
-            '/inventory': '库存管理',
-            '/purchase': '采购管理',
-            '/finance': '财务管理',
-            '/hr': '人力资源管理',
-            '/saas': 'SaaS 管理',
-            '/system': '系统管理',
-            '/analytics': '数据分析',
-            '/settings': '个人设置',
-            '/ai': 'AI 智能中心'
-        };
-
-        // ============================================================
-        // 模块图标映射
-        // ============================================================
-        const MODULE_ICONS = {
-            '/dashboard': '📊',
-            '/pos': '🛒',
-            '/orders': '📋',
-            '/products': '📦',
-            '/customers': '👥',
-            '/marketing': '📣',
-            '/inventory': '🏪',
-            '/purchase': '📥',
-            '/finance': '💰',
-            '/hr': '👔',
-            '/saas': '☁️',
-            '/system': '⚙️',
-            '/analytics': '📈',
-            '/settings': '🔧',
-            '/ai': '🤖'
-        };
-
-        // ============================================================
-        // DOM 引用
-        // ============================================================
-        const container = document.getElementById('pageContent');
+        const sidebarNav = document.getElementById('sidebarNav');
+        const pageContent = document.getElementById('pageContent');
         const pageTitle = document.getElementById('pageTitle');
+        const pagePath = document.getElementById('pagePath');
 
         // ============================================================
-        // 检查登录状态
+        // 5. 认证检查
         // ============================================================
         async function checkAuth() {
             try {
                 const { data, error } = await supabase.auth.getSession();
-
                 if (error || !data?.session) {
                     const localUser = localStorage.getItem('sb-user');
                     if (!localUser) {
@@ -470,159 +810,239 @@
                         return null;
                     }
                 }
-
                 return data.session.user;
             } catch (err) {
-                console.error('认证检查失败:', err);
+                console.error('认证失败:', err);
                 window.location.href = '/login.html';
                 return null;
             }
         }
 
         // ============================================================
-        // 渲染侧边栏
+        // 6. 渲染侧边栏（折叠式多级菜单）
         // ============================================================
-        function renderSidebar() {
-            const nav = document.getElementById('sidebar-nav');
+        function renderSidebar(activePath) {
             let html = '<ul class="menu-list">';
-            for (const item of MENU) {
+
+            MENU_CONFIG.forEach((item, index) => {
+                const hasChildren = item.children && item.children.length > 0;
+                const isActive = activePath && activePath.startsWith(item.path);
+                const isOpen = isActive;
+
                 html += `<li class="menu-item">`;
-                html += `<button class="menu-link" data-path="${item.path}">`;
+                html += `<button class="menu-link" data-path="${item.path}" data-module="${item.modulePath}" data-index="${index}">`;
                 html += `<span class="menu-icon">${item.icon}</span>`;
                 html += `<span class="menu-label">${item.label}</span>`;
+                if (hasChildren) {
+                    html += `<span class="menu-arrow ${isOpen ? 'open' : ''}">▾</span>`;
+                }
                 html += `</button>`;
-                html += `</li>`;
-            }
-            html += '</ul>';
-            nav.innerHTML = html;
 
-            // 点击事件
-            nav.querySelectorAll('.menu-link').forEach(link => {
-                link.addEventListener('click', (e) => {
-                    e.preventDefault();
-                    const path = link.dataset.path;
-                    // 高亮当前菜单
-                    document.querySelectorAll('.menu-link').forEach(el => el.classList.remove('active'));
-                    link.classList.add('active');
-                    // 加载模块
-                    loadModule(path);
-                    // 移动端收起侧边栏
-                    if (window.innerWidth < 768) {
-                        document.getElementById('app').classList.add('sidebar-collapsed');
+                if (hasChildren) {
+                    html += `<ul class="sub-menu ${isOpen ? 'open' : ''}">`;
+                    item.children.forEach((child, childIndex) => {
+                        const isChildActive = activePath === child.path;
+                        html += `<li>`;
+                        html += `<button class="sub-menu-link ${isChildActive ? 'active' : ''}" data-path="${child.path}" data-file="${child.file}" data-module="${item.modulePath}">`;
+                        html += child.label;
+                        html += `</button>`;
+                        html += `</li>`;
+                    });
+                    html += `</ul>`;
+                }
+
+                html += `</li>`;
+            });
+
+            html += '</ul>';
+            sidebarNav.innerHTML = html;
+
+            // 主菜单点击事件（展开/折叠 + 导航）
+            sidebarNav.querySelectorAll('.menu-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const path = this.dataset.path;
+                    const modulePath = this.dataset.module;
+                    const parentItem = this.closest('.menu-item');
+                    const subMenu = parentItem.querySelector('.sub-menu');
+                    const arrow = this.querySelector('.menu-arrow');
+
+                    // 如果有子菜单，切换展开/折叠
+                    if (subMenu) {
+                        const isOpen = subMenu.classList.contains('open');
+                        if (isOpen) {
+                            subMenu.classList.remove('open');
+                            if (arrow) arrow.classList.remove('open');
+                        } else {
+                            subMenu.classList.add('open');
+                            if (arrow) arrow.classList.add('open');
+                        }
+                        // 高亮主菜单
+                        sidebarNav.querySelectorAll('.menu-link').forEach(el => el.classList.remove('active'));
+                        this.classList.add('active');
+                        // 加载模块（使用主模块路径）
+                        loadModule(path, modulePath);
+                    } else {
+                        // 没有子菜单，直接加载
+                        sidebarNav.querySelectorAll('.menu-link').forEach(el => el.classList.remove('active'));
+                        this.classList.add('active');
+                        loadModule(path, modulePath);
                     }
                 });
             });
-        }
 
-        // ============================================================
-        // 显示仪表盘
-        // ============================================================
-        function showDashboard() {
-            const user = document.getElementById('userDisplay').textContent || '管理员';
-            container.innerHTML = `
-                <div class="welcome-banner">
-                    <h1>👋 欢迎回来，${user}！</h1>
-                    <p>BAI ERP 智能企业管理系统 v1.0.0</p>
-                </div>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-number">0</div>
-                        <div class="stat-label">今日订单</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">0</div>
-                        <div class="stat-label">待处理任务</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">0</div>
-                        <div class="stat-label">库存预警</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number">0</div>
-                        <div class="stat-label">本月营收</div>
-                    </div>
-                </div>
-                <div style="background:white;padding:2rem;border-radius:12px;box-shadow:0 1px 3px rgba(0,0,0,0.1);">
-                    <h3 style="margin-bottom:1rem;color:#2d3748;">📌 快速开始</h3>
-                    <p style="color:#718096;">选择左侧菜单进入各个功能模块。系统已连接 Supabase 数据库，请创建数据库表以启用完整功能。</p>
-                </div>
-            `;
-        }
+            // 子菜单点击事件
+            sidebarNav.querySelectorAll('.sub-menu-link').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    e.stopPropagation();
+                    const path = this.dataset.path;
+                    const file = this.dataset.file;
+                    const modulePath = this.dataset.module;
 
-        // ============================================================
-        // 显示模块占位（开发中）
-        // ============================================================
-        function showModulePlaceholder(path) {
-            const label = MODULE_LABELS[path] || path.replace('/', '');
-            const icon = MODULE_ICONS[path] || '🚧';
-            container.innerHTML = `
-                <div class="module-placeholder">
-                    <span class="module-icon">${icon}</span>
-                    <h2>${label}</h2>
-                    <p>模块正在开发中，敬请期待</p>
-                    <br>
-                    <button onclick="loadModule('/dashboard')" style="padding:0.5rem 1.5rem;background:#4299e1;color:white;border:none;border-radius:8px;cursor:pointer;font-size:1rem;">
-                        ← 返回仪表盘
-                    </button>
-                </div>
-            `;
-        }
+                    // 高亮
+                    sidebarNav.querySelectorAll('.sub-menu-link').forEach(el => el.classList.remove('active'));
+                    this.classList.add('active');
 
-        // ============================================================
-        // 加载模块
-        // ============================================================
-        async function loadModule(path) {
-            // 更新标题
-            const label = MODULE_LABELS[path] || path.replace('/', '');
-            pageTitle.textContent = label;
+                    // 展开父菜单
+                    const parentItem = this.closest('.menu-item');
+                    const subMenu = parentItem.querySelector('.sub-menu');
+                    const arrow = parentItem.querySelector('.menu-arrow');
+                    if (subMenu) subMenu.classList.add('open');
+                    if (arrow) arrow.classList.add('open');
 
-            // 如果是仪表盘，直接显示
-            if (path === '/dashboard') {
-                showDashboard();
-                return;
+                    // 加载模块
+                    loadModule(path, modulePath, file);
+                });
+            });
+
+            // 更新高亮
+            if (activePath) {
+                highlightMenu(activePath);
             }
+        }
+
+        // ============================================================
+        // 7. 高亮菜单
+        // ============================================================
+        function highlightMenu(path) {
+            // 清除所有高亮
+            sidebarNav.querySelectorAll('.menu-link, .sub-menu-link').forEach(el => el.classList.remove('active'));
+
+            // 查找匹配的子菜单
+            let found = false;
+            sidebarNav.querySelectorAll('.sub-menu-link').forEach(link => {
+                if (link.dataset.path === path) {
+                    link.classList.add('active');
+                    // 展开父菜单
+                    const parentItem = link.closest('.menu-item');
+                    const subMenu = parentItem.querySelector('.sub-menu');
+                    const arrow = parentItem.querySelector('.menu-arrow');
+                    if (subMenu) subMenu.classList.add('open');
+                    if (arrow) arrow.classList.add('open');
+                    // 高亮主菜单
+                    const mainLink = parentItem.querySelector('.menu-link');
+                    if (mainLink) mainLink.classList.add('active');
+                    found = true;
+                }
+            });
+
+            // 如果没有子菜单匹配，尝试匹配主菜单
+            if (!found) {
+                sidebarNav.querySelectorAll('.menu-link').forEach(link => {
+                    if (link.dataset.path === path) {
+                        link.classList.add('active');
+                    }
+                });
+            }
+        }
+
+        // ============================================================
+        // 8. 加载模块
+        // ============================================================
+        async function loadModule(path, modulePath, file) {
+            // 更新标题
+            const label = getLabelByPath(path);
+            pageTitle.textContent = label || path;
+            pagePath.textContent = path;
 
             // 显示加载状态
-            container.innerHTML = `<div class="loading-spinner">加载 ${label} 模块...</div>`;
+            pageContent.innerHTML = `
+                <div class="loading-spinner">
+                    <div class="spinner"></div>
+                    加载 ${label || '模块'}...
+                </div>
+            `;
 
             try {
-                const modulePath = MODULE_MAP[path];
-                if (!modulePath) {
-                    showModulePlaceholder(path);
-                    return;
+                // 构建文件路径
+                let filePath;
+                if (file) {
+                    // 子模块有指定文件
+                    filePath = `/modules/${modulePath}/${file}`;
+                } else {
+                    // 主模块使用 index.html
+                    filePath = `/modules/${modulePath}/index.html`;
                 }
 
-                // 尝试加载模块 HTML
-                const response = await fetch(`/modules/${modulePath}/index.html`);
-
+                const response = await fetch(filePath);
                 if (!response.ok) {
-                    // 模块不存在，显示占位
-                    showModulePlaceholder(path);
+                    pageContent.innerHTML = `
+                        <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:60vh;gap:1rem;">
+                            <span style="font-size:4rem;">📄</span>
+                            <h2 style="color:#e53e3e;">模块不存在</h2>
+                            <p style="color:#718096;">${filePath}</p>
+                            <button onclick="location.reload()" style="padding:0.5rem 1.5rem;background:#4299e1;color:white;border:none;border-radius:8px;cursor:pointer;">
+                                刷新
+                            </button>
+                        </div>
+                    `;
                     return;
                 }
 
                 const html = await response.text();
-                container.innerHTML = html;
+                pageContent.innerHTML = html;
 
                 // 尝试加载对应的 JS
                 try {
-                    const jsModule = await import(`/modules/${modulePath}/index.js`);
+                    const jsPath = filePath.replace('.html', '.js');
+                    const jsModule = await import(jsPath);
                     if (jsModule.onLoad) {
-                        jsModule.onLoad(container);
+                        jsModule.onLoad(pageContent);
                     }
                 } catch (e) {
                     // 没有 JS 文件，忽略
-                    console.log(`${label} 模块无 JS 文件`);
                 }
 
             } catch (error) {
-                console.warn('模块加载失败:', error);
-                showModulePlaceholder(path);
+                console.error('加载失败:', error);
+                pageContent.innerHTML = `
+                    <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:60vh;gap:1rem;">
+                        <span style="font-size:4rem;">❌</span>
+                        <h2 style="color:#e53e3e;">加载失败</h2>
+                        <p style="color:#718096;">${error.message}</p>
+                        <button onclick="location.reload()" style="padding:0.5rem 1.5rem;background:#4299e1;color:white;border:none;border-radius:8px;cursor:pointer;">
+                            重试
+                        </button>
+                    </div>
+                `;
             }
         }
 
         // ============================================================
-        // 退出登录
+        // 9. 获取路径对应的标签
+        // ============================================================
+        function getLabelByPath(path) {
+            for (const item of MENU_CONFIG) {
+                if (item.path === path) return item.label;
+                for (const child of (item.children || [])) {
+                    if (child.path === path) return child.label;
+                }
+            }
+            return path.replace(/^\/+/, '').replace(/-/g, ' ');
+        }
+
+        // ============================================================
+        // 10. 退出登录
         // ============================================================
         async function logout() {
             try {
@@ -632,25 +1052,36 @@
                 window.location.href = '/login.html';
             } catch (err) {
                 console.error('退出失败:', err);
-                localStorage.removeItem('sb-user');
                 window.location.href = '/login.html';
             }
         }
 
         // ============================================================
-        // 初始化
+        // 11. 初始化
         // ============================================================
         async function init() {
             const user = await checkAuth();
             if (!user) return;
 
+            // 显示用户信息
             const displayName = user.email || user.user_metadata?.full_name || '管理员';
             document.getElementById('userDisplay').textContent = displayName;
+            document.getElementById('userAvatar').textContent = displayName.charAt(0).toUpperCase();
 
-            renderSidebar();
-            loadModule('/dashboard');
+            // 从 URL hash 获取当前路径
+            const initialPath = window.location.hash.slice(1) || '/dashboard';
+            window.location.hash = initialPath;
 
-            // 侧边栏切换（移动端）
+            // 渲染侧边栏
+            renderSidebar(initialPath);
+
+            // 加载默认模块
+            const defaultModule = MENU_CONFIG.find(m => m.path === '/dashboard');
+            if (defaultModule) {
+                loadModule('/dashboard', defaultModule.modulePath);
+            }
+
+            // 侧边栏折叠切换
             document.getElementById('toggleSidebar').addEventListener('click', () => {
                 document.getElementById('app').classList.toggle('sidebar-collapsed');
             });
@@ -658,22 +1089,48 @@
             // 退出登录
             document.getElementById('logoutBtn').addEventListener('click', logout);
 
-            // 窗口 resize 处理
-            window.addEventListener('resize', () => {
-                if (window.innerWidth >= 768) {
-                    document.getElementById('app').classList.remove('sidebar-collapsed');
+            // 监听 hash 变化
+            window.addEventListener('hashchange', () => {
+                const path = window.location.hash.slice(1) || '/dashboard';
+                const menuItem = findMenuItemByPath(path);
+                if (menuItem) {
+                    highlightMenu(path);
+                    if (menuItem.file) {
+                        loadModule(path, menuItem.modulePath, menuItem.file);
+                    } else {
+                        loadModule(path, menuItem.modulePath);
+                    }
                 }
             });
 
-            // 暴露 loadModule 到全局，供 HTML 内联使用
+            // 暴露到全局
             window.loadModule = loadModule;
 
             console.log('%c🚗 BAI ERP 仪表盘已加载', 'font-size:16px;font-weight:bold;color:#4299e1;');
+            console.log(`%c📂 共 ${MENU_CONFIG.length} 个主模块，${MENU_CONFIG.reduce((acc, m) => acc + (m.children?.length || 0), 0)} 个子模块`, 'color:#718096;');
             console.log('%c👤 当前用户:', displayName);
-            console.log('%c📊 系统已连接 Supabase 数据库', 'color:#38a169;');
-            console.log('%c📂 共 ' + MENU.length + ' 个模块', 'color:#718096;');
         }
 
+        // ============================================================
+        // 12. 根据路径查找菜单项
+        // ============================================================
+        function findMenuItemByPath(path) {
+            for (const item of MENU_CONFIG) {
+                if (item.path === path) {
+                    return { ...item, file: null };
+                }
+                for (const child of (item.children || [])) {
+                    if (child.path === path) {
+                        return { ...child, modulePath: item.modulePath };
+                    }
+                }
+            }
+            return null;
+        }
+
+        // ============================================================
+        // 13. 启动
+        // ============================================================
         init();
     </script>
 </body>
