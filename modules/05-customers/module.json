@@ -1,0 +1,15 @@
+﻿{
+    "id":  "customers",
+    "version":  "1.0.0",
+    "description":  "05-customers 模块",
+    "name":  "05-customers",
+    "children":  [
+                     "coupons",
+                     "customers",
+                     "feedback",
+                     "gift-cards",
+                     "membership",
+                     "vehicles",
+                     "wallet"
+                 ]
+}

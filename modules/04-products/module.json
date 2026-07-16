@@ -1,0 +1,16 @@
+﻿{
+    "id":  "products",
+    "version":  "1.0.0",
+    "description":  "04-products 模块",
+    "name":  "04-products",
+    "children":  [
+                     "barcodes",
+                     "brands",
+                     "categories",
+                     "combos",
+                     "modifiers",
+                     "price-lists",
+                     "products",
+                     "variants"
+                 ]
+}

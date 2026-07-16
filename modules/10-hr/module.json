@@ -1,0 +1,20 @@
+﻿{
+    "id":  "hr",
+    "version":  "1.0.0",
+    "description":  "10-hr 模块",
+    "name":  "10-hr",
+    "children":  [
+                     "attendance",
+                     "bonuses",
+                     "commissions",
+                     "employees",
+                     "leaves",
+                     "payroll",
+                     "penalties",
+                     "performance",
+                     "permissions",
+                     "schedules",
+                     "shifts",
+                     "tasks"
+                 ]
+}

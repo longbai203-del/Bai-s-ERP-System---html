@@ -1,0 +1,10 @@
+﻿{
+    "id":  "ai",
+    "version":  "1.0.0",
+    "description":  "15-ai 模块",
+    "name":  "15-ai",
+    "children":  [
+                     "ai",
+                     "crm"
+                 ]
+}

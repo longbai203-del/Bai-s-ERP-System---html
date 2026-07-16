@@ -1,0 +1,14 @@
+﻿{
+    "id":  "analytics",
+    "version":  "1.0.0",
+    "description":  "13-analytics 模块",
+    "name":  "13-analytics",
+    "children":  [
+                     "business-health",
+                     "custom-reports",
+                     "forecast",
+                     "recommendations",
+                     "reports",
+                     "visualizations"
+                 ]
+}

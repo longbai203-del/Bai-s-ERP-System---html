@@ -1,0 +1,16 @@
+﻿{
+    "id":  "saas",
+    "version":  "1.0.0",
+    "description":  "11-saas 模块",
+    "name":  "11-saas",
+    "children":  [
+                     "billing",
+                     "feature-limits",
+                     "packages",
+                     "plans",
+                     "storage",
+                     "subscriptions",
+                     "tenants",
+                     "usage"
+                 ]
+}

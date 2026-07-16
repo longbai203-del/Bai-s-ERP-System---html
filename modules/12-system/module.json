@@ -1,0 +1,20 @@
+﻿{
+    "id":  "system",
+    "version":  "1.0.0",
+    "description":  "12-system 模块",
+    "name":  "12-system",
+    "children":  [
+                     "api-keys",
+                     "audit-logs",
+                     "backup",
+                     "integrations",
+                     "marketplace",
+                     "notifications",
+                     "permissions",
+                     "restore",
+                     "roles",
+                     "settings",
+                     "system-logs",
+                     "webhooks"
+                 ]
+}

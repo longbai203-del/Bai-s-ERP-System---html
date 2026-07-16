@@ -1,0 +1,21 @@
+﻿{
+    "id":  "finance",
+    "version":  "1.0.0",
+    "description":  "09-finance 模块",
+    "name":  "09-finance",
+    "children":  [
+                     "balance-sheet",
+                     "bank",
+                     "cash-flow",
+                     "expenses",
+                     "income",
+                     "invoices",
+                     "journal",
+                     "payments",
+                     "profit-loss",
+                     "settlements",
+                     "taxes",
+                     "trial-balance",
+                     "vat"
+                 ]
+}

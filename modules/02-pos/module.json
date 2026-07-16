@@ -1,0 +1,17 @@
+﻿{
+    "id":  "pos",
+    "version":  "1.0.0",
+    "description":  "02-pos 模块",
+    "name":  "02-pos",
+    "children":  [
+                     "cash-register",
+                     "cashier",
+                     "customer-display",
+                     "exchange",
+                     "kitchen-display",
+                     "offline-pos",
+                     "quick-sale",
+                     "receipt",
+                     "touch-pos"
+                 ]
+}

@@ -1,0 +1,13 @@
+﻿{
+    "id":  "purchase",
+    "version":  "1.0.0",
+    "description":  "08-purchase 模块",
+    "name":  "08-purchase",
+    "children":  [
+                     "import",
+                     "quotations",
+                     "receiving",
+                     "supplier-payments",
+                     "suppliers"
+                 ]
+}

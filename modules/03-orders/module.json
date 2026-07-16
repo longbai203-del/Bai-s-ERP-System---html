@@ -1,0 +1,13 @@
+﻿{
+    "id":  "orders",
+    "version":  "1.0.0",
+    "description":  "03-orders 模块",
+    "name":  "03-orders",
+    "children":  [
+                     "detail",
+                     "list",
+                     "refunds",
+                     "returns",
+                     "submodules"
+                 ]
+}

@@ -1,0 +1,13 @@
+﻿{
+    "id":  "settings",
+    "version":  "1.0.0",
+    "description":  "14-settings 模块",
+    "name":  "14-settings",
+    "children":  [
+                     "branches",
+                     "company",
+                     "general",
+                     "preferences",
+                     "profile"
+                 ]
+}

@@ -1,0 +1,18 @@
+﻿{
+    "id":  "inventory",
+    "version":  "1.0.0",
+    "description":  "07-inventory 模块",
+    "name":  "07-inventory",
+    "children":  [
+                     "adjustments",
+                     "batches",
+                     "cycle-counts",
+                     "expiry",
+                     "history",
+                     "low-stock",
+                     "serial-numbers",
+                     "stock",
+                     "transfers",
+                     "warehouses"
+                 ]
+}
