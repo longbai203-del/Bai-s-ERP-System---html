@@ -1,0 +1,22 @@
+﻿{
+    "version": "1.0.0",
+    "name": "BAI ERP",
+    "description": "智能企业管理系统",
+    "modules": {
+        "dashboard": { "name": "仪表盘", "icon": "📊", "path": "/dashboard" },
+        "pos": { "name": "POS 收银", "icon": "🛒", "path": "/pos" },
+        "orders": { "name": "订单管理", "icon": "📋", "path": "/orders" },
+        "products": { "name": "商品管理", "icon": "📦", "path": "/products" },
+        "customers": { "name": "客户管理", "icon": "👥", "path": "/customers" },
+        "marketing": { "name": "营销中心", "icon": "📣", "path": "/marketing" },
+        "inventory": { "name": "库存管理", "icon": "🏪", "path": "/inventory" },
+        "purchase": { "name": "采购管理", "icon": "📥", "path": "/purchase" },
+        "finance": { "name": "财务管理", "icon": "💰", "path": "/finance" },
+        "hr": { "name": "人力资源管理", "icon": "👔", "path": "/hr" },
+        "saas": { "name": "SaaS 管理", "icon": "☁️", "path": "/saas" },
+        "system": { "name": "系统管理", "icon": "⚙️", "path": "/system" },
+        "analytics": { "name": "数据分析", "icon": "📈", "path": "/analytics" },
+        "settings": { "name": "个人设置", "icon": "🔧", "path": "/settings" },
+        "ai": { "name": "AI 智能中心", "icon": "🤖", "path": "/ai" }
+    }
+}
