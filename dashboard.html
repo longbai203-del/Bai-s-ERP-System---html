@@ -21,9 +21,6 @@
             overflow: hidden;
         }
 
-        /* ============================================================
-           应用容器
-           ============================================================ */
         .app-container {
             display: flex;
             height: 100vh;
@@ -44,6 +41,7 @@
             top: 0;
             transition: width 0.3s ease;
             overflow: hidden;
+            z-index: 100;
         }
 
         .sidebar-brand {
@@ -76,9 +74,6 @@
             margin-left: auto;
         }
 
-        /* ============================================================
-           侧边栏导航
-           ============================================================ */
         .sidebar-nav {
             flex: 1;
             overflow-y: auto;
@@ -96,16 +91,12 @@
             background: transparent;
         }
 
-        /* ============================================================
-           菜单样式
-           ============================================================ */
         .menu-list {
             list-style: none;
             padding: 0;
             margin: 0;
         }
 
-        /* 主菜单项 */
         .menu-item {
             margin: 0;
         }
@@ -161,18 +152,6 @@
             transform: rotate(180deg);
         }
 
-        .menu-link .menu-badge {
-            font-size: 0.6rem;
-            background: #e53e3e;
-            color: white;
-            padding: 0.05rem 0.5rem;
-            border-radius: 10px;
-            flex-shrink: 0;
-        }
-
-        /* ============================================================
-           子菜单（折叠式）
-           ============================================================ */
         .sub-menu {
             list-style: none;
             max-height: 0;
@@ -218,9 +197,6 @@
             background: #1a202c;
         }
 
-        /* ============================================================
-           侧边栏折叠状态
-           ============================================================ */
         .sidebar-collapsed .sidebar {
             width: 64px;
         }
@@ -229,7 +205,6 @@
         .sidebar-collapsed .sidebar-brand .brand-badge,
         .sidebar-collapsed .menu-label,
         .sidebar-collapsed .menu-arrow,
-        .sidebar-collapsed .menu-badge,
         .sidebar-collapsed .sub-menu {
             display: none;
         }
@@ -249,7 +224,7 @@
         }
 
         /* ============================================================
-           主内容区域
+           主内容
            ============================================================ */
         .main-content {
             flex: 1;
@@ -260,9 +235,6 @@
             overflow: hidden;
         }
 
-        /* ============================================================
-           顶栏
-           ============================================================ */
         .topbar {
             background: white;
             padding: 0.6rem 1.5rem;
@@ -350,9 +322,6 @@
             background: #fff5f5;
         }
 
-        /* ============================================================
-           页面内容
-           ============================================================ */
         .page-content {
             flex: 1;
             padding: 1.5rem;
@@ -368,9 +337,6 @@
             border-radius: 3px;
         }
 
-        /* ============================================================
-           加载状态
-           ============================================================ */
         .loading-spinner {
             display: flex;
             flex-direction: column;
@@ -397,39 +363,116 @@
             }
         }
 
-        /* ============================================================
-           响应式
-           ============================================================ */
+        /* 子模块卡片 */
+        .submodule-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .submodule-card {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem 1.2rem;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            cursor: pointer;
+            transition: all 0.25s ease;
+        }
+
+        .submodule-card:hover {
+            border-color: #4299e1;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 16px rgba(66, 153, 225, 0.15);
+        }
+
+        .submodule-card .submodule-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .submodule-card .submodule-info {
+            flex: 1;
+        }
+
+        .submodule-card .submodule-name {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: #1a202c;
+        }
+
+        .submodule-card .submodule-path {
+            font-size: 0.75rem;
+            color: #a0aec0;
+            font-family: monospace;
+        }
+
+        .submodule-card .submodule-arrow {
+            color: #a0aec0;
+            font-size: 1.2rem;
+            transition: transform 0.2s;
+        }
+
+        .submodule-card:hover .submodule-arrow {
+            transform: translateX(4px);
+            color: #4299e1;
+        }
+
+        .module-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid #e2e8f0;
+        }
+
+        .module-header .module-icon {
+            font-size: 2.5rem;
+        }
+
+        .module-header h1 {
+            font-size: 1.5rem;
+            color: #1a202c;
+            margin: 0;
+        }
+
+        .module-header p {
+            color: #718096;
+            margin: 0;
+            font-size: 0.9rem;
+        }
+
         @media (max-width: 768px) {
             .sidebar {
                 width: 64px;
             }
-
             .sidebar-brand span,
             .sidebar-brand .brand-badge,
             .menu-label,
             .menu-arrow,
-            .menu-badge,
             .sub-menu {
                 display: none;
             }
-
             .menu-link {
                 justify-content: center;
                 padding: 0.7rem 0;
             }
-
             .menu-link .menu-icon {
                 font-size: 1.3rem;
                 width: auto;
             }
-
             .topbar-title .title-path {
                 display: none;
             }
-
             .user-name {
                 display: none;
+            }
+            .submodule-grid {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -443,30 +486,24 @@
             .topbar-title {
                 font-size: 0.9rem;
             }
+            .module-header h1 {
+                font-size: 1.2rem;
+            }
         }
     </style>
 </head>
 <body>
 
     <div id="app" class="app-container">
-        <!-- ============================================================
-        侧边栏
-        ============================================================ -->
         <aside id="sidebar" class="sidebar">
             <div class="sidebar-brand">
                 🚗 <span>BAI</span>
                 <span class="brand-badge">v1.0</span>
             </div>
-            <nav id="sidebarNav" class="sidebar-nav">
-                <!-- JS 动态渲染 -->
-            </nav>
+            <nav id="sidebarNav" class="sidebar-nav"></nav>
         </aside>
 
-        <!-- ============================================================
-        主内容
-        ============================================================ -->
         <main class="main-content">
-            <!-- 顶栏 -->
             <header class="topbar">
                 <div class="topbar-left">
                     <button id="toggleSidebar" class="topbar-btn" title="切换侧边栏">☰</button>
@@ -482,7 +519,6 @@
                 </div>
             </header>
 
-            <!-- 内容区 -->
             <section id="pageContent" class="page-content">
                 <div class="loading-spinner">
                     <div class="spinner"></div>
@@ -492,9 +528,6 @@
         </main>
     </div>
 
-    <!-- ============================================================
-    Supabase Import Map
-    ============================================================ -->
     <script type="importmap">
         {
             "imports": {
@@ -503,14 +536,12 @@
         }
     </script>
 
-    <!-- ============================================================
-    主脚本
-    ============================================================ -->
     <script type="module">
         // ============================================================
         // 1. 导入
         // ============================================================
         import { createClient } from '@supabase/supabase-js';
+        import { MENU_CONFIG, findMenuItemByPath, getLabelByPath } from './config/menu.config.js';
 
         // ============================================================
         // 2. Supabase 配置
@@ -521,265 +552,7 @@
         const supabase = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
         // ============================================================
-        // 3. 完整菜单配置（15个主模块 + 所有子模块）
-        // ============================================================
-        const MENU_CONFIG = [
-            {
-                id: 'dashboard',
-                label: '仪表盘',
-                icon: '📊',
-                path: '/dashboard',
-                modulePath: '01-dashboard/dashboard',
-                children: [
-                    { label: '总览', path: '/dashboard', file: 'dashboard.html' },
-                    { label: '高管视图', path: '/dashboard/executive', file: 'executive.html' },
-                    { label: '车辆监控', path: '/dashboard/vehicle-monitor', file: 'vehicle-monitor.html' },
-                    { label: '员工管理', path: '/dashboard/employee', file: 'employee.html' },
-                    { label: '财务管理', path: '/dashboard/finance', file: 'finance.html' },
-                    { label: '库存管理', path: '/dashboard/inventory', file: 'inventory.html' },
-                    { label: '营销管理', path: '/dashboard/marketing', file: 'marketing.html' }
-                ]
-            },
-            {
-                id: 'pos',
-                label: 'POS 收银',
-                icon: '🛒',
-                path: '/pos',
-                modulePath: '02-pos/touch-pos',
-                children: [
-                    { label: '触屏收银', path: '/pos', file: 'touch-pos.html' },
-                    { label: '收银台', path: '/pos/register', file: 'cash-register.html' },
-                    { label: '收银员', path: '/pos/cashier', file: 'cashier.html' },
-                    { label: '客户显示屏', path: '/pos/customer-display', file: 'customer-display.html' },
-                    { label: '换货', path: '/pos/exchange', file: 'exchange.html' },
-                    { label: '厨房显示', path: '/pos/kitchen-display', file: 'kitchen-display.html' },
-                    { label: '离线收银', path: '/pos/offline', file: 'offline-pos.html' },
-                    { label: '快速销售', path: '/pos/quick-sale', file: 'quick-sale.html' },
-                    { label: '小票', path: '/pos/receipt', file: 'receipt.html' },
-                    { label: '退货', path: '/pos/returns', file: 'returns.html' }
-                ]
-            },
-            {
-                id: 'orders',
-                label: '订单管理',
-                icon: '📋',
-                path: '/orders',
-                modulePath: '03-orders/list',
-                children: [
-                    { label: '订单列表', path: '/orders', file: 'orders.html' },
-                    { label: '订单详情', path: '/orders/detail', file: 'detail.html' },
-                    { label: '退款管理', path: '/orders/refunds', file: 'refunds.html' },
-                    { label: '退货管理', path: '/orders/returns', file: 'returns.html' }
-                ]
-            },
-            {
-                id: 'products',
-                label: '商品管理',
-                icon: '📦',
-                path: '/products',
-                modulePath: '04-products/products',
-                children: [
-                    { label: '商品列表', path: '/products', file: 'products.html' },
-                    { label: '条码管理', path: '/products/barcodes', file: 'barcodes.html' },
-                    { label: '品牌管理', path: '/products/brands', file: 'brands.html' },
-                    { label: '分类管理', path: '/products/categories', file: 'categories.html' },
-                    { label: '套餐管理', path: '/products/combos', file: 'combos.html' },
-                    { label: '修饰符管理', path: '/products/modifiers', file: 'modifiers.html' },
-                    { label: '价格表', path: '/products/price-lists', file: 'price-lists.html' },
-                    { label: '变体管理', path: '/products/variants', file: 'variants.html' }
-                ]
-            },
-            {
-                id: 'customers',
-                label: '客户管理',
-                icon: '👥',
-                path: '/customers',
-                modulePath: '05-customers/customers',
-                children: [
-                    { label: '客户列表', path: '/customers', file: 'customers.html' },
-                    { label: '优惠券', path: '/customers/coupons', file: 'coupons.html' },
-                    { label: '反馈管理', path: '/customers/feedback', file: 'feedback.html' },
-                    { label: '礼品卡', path: '/customers/gift-cards', file: 'gift-cards.html' },
-                    { label: '会员管理', path: '/customers/membership', file: 'membership.html' },
-                    { label: '车辆管理', path: '/customers/vehicles', file: 'vehicles.html' },
-                    { label: '钱包管理', path: '/customers/wallet', file: 'wallet.html' }
-                ]
-            },
-            {
-                id: 'marketing',
-                label: '营销中心',
-                icon: '📣',
-                path: '/marketing',
-                modulePath: '06-marketing/promotions',
-                children: [
-                    { label: '促销活动', path: '/marketing', file: 'promotions.html' },
-                    { label: '营销活动', path: '/marketing/campaigns', file: 'campaigns.html' },
-                    { label: '忠诚度计划', path: '/marketing/loyalty', file: 'loyalty.html' },
-                    { label: '推荐管理', path: '/marketing/referrals', file: 'referrals.html' }
-                ]
-            },
-            {
-                id: 'inventory',
-                label: '库存管理',
-                icon: '🏪',
-                path: '/inventory',
-                modulePath: '07-inventory/stock',
-                children: [
-                    { label: '库存查询', path: '/inventory', file: 'stock.html' },
-                    { label: '库存调整', path: '/inventory/adjustments', file: 'adjustments.html' },
-                    { label: '批次管理', path: '/inventory/batches', file: 'batches.html' },
-                    { label: '盘点管理', path: '/inventory/cycle-counts', file: 'cycle-counts.html' },
-                    { label: '过期管理', path: '/inventory/expiry', file: 'expiry.html' },
-                    { label: '库存历史', path: '/inventory/history', file: 'history.html' },
-                    { label: '低库存预警', path: '/inventory/low-stock', file: 'low-stock.html' },
-                    { label: '序列号管理', path: '/inventory/serial-numbers', file: 'serial-numbers.html' },
-                    { label: '库存转移', path: '/inventory/transfers', file: 'transfers.html' },
-                    { label: '仓库管理', path: '/inventory/warehouses', file: 'warehouses.html' }
-                ]
-            },
-            {
-                id: 'purchase',
-                label: '采购管理',
-                icon: '📥',
-                path: '/purchase',
-                modulePath: '08-purchase/orders',
-                children: [
-                    { label: '采购订单', path: '/purchase', file: 'orders.html' },
-                    { label: '批量导入', path: '/purchase/import', file: 'import.html' },
-                    { label: '询价管理', path: '/purchase/quotations', file: 'quotations.html' },
-                    { label: '采购入库', path: '/purchase/receiving', file: 'receiving.html' },
-                    { label: '采购退货', path: '/purchase/returns', file: 'returns.html' },
-                    { label: '供应商付款', path: '/purchase/supplier-payments', file: 'supplier-payments.html' },
-                    { label: '供应商管理', path: '/purchase/suppliers', file: 'suppliers.html' }
-                ]
-            },
-            {
-                id: 'finance',
-                label: '财务管理',
-                icon: '💰',
-                path: '/finance',
-                modulePath: '09-finance/balance-sheet',
-                children: [
-                    { label: '资产负债表', path: '/finance', file: 'balance-sheet.html' },
-                    { label: '银行管理', path: '/finance/bank', file: 'bank.html' },
-                    { label: '现金流', path: '/finance/cash-flow', file: 'cash-flow.html' },
-                    { label: '费用管理', path: '/finance/expenses', file: 'expenses.html' },
-                    { label: '收入管理', path: '/finance/income', file: 'income.html' },
-                    { label: '发票管理', path: '/finance/invoices', file: 'invoices.html' },
-                    { label: '日记账', path: '/finance/journal', file: 'journal.html' },
-                    { label: '收付款管理', path: '/finance/payments', file: 'payments.html' },
-                    { label: '损益表', path: '/finance/profit-loss', file: 'profit-loss.html' },
-                    { label: '退款管理', path: '/finance/refunds', file: 'refunds.html' },
-                    { label: '结算管理', path: '/finance/settlements', file: 'settlements.html' },
-                    { label: '税务管理', path: '/finance/taxes', file: 'taxes.html' },
-                    { label: '试算平衡表', path: '/finance/trial-balance', file: 'trial-balance.html' },
-                    { label: '增值税管理', path: '/finance/vat', file: 'vat.html' }
-                ]
-            },
-            {
-                id: 'hr',
-                label: '人力资源管理',
-                icon: '👔',
-                path: '/hr',
-                modulePath: '10-hr/employees',
-                children: [
-                    { label: '员工列表', path: '/hr', file: 'employees.html' },
-                    { label: '考勤管理', path: '/hr/attendance', file: 'attendance.html' },
-                    { label: '奖金管理', path: '/hr/bonuses', file: 'bonuses.html' },
-                    { label: '佣金管理', path: '/hr/commissions', file: 'commissions.html' },
-                    { label: '休假管理', path: '/hr/leaves', file: 'leaves.html' },
-                    { label: '薪资管理', path: '/hr/payroll', file: 'payroll.html' },
-                    { label: '处罚管理', path: '/hr/penalties', file: 'penalties.html' },
-                    { label: '绩效管理', path: '/hr/performance', file: 'performance.html' },
-                    { label: '权限管理', path: '/hr/permissions', file: 'permissions.html' },
-                    { label: '排班管理', path: '/hr/schedules', file: 'schedules.html' },
-                    { label: '班次管理', path: '/hr/shifts', file: 'shifts.html' },
-                    { label: '任务管理', path: '/hr/tasks', file: 'tasks.html' }
-                ]
-            },
-            {
-                id: 'saas',
-                label: 'SaaS 管理',
-                icon: '☁️',
-                path: '/saas',
-                modulePath: '11-saas/subscriptions',
-                children: [
-                    { label: '订阅管理', path: '/saas', file: 'subscriptions.html' },
-                    { label: '账单管理', path: '/saas/billing', file: 'billing.html' },
-                    { label: '功能限制', path: '/saas/feature-limits', file: 'feature-limits.html' },
-                    { label: '发票管理', path: '/saas/invoices', file: 'invoices.html' },
-                    { label: '套餐管理', path: '/saas/packages', file: 'packages.html' },
-                    { label: '价格方案', path: '/saas/plans', file: 'plans.html' },
-                    { label: '存储管理', path: '/saas/storage', file: 'storage.html' },
-                    { label: '租户管理', path: '/saas/tenants', file: 'tenants.html' },
-                    { label: '用量统计', path: '/saas/usage', file: 'usage.html' }
-                ]
-            },
-            {
-                id: 'system',
-                label: '系统管理',
-                icon: '⚙️',
-                path: '/system',
-                modulePath: '12-system/settings',
-                children: [
-                    { label: '系统设置', path: '/system', file: 'settings.html' },
-                    { label: 'API Keys', path: '/system/api-keys', file: 'api-keys.html' },
-                    { label: '审计日志', path: '/system/audit-logs', file: 'audit-logs.html' },
-                    { label: '数据备份', path: '/system/backup', file: 'backup.html' },
-                    { label: '集成管理', path: '/system/integrations', file: 'integrations.html' },
-                    { label: '应用市场', path: '/system/marketplace', file: 'marketplace.html' },
-                    { label: '通知管理', path: '/system/notifications', file: 'notifications.html' },
-                    { label: '权限管理', path: '/system/permissions', file: 'permissions.html' },
-                    { label: '数据恢复', path: '/system/restore', file: 'restore.html' },
-                    { label: '角色管理', path: '/system/roles', file: 'roles.html' },
-                    { label: '系统日志', path: '/system/system-logs', file: 'system-logs.html' },
-                    { label: 'Webhooks', path: '/system/webhooks', file: 'webhooks.html' }
-                ]
-            },
-            {
-                id: 'analytics',
-                label: '数据分析',
-                icon: '📈',
-                path: '/analytics',
-                modulePath: '13-analytics/reports',
-                children: [
-                    { label: '报表中心', path: '/analytics', file: 'reports.html' },
-                    { label: '业务健康', path: '/analytics/business-health', file: 'business-health.html' },
-                    { label: '自定义报表', path: '/analytics/custom-reports', file: 'custom-reports.html' },
-                    { label: '预测分析', path: '/analytics/forecast', file: 'forecast.html' },
-                    { label: '智能推荐', path: '/analytics/recommendations', file: 'recommendations.html' },
-                    { label: '可视化', path: '/analytics/visualizations', file: 'visualizations.html' }
-                ]
-            },
-            {
-                id: 'settings',
-                label: '个人设置',
-                icon: '🔧',
-                path: '/settings',
-                modulePath: '14-settings/profile',
-                children: [
-                    { label: '个人资料', path: '/settings', file: 'profile.html' },
-                    { label: '分店管理', path: '/settings/branches', file: 'branches.html' },
-                    { label: '公司信息', path: '/settings/company', file: 'company.html' },
-                    { label: '通用设置', path: '/settings/general', file: 'general.html' },
-                    { label: '偏好设置', path: '/settings/preferences', file: 'preferences.html' }
-                ]
-            },
-            {
-                id: 'ai',
-                label: 'AI 智能中心',
-                icon: '🤖',
-                path: '/ai',
-                modulePath: '15-ai/ai',
-                children: [
-                    { label: 'AI 助手', path: '/ai', file: 'ai.html' },
-                    { label: 'CRM 智能', path: '/ai/crm', file: 'crm.html' }
-                ]
-            }
-        ];
-
-        // ============================================================
-        // 4. DOM 引用
+        // 3. DOM 引用
         // ============================================================
         const sidebarNav = document.getElementById('sidebarNav');
         const pageContent = document.getElementById('pageContent');
@@ -787,7 +560,7 @@
         const pagePath = document.getElementById('pagePath');
 
         // ============================================================
-        // 5. 认证检查
+        // 4. 认证检查
         // ============================================================
         async function checkAuth() {
             try {
@@ -819,18 +592,18 @@
         }
 
         // ============================================================
-        // 6. 渲染侧边栏（折叠式多级菜单）
+        // 5. 渲染侧边栏
         // ============================================================
         function renderSidebar(activePath) {
             let html = '<ul class="menu-list">';
 
-            MENU_CONFIG.forEach((item, index) => {
+            MENU_CONFIG.forEach((item) => {
                 const hasChildren = item.children && item.children.length > 0;
                 const isActive = activePath && activePath.startsWith(item.path);
                 const isOpen = isActive;
 
                 html += `<li class="menu-item">`;
-                html += `<button class="menu-link" data-path="${item.path}" data-module="${item.modulePath}" data-index="${index}">`;
+                html += `<button class="menu-link" data-path="${item.path}" data-module="${item.modulePath}" data-is-main="true">`;
                 html += `<span class="menu-icon">${item.icon}</span>`;
                 html += `<span class="menu-label">${item.label}</span>`;
                 if (hasChildren) {
@@ -840,7 +613,7 @@
 
                 if (hasChildren) {
                     html += `<ul class="sub-menu ${isOpen ? 'open' : ''}">`;
-                    item.children.forEach((child, childIndex) => {
+                    item.children.forEach((child) => {
                         const isChildActive = activePath === child.path;
                         html += `<li>`;
                         html += `<button class="sub-menu-link ${isChildActive ? 'active' : ''}" data-path="${child.path}" data-file="${child.file}" data-module="${item.modulePath}">`;
@@ -857,7 +630,7 @@
             html += '</ul>';
             sidebarNav.innerHTML = html;
 
-            // 主菜单点击事件（展开/折叠 + 导航）
+            // 主菜单点击事件
             sidebarNav.querySelectorAll('.menu-link').forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.stopPropagation();
@@ -867,7 +640,6 @@
                     const subMenu = parentItem.querySelector('.sub-menu');
                     const arrow = this.querySelector('.menu-arrow');
 
-                    // 如果有子菜单，切换展开/折叠
                     if (subMenu) {
                         const isOpen = subMenu.classList.contains('open');
                         if (isOpen) {
@@ -877,13 +649,10 @@
                             subMenu.classList.add('open');
                             if (arrow) arrow.classList.add('open');
                         }
-                        // 高亮主菜单
                         sidebarNav.querySelectorAll('.menu-link').forEach(el => el.classList.remove('active'));
                         this.classList.add('active');
-                        // 加载模块（使用主模块路径）
                         loadModule(path, modulePath);
                     } else {
-                        // 没有子菜单，直接加载
                         sidebarNav.querySelectorAll('.menu-link').forEach(el => el.classList.remove('active'));
                         this.classList.add('active');
                         loadModule(path, modulePath);
@@ -899,54 +668,45 @@
                     const file = this.dataset.file;
                     const modulePath = this.dataset.module;
 
-                    // 高亮
                     sidebarNav.querySelectorAll('.sub-menu-link').forEach(el => el.classList.remove('active'));
                     this.classList.add('active');
 
-                    // 展开父菜单
                     const parentItem = this.closest('.menu-item');
                     const subMenu = parentItem.querySelector('.sub-menu');
                     const arrow = parentItem.querySelector('.menu-arrow');
                     if (subMenu) subMenu.classList.add('open');
                     if (arrow) arrow.classList.add('open');
 
-                    // 加载模块
                     loadModule(path, modulePath, file);
                 });
             });
 
-            // 更新高亮
             if (activePath) {
                 highlightMenu(activePath);
             }
         }
 
         // ============================================================
-        // 7. 高亮菜单
+        // 6. 高亮菜单
         // ============================================================
         function highlightMenu(path) {
-            // 清除所有高亮
             sidebarNav.querySelectorAll('.menu-link, .sub-menu-link').forEach(el => el.classList.remove('active'));
 
-            // 查找匹配的子菜单
             let found = false;
             sidebarNav.querySelectorAll('.sub-menu-link').forEach(link => {
                 if (link.dataset.path === path) {
                     link.classList.add('active');
-                    // 展开父菜单
                     const parentItem = link.closest('.menu-item');
                     const subMenu = parentItem.querySelector('.sub-menu');
                     const arrow = parentItem.querySelector('.menu-arrow');
                     if (subMenu) subMenu.classList.add('open');
                     if (arrow) arrow.classList.add('open');
-                    // 高亮主菜单
                     const mainLink = parentItem.querySelector('.menu-link');
                     if (mainLink) mainLink.classList.add('active');
                     found = true;
                 }
             });
 
-            // 如果没有子菜单匹配，尝试匹配主菜单
             if (!found) {
                 sidebarNav.querySelectorAll('.menu-link').forEach(link => {
                     if (link.dataset.path === path) {
@@ -957,15 +717,13 @@
         }
 
         // ============================================================
-        // 8. 加载模块
+        // 7. 加载模块
         // ============================================================
         async function loadModule(path, modulePath, file) {
-            // 更新标题
             const label = getLabelByPath(path);
             pageTitle.textContent = label || path;
             pagePath.textContent = path;
 
-            // 显示加载状态
             pageContent.innerHTML = `
                 <div class="loading-spinner">
                     <div class="spinner"></div>
@@ -974,18 +732,23 @@
             `;
 
             try {
-                // 构建文件路径
                 let filePath;
                 if (file) {
-                    // 子模块有指定文件
                     filePath = `/modules/${modulePath}/${file}`;
                 } else {
-                    // 主模块使用 index.html
+                    // 主模块：尝试加载 index.html
                     filePath = `/modules/${modulePath}/index.html`;
                 }
 
                 const response = await fetch(filePath);
+
                 if (!response.ok) {
+                    // 如果文件不存在，显示子模块列表
+                    const menuItem = findMenuItemByPath(path);
+                    if (!file && menuItem && menuItem.children && menuItem.children.length > 0) {
+                        renderModuleIndex(menuItem);
+                        return;
+                    }
                     pageContent.innerHTML = `
                         <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:60vh;gap:1rem;">
                             <span style="font-size:4rem;">📄</span>
@@ -1002,7 +765,6 @@
                 const html = await response.text();
                 pageContent.innerHTML = html;
 
-                // 尝试加载对应的 JS
                 try {
                     const jsPath = filePath.replace('.html', '.js');
                     const jsModule = await import(jsPath);
@@ -1029,20 +791,45 @@
         }
 
         // ============================================================
-        // 9. 获取路径对应的标签
+        // 8. 渲染模块首页（子模块列表）
         // ============================================================
-        function getLabelByPath(path) {
-            for (const item of MENU_CONFIG) {
-                if (item.path === path) return item.label;
-                for (const child of (item.children || [])) {
-                    if (child.path === path) return child.label;
-                }
-            }
-            return path.replace(/^\/+/, '').replace(/-/g, ' ');
+        function renderModuleIndex(menuItem) {
+            const iconMap = {
+                'dashboard': '📊', 'pos': '🛒', 'orders': '📋', 'products': '📦',
+                'customers': '👥', 'marketing': '📣', 'inventory': '🏪', 'purchase': '📥',
+                'finance': '💰', 'hr': '👔', 'saas': '☁️', 'system': '⚙️',
+                'analytics': '📈', 'settings': '🔧', 'ai': '🤖'
+            };
+            const icon = iconMap[menuItem.id] || '📂';
+
+            let childHtml = menuItem.children.map(child => `
+                <div class="submodule-card" onclick="window.loadModule('${child.path}', '${menuItem.modulePath}', '${child.file}')">
+                    <div class="submodule-icon">📄</div>
+                    <div class="submodule-info">
+                        <div class="submodule-name">${child.label}</div>
+                        <div class="submodule-path">${child.file}</div>
+                    </div>
+                    <div class="submodule-arrow">→</div>
+                </div>
+            `).join('');
+
+            pageContent.innerHTML = `
+                <div class="module-header">
+                    <span class="module-icon">${icon}</span>
+                    <div>
+                        <h1>${menuItem.label}</h1>
+                        <p>${menuItem.children.length} 个子模块 · 点击进入</p>
+                    </div>
+                </div>
+                <div class="submodule-grid">${childHtml}</div>
+            `;
+
+            // 暴露 loadModule 到全局
+            window.loadModule = loadModule;
         }
 
         // ============================================================
-        // 10. 退出登录
+        // 9. 退出登录
         // ============================================================
         async function logout() {
             try {
@@ -1057,39 +844,32 @@
         }
 
         // ============================================================
-        // 11. 初始化
+        // 10. 初始化
         // ============================================================
         async function init() {
             const user = await checkAuth();
             if (!user) return;
 
-            // 显示用户信息
             const displayName = user.email || user.user_metadata?.full_name || '管理员';
             document.getElementById('userDisplay').textContent = displayName;
             document.getElementById('userAvatar').textContent = displayName.charAt(0).toUpperCase();
 
-            // 从 URL hash 获取当前路径
             const initialPath = window.location.hash.slice(1) || '/dashboard';
             window.location.hash = initialPath;
 
-            // 渲染侧边栏
             renderSidebar(initialPath);
 
-            // 加载默认模块
             const defaultModule = MENU_CONFIG.find(m => m.path === '/dashboard');
             if (defaultModule) {
                 loadModule('/dashboard', defaultModule.modulePath);
             }
 
-            // 侧边栏折叠切换
             document.getElementById('toggleSidebar').addEventListener('click', () => {
                 document.getElementById('app').classList.toggle('sidebar-collapsed');
             });
 
-            // 退出登录
             document.getElementById('logoutBtn').addEventListener('click', logout);
 
-            // 监听 hash 变化
             window.addEventListener('hashchange', () => {
                 const path = window.location.hash.slice(1) || '/dashboard';
                 const menuItem = findMenuItemByPath(path);
@@ -1103,33 +883,15 @@
                 }
             });
 
-            // 暴露到全局
             window.loadModule = loadModule;
 
             console.log('%c🚗 BAI ERP 仪表盘已加载', 'font-size:16px;font-weight:bold;color:#4299e1;');
-            console.log(`%c📂 共 ${MENU_CONFIG.length} 个主模块，${MENU_CONFIG.reduce((acc, m) => acc + (m.children?.length || 0), 0)} 个子模块`, 'color:#718096;');
+            console.log(`%c📂 共 ${MENU_CONFIG.length} 个主模块`, 'color:#718096;');
             console.log('%c👤 当前用户:', displayName);
         }
 
         // ============================================================
-        // 12. 根据路径查找菜单项
-        // ============================================================
-        function findMenuItemByPath(path) {
-            for (const item of MENU_CONFIG) {
-                if (item.path === path) {
-                    return { ...item, file: null };
-                }
-                for (const child of (item.children || [])) {
-                    if (child.path === path) {
-                        return { ...child, modulePath: item.modulePath };
-                    }
-                }
-            }
-            return null;
-        }
-
-        // ============================================================
-        // 13. 启动
+        // 11. 启动
         // ============================================================
         init();
     </script>
