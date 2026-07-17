@@ -1,18 +1,16 @@
 {
-  "name": "bai-erp-system",
-  "version": "2.0.0",
-  "description": "BAI ERP System - ??????",
-  "main": "dashboard.html",
+  "name": "erp-system",
+  "version": "1.0.0",
+  "type": "module",
   "scripts": {
-    "start": "npx serve .",
-    "dev": "npx serve .",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview"
   },
-  "keywords": ["erp", "dashboard", "management"],
-  "author": "BAI ERP Team",
-  "license": "MIT",
-  "dependencies": {},
+  "dependencies": {
+    "@supabase/supabase-js": "^2.45.0"
+  },
   "devDependencies": {
-    "serve": "^14.2.1"
+    "vite": "^5.0.0"
   }
 }
