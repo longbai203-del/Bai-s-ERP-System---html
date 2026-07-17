@@ -1,10 +1,9 @@
 {
   "name": "bai-s-erp-system-html",
   "version": 2,
-  "buildCommand": "npm run build",
-  "outputDirectory": "dist",
+  "buildCommand": "echo 'Static deployment - no build required'",
+  "outputDirectory": ".",
   "installCommand": "npm install",
-  "framework": "vite",
   "rewrites": [
     {
       "source": "/(.*)",
@@ -14,24 +13,5 @@
   "env": {
     "VITE_SUPABASE_URL": "@supabase_url",
     "VITE_SUPABASE_ANON_KEY": "@supabase_anon_key"
-  },
-  "headers": [
-    {
-      "source": "/(.*)",
-      "headers": [
-        {
-          "key": "X-Content-Type-Options",
-          "value": "nosniff"
-        },
-        {
-          "key": "X-Frame-Options",
-          "value": "DENY"
-        },
-        {
-          "key": "X-XSS-Protection",
-          "value": "1; mode=block"
-        }
-      ]
-    }
-  ]
+  }
 }
