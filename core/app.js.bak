@@ -1,4 +1,4 @@
-﻿// core/app.js
+// core/app.js
 // 应用主入口
 
 import { loadLayout } from './layout-loader.js';
@@ -13,7 +13,7 @@ const APP_CONFIG = {
 };
 
 async function initApp() {
-    console.log("📦  v");
+    console.log(📦  v);
     
     try {
         // 加载布局（导航栏 + 侧边栏）
@@ -36,4 +36,3 @@ if (document.readyState === 'complete') {
 }
 
 export default APP_CONFIG;
-

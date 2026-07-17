@@ -1,22 +1,21 @@
 ﻿// core/module-loader.js
 // 动态加载模块
 
-import { MENU_CONFIG, findMenuItemByPath, getLabelByPath } from '../config/modules.config.js';
+import { MODULES, getModule, getDefaultPage } from '/config/modules.config.js';
 
 let currentModule = null;
 let currentChild = null;
 
 // 加载模块
 export async function loadModule(moduleId, childId) {
-    // 根据模块ID查找
-    const module = MENU_CONFIG.find(m => m.id === moduleId);
+    const module = getModule(moduleId);
     if (!module) {
         console.error('❌ 模块不存在:', moduleId);
         return;
     }
 
     currentModule = moduleId;
-    currentChild = childId || (module.children && module.children.length > 0 ? module.children[0].id : null);
+    currentChild = childId || module.default;
 
     console.log('📦 加载模块:', moduleId, '->', currentChild);
 
@@ -36,12 +35,16 @@ async function loadPageContent(module, childId) {
     if (!mainContent) return;
 
     // 查找子模块
-    const child = module.children.find(function(c) { return c.id === childId; });
-    const pagePath = child ? child.file : null;
-    const modulePath = child ? child.modulePath : module.modulePath;
+    const child = module.children.find(c => c.id === childId);
+    const pagePath = child ? child.path : module.default;
 
     // 构建HTML路径
-    let htmlPath = modulePath + '/' + (pagePath || 'index.html');
+    let htmlPath = module.path + '/' + pagePath + '.html';
+
+    // 如果子模块是 index，使用 index.html
+    if (pagePath === 'index') {
+        htmlPath = module.path + '/index.html';
+    }
 
     console.log('📄 加载页面:', htmlPath);
 
@@ -62,30 +65,36 @@ async function loadPageContent(module, childId) {
             mainContent.innerHTML = html;
             console.log('✅ 页面加载成功');
         } else {
-            mainContent.innerHTML =
-                '<div style="padding:40px;text-align:center;">' +
-                '<h2 style="color:#ef4444;">⚠️ 页面加载失败</h2>' +
-                '<p style="color:#64748b;">' + htmlPath + ' (' + response.status + ')</p>' +
-                '</div>';
+            mainContent.innerHTML = 
+                <div style="padding:40px;text-align:center;">
+                    <h2 style="color:#ef4444;">⚠️ 页面加载失败</h2>
+                    <p style="color:#64748b;"> ()</p>
+                </div>
+            ;
         }
     } catch (error) {
         console.error('❌ 加载页面失败:', error);
-        mainContent.innerHTML =
-            '<div style="padding:40px;text-align:center;">' +
-            '<h2 style="color:#ef4444;">⚠️ 加载错误</h2>' +
-            '<p style="color:#64748b;">' + error.message + '</p>' +
-            '</div>';
+        mainContent.innerHTML = 
+            <div style="padding:40px;text-align:center;">
+                <h2 style="color:#ef4444;">⚠️ 加载错误</h2>
+                <p style="color:#64748b;"></p>
+            </div>
+        ;
     }
 }
 
 // 加载模块JS
 async function loadModuleScript(module, childId) {
-    const child = module.children.find(function(c) { return c.id === childId; });
-    const pagePath = child ? child.file : null;
-    const modulePath = child ? child.modulePath : module.modulePath;
+    const child = module.children.find(c => c.id === childId);
+    const pagePath = child ? child.path : module.default;
 
     // 构建JS路径
-    let jsPath = modulePath + '/' + (pagePath ? pagePath.replace('.html', '.js') : 'index.js');
+    let jsPath = module.path + '/' + pagePath + '.js';
+
+    // 如果子模块是 index，使用 index.js
+    if (pagePath === 'index') {
+        jsPath = module.path + '/index.js';
+    }
 
     console.log('📜 加载脚本:', jsPath);
 
@@ -101,10 +110,10 @@ async function loadModuleScript(module, childId) {
         script.id = 'module-script';
         script.type = 'module';
         script.src = jsPath;
-        script.onload = function() {
+        script.onload = () => {
             console.log('✅ 脚本加载成功');
         };
-        script.onerror = function() {
+        script.onerror = () => {
             console.warn('⚠️ 脚本加载失败（可能不存在）:', jsPath);
         };
         document.body.appendChild(script);
@@ -117,18 +126,18 @@ async function loadModuleScript(module, childId) {
 // 更新侧边栏高亮
 function updateSidebarActive(moduleId, childId) {
     // 移除所有高亮
-    document.querySelectorAll('.sidebar-item').forEach(function(el) {
+    document.querySelectorAll('.sidebar-item').forEach(el => {
         el.classList.remove('active');
     });
 
     // 高亮主模块
-    var moduleLink = document.querySelector('.sidebar-item[data-module="' + moduleId + '"]');
+    const moduleLink = document.querySelector('.sidebar-item[data-module="' + moduleId + '"]');
     if (moduleLink) {
         moduleLink.classList.add('active');
     }
 
     // 高亮子模块
-    var childLink = document.querySelector('.sidebar-item[data-child="' + childId + '"]');
+    const childLink = document.querySelector('.sidebar-item[data-child="' + childId + '"]');
     if (childLink) {
         childLink.classList.add('active');
     }
@@ -136,15 +145,15 @@ function updateSidebarActive(moduleId, childId) {
 
 // 从URL加载模块
 export function loadModuleFromURL() {
-    var params = new URLSearchParams(window.location.search);
-    var moduleId = params.get('module') || 'dashboard';
-    var childId = params.get('child') || null;
+    const params = new URLSearchParams(window.location.search);
+    const moduleId = params.get('module') || '01-dashboard';
+    const childId = params.get('child') || null;
 
     loadModule(moduleId, childId);
 }
 
 // 监听hash变化
-window.addEventListener('hashchange', function() {
+window.addEventListener('hashchange', () => {
     loadModuleFromURL();
 });
 
