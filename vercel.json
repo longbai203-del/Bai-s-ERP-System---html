@@ -1,4 +1,4 @@
-{
+﻿{
   "name": "bai-erp-system",
   "version": 2,
   "buildCommand": "npm run build",
@@ -10,9 +10,5 @@
       "source": "/(.*)",
       "destination": "/dashboard.html"
     }
-  ],
-  "env": {
-    "VITE_SUPABASE_URL": "@supabase_url",
-    "VITE_SUPABASE_ANON_KEY": "@supabase_anon_key"
-  }
+  ]
 }
