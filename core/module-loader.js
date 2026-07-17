@@ -1,4 +1,4 @@
-// core/module-loader.js
+﻿// core/module-loader.js
 // 动态加载模块
 
 import { MODULES, getModule, getDefaultPage } from '/config/modules.config.js';
@@ -70,19 +70,17 @@ async function loadPageContent(module, childId) {
             mainContent.innerHTML = html;
             console.log('✅ 页面加载成功');
         } else {
-            mainContent.innerHTML = 
-                <div style="padding:40px;text-align:center;">
-                    <h2 style="color:#ef4444;">⚠️ 页面加载失败</h2>
-                    <p style="color:#64748b;"> ()</p>
+            mainContent.innerHTML = `<div style="padding:40px;text-align:center;">
+                    ${`<h2 style="color:#ef4444;">⚠️ 页面加载失败</h2>`}
+                    ${`<p style="color:#64748b;"> ()</p>`}
                 </div>
             ;
         }
     } catch (error) {
         console.error('❌ 加载页面失败:', error);
-        mainContent.innerHTML = 
-            <div style="padding:40px;text-align:center;">
-                <h2 style="color:#ef4444;">⚠️ 加载错误</h2>
-                <p style="color:#64748b;"></p>
+        mainContent.innerHTML = `<div style="padding:40px;text-align:center;">
+                ${`<h2 style="color:#ef4444;">⚠️ 加载错误</h2>`}
+                ${`<p style="color:#64748b;"></p>`}
             </div>
         ;
     }
@@ -169,3 +167,5 @@ window.addEventListener('hashchange', () => {
 
 // 自动初始化
 document.addEventListener('DOMContentLoaded', loadModuleFromURL);
+
+
