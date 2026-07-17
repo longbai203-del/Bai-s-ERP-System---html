@@ -1,32 +1,118 @@
-﻿<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>侧边栏 - BAI ERP</title>
-</head>
-<body>
-    <aside class="sidebar">
-        <div class="sidebar-brand">🚗 <span>BAI</span></div>
-        <nav>
-            <ul class="menu-list">
-                <li><a href="/dashboard" class="menu-link">📊 仪表盘</a></li>
-                <li><a href="/pos" class="menu-link">🛒 POS收银</a></li>
-                <li><a href="/orders" class="menu-link">📋 订单管理</a></li>
-                <li><a href="/products" class="menu-link">📦 商品管理</a></li>
-                <li><a href="/customers" class="menu-link">👥 客户管理</a></li>
-                <li><a href="/marketing" class="menu-link">📣 营销中心</a></li>
-                <li><a href="/inventory" class="menu-link">🏪 库存管理</a></li>
-                <li><a href="/purchase" class="menu-link">📥 采购管理</a></li>
-                <li><a href="/finance" class="menu-link">💰 财务管理</a></li>
-                <li><a href="/hr" class="menu-link">👔 人力资源管理</a></li>
-                <li><a href="/saas" class="menu-link">☁️ SaaS管理</a></li>
-                <li><a href="/system" class="menu-link">⚙️ 系统管理</a></li>
-                <li><a href="/analytics" class="menu-link">📈 数据分析</a></li>
-                <li><a href="/settings" class="menu-link">🔧 个人设置</a></li>
-                <li><a href="/ai" class="menu-link">🤖 AI智能中心</a></li>
-            </ul>
-        </nav>
-    </aside>
-</body>
-</html>
+﻿<!-- layouts/sidebar.html - 动态菜单 -->
+<div class="sidebar" id="sidebar">
+    <div class="sidebar-brand">
+        <span style="font-size:24px;">🚗</span>
+        <span style="font-weight:700;font-size:18px;margin-left:8px;">BAI ERP</span>
+    </div>
+    
+    <nav class="sidebar-nav" id="sidebar-nav">
+        <!-- 菜单由 JavaScript 动态生成 -->
+        <div id="menu-container"></div>
+    </nav>
+</div>
+
+<script type="module">
+import { MODULES } from '/config/modules.config.js';
+
+function buildMenu() {
+    const container = document.getElementById('menu-container');
+    if (!container) return;
+    
+    let html = '';
+    
+    for (const [key, module] of Object.entries(MODULES)) {
+        html += 
+            <div class="sidebar-section">
+                <div class="sidebar-section-title"> </div>
+        ;
+        
+        // 子菜单
+        for (const child of module.children) {
+            const isActive = window.location.search.includes(module=) && 
+                           window.location.search.includes(child=);
+            html += 
+                <a href="?module=&child=" 
+                   class="sidebar-item "
+                   data-module=""
+                   data-child="">
+                    
+                </a>
+            ;
+        }
+        
+        html += </div>;
+    }
+    
+    container.innerHTML = html;
+}
+
+// 构建菜单
+buildMenu();
+
+// 监听点击事件 - 使用事件委托
+document.getElementById('menu-container').addEventListener('click', function(e) {
+    const link = e.target.closest('.sidebar-item');
+    if (link) {
+        e.preventDefault();
+        const href = link.getAttribute('href');
+        if (href) {
+            // 更新URL
+            window.history.pushState({}, '', href);
+            // 触发模块加载
+            window.dispatchEvent(new Event('hashchange'));
+        }
+    }
+});
+</script>
+
+<style>
+.sidebar-brand {
+    display: flex;
+    align-items: center;
+    padding: 16px 20px;
+    border-bottom: 1px solid #e2e8f0;
+    margin-bottom: 8px;
+}
+
+.sidebar-nav {
+    overflow-y: auto;
+    height: calc(100vh - 140px);
+}
+
+.sidebar-section {
+    margin-bottom: 4px;
+}
+
+.sidebar-section-title {
+    font-size: 11px;
+    font-weight: 600;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 8px 16px 4px;
+}
+
+.sidebar-item {
+    display: block;
+    padding: 8px 16px 8px 24px;
+    color: #475569;
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+    cursor: pointer;
+}
+
+.sidebar-item:hover {
+    background: #f1f5f9;
+    color: #2563eb;
+    border-left-color: #2563eb;
+}
+
+.sidebar-item.active {
+    background: #eff6ff;
+    color: #2563eb;
+    border-left-color: #2563eb;
+    font-weight: 500;
+}
+</style>
