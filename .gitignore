@@ -1,53 +1,19 @@
-# Dependencies
+﻿# Dependencies
 node_modules/
-npm-debug.log*
-yarn-debug.log*
-yarn-error.log*
+
+# Build
+dist/
+.vite/
 
 # Environment
 .env
 .env.local
 .env.*.local
 
-# Build outputs
-dist/
-build/
-
-# OS files
-.DS_Store
-Thumbs.db
-
 # IDE
 .vscode/
 .idea/
-*.swp
-*.swo
 
-# Temp files
-*.log
-*.tmp
-*.temp
-
-# Project specific
-tree.txt
-file-tree.txt
-folders.txt
-fix-modules.ps1# 临时文件和备份
-*.bak
-*.tmp
-*.swp
-*~
-
-# 项目分析文件（已移到docs）
-file-tree.txt
-folders.txt
-
-# 开发工具脚本（已移到scripts/archive）
-generate-all-pages.js
-refactor-to-v2.js
-
-# 空目录（保留结构）
-**/empty/
-
-# PowerShell 脚本输出
-*.ps1
+# OS
+.DS_Store
+Thumbs.db
