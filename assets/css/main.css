@@ -1,6 +1,5 @@
 ﻿/* ========================================
-   BAI-ERP 主样式文件
-   整合所有CSS变量和全局样式
+   BAI-ERP 主样式文件 - 修复版
    ======================================== */
 
 /* 导入变量 */
@@ -13,141 +12,221 @@
     box-sizing: border-box;
 }
 
-body {
+html, body {
+    height: 100%;
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     background: #f1f5f9;
     color: #1e293b;
     line-height: 1.6;
 }
 
-/* 应用布局 */
+/* ========================================
+   应用布局 - 核心修复
+   ======================================== */
+
 #app {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
 }
 
+/* 导航栏 - 顶部固定 */
+#navbar-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 1000;
+    height: 60px;
+    background: white;
+    border-bottom: 1px solid #e2e8f0;
+}
+
+/* 主内容包装器 - 使用flex布局 */
 .main-wrapper {
     display: flex;
     flex: 1;
+    margin-top: 60px; /* 为顶部导航留出空间 */
+    min-height: calc(100vh - 60px);
 }
 
+/* 侧边栏 - 固定在左侧 */
 #sidebar-container {
+    position: fixed;
+    top: 60px;
+    left: 0;
+    bottom: 0;
     width: 240px;
-    min-height: calc(100vh - 60px);
     background: white;
     border-right: 1px solid #e2e8f0;
-    padding: var(--spacing-md);
+    overflow-y: auto;
+    z-index: 999;
+    transition: transform 0.3s ease;
 }
 
+/* 主内容区域 - 在侧边栏右侧 */
 #main-content {
     flex: 1;
-    padding: var(--spacing-lg);
+    margin-left: 240px; /* 为侧边栏留出空间 */
+    padding: 24px;
     background: #f8fafc;
+    min-height: calc(100vh - 60px);
+    overflow-y: auto;
 }
 
-/* 导航样式 */
-.navbar {
-    background: white;
-    padding: var(--spacing-md) var(--spacing-lg);
-    border-bottom: 1px solid #e2e8f0;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    height: 60px;
-}
+/* ========================================
+   侧边栏样式
+   ======================================== */
 
-.nav-item {
-    padding: var(--spacing-sm) var(--spacing-md);
-    color: #64748b;
-    text-decoration: none;
-    border-radius: var(--radius);
-    transition: all 0.2s;
-}
-
-.nav-item:hover {
-    background: #f1f5f9;
-    color: var(--primary);
-}
-
-.nav-item.active {
-    background: var(--primary);
-    color: white;
-}
-
-/* 侧边栏样式 */
-.sidebar-item {
-    display: block;
-    padding: var(--spacing-sm) var(--spacing-md);
-    color: #475569;
-    text-decoration: none;
-    border-radius: var(--radius);
-    margin-bottom: 4px;
-    transition: all 0.2s;
-}
-
-.sidebar-item:hover {
-    background: #f1f5f9;
-    color: var(--primary);
-}
-
-.sidebar-item.active {
-    background: var(--primary);
-    color: white;
+.sidebar {
+    padding: 8px 0;
 }
 
 .sidebar-section {
-    margin-bottom: var(--spacing-lg);
+    margin-bottom: 8px;
 }
 
 .sidebar-section-title {
-    font-size: 12px;
+    font-size: 11px;
     font-weight: 600;
     color: #94a3b8;
     text-transform: uppercase;
     letter-spacing: 0.5px;
-    padding: var(--spacing-sm) var(--spacing-md);
-    margin-bottom: var(--spacing-sm);
+    padding: 8px 16px 4px;
 }
 
-/* 通用组件 */
+.sidebar-item {
+    display: flex;
+    align-items: center;
+    padding: 8px 16px 8px 20px;
+    color: #475569;
+    text-decoration: none;
+    font-size: 14px;
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+    cursor: pointer;
+}
+
+.sidebar-item:hover {
+    background: #f1f5f9;
+    color: #2563eb;
+    border-left-color: #2563eb;
+}
+
+.sidebar-item.active {
+    background: #eff6ff;
+    color: #2563eb;
+    border-left-color: #2563eb;
+    font-weight: 500;
+}
+
+/* ========================================
+   导航栏样式
+   ======================================== */
+
+.navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 24px;
+    height: 60px;
+    background: white;
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 18px;
+    color: #1e293b;
+}
+
+.navbar-brand span {
+    color: #2563eb;
+}
+
+/* ========================================
+   响应式 - 移动端适配
+   ======================================== */
+
+@media (max-width: 768px) {
+    #sidebar-container {
+        transform: translateX(-100%);
+        width: 280px;
+    }
+    
+    #sidebar-container.open {
+        transform: translateX(0);
+    }
+    
+    #main-content {
+        margin-left: 0;
+        padding: 16px;
+    }
+    
+    /* 移动端遮罩 */
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        top: 60px;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(0,0,0,0.5);
+        z-index: 998;
+    }
+    
+    .sidebar-overlay.show {
+        display: block;
+    }
+}
+
+/* ========================================
+   卡片组件
+   ======================================== */
+
 .card {
     background: white;
-    border-radius: var(--radius);
-    box-shadow: var(--shadow);
-    padding: var(--spacing-lg);
-    margin-bottom: var(--spacing-lg);
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+    padding: 24px;
+    margin-bottom: 16px;
 }
+
+.card-title {
+    font-size: 16px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #1e293b;
+}
+
+/* ========================================
+   按钮
+   ======================================== */
 
 .btn {
     padding: 8px 16px;
     border: none;
-    border-radius: var(--radius);
-    cursor: pointer;
+    border-radius: 6px;
     font-weight: 500;
+    cursor: pointer;
     transition: all 0.2s;
 }
 
 .btn-primary {
-    background: var(--primary);
+    background: #2563eb;
     color: white;
 }
 
 .btn-primary:hover {
-    background: var(--primary-dark);
+    background: #1d4ed8;
 }
 
-.btn-success {
-    background: var(--success);
-    color: white;
-}
+/* ========================================
+   表格
+   ======================================== */
 
-.btn-danger {
-    background: var(--danger);
-    color: white;
-}
-
-/* 表格样式 */
 .table {
     width: 100%;
     border-collapse: collapse;
@@ -155,62 +234,17 @@ body {
 
 .table th {
     background: #f8fafc;
-    padding: var(--spacing-sm) var(--spacing-md);
+    padding: 10px 12px;
     text-align: left;
     font-weight: 600;
     border-bottom: 2px solid #e2e8f0;
 }
 
 .table td {
-    padding: var(--spacing-sm) var(--spacing-md);
+    padding: 10px 12px;
     border-bottom: 1px solid #e2e8f0;
 }
 
 .table tr:hover {
     background: #f8fafc;
 }
-
-/* 表单样式 */
-.form-group {
-    margin-bottom: var(--spacing-md);
-}
-
-.form-label {
-    display: block;
-    margin-bottom: var(--spacing-sm);
-    font-weight: 500;
-}
-
-.form-control {
-    width: 100%;
-    padding: 8px 12px;
-    border: 1px solid #e2e8f0;
-    border-radius: var(--radius);
-    font-size: 14px;
-}
-
-.form-control:focus {
-    outline: none;
-    border-color: var(--primary);
-    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
-}
-
-/* 响应式 */
-@media (max-width: 768px) {
-    #sidebar-container {
-        display: none;
-    }
-    
-    #main-content {
-        padding: var(--spacing-md);
-    }
-    
-    .navbar {
-        padding: var(--spacing-sm) var(--spacing-md);
-    }
-}
-
-/* ========================================
-   导入各模块样式
-   ======================================== */
-@import '../modules/**/*.css';
