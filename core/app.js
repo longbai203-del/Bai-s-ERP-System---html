@@ -1,21 +1,22 @@
 ﻿// core/app.js
-// 应用主入口文件
+// BAI ERP 应用主入口
 
-import { loadLayout } from './layout-loader.js';
+console.log('🚀 BAI ERP 应用启动中...');
 
 // 应用配置
 const APP_CONFIG = {
-    name: 'BAIERP',
+    name: 'BAI ERP',
     version: '1.0.0',
     env: 'development'
 };
 
 // 初始化应用
 async function initApp() {
-    console.log(🚀  v 启动中...);
+    console.log(📦  v);
     
     try {
-        // 加载布局
+        // 动态加载布局
+        const { loadLayout } = await import('./layout-loader.js');
         await loadLayout();
         console.log('✅ 应用初始化完成');
     } catch (error) {
@@ -23,15 +24,11 @@ async function initApp() {
     }
 }
 
-// 页面加载完成后初始化
+// DOM 加载完成后初始化
 if (document.readyState === 'complete') {
     initApp();
 } else {
     document.addEventListener('DOMContentLoaded', initApp);
 }
 
-// 导出应用实例
-export default {
-    config: APP_CONFIG,
-    init: initApp
-};
+export default APP_CONFIG;
