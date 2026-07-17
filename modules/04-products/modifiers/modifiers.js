@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file modifiers.js
  * @module modifiers
  * @description 附加项管理 - 商品附加项/选项的CRUD操作（如：洗车附加服务、增值选项）

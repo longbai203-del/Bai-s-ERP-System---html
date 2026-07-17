@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file executive.js
  * @module executive
  * @description 高管视图 - 展示高管级别的业务概览数据

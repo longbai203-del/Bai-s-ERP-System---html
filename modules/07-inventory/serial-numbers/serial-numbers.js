@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file serial-numbers.js
  * @module serial-numbers
  * @description 序列号管理模块 - 商品序列号的跟踪和管理

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file payments.js
  * @module payments
  * @description 付款管理 - 付款记录和审批流程

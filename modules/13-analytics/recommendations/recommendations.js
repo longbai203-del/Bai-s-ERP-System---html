@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file recommendations.js
  * @module recommendations
  * @description 智能推荐 - AI驱动的业务建议

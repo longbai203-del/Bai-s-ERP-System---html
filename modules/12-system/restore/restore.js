@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file restore.js
  * @module restore
  * @description 数据恢复 - 从备份恢复数据

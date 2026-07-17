@@ -1,4 +1,4 @@
-﻿// core/app.js
+// core/app.js
 // 应用主入口
 
 import { loadLayout } from './layout-loader.js';

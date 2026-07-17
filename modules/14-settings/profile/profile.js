@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file profile.js
  * @module profile
  * @description 个人设置 - 用户个人信息管理

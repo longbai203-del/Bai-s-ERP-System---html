@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file trial-balance.js
  * @module trial-balance
  * @description 试算平衡表 - 科目余额汇总

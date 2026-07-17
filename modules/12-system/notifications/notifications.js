@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file notifications.js
  * @module notifications
  * @description 通知管理 - 系统通知和消息中心

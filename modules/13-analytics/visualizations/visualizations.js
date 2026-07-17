@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file visualizations.js
  * @module visualizations
  * @description 数据可视化 - 图表和可视化组件

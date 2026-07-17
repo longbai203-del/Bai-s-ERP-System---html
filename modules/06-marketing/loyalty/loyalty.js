@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file loyalty.js
  * @module loyalty
  * @description 积分管理模块 - 积分规则和积分记录的CRUD操作

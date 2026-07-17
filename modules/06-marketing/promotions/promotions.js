@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file promotions.js
  * @module promotions
  * @description 促销管理模块 - 促销活动的CRUD操作、状态管理、统计

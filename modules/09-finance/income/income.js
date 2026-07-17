@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file income.js
  * @module income
  * @description 收入管理 - 收入记录、分类统计

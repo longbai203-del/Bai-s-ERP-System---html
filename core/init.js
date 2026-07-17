@@ -1,4 +1,4 @@
-﻿// core/init.js
+// core/init.js
 // 应用初始化
 
 import { appStore } from './stores.js';

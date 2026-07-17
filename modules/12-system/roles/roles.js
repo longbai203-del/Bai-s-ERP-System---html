@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file roles.js
  * @module roles
  * @description 角色管理 - 角色定义和权限分配

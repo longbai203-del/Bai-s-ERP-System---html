@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file subscriptions.js
  * @module subscriptions
  * @description 订阅管理 - 租户订阅和套餐管理

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file preferences.js
  * @module preferences
  * @description 偏好设置 - 用户个性化偏好管理

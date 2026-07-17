@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file payroll.js
  * @module payroll
  * @description 薪资管理 - 员工薪资计算和发放

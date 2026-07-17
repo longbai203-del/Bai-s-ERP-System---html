@@ -1,4 +1,4 @@
-﻿/**
+/**
  * modules/03-orders/list/list.js - 订单列表
  * 使用 Supabase 服务
  */

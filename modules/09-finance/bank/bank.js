@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file bank.js
  * @module bank
  * @description 银行管理 - 银行账户和交易记录

@@ -1,4 +1,4 @@
-﻿// core/stores.js
+// core/stores.js
 // 状态管理
 
 export class Store {

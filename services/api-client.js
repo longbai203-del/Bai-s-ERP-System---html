@@ -1,4 +1,4 @@
-﻿// services/api-client.js
+// services/api-client.js
 // API 客户端
 
 export class ApiClient {

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file products.js
  * @module products
  * @description 商品管理 - 商品列表、新增、编辑、删除

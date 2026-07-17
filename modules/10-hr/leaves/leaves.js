@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file leaves.js
  * @module leaves
  * @description 请假管理 - 员工请假申请和审批

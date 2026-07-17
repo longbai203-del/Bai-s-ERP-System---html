@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file price-lists.js
  * @module price-lists
  * @description 价格表管理 - 商品价格表、定价策略管理

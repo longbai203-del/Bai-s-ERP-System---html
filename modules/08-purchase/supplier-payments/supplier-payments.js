@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file supplier-payments.js
  * @module supplier-payments
  * @description 供应商付款 - 供应商付款管理

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file attendance.js
  * @module attendance
  * @description 考勤管理 - 员工打卡记录和管理

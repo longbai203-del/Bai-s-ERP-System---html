@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file integrations.js
  * @module integrations
  * @description 集成管理 - 第三方服务集成配置

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file forecast.js
  * @module forecast
  * @description 预测分析 - 业务趋势预测

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file journal.js
  * @module journal
  * @description 日记账 - 会计凭证记录

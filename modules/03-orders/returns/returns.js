@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file returns.js
  * @module returns
  * @description 退货管理 - 退货申请、处理和记录

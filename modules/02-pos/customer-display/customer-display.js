@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file 02-pos/customer-display/customer-display.js
  * @description 客户显示屏 - 面向客户的实时订单信息展示
  * @module modules/02-pos/customer-display

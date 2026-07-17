@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file taxes.js
  * @module taxes
  * @description 税务管理 - 税务申报和缴纳记录

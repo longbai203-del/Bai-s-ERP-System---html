@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file invoices.js
  * @module invoices
  * @description 发票管理 - 发票记录和状态跟踪

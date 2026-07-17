@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file quotations.js
  * @module quotations
  * @description 询价管理 - 供应商询价和报价管理

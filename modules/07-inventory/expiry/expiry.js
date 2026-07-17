@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file expiry.js
  * @module expiry
  * @description 过期管理模块 - 商品过期监控、预警和处理

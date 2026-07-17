@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file gift-cards.js
  * @module gift-cards
  * @description 礼品卡管理模块 - 礼品卡的CRUD操作和数据管理

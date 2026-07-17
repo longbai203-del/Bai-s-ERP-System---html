@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file backup.js
  * @module backup
  * @description 备份管理 - 数据库备份、恢复和归档

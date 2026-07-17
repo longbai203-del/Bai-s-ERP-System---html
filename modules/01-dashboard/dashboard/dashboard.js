@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file dashboard.js
  * @module dashboard
  * @description 仪表盘模块 - 展示业务概览、实时数据、销售趋势和最新订单

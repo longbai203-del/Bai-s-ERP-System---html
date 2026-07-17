@@ -1,4 +1,4 @@
-﻿/**
+/**
  * modules/05-customers/customers/customers.js - 客户管理
  * 直接使用 supabase.js 服务
  */

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * modules/15-ai/crm/crm.js
  * CRM 概览 - 完整数据渲染
  */

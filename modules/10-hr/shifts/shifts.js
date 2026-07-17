@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file shifts.js
  * @module shifts
  * @description 班次管理 - 工作班次的CRUD操作

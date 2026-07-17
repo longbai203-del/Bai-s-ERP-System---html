@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file categories.js
  * @module categories
  * @description 分类管理 - 商品分类的CRUD操作

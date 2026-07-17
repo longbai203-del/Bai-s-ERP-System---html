@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file custom-reports.js
  * @module custom-reports
  * @description 自定义报表 - 用户自定义数据报表

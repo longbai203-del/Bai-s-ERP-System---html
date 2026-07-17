@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file batches.js
  * @module batches
  * @description 批次管理模块 - 商品批次的CRUD操作和跟踪

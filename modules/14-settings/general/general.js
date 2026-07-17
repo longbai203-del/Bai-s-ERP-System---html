@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file general.js
  * @module general
  * @description 通用设置 - 系统通用配置

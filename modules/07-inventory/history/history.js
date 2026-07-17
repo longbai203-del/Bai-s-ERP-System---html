@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file history.js
  * @module history
  * @description 库存历史模块 - 库存变动历史记录

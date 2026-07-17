@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file packages.js
  * @module packages
  * @description 套餐管理 - 服务套餐的CRUD操作

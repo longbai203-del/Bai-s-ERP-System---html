@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file finance.js
  * @module finance
  * @description 财务概览 - 财务状况总览仪表板

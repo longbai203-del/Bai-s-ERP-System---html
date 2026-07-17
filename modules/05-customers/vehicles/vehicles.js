@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file vehicles.js
  * @module vehicles
  * @description 车辆管理模块 - 车辆信息的CRUD操作和数据管理

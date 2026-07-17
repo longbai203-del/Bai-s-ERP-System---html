@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file campaigns.js
  * @module campaigns
  * @description 营销活动管理模块 - 营销活动的CRUD操作和数据管理

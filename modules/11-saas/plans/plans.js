@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file invoices.js
  * @module invoices
  * @description 账单管理 - SaaS账单生成和管理

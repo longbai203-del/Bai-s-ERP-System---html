@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file low-stock.js
  * @module low-stock
  * @description 低库存预警模块 - 低库存商品监控和预警

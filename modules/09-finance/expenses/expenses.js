@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file expenses.js
  * @module expenses
  * @description 支出管理 - 支出记录、分类统计

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file pos/submodules/cash-register.js
  * @description 收银台子模块
  * @module modules/pos/submodules/cash-register

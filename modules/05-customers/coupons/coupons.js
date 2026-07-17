@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file coupons.js
  * @module coupons
  * @description 优惠券管理模块 - 优惠券的CRUD操作和数据管理

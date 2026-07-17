@@ -1,4 +1,4 @@
-﻿// config/modules.config.js
+// config/modules.config.js
 // 15个主模块完整配置
 
 export const MODULES = {

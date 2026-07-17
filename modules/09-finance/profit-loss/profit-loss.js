@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file profit-loss.js
  * @module profit-loss
  * @description 损益表 - 收入费用汇总

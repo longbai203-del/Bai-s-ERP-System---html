@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file webhooks.js
  * @module webhooks
  * @description Webhook管理 - 配置和管理Webhook端点

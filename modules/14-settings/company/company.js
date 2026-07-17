@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file company.js
  * @module company
  * @description 公司设置 - 公司信息管理

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * vehicle-monitor.js - 车辆监控模块
  * @module vehicle-monitor
  * @description 车辆进出记录、停留时间追踪、实时计数、车牌智能识别

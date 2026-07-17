@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file stock.js
  * @module stock
  * @description 库存管理模块 - 库存查看、预警、调拨管理

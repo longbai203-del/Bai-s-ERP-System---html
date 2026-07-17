@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file business-health.js
  * @module business-health
  * @description 经营健康 - 店铺经营状况评估

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file penalties.js
  * @module penalties
  * @description 处罚管理 - 员工违规处罚记录

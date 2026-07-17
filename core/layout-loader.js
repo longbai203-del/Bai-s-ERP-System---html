@@ -1,4 +1,4 @@
-﻿// core/layout-loader.js
+// core/layout-loader.js
 // 布局加载器 - 确保只加载一次
 
 let layoutLoaded = false;

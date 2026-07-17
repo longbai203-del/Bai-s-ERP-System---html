@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file barcodes.js
  * @module barcodes
  * @description 条码管理 - 商品条码生成、打印和管理

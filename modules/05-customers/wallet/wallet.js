@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file wallet.js
  * @module wallet
  * @description 电子钱包模块 - 钱包余额管理和交易记录

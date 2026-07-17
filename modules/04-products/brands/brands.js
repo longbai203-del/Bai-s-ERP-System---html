@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file brands.js
  * @module brands
  * @description 品牌管理 - 商品品牌的CRUD操作

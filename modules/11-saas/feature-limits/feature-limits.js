@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file feature-limits.js
  * @module feature-limits
  * @description 功能限制管理 - 套餐功能限制配置

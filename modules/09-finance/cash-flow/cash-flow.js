@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file cash-flow.js
  * @module cash-flow
  * @description 现金流量表 - 现金流分类汇总

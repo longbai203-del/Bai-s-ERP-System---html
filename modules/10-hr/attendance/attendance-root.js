@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file settings.js
  * @module settings
  * @description 系统设置 - 系统配置和偏好管理

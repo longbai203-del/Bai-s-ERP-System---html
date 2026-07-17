@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file audit-logs.js
  * @module audit-logs
  * @description 审计日志 - 系统操作记录和审计追踪

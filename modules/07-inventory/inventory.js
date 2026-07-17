@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file inventory.js
  * @module inventory
  * @description 库存概览 - 库存状态总览仪表板

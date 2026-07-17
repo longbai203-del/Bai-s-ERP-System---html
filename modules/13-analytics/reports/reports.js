@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file reports.js
  * @module reports
  * @description 数据报表 - 业务数据分析和可视化

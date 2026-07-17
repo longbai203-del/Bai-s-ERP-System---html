@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file marketplace.js
  * @module marketplace
  * @description 应用市场 - 扩展应用和插件管理

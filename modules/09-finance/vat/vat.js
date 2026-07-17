@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file vat.js
  * @module vat
  * @description 增值税管理 - 增值税申报和记录

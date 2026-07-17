@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file billing.js
  * @module billing
  * @description 计费管理 - 租户计费和账单管理

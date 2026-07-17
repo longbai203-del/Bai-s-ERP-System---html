@@ -1,4 +1,4 @@
-﻿{
+{
   "name": "bai-erp-system",
   "version": 2,
   "buildCommand": "echo 'Static site - no build needed'",

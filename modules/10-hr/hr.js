@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file hr.js
  * @module hr
  * @description 人力资源概览 - 员工数据总览仪表板

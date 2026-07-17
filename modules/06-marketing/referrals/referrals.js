@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file referrals.js
  * @module referrals
  * @description 推荐管理模块 - 推荐记录的CRUD操作和转化跟踪

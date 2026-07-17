@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file balance-sheet.js
  * @module balance-sheet
  * @description 资产负债表 - 资产、负债、权益汇总

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file warehouses.js
  * @module warehouses
  * @description 仓库管理模块 - 仓库的CRUD操作

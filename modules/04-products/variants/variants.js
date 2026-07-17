@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file variants.js
  * @module variants
  * @description 产品变体管理 - 商品规格、SKU管理

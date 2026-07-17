@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file permissions.js
  * @module permissions
  * @description 权限管理 - 员工角色和权限配置

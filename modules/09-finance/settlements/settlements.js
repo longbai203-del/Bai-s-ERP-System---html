@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file settlements.js
  * @module settlements
  * @description 结算管理 - 结算记录和状态跟踪

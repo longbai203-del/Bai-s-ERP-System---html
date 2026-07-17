@@ -1,4 +1,4 @@
-﻿/**
+/**
  * @file adjustments.js
  * @module adjustments
  * @description 库存调整模块 - 库存调整的CRUD操作
