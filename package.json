@@ -1,12 +1,17 @@
 {
-  "name": "erp-system",
-  "version": "1.0.0",
+  "name": "bai-erp-system",
+  "version": "2.0.0",
+  "description": "BAI ERP System - 企业管理系统",
   "type": "module",
+  "main": "dashboard.html",
   "scripts": {
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview"
   },
+  "keywords": ["erp", "dashboard", "management"],
+  "author": "BAI ERP Team",
+  "license": "MIT",
   "dependencies": {
     "@supabase/supabase-js": "^2.45.0"
   },
