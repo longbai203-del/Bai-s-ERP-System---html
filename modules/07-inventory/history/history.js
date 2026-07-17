@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file history.js
  * @module history
  * @description 库存历史模块 - 库存变动历史记录
@@ -387,8 +387,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('📜 库存历史 初始化...');
-    
+
     if (options?.data) {
         state.records = options.data;
         localStorage.setItem('history_data', JSON.stringify(state.records));
@@ -410,8 +409,7 @@ export async function init(options) {
         saveHistory,
         applyFilters
     };
-    
-    console.log('✅ 库存历史 初始化完成');
+
 }
 
 // 自动初始化

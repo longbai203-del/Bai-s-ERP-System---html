@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file settings.js
  * @module settings
  * @description 系统设置 - 系统配置管理
@@ -370,7 +370,7 @@ function bindEvents() {
  * @public
  */
 export async function init(options) {
-    console.log('⚙️ 系统设置 初始化...');
+
     loadSettings();
     bindEvents();
     render();
@@ -388,8 +388,7 @@ export async function init(options) {
         exportSettings,
         importSettings
     };
-    
-    console.log('✅ 系统设置 初始化完成');
+
 }
 
 if (document.readyState === 'loading') {

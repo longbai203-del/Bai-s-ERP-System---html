@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file custom-reports.js
  * @module custom-reports
  * @description 自定义报表 - 用户自定义数据报表
@@ -721,8 +721,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('📊 自定义报表 初始化...');
-    
+
     if (options?.data) {
         state.reports = options.data;
         localStorage.setItem('custom_report_data', JSON.stringify(state.reports));
@@ -751,8 +750,7 @@ export async function init(options) {
         saveReports,
         applyFilters
     };
-    
-    console.log('✅ 自定义报表 初始化完成');
+
 }
 
 // 自动初始化

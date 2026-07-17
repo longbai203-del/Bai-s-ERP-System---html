@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file attendance.js
  * @module attendance
  * @description 考勤管理 - 员工打卡记录和管理
@@ -461,8 +461,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('📋 考勤管理 初始化...');
-    
+
     if (options?.data) {
         state.records = options.data;
         localStorage.setItem('attendance_data', JSON.stringify(state.records));
@@ -487,8 +486,7 @@ export async function init(options) {
         saveAttendance,
         applyFilters
     };
-    
-    console.log('✅ 考勤管理 初始化完成');
+
 }
 
 // 自动初始化

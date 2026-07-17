@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file marketplace.js
  * @module marketplace
  * @description 应用市场 - 扩展应用和插件管理
@@ -406,7 +406,7 @@ function bindEvents() {
  * @public
  */
 export async function init(options) {
-    console.log('🏪 应用市场 初始化...');
+
     loadApps();
     bindEvents();
     render();
@@ -426,8 +426,7 @@ export async function init(options) {
         handleReset,
         applyFilters
     };
-    
-    console.log('✅ 应用市场 初始化完成');
+
 }
 
 if (document.readyState === 'loading') {

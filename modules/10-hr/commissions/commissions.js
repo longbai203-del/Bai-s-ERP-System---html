@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file commissions.js
  * @module commissions
  * @description 佣金管理 - 员工佣金计算和记录
@@ -354,8 +354,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('📊 佣金管理 初始化...');
-    
+
     if (options?.data) {
         state.records = options.data;
         localStorage.setItem('commission_data', JSON.stringify(state.records));
@@ -377,8 +376,7 @@ export async function init(options) {
         saveCommissions,
         applyFilters
     };
-    
-    console.log('✅ 佣金管理 初始化完成');
+
 }
 
 // 自动初始化

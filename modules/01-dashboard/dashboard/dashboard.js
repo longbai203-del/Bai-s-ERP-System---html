@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file dashboard.js
  * @module dashboard
  * @description 仪表盘模块 - 展示业务概览、实时数据、销售趋势和最新订单
@@ -86,8 +86,7 @@ const STATUS_MAP = {
  * await init();
  */
 export async function init() {
-    console.log('📊 Dashboard 模块初始化...');
-    
+
     try {
         // 加载数据
         await loadDashboardData();
@@ -106,8 +105,7 @@ export async function init() {
         
         // 启动自动刷新（每60秒）
         startAutoRefresh();
-        
-        console.log('✅ Dashboard 初始化完成');
+
     } catch (error) {
         console.error('❌ Dashboard 初始化失败:', error);
         showError('加载仪表盘数据失败，请刷新重试');
@@ -314,7 +312,7 @@ function startAutoRefresh() {
         clearInterval(refreshInterval);
     }
     refreshInterval = setInterval(async () => {
-        console.log('🔄 自动刷新仪表盘数据...');
+
         await loadDashboardData();
         renderStats();
         renderRecentOrders();
@@ -360,7 +358,7 @@ function showError(message) {
  */
 export function destroy() {
     stopAutoRefresh();
-    console.log('📊 Dashboard 已销毁');
+
 }
 
 // 自动初始化

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file leaves.js
  * @module leaves
  * @description 请假管理 - 员工请假申请和审批
@@ -533,8 +533,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('📋 请假管理 初始化...');
-    
+
     if (options?.data) {
         state.records = options.data;
         localStorage.setItem('leave_data', JSON.stringify(state.records));
@@ -560,8 +559,7 @@ export async function init(options) {
         saveLeaves,
         applyFilters
     };
-    
-    console.log('✅ 请假管理 初始化完成');
+
 }
 
 // 自动初始化

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file subscriptions.js
  * @module subscriptions
  * @description 订阅管理 - 租户订阅和套餐管理
@@ -530,8 +530,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('🔄 订阅管理 初始化...');
-    
+
     if (options?.data) {
         state.subscriptions = options.data;
         localStorage.setItem('subscription_data', JSON.stringify(state.subscriptions));
@@ -557,8 +556,7 @@ export async function init(options) {
         saveSubscriptions,
         applyFilters
     };
-    
-    console.log('✅ 订阅管理 初始化完成');
+
 }
 
 // 自动初始化

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file referrals.js
  * @module referrals
  * @description 推荐管理模块 - 推荐记录的CRUD操作和转化跟踪
@@ -529,8 +529,7 @@ function bindEvents() {
  * @returns {Promise<void>}
  */
 export async function init(options) {
-    console.log('📤 推荐管理 初始化...');
-    
+
     if (options?.data) {
         state.referrals = options.data;
         localStorage.setItem('referral_data', JSON.stringify(state.referrals));
@@ -556,8 +555,7 @@ export async function init(options) {
         saveReferrals,
         applyFilters
     };
-    
-    console.log('✅ 推荐管理 初始化完成');
+
 }
 
 // 自动初始化

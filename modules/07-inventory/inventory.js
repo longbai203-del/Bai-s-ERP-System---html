@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file inventory.js
  * @module inventory
  * @description 库存概览 - 库存状态总览仪表板
@@ -311,7 +311,7 @@ function startAutoRefresh() {
         clearInterval(refreshInterval);
     }
     refreshInterval = setInterval(() => {
-        console.log('🔄 自动刷新库存数据...');
+
         loadInventoryData();
     }, 60000);
 }
@@ -335,8 +335,7 @@ function stopAutoRefresh() {
  * @description 初始化库存概览
  */
 export async function init(options) {
-    console.log('📊 库存概览 初始化...');
-    
+
     if (options?.data) {
         localStorage.setItem('stock_data', JSON.stringify(options.data));
     }
@@ -362,8 +361,7 @@ export async function init(options) {
         },
         stopAutoRefresh
     };
-    
-    console.log('✅ 库存概览 初始化完成');
+
 }
 
 /**

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file settings.js
  * @module settings
  * @description 系统设置 - 系统配置和偏好管理
@@ -429,8 +429,7 @@ function bindEvents() {
  * @returns {Promise<void>}
  */
 export async function init(options) {
-    console.log('⚙️ 系统设置 初始化...');
-    
+
     if (options?.data) {
         state.settings = deepMerge(state.settings, options.data);
         saveSettings();
@@ -450,8 +449,7 @@ export async function init(options) {
         applySettingsToUI,
         clearAllData: window.SettingsModule?.clearAllData || function() {}
     };
-    
-    console.log('✅ 系统设置 初始化完成');
+
 }
 
 /**

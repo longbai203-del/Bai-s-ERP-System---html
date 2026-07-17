@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file shifts.js
  * @module shifts
  * @description 班次管理 - 工作班次的CRUD操作
@@ -448,8 +448,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('⏰ 班次管理 初始化...');
-    
+
     if (options?.data) {
         state.shifts = options.data;
         localStorage.setItem('shift_data', JSON.stringify(state.shifts));
@@ -475,8 +474,7 @@ export async function init(options) {
         saveShifts,
         applyFilters
     };
-    
-    console.log('✅ 班次管理 初始化完成');
+
 }
 
 // 自动初始化

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * modules/15-ai/crm/crm.js
  * CRM 概览 - 完整数据渲染
  */
@@ -109,7 +109,6 @@ function renderRecentCustomers() {
 // ============================================================
 
 export function init() {
-    console.log('👥 CRM Dashboard 初始化...');
 
     if (typeof document === 'undefined') {
         console.warn('⚠️ 非浏览器环境，跳过初始化');
@@ -138,7 +137,6 @@ export function init() {
         });
     }
 
-    console.log('✅ CRM Dashboard 初始化完成');
 }
 
 if (document.readyState === 'loading') {
@@ -146,5 +144,3 @@ if (document.readyState === 'loading') {
 } else {
     setTimeout(init, 100);
 }
-
-console.log('✅ CRM 模块加载完成');

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file promotions.js
  * @module promotions
  * @description 促销管理模块 - 促销活动的CRUD操作、状态管理、统计
@@ -611,8 +611,7 @@ function initModalEvents() {
  * @returns {Promise<void>}
  */
 export async function init(options) {
-    console.log('🎯 促销管理模块初始化...');
-    
+
     if (options?.data) {
         state.promotions = options.data;
         localStorage.setItem('promotion_data', JSON.stringify(state.promotions));
@@ -640,8 +639,7 @@ export async function init(options) {
         savePromotions,
         applyFilters
     };
-    
-    console.log('✅ 促销管理初始化完成');
+
 }
 
 // 自动初始化

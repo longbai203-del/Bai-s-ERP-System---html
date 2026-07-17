@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file integrations.js
  * @module integrations
  * @description 集成管理 - 第三方服务集成配置
@@ -451,7 +451,7 @@ function bindEvents() {
  * @public
  */
 export async function init(options) {
-    console.log('🔌 集成管理 初始化...');
+
     loadIntegrations();
     bindEvents();
     render();
@@ -471,8 +471,7 @@ export async function init(options) {
         handleReset,
         applyFilters
     };
-    
-    console.log('✅ 集成管理 初始化完成');
+
 }
 
 if (document.readyState === 'loading') {

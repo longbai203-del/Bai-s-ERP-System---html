@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file settlements.js
  * @module settlements
  * @description 结算管理 - 结算记录和状态跟踪
@@ -398,8 +398,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('🤝 结算管理 初始化...');
-    
+
     if (options?.data) {
         state.settlements = options.data;
         localStorage.setItem('settlement_data', JSON.stringify(state.settlements));
@@ -423,8 +422,7 @@ export async function init(options) {
         saveSettlements,
         applyFilters
     };
-    
-    console.log('✅ 结算管理 初始化完成');
+
 }
 
 // 自动初始化

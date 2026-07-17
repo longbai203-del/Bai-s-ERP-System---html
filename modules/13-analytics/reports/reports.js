@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file reports.js
  * @module reports
  * @description 数据报表 - 业务数据分析和可视化
@@ -468,8 +468,7 @@ function bindEvents() {
  * @returns {Promise<void>}
  */
 export async function init(options) {
-    console.log('📊 数据报表 初始化...');
-    
+
     if (options?.data) {
         state.data = options.data;
         localStorage.setItem('report_data', JSON.stringify(state.data));
@@ -494,8 +493,7 @@ export async function init(options) {
         refreshData,
         exportReport
     };
-    
-    console.log('✅ 数据报表 初始化完成');
+
 }
 
 // 自动初始化

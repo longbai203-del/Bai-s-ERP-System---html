@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file campaigns.js
  * @module campaigns
  * @description 营销活动管理模块 - 营销活动的CRUD操作和数据管理
@@ -693,8 +693,7 @@ function initModalEvents() {
  * @returns {Promise<void>}
  */
 export async function init(options) {
-    console.log('📢 营销活动管理 初始化...');
-    
+
     if (options?.data) {
         state.campaigns = options.data;
         localStorage.setItem('campaign_data', JSON.stringify(state.campaigns));
@@ -722,8 +721,7 @@ export async function init(options) {
         saveCampaigns,
         applyFilters
     };
-    
-    console.log('✅ 营销活动管理 初始化完成');
+
 }
 
 // 自动初始化

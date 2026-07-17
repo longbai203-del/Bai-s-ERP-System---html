@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file serial-numbers.js
  * @module serial-numbers
  * @description 序列号管理模块 - 商品序列号的跟踪和管理
@@ -485,8 +485,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('🔢 序列号管理 初始化...');
-    
+
     if (options?.data) {
         state.items = options.data;
         localStorage.setItem('serial_number_data', JSON.stringify(state.items));
@@ -512,8 +511,7 @@ export async function init(options) {
         saveSerialNumbers,
         applyFilters
     };
-    
-    console.log('✅ 序列号管理 初始化完成');
+
 }
 
 // 自动初始化

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file billing.js
  * @module billing
  * @description 计费管理 - 租户计费和账单管理
@@ -490,8 +490,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('📊 计费管理 初始化...');
-    
+
     if (options?.data) {
         state.invoices = options.data;
         localStorage.setItem('billing_data', JSON.stringify(state.invoices));
@@ -516,8 +515,7 @@ export async function init(options) {
         saveInvoices,
         applyFilters
     };
-    
-    console.log('✅ 计费管理 初始化完成');
+
 }
 
 // 自动初始化

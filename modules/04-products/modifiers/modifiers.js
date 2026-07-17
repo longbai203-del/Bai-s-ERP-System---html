@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file modifiers.js
  * @module modifiers
  * @description 附加项管理 - 商品附加项/选项的CRUD操作（如：洗车附加服务、增值选项）
@@ -646,8 +646,7 @@ function bindEvents() {
  * @returns {Promise<void>}
  */
 export async function init(options) {
-    console.log('➕ 附加项管理 初始化...');
-    
+
     if (options?.data) {
         state.modifiers = options.data;
         saveModifiers();
@@ -675,8 +674,7 @@ export async function init(options) {
         saveModifiers,
         getTypeLabel
     };
-    
-    console.log('✅ 附加项管理 初始化完成');
+
 }
 
 // 自动初始化

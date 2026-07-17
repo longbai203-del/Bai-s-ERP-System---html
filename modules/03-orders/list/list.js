@@ -1,4 +1,4 @@
-/**
+﻿/**
  * modules/03-orders/list/list.js - 订单列表
  * 使用 Supabase 服务
  */
@@ -39,17 +39,15 @@ const STATUS_MAP = {
 
 export async function init() {
     if (state._initialized) {
-        console.log('📋 订单管理已初始化，跳过');
+
         return;
     }
 
-    console.log('📋 订单管理初始化...');
     state._initialized = true;
 
     await loadOrders();
     bindEvents();
 
-    console.log('✅ 订单管理初始化完成');
 }
 
 async function loadOrders() {
@@ -64,8 +62,6 @@ async function loadOrders() {
             customer: state.filters.customer,
             status: state.filters.status
         });
-
-        console.log('📊 加载订单数据:', result);
 
         state.orders = result.list || [];
         state.pagination.total = result.total || 0;
@@ -238,5 +234,3 @@ if (document.readyState === 'loading') {
 } else {
     setTimeout(init, 100);
 }
-
-console.log('✅ 订单管理模块加载完成');

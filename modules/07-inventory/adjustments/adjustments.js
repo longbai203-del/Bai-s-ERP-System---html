@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file adjustments.js
  * @module adjustments
  * @description 库存调整模块 - 库存调整的CRUD操作
@@ -530,8 +530,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('📊 库存调整 初始化...');
-    
+
     if (options?.data) {
         state.adjustments = options.data;
         localStorage.setItem('adjustment_data', JSON.stringify(state.adjustments));
@@ -556,8 +555,7 @@ export async function init(options) {
         saveAdjustments,
         applyFilters
     };
-    
-    console.log('✅ 库存调整 初始化完成');
+
 }
 
 // 自动初始化

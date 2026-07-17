@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file variants.js
  * @module variants
  * @description 产品变体管理 - 商品规格、SKU管理
@@ -420,8 +420,7 @@ function bindEvents() {
  * @returns {Promise<void>}
  */
 export async function init(options) {
-    console.log('🔀 产品变体 初始化...');
-    
+
     if (options?.data) {
         state.variants = options.data;
         saveVariants();
@@ -446,8 +445,7 @@ export async function init(options) {
         refresh,
         saveVariants
     };
-    
-    console.log('✅ 产品变体 初始化完成');
+
 }
 
 // 自动初始化

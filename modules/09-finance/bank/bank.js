@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file bank.js
  * @module bank
  * @description 银行管理 - 银行账户和交易记录
@@ -223,8 +223,7 @@ function selectAccount(id) {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('🏦 银行管理 初始化...');
-    
+
     if (options?.data) {
         localStorage.setItem('bank_data', JSON.stringify(options.data));
     }
@@ -239,8 +238,7 @@ export async function init(options) {
         updateStats,
         selectAccount
     };
-    
-    console.log('✅ 银行管理 初始化完成');
+
 }
 
 // 自动初始化

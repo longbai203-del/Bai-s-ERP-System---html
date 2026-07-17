@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file batches.js
  * @module batches
  * @description 批次管理模块 - 商品批次的CRUD操作和跟踪
@@ -528,8 +528,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('📦 批次管理 初始化...');
-    
+
     if (options?.data) {
         state.batches = options.data;
         localStorage.setItem('batch_data', JSON.stringify(state.batches));
@@ -555,8 +554,7 @@ export async function init(options) {
         saveBatches,
         applyFilters
     };
-    
-    console.log('✅ 批次管理 初始化完成');
+
 }
 
 // 自动初始化

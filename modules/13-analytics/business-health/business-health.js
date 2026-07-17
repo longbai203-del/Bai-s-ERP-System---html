@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file business-health.js
  * @module business-health
  * @description 经营健康 - 店铺经营状况评估
@@ -265,8 +265,7 @@ function bindEvents() {
  * @returns {Promise<void>}
  */
 export async function init(options) {
-    console.log('💚 经营健康 初始化...');
-    
+
     if (options?.data) {
         state.data = options.data;
         localStorage.setItem('health_data', JSON.stringify(state.data));
@@ -281,8 +280,7 @@ export async function init(options) {
         renderHealth,
         refreshHealth
     };
-    
-    console.log('✅ 经营健康 初始化完成');
+
 }
 
 // 自动初始化

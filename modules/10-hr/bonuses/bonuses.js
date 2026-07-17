@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file penalties.js
  * @module penalties
  * @description 处罚管理 - 员工违规处罚记录
@@ -490,8 +490,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('⚠️ 处罚管理 初始化...');
-    
+
     if (options?.data) {
         state.records = options.data;
         localStorage.setItem('penalty_data', JSON.stringify(state.records));
@@ -516,8 +515,7 @@ export async function init(options) {
         savePenalties,
         applyFilters
     };
-    
-    console.log('✅ 处罚管理 初始化完成');
+
 }
 
 // 自动初始化

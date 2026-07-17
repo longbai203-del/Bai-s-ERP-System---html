@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file forecast.js
  * @module forecast
  * @description 预测分析 - 业务趋势预测
@@ -322,8 +322,7 @@ function bindEvents() {
  * @returns {Promise<void>}
  */
 export async function init(options) {
-    console.log('📈 预测分析 初始化...');
-    
+
     if (options?.data) {
         state.data = options.data;
         localStorage.setItem('forecast_data', JSON.stringify(state.data));
@@ -342,8 +341,7 @@ export async function init(options) {
         updatePeriod,
         refreshForecast
     };
-    
-    console.log('✅ 预测分析 初始化完成');
+
 }
 
 // 自动初始化

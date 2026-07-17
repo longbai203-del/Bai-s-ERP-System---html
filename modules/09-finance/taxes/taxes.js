@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file taxes.js
  * @module taxes
  * @description 税务管理 - 税务申报和缴纳记录
@@ -409,8 +409,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('📊 税务管理 初始化...');
-    
+
     if (options?.data) {
         state.records = options.data;
         localStorage.setItem('tax_data', JSON.stringify(state.records));
@@ -434,8 +433,7 @@ export async function init(options) {
         saveTaxes,
         applyFilters
     };
-    
-    console.log('✅ 税务管理 初始化完成');
+
 }
 
 // 自动初始化

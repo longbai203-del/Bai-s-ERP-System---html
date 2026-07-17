@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file webhooks.js
  * @module webhooks
  * @description Webhook管理 - 配置和管理Webhook端点
@@ -444,7 +444,7 @@ function bindEvents() {
  * @public
  */
 export async function init(options) {
-    console.log('🌐 Webhook管理 初始化...');
+
     loadWebhooks();
     bindEvents();
     render();
@@ -465,8 +465,7 @@ export async function init(options) {
         handleReset,
         applyFilters
     };
-    
-    console.log('✅ Webhook管理 初始化完成');
+
 }
 
 if (document.readyState === 'loading') {

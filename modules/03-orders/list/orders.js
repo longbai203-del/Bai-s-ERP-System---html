@@ -1,4 +1,4 @@
-// modules/03-orders/list/orders.js
+﻿// modules/03-orders/list/orders.js
 import { getOrders, updateOrderStatus, deleteOrder } from '../../js/services/orders.js';
 import { formatCurrency, formatDate, formatDateTime, showToast } from '../../../../js/utils.js';
 
@@ -18,7 +18,7 @@ const STATUS_MAP = {
 };
 
 export async function init() {
-    console.log('订单管理已加载');
+
     await loadOrders();
     bindEvents();
     initDatePicker();

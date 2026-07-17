@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file executive.js
  * @module executive
  * @description 高管视图 - 展示高管级别的业务概览数据
@@ -184,7 +184,6 @@ function renderMetricCards(metrics) {
         updateEl.textContent = '更新于: ' + new Date().toLocaleString('zh-CN');
     }
 
-    console.log('✅ Metric cards rendered');
 }
 
 /**
@@ -231,7 +230,6 @@ function renderRecentOrders(orders) {
     }
     container.innerHTML = html;
 
-    console.log('✅ Recent orders rendered');
 }
 
 /**
@@ -273,7 +271,6 @@ function renderQuickActions() {
         });
     });
 
-    console.log('✅ Quick actions rendered');
 }
 
 /**
@@ -283,13 +280,12 @@ function renderQuickActions() {
  * @description 加载并渲染数据
  */
 function loadDashboardData(metrics, orders) {
-    console.log('🔄 Loading dashboard data...');
 
     try {
         renderMetricCards(metrics || DEFAULT_METRICS);
         renderRecentOrders(orders || DEFAULT_ORDERS);
         renderQuickActions();
-        console.log('✅ Dashboard loaded successfully');
+
     } catch (error) {
         console.error('❌ Failed to load dashboard:', error);
 
@@ -416,7 +412,7 @@ function startAutoRefresh() {
         clearInterval(refreshInterval);
     }
     refreshInterval = setInterval(function() {
-        console.log('🔄 Auto-refreshing executive dashboard...');
+
         if (typeof window.ExecutiveDashboard !== 'undefined') {
             window.ExecutiveDashboard.refresh();
         }
@@ -443,7 +439,6 @@ function stopAutoRefresh() {
  * @description 初始化高管视图
  */
 export async function init(data) {
-    console.log('📊 Executive Dashboard initializing...');
 
     // 使用传入的数据或从API加载
     const metrics = data?.metrics || DEFAULT_METRICS;
@@ -452,7 +447,6 @@ export async function init(data) {
     loadDashboardData(metrics, orders);
     startAutoRefresh();
 
-    console.log('✅ Executive Dashboard ready');
 }
 
 /**

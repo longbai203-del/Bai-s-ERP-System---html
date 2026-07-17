@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file pos/submodules/cash-register.js
  * @description 收银台子模块
  * @module modules/pos/submodules/cash-register
@@ -151,7 +151,7 @@ export async function render(container) {
 }
 
 export async function init() {
-    console.log('✅ [CashRegister] 已初始化');
+
 }
 
 export default { meta, render, init };

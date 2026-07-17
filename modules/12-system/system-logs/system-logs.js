@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file system-logs.js
  * @module system-logs
  * @description 系统日志 - 系统运行日志和错误监控
@@ -452,7 +452,7 @@ function bindEvents() {
  * @public
  */
 export async function init(options) {
-    console.log('🖥️ 系统日志 初始化...');
+
     loadLogs();
     bindEvents();
     render();
@@ -473,8 +473,7 @@ export async function init(options) {
         toggleAutoRefresh,
         applyFilters
     };
-    
-    console.log('✅ 系统日志 初始化完成');
+
 }
 
 if (document.readyState === 'loading') {

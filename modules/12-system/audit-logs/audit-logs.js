@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file audit-logs.js
  * @module audit-logs
  * @description 审计日志 - 系统操作记录和审计追踪
@@ -372,7 +372,7 @@ function bindEvents() {
  * @public
  */
 export async function init(options) {
-    console.log('📋 审计日志 初始化...');
+
     loadLogs();
     bindEvents();
     render();
@@ -391,8 +391,7 @@ export async function init(options) {
         exportLogs,
         applyFilters
     };
-    
-    console.log('✅ 审计日志 初始化完成');
+
 }
 
 if (document.readyState === 'loading') {

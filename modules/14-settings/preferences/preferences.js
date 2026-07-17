@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file preferences.js
  * @module preferences
  * @description 偏好设置 - 用户个性化偏好管理
@@ -318,7 +318,6 @@ function bindEvents() {
  * @returns {Promise<void>}
  */
 export async function init(options) {
-    console.log('⚙️ 偏好设置 初始化...');
 
     if (options?.data) {
         state.prefs = { ...state.prefs, ...options.data };
@@ -342,7 +341,6 @@ export async function init(options) {
         applyTheme
     };
 
-    console.log('✅ 偏好设置 初始化完成');
 }
 
 // 自动初始化

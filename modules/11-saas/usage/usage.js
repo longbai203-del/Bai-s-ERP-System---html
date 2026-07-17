@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file usage.js
  * @module usage
  * @description 用量管理 - 租户资源用量监控
@@ -446,8 +446,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('📊 用量管理 初始化...');
-    
+
     if (options?.data) {
         state.records = options.data;
         localStorage.setItem('usage_data', JSON.stringify(state.records));
@@ -470,8 +469,7 @@ export async function init(options) {
         saveUsage,
         applyFilters
     };
-    
-    console.log('✅ 用量管理 初始化完成');
+
 }
 
 // 自动初始化

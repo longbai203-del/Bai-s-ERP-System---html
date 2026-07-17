@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file low-stock.js
  * @module low-stock
  * @description 低库存预警模块 - 低库存商品监控和预警
@@ -431,8 +431,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('⚠️ 低库存预警 初始化...');
-    
+
     if (options?.data) {
         state.items = options.data;
         localStorage.setItem('low_stock_data', JSON.stringify(state.items));
@@ -456,8 +455,7 @@ export async function init(options) {
         saveLowStockItems,
         applyFilters
     };
-    
-    console.log('✅ 低库存预警 初始化完成');
+
 }
 
 // 自动初始化

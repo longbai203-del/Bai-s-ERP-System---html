@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file company.js
  * @module company
  * @description 公司设置 - 公司信息管理
@@ -303,7 +303,6 @@ function bindEvents() {
  * @returns {Promise<void>}
  */
 export async function init(options) {
-    console.log('🏢 公司设置 初始化...');
 
     if (options?.data) {
         state.info = { ...state.info, ...options.data };
@@ -325,7 +324,6 @@ export async function init(options) {
         renderLogoPreview
     };
 
-    console.log('✅ 公司设置 初始化完成');
 }
 
 // 自动初始化

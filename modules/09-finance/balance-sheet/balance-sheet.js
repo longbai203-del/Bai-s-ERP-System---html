@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file balance-sheet.js
  * @module balance-sheet
  * @description 资产负债表 - 资产、负债、权益汇总
@@ -164,8 +164,7 @@ function refreshData() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('📋 资产负债表 初始化...');
-    
+
     if (options?.data) {
         state.data = options.data;
         localStorage.setItem('balance_sheet_data', JSON.stringify(state.data));
@@ -184,8 +183,7 @@ export async function init(options) {
         render,
         refreshData
     };
-    
-    console.log('✅ 资产负债表 初始化完成');
+
 }
 
 // 自动初始化

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file gift-cards.js
  * @module gift-cards
  * @description 礼品卡管理模块 - 礼品卡的CRUD操作和数据管理
@@ -697,8 +697,7 @@ function initModalEvents() {
  * @returns {Promise<void>}
  */
 export async function init(options) {
-    console.log('🎁 礼品卡管理 初始化...');
-    
+
     if (options?.data) {
         state.cards = options.data;
         localStorage.setItem('giftcard_data', JSON.stringify(state.cards));
@@ -726,8 +725,7 @@ export async function init(options) {
         refresh,
         saveGiftCards
     };
-    
-    console.log('✅ 礼品卡管理 初始化完成');
+
 }
 
 // 自动初始化

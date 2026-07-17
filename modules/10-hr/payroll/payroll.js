@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file payroll.js
  * @module payroll
  * @description 薪资管理 - 员工薪资计算和发放
@@ -428,8 +428,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('💰 薪资管理 初始化...');
-    
+
     if (options?.data) {
         state.records = options.data;
         localStorage.setItem('payroll_data', JSON.stringify(state.records));
@@ -453,8 +452,7 @@ export async function init(options) {
         savePayroll,
         applyFilters
     };
-    
-    console.log('✅ 薪资管理 初始化完成');
+
 }
 
 // 自动初始化

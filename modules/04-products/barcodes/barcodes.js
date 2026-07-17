@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file barcodes.js
  * @module barcodes
  * @description 条码管理 - 商品条码生成、打印和管理
@@ -538,8 +538,7 @@ function bindEvents() {
  * @returns {Promise<void>}
  */
 export async function init(options) {
-    console.log('📊 条码管理 初始化...');
-    
+
     if (options?.data) {
         state.barcodes = options.data;
         saveBarcodes();
@@ -567,8 +566,7 @@ export async function init(options) {
         exportData,
         saveBarcodes
     };
-    
-    console.log('✅ 条码管理 初始化完成');
+
 }
 
 // 自动初始化

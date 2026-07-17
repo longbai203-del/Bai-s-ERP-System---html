@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file products.js
  * @module products
  * @description 商品管理 - 商品列表、新增、编辑、删除
@@ -733,8 +733,7 @@ function bindEvents() {
  * @description 初始化商品管理
  */
 export async function init(options) {
-    console.log('📦 商品管理 初始化...');
-    
+
     if (options?.data) {
         state.products = options.data;
         state.total = state.products.length;
@@ -766,8 +765,7 @@ export async function init(options) {
         exportData,
         saveProducts
     };
-    
-    console.log('✅ 商品管理 初始化完成');
+
 }
 
 // 自动初始化

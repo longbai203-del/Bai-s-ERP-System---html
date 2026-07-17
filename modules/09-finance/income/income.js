@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file income.js
  * @module income
  * @description 收入管理 - 收入记录、分类统计
@@ -435,8 +435,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('💰 收入管理 初始化...');
-    
+
     if (options?.data) {
         state.records = options.data;
         localStorage.setItem('income_data', JSON.stringify(state.records));
@@ -459,8 +458,7 @@ export async function init(options) {
         saveIncome,
         applyFilters
     };
-    
-    console.log('✅ 收入管理 初始化完成');
+
 }
 
 // 自动初始化

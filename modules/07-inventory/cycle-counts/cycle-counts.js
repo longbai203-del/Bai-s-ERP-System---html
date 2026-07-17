@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file cycle-counts.js
  * @module cycle-counts
  * @description 盘点管理模块 - 库存盘点的创建、执行和审核
@@ -616,8 +616,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('📋 盘点管理 初始化...');
-    
+
     if (options?.data) {
         state.counts = options.data;
         localStorage.setItem('cycle_count_data', JSON.stringify(state.counts));
@@ -643,8 +642,7 @@ export async function init(options) {
         saveCycleCounts,
         applyFilters
     };
-    
-    console.log('✅ 盘点管理 初始化完成');
+
 }
 
 // 自动初始化

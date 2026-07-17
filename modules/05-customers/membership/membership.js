@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file membership.js
  * @module membership
  * @description 会员管理模块 - 会员等级和会员信息的CRUD操作
@@ -662,8 +662,7 @@ function bindEvents() {
  * @returns {Promise<void>}
  */
 export async function init(options) {
-    console.log('👑 会员管理 初始化...');
-    
+
     if (options?.levels) {
         state.levels = options.levels;
         localStorage.setItem('membership_levels_data', JSON.stringify(state.levels));
@@ -709,8 +708,7 @@ export async function init(options) {
         getLevelName,
         getLevelDiscount
     };
-    
-    console.log('✅ 会员管理 初始化完成');
+
 }
 
 // 自动初始化

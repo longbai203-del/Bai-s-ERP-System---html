@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file invoices.js
  * @module invoices
  * @description 账单管理 - SaaS账单生成和管理
@@ -608,8 +608,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('📄 SaaS账单管理 初始化...');
-    
+
     if (options?.data) {
         state.invoices = options.data;
         localStorage.setItem('saas_invoice_data', JSON.stringify(state.invoices));
@@ -636,8 +635,7 @@ export async function init(options) {
         saveInvoices,
         applyFilters
     };
-    
-    console.log('✅ SaaS账单管理 初始化完成');
+
 }
 
 // 自动初始化

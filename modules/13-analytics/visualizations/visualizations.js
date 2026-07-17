@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file visualizations.js
  * @module visualizations
  * @description 数据可视化 - 图表和可视化组件
@@ -296,8 +296,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('📊 数据可视化 初始化...');
-    
+
     if (options?.data) {
         state.charts = options.data;
         localStorage.setItem('visualization_data', JSON.stringify(state.charts));
@@ -316,8 +315,7 @@ export async function init(options) {
         exportChart,
         saveCharts
     };
-    
-    console.log('✅ 数据可视化 初始化完成');
+
 }
 
 // 自动初始化

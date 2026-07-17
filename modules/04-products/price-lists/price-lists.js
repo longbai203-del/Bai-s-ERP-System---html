@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file price-lists.js
  * @module price-lists
  * @description 价格表管理 - 商品价格表、定价策略管理
@@ -669,8 +669,7 @@ function bindEvents() {
  * @returns {Promise<void>}
  */
 export async function init(options) {
-    console.log('📋 价格表管理 初始化...');
-    
+
     if (options?.data) {
         state.priceLists = options.data;
         savePriceLists();
@@ -698,8 +697,7 @@ export async function init(options) {
         savePriceLists,
         getTypeLabel
     };
-    
-    console.log('✅ 价格表管理 初始化完成');
+
 }
 
 // 自动初始化

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file packages.js
  * @module packages
  * @description 套餐管理 - 服务套餐的CRUD操作
@@ -509,8 +509,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('📦 套餐管理 初始化...');
-    
+
     if (options?.data) {
         state.packages = options.data;
         localStorage.setItem('package_data', JSON.stringify(state.packages));
@@ -536,8 +535,7 @@ export async function init(options) {
         savePackages,
         applyFilters
     };
-    
-    console.log('✅ 套餐管理 初始化完成');
+
 }
 
 // 自动初始化

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * modules/15-ai/ai/ai.js
  * AI 智能助手 - 支持流式响应
  */
@@ -13,7 +13,7 @@ async function loadAIService() {
     try {
         const module = await import('/business-core/services/ai-service.js');
         aiService = new module.AIService();
-        console.log('✅ AI 服务已加载');
+
         return true;
     } catch (error) {
         console.warn('⚠️ AI 服务加载失败，使用模拟模式:', error.message);
@@ -33,7 +33,6 @@ let currentStreamAbort = null;
 // ============================================================
 
 export async function init() {
-    console.log('🤖 AI 智能助手初始化...');
 
     const loaded = await loadAIService();
 
@@ -46,7 +45,6 @@ export async function init() {
     // 加载洞察
     await loadInsights();
 
-    console.log('✅ AI 智能助手初始化完成');
 }
 
 // ============================================================
@@ -400,5 +398,3 @@ if (document.readyState === 'loading') {
 } else {
     setTimeout(init, 100);
 }
-
-console.log('✅ AI 模块加载完成（支持流式响应）');

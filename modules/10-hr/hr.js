@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file hr.js
  * @module hr
  * @description 人力资源概览 - 员工数据总览仪表板
@@ -326,7 +326,7 @@ function startAutoRefresh() {
         clearInterval(refreshInterval);
     }
     refreshInterval = setInterval(() => {
-        console.log('🔄 自动刷新HR数据...');
+
         loadHRData();
     }, 60000);
 }
@@ -348,8 +348,7 @@ function stopAutoRefresh() {
  * @returns {Promise<void>}
  */
 export async function init(options) {
-    console.log('👤 人力资源概览 初始化...');
-    
+
     if (options?.data) {
         localStorage.setItem('employee_data', JSON.stringify(options.data.employees || []));
         localStorage.setItem('attendance_data', JSON.stringify(options.data.attendance || []));
@@ -368,8 +367,7 @@ export async function init(options) {
         renderDeptDistribution,
         stopAutoRefresh
     };
-    
-    console.log('✅ 人力资源概览 初始化完成');
+
 }
 
 /**

@@ -1,0 +1,85 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>布局测试 - 修复版</title>
+    <link rel="stylesheet" href="/assets/css/variables.css">
+    <link rel="stylesheet" href="/assets/css/main.css">
+    <style>
+        /* 临时样式确保可见 */
+        #navbar-container { min-height: 60px; background: white; border-bottom: 1px solid #e2e8f0; }
+        #sidebar-container { width: 240px; min-height: 400px; background: white; border-right: 1px solid #e2e8f0; }
+        .main-wrapper { display: flex; }
+        #main-content { flex: 1; padding: 24px; background: #f8fafc; }
+        .card { background: white; padding: 24px; border-radius: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.1); }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <div id="navbar-container">
+            <div style="padding:16px 24px;background:#f8fafc;border-bottom:2px solid #e2e8f0;">
+                ⏳ 导航栏加载中...
+            </div>
+        </div>
+        <div class="main-wrapper">
+            <div id="sidebar-container">
+                <div style="padding:16px;background:#f8fafc;">
+                    ⏳ 侧边栏加载中...
+                </div>
+            </div>
+            <main id="main-content">
+                <div class="card">
+                    <h1>✅ 布局测试页面 (修复版)</h1>
+                    <p style="color:#64748b;">如果看到导航栏和侧边栏，说明布局系统工作正常</p>
+                    <button class="btn btn-primary" onclick="alert('按钮工作正常！')">测试按钮</button>
+                    
+                    <div style="margin-top:20px;padding:16px;background:#f0fdf4;border:1px solid #86efac;border-radius:8px;">
+                        <p style="color:#166534;font-weight:500;">📋 调试信息：</p>
+                        <ul style="color:#166534;font-size:14px;">
+                            <li>页面路径: <code id="pagePath"></code></li>
+                            <li>布局状态: <span id="layoutStatus">⏳ 加载中...</span></li>
+                        </ul>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+    
+    <script>
+        // 显示页面路径
+        document.getElementById('pagePath').textContent = window.location.pathname;
+        
+        // 手动加载布局
+        async function loadLayout() {
+            const statusEl = document.getElementById('layoutStatus');
+            
+            try {
+                // 加载导航栏
+                const navbarRes = await fetch('/layouts/navbar.html');
+                if (navbarRes.ok) {
+                    document.getElementById('navbar-container').innerHTML = await navbarRes.text();
+                    statusEl.innerHTML = '✅ 导航栏已加载';
+                } else {
+                    statusEl.innerHTML = '❌ 导航栏加载失败 (404)';
+                }
+                
+                // 加载侧边栏
+                const sidebarRes = await fetch('/layouts/sidebar.html');
+                if (sidebarRes.ok) {
+                    document.getElementById('sidebar-container').innerHTML = await sidebarRes.text();
+                    statusEl.innerHTML += ' | ✅ 侧边栏已加载';
+                } else {
+                    statusEl.innerHTML += ' | ❌ 侧边栏加载失败 (404)';
+                }
+                
+            } catch (error) {
+                statusEl.innerHTML = '❌ 加载失败: ' + error.message;
+            }
+        }
+        
+        // 页面加载完成后加载布局
+        document.addEventListener('DOMContentLoaded', loadLayout);
+    </script>
+</body>
+</html>

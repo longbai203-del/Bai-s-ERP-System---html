@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file employee.js
  * @module employee
  * @description 员工概览 - 员工数据总览
@@ -142,14 +142,13 @@ function renderEmployees(employees) {
  * @description 加载并渲染员工数据
  */
 function loadEmployeeData(data) {
-    console.log('🔄 Loading employee data...');
-    
+
     const stats = data?.stats || DEFAULT_DATA.stats;
     const employees = data?.employees || DEFAULT_DATA.employees;
     
     renderStats(stats);
     renderEmployees(employees);
-    console.log('✅ Employee data loaded');
+
 }
 
 /**
@@ -159,7 +158,6 @@ function loadEmployeeData(data) {
  * @description 初始化员工概览
  */
 export async function init(data) {
-    console.log('👤 Employee Dashboard 初始化...');
 
     if (typeof document === 'undefined') {
         console.warn('⚠️ 非浏览器环境，跳过初始化');
@@ -187,7 +185,6 @@ export async function init(data) {
         });
     }
 
-    console.log('✅ Employee Dashboard 初始化完成');
 }
 
 /**

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file journal.js
  * @module journal
  * @description 日记账 - 会计凭证记录
@@ -455,8 +455,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('📖 日记账 初始化...');
-    
+
     if (options?.data) {
         state.entries = options.data;
         localStorage.setItem('journal_data', JSON.stringify(state.entries));
@@ -479,8 +478,7 @@ export async function init(options) {
         saveJournal,
         applyFilters
     };
-    
-    console.log('✅ 日记账 初始化完成');
+
 }
 
 // 自动初始化

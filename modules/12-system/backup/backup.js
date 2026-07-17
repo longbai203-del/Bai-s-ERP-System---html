@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file backup.js
  * @module backup
  * @description 备份管理 - 数据库备份、恢复和归档
@@ -467,7 +467,7 @@ function bindEvents() {
  * @public
  */
 export async function init(options) {
-    console.log('💾 备份管理 初始化...');
+
     loadBackups();
     bindEvents();
     render();
@@ -488,8 +488,7 @@ export async function init(options) {
         handleReset,
         applyFilters
     };
-    
-    console.log('✅ 备份管理 初始化完成');
+
 }
 
 if (document.readyState === 'loading') {

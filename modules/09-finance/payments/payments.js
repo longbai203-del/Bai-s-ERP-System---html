@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file payments.js
  * @module payments
  * @description 付款管理 - 付款记录和审批流程
@@ -570,8 +570,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('💳 付款管理 初始化...');
-    
+
     if (options?.data) {
         state.records = options.data;
         localStorage.setItem('payment_data', JSON.stringify(state.records));
@@ -598,8 +597,7 @@ export async function init(options) {
         savePayments,
         applyFilters
     };
-    
-    console.log('✅ 付款管理 初始化完成');
+
 }
 
 // 自动初始化

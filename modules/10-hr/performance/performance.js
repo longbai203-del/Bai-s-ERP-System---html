@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file performance.js
  * @module performance
  * @description 绩效管理 - 员工绩效考核和评估
@@ -475,8 +475,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('📊 绩效管理 初始化...');
-    
+
     if (options?.data) {
         state.records = options.data;
         localStorage.setItem('performance_data', JSON.stringify(state.records));
@@ -501,8 +500,7 @@ export async function init(options) {
         savePerformance,
         applyFilters
     };
-    
-    console.log('✅ 绩效管理 初始化完成');
+
 }
 
 // 自动初始化

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file tenants.js
  * @module tenants
  * @description 租户管理 - 多租户的CRUD操作
@@ -537,8 +537,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('🏢 租户管理 初始化...');
-    
+
     if (options?.data) {
         state.tenants = options.data;
         localStorage.setItem('tenant_data', JSON.stringify(state.tenants));
@@ -564,8 +563,7 @@ export async function init(options) {
         saveTenants,
         applyFilters
     };
-    
-    console.log('✅ 租户管理 初始化完成');
+
 }
 
 // 自动初始化

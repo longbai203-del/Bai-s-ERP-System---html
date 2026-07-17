@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file import.js
  * @module purchasing-import
  * @description 导入管理 - 批量导入商品和采购数据
@@ -495,8 +495,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('📤 导入管理 初始化...');
-    
+
     if (options?.data) {
         state.records = options.data;
         localStorage.setItem('import_data', JSON.stringify(state.records));
@@ -522,8 +521,7 @@ export async function init(options) {
         saveImports,
         applyFilters
     };
-    
-    console.log('✅ 导入管理 初始化完成');
+
 }
 
 // 自动初始化

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file coupons.js
  * @module coupons
  * @description 优惠券管理模块 - 优惠券的CRUD操作和数据管理
@@ -724,8 +724,7 @@ function initModalEvents() {
  * @returns {Promise<void>}
  */
 export async function init(options) {
-    console.log('🎫 优惠券管理 初始化...');
-    
+
     if (options?.data) {
         state.coupons = options.data;
         localStorage.setItem('coupon_data', JSON.stringify(state.coupons));
@@ -753,8 +752,7 @@ export async function init(options) {
         refresh,
         saveCoupons
     };
-    
-    console.log('✅ 优惠券管理 初始化完成');
+
 }
 
 // 自动初始化

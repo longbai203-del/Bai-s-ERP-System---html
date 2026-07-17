@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file permissions.js
  * @module permissions
  * @description 权限管理 - 员工角色和权限配置
@@ -487,8 +487,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('🔐 权限管理 初始化...');
-    
+
     if (options?.data) {
         state.roles = options.data.roles || [];
         state.permissions = options.data.permissions || [];
@@ -516,8 +515,7 @@ export async function init(options) {
         savePermissions,
         applyFilters
     };
-    
-    console.log('✅ 权限管理 初始化完成');
+
 }
 
 // 自动初始化

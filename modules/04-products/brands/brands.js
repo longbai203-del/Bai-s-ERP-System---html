@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file brands.js
  * @module brands
  * @description 品牌管理 - 商品品牌的CRUD操作
@@ -406,8 +406,7 @@ function bindEvents() {
  * @returns {Promise<void>}
  */
 export async function init(options) {
-    console.log('🏷️ 品牌管理 初始化...');
-    
+
     if (options?.data) {
         state.brands = options.data;
         saveBrands();
@@ -433,8 +432,7 @@ export async function init(options) {
         refresh,
         saveBrands
     };
-    
-    console.log('✅ 品牌管理 初始化完成');
+
 }
 
 // 自动初始化

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file wallet.js
  * @module wallet
  * @description 电子钱包模块 - 钱包余额管理和交易记录
@@ -576,8 +576,7 @@ function bindEvents() {
  * @description 初始化电子钱包
  */
 export async function init(options) {
-    console.log('💰 电子钱包 初始化...');
-    
+
     if (options?.wallet) {
         state.wallet = options.wallet;
         saveWallet();
@@ -614,8 +613,7 @@ export async function init(options) {
         saveWallet,
         saveTransactions
     };
-    
-    console.log('✅ 电子钱包 初始化完成');
+
 }
 
 // 自动初始化

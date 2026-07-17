@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file profit-loss.js
  * @module profit-loss
  * @description 损益表 - 收入费用汇总
@@ -173,8 +173,7 @@ function refreshData() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('📊 损益表 初始化...');
-    
+
     if (options?.data) {
         state.data = options.data;
         localStorage.setItem('profit_loss_data', JSON.stringify(state.data));
@@ -194,8 +193,7 @@ export async function init(options) {
         render,
         refreshData
     };
-    
-    console.log('✅ 损益表 初始化完成');
+
 }
 
 // 自动初始化

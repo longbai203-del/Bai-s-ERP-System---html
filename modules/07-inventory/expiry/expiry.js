@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file expiry.js
  * @module expiry
  * @description 过期管理模块 - 商品过期监控、预警和处理
@@ -456,8 +456,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('⏰ 过期管理 初始化...');
-    
+
     if (options?.data) {
         state.items = options.data;
         localStorage.setItem('expiry_data', JSON.stringify(state.items));
@@ -482,8 +481,7 @@ export async function init(options) {
         saveExpiryItems,
         applyFilters
     };
-    
-    console.log('✅ 过期管理 初始化完成');
+
 }
 
 // 自动初始化

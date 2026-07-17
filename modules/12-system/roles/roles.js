@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file roles.js
  * @module roles
  * @description 角色管理 - 角色定义和权限分配
@@ -419,7 +419,7 @@ function bindEvents() {
  * @public
  */
 export async function init(options) {
-    console.log('👤 角色管理 初始化...');
+
     loadRoles();
     bindEvents();
     render();
@@ -439,8 +439,7 @@ export async function init(options) {
         handleReset,
         applyFilters
     };
-    
-    console.log('✅ 角色管理 初始化完成');
+
 }
 
 if (document.readyState === 'loading') {

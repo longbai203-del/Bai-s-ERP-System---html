@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file employees.js
  * @module employees
  * @description 员工管理 - 员工的CRUD操作
@@ -476,8 +476,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('👥 员工管理 初始化...');
-    
+
     if (options?.data) {
         state.employees = options.data;
         localStorage.setItem('employee_data', JSON.stringify(state.employees));
@@ -503,8 +502,7 @@ export async function init(options) {
         saveEmployees,
         applyFilters
     };
-    
-    console.log('✅ 员工管理 初始化完成');
+
 }
 
 // 自动初始化

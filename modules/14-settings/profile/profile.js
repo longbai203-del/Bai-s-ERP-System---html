@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file profile.js
  * @module profile
  * @description 个人设置 - 用户个人信息管理
@@ -292,7 +292,6 @@ function bindEvents() {
  * @returns {Promise<void>}
  */
 export async function init(options) {
-    console.log('👤 个人设置 初始化...');
 
     if (options?.data) {
         state.profile = { ...state.profile, ...options.data };
@@ -312,7 +311,6 @@ export async function init(options) {
         renderForm
     };
 
-    console.log('✅ 个人设置 初始化完成');
 }
 
 // 自动初始化

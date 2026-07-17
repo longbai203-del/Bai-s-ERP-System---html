@@ -1,0 +1,830 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>触屏收银 - Carwash Pro</title>
+    <link rel="stylesheet" href="../../css/design-system.css">
+    <link rel="stylesheet" href="pos.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* ============================================================
+           触屏收银样式 - 大按钮、触屏优化
+           ============================================================ */
+        * {
+            -webkit-tap-highlight-color: transparent;
+            user-select: none;
+        }
+
+        .touch-pos-container {
+            padding: 12px 16px;
+            max-width: 1400px;
+            margin: 0 auto;
+            height: calc(100vh - 60px);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .touch-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+            flex-shrink: 0;
+        }
+
+        .touch-header h1 {
+            font-size: 20px;
+            font-weight: 700;
+            color: #1F2937;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .touch-header .info-bar {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            font-size: 14px;
+            color: #6B7280;
+        }
+
+        .touch-header .info-bar .badge {
+            padding: 4px 14px;
+            border-radius: 9999px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .badge-success { background: #D1FAE5; color: #065F46; }
+        .badge-warning { background: #FEF3C7; color: #92400E; }
+
+        /* 主布局 - 触屏优化 */
+        .touch-grid {
+            display: grid;
+            grid-template-columns: 1fr 340px;
+            gap: 12px;
+            flex: 1;
+            min-height: 0;
+        }
+
+        @media (max-width: 1024px) {
+            .touch-grid {
+                grid-template-columns: 1fr;
+                grid-template-rows: 1fr 1fr;
+            }
+            .touch-pos-container {
+                height: auto;
+                min-height: 100vh;
+            }
+        }
+
+        /* 左侧 - 商品分类和网格 */
+        .touch-products {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #E5E7EB;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .touch-products .category-bar {
+            display: flex;
+            gap: 6px;
+            padding: 10px 12px;
+            border-bottom: 1px solid #F3F4F6;
+            flex-shrink: 0;
+            overflow-x: auto;
+            flex-wrap: nowrap;
+        }
+
+        .touch-products .category-bar .cat-btn {
+            padding: 8px 18px;
+            border: none;
+            border-radius: 8px;
+            font-size: 14px;
+            font-weight: 500;
+            background: #F3F4F6;
+            color: #4B5563;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+            touch-action: manipulation;
+        }
+
+        .touch-products .category-bar .cat-btn.active {
+            background: #4F46E5;
+            color: white;
+        }
+
+        .touch-products .category-bar .cat-btn:active {
+            transform: scale(0.95);
+        }
+
+        .touch-products .product-grid {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 12px;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            gap: 10px;
+            align-content: start;
+        }
+
+        .touch-products .product-grid .product-btn {
+            padding: 14px 8px;
+            border: 2px solid #E5E7EB;
+            border-radius: 10px;
+            background: white;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.15s ease;
+            touch-action: manipulation;
+            min-height: 90px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .touch-products .product-grid .product-btn:active {
+            transform: scale(0.94);
+            border-color: #4F46E5;
+            background: #EEF2FF;
+        }
+
+        .touch-products .product-grid .product-btn .icon {
+            font-size: 32px;
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .touch-products .product-grid .product-btn .name {
+            font-size: 13px;
+            font-weight: 500;
+            color: #1F2937;
+        }
+
+        .touch-products .product-grid .product-btn .price {
+            font-size: 14px;
+            font-weight: 700;
+            color: #4F46E5;
+        }
+
+        /* 右侧 - 购物车（触屏优化） */
+        .touch-cart {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #E5E7EB;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .touch-cart .cart-header {
+            padding: 12px 14px;
+            border-bottom: 1px solid #F3F4F6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .touch-cart .cart-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1F2937;
+            margin: 0;
+        }
+
+        .touch-cart .cart-header .cart-count {
+            font-size: 14px;
+            color: #6B7280;
+        }
+
+        .touch-cart .cart-items {
+            flex: 1;
+            overflow-y: auto;
+            padding: 6px 10px;
+        }
+
+        .touch-cart .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 10px 0;
+            border-bottom: 1px solid #F3F4F6;
+        }
+
+        .touch-cart .cart-item:last-child {
+            border-bottom: none;
+        }
+
+        .touch-cart .cart-item .item-info .item-name {
+            font-size: 14px;
+            font-weight: 500;
+            color: #1F2937;
+        }
+
+        .touch-cart .cart-item .item-info .item-meta {
+            font-size: 12px;
+            color: #6B7280;
+        }
+
+        .touch-cart .cart-item .item-actions {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .touch-cart .cart-item .item-actions .qty-btn {
+            width: 34px;
+            height: 34px;
+            border-radius: 50%;
+            border: 2px solid #D1D5DB;
+            background: white;
+            cursor: pointer;
+            font-size: 18px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.15s;
+            touch-action: manipulation;
+        }
+
+        .touch-cart .cart-item .item-actions .qty-btn:active {
+            transform: scale(0.9);
+            background: #F3F4F6;
+        }
+
+        .touch-cart .cart-item .item-actions .qty {
+            font-weight: 700;
+            font-size: 16px;
+            min-width: 28px;
+            text-align: center;
+        }
+
+        .touch-cart .cart-item .item-actions .item-total {
+            font-weight: 700;
+            color: #4F46E5;
+            font-size: 15px;
+            min-width: 70px;
+            text-align: right;
+        }
+
+        .touch-cart .cart-item .item-actions .remove-btn {
+            color: #EF4444;
+            background: none;
+            border: none;
+            cursor: pointer;
+            font-size: 20px;
+            padding: 4px 6px;
+            touch-action: manipulation;
+        }
+
+        .touch-cart .cart-item .item-actions .remove-btn:active {
+            transform: scale(0.85);
+        }
+
+        .cart-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: #9CA3AF;
+        }
+
+        .cart-empty i {
+            font-size: 48px;
+            margin-bottom: 8px;
+            color: #D1D5DB;
+        }
+
+        .cart-empty p {
+            font-size: 14px;
+        }
+
+        /* 购物车底部 - 大按钮触屏优化 */
+        .touch-cart .cart-footer {
+            padding: 12px 14px;
+            border-top: 1px solid #F3F4F6;
+            flex-shrink: 0;
+            background: #F9FAFB;
+        }
+
+        .touch-cart .cart-footer .summary-row {
+            display: flex;
+            justify-content: space-between;
+            font-size: 15px;
+            padding: 4px 0;
+        }
+
+        .touch-cart .cart-footer .summary-row.total {
+            font-size: 20px;
+            font-weight: 700;
+            border-top: 1px solid #E5E7EB;
+            padding-top: 8px;
+            margin-top: 4px;
+        }
+
+        .touch-cart .cart-footer .summary-row.total .amount {
+            color: #4F46E5;
+        }
+
+        .touch-cart .cart-footer .action-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1.5fr;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .touch-cart .cart-footer .action-row .btn {
+            padding: 12px 8px;
+            font-size: 15px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            border: none;
+            transition: all 0.15s;
+            touch-action: manipulation;
+        }
+
+        .touch-cart .cart-footer .action-row .btn:active {
+            transform: scale(0.96);
+        }
+
+        .touch-cart .cart-footer .action-row .btn-outline {
+            background: white;
+            color: #1F2937;
+            border: 2px solid #D1D5DB;
+        }
+
+        .touch-cart .cart-footer .action-row .btn-danger {
+            background: #EF4444;
+            color: white;
+        }
+
+        .touch-cart .cart-footer .action-row .btn-success {
+            background: #10B981;
+            color: white;
+        }
+
+        .touch-cart .cart-footer .action-row .btn-success:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* 数字键盘（触屏） */
+        .touch-keypad {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 6px;
+            padding: 6px 0;
+            flex-shrink: 0;
+        }
+
+        .touch-keypad .key {
+            padding: 12px;
+            border: 2px solid #E5E7EB;
+            border-radius: 8px;
+            background: white;
+            font-size: 20px;
+            font-weight: 600;
+            cursor: pointer;
+            text-align: center;
+            transition: all 0.1s;
+            touch-action: manipulation;
+        }
+
+        .touch-keypad .key:active {
+            transform: scale(0.94);
+            background: #F3F4F6;
+        }
+
+        .touch-keypad .key.enter {
+            background: #4F46E5;
+            color: white;
+            border-color: #4F46E5;
+        }
+
+        .touch-keypad .key.enter:active {
+            background: #4338CA;
+        }
+
+        .touch-keypad .key.clear {
+            background: #EF4444;
+            color: white;
+            border-color: #EF4444;
+        }
+
+        .touch-keypad .key.clear:active {
+            background: #DC2626;
+        }
+
+        /* 响应式 */
+        @media (max-width: 640px) {
+            .touch-pos-container {
+                padding: 8px 10px;
+                height: auto;
+            }
+            .touch-grid {
+                gap: 8px;
+            }
+            .touch-products .product-grid {
+                grid-template-columns: repeat(auto-fill, minmax(85px, 1fr));
+                gap: 6px;
+                padding: 6px 8px;
+            }
+            .touch-products .product-grid .product-btn {
+                padding: 10px 4px;
+                min-height: 70px;
+            }
+            .touch-products .product-grid .product-btn .icon {
+                font-size: 24px;
+            }
+            .touch-products .product-grid .product-btn .name {
+                font-size: 11px;
+            }
+            .touch-products .product-grid .product-btn .price {
+                font-size: 12px;
+            }
+            .touch-cart .cart-footer .action-row {
+                grid-template-columns: 1fr 1fr;
+            }
+            .touch-cart .cart-footer .action-row .btn-success {
+                grid-column: 1 / -1;
+            }
+            .touch-keypad {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            .touch-keypad .key {
+                padding: 10px;
+                font-size: 17px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .touch-products .product-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            .touch-header h1 {
+                font-size: 17px;
+            }
+            .touch-header .info-bar {
+                font-size: 12px;
+                gap: 8px;
+            }
+            .touch-cart .cart-item .item-actions .item-total {
+                font-size: 13px;
+                min-width: 50px;
+            }
+            .touch-cart .cart-item .item-actions .qty-btn {
+                width: 28px;
+                height: 28px;
+                font-size: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="touch-pos-container">
+        <!-- 头部 -->
+        <div class="touch-header">
+            <div>
+                <h1>
+                    <i class="fas fa-hand-pointer" style="color:#4F46E5;"></i>
+                    触屏收银
+                    <span class="badge badge-success" style="font-size:12px;">🟢 在线</span>
+                </h1>
+            </div>
+            <div class="info-bar">
+                <span>👤 张伟</span>
+                <span id="touchTime">14:30</span>
+                <span>🧾 <strong id="touchOrderCount">0</strong></span>
+                <button class="btn btn-sm btn-outline" onclick="alert('📊 统计')">
+                    <i class="fas fa-chart-bar"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- 主布局 -->
+        <div class="touch-grid">
+            <!-- 左侧：商品 -->
+            <div class="touch-products">
+                <div class="category-bar" id="touchCategoryBar">
+                    <button class="cat-btn active">全部</button>
+                    <button class="cat-btn">🚗 洗车</button>
+                    <button class="cat-btn">🔧 保养</button>
+                    <button class="cat-btn">✨ 美容</button>
+                    <button class="cat-btn">🧩 配件</button>
+                    <button class="cat-btn">📦 套餐</button>
+                </div>
+                <div class="product-grid" id="touchProductGrid">
+                    <!-- JS动态渲染 -->
+                    <div style="grid-column:1/-1;text-align:center;padding:20px;color:#9CA3AF;">
+                        <i class="fas fa-spinner fa-spin" style="font-size:24px;"></i> 加载中...
+                    </div>
+                </div>
+            </div>
+
+            <!-- 右侧：购物车 -->
+            <div class="touch-cart">
+                <div class="cart-header">
+                    <h3><i class="fas fa-shopping-cart" style="color:#4F46E5;"></i> 购物车</h3>
+                    <span class="cart-count" id="touchCartCount">0 件</span>
+                </div>
+                <div class="cart-items" id="touchCartItems">
+                    <div class="cart-empty">
+                        <i class="fas fa-shopping-basket"></i>
+                        <p>点击左侧商品添加</p>
+                    </div>
+                </div>
+                <div class="cart-footer">
+                    <div class="summary-row">
+                        <span>小计</span>
+                        <span id="touchSubtotal">¥0.00</span>
+                    </div>
+                    <div class="summary-row total">
+                        <span>合计</span>
+                        <span class="amount" id="touchTotal">¥0.00</span>
+                    </div>
+                    <div class="action-row">
+                        <button class="btn btn-outline" id="touchClearBtn">
+                            <i class="fas fa-trash"></i> 清空
+                        </button>
+                        <button class="btn btn-outline" id="touchDiscountBtn">
+                            <i class="fas fa-percent"></i> 折扣
+                        </button>
+                        <button class="btn btn-success" id="touchCheckoutBtn" disabled>
+                            <i class="fas fa-check"></i> 结算
+                        </button>
+                    </div>
+                    <!-- 数字键盘 -->
+                    <div class="touch-keypad" id="touchKeypad">
+                        <button class="key">1</button>
+                        <button class="key">2</button>
+                        <button class="key">3</button>
+                        <button class="key clear" id="keyClear">⌫</button>
+                        <button class="key">4</button>
+                        <button class="key">5</button>
+                        <button class="key">6</button>
+                        <button class="key enter" id="keyEnter">↵</button>
+                        <button class="key">7</button>
+                        <button class="key">8</button>
+                        <button class="key">9</button>
+                        <button class="key">.</button>
+                        <button class="key">0</button>
+                        <button class="key" id="keyDouble">00</button>
+                        <button class="key clear" id="keyClearAll">C</button>
+                        <button class="key enter" id="keyConfirm">确认</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { init } from './touch-pos.js';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🖐️ 触屏收银页面加载');
+            
+            // 模拟商品数据
+            const products = [
+                { id: 1, name: '标准洗车', category: '洗车', price: 89, icon: '🚗' },
+                { id: 2, name: '精致洗车', category: '洗车', price: 159, icon: '🚙' },
+                { id: 3, name: '全车镀晶', category: '美容', price: 899, icon: '✨' },
+                { id: 4, name: '内饰清洁', category: '美容', price: 299, icon: '🧹' },
+                { id: 5, name: '机油更换', category: '保养', price: 399, icon: '🔧' },
+                { id: 6, name: '轮胎护理', category: '保养', price: 120, icon: '🛞' },
+                { id: 7, name: '行车记录仪', category: '配件', price: 459, icon: '📹' },
+                { id: 8, name: '洗车套餐', category: '套餐', price: 599, icon: '📦' },
+                { id: 9, name: '空调清洗', category: '保养', price: 259, icon: '❄️' },
+                { id: 10, name: '漆面抛光', category: '美容', price: 499, icon: '🌟' },
+                { id: 11, name: '脚垫定制', category: '配件', price: 389, icon: '🧩' },
+                { id: 12, name: 'VIP洗车卡', category: '套餐', price: 999, icon: '💳' }
+            ];
+
+            // 购物车状态
+            let cart = [];
+            let total = 0;
+            let currentCategory = '全部';
+
+            // 渲染商品
+            function renderProducts(category) {
+                const grid = document.getElementById('touchProductGrid');
+                const filtered = category === '全部' 
+                    ? products 
+                    : products.filter(p => p.category === category);
+                
+                if (filtered.length === 0) {
+                    grid.innerHTML = `
+                        <div style="grid-column:1/-1;text-align:center;padding:30px;color:#9CA3AF;">
+                            <i class="fas fa-box-open" style="font-size:28px;display:block;margin-bottom:8px;"></i>
+                            该分类暂无商品
+                        </div>
+                    `;
+                    return;
+                }
+
+                grid.innerHTML = filtered.map(p => `
+                    <button class="product-btn" data-id="${p.id}" data-name="${p.name}" data-price="${p.price}">
+                        <span class="icon">${p.icon}</span>
+                        <span class="name">${p.name}</span>
+                        <span class="price">¥${p.price}</span>
+                    </button>
+                `).join('');
+
+                // 商品点击
+                grid.querySelectorAll('.product-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const name = this.dataset.name;
+                        const price = parseFloat(this.dataset.price);
+                        addToCart(name, price);
+                        // 触屏反馈
+                        this.style.transform = 'scale(0.92)';
+                        setTimeout(() => this.style.transform = '', 150);
+                    });
+                });
+            }
+
+            // 分类切换
+            document.querySelectorAll('#touchCategoryBar .cat-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('#touchCategoryBar .cat-btn').forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentCategory = this.textContent.trim();
+                    renderProducts(currentCategory);
+                });
+            });
+
+            // 添加购物车
+            function addToCart(name, price) {
+                const existing = cart.find(item => item.name === name && item.price === price);
+                if (existing) {
+                    existing.qty += 1;
+                } else {
+                    cart.push({ name, price, qty: 1 });
+                }
+                updateCart();
+            }
+
+            // 更新购物车
+            function updateCart() {
+                const container = document.getElementById('touchCartItems');
+                const countEl = document.getElementById('touchCartCount');
+                const subtotalEl = document.getElementById('touchSubtotal');
+                const totalEl = document.getElementById('touchTotal');
+                const checkoutBtn = document.getElementById('touchCheckoutBtn');
+                const orderCount = document.getElementById('touchOrderCount');
+
+                total = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+                const count = cart.reduce((sum, item) => sum + item.qty, 0);
+                
+                countEl.textContent = count + ' 件';
+                subtotalEl.textContent = '¥' + total.toFixed(2);
+                totalEl.textContent = '¥' + total.toFixed(2);
+                checkoutBtn.disabled = cart.length === 0;
+                orderCount.textContent = count;
+
+                if (cart.length === 0) {
+                    container.innerHTML = `
+                        <div class="cart-empty">
+                            <i class="fas fa-shopping-basket"></i>
+                            <p>点击左侧商品添加</p>
+                        </div>
+                    `;
+                    return;
+                }
+
+                container.innerHTML = cart.map((item, index) => `
+                    <div class="cart-item">
+                        <div class="item-info">
+                            <div class="item-name">${item.name}</div>
+                            <div class="item-meta">¥${item.price} × ${item.qty}</div>
+                        </div>
+                        <div class="item-actions">
+                            <button class="qty-btn" onclick="window.touchUpdateQty(${index}, -1)">−</button>
+                            <span class="qty">${item.qty}</span>
+                            <button class="qty-btn" onclick="window.touchUpdateQty(${index}, 1)">+</button>
+                            <span class="item-total">¥${(item.price * item.qty).toFixed(2)}</span>
+                            <button class="remove-btn" onclick="window.touchRemoveItem(${index})">×</button>
+                        </div>
+                    </div>
+                `).join('');
+
+                // 暴露函数到全局
+                window.touchUpdateQty = function(index, delta) {
+                    if (cart[index]) {
+                        cart[index].qty += delta;
+                        if (cart[index].qty <= 0) {
+                            cart.splice(index, 1);
+                        }
+                        updateCart();
+                    }
+                };
+
+                window.touchRemoveItem = function(index) {
+                    cart.splice(index, 1);
+                    updateCart();
+                };
+            }
+
+            // 清空购物车
+            document.getElementById('touchClearBtn')?.addEventListener('click', function() {
+                if (cart.length === 0) return;
+                if (confirm('确认清空购物车？')) {
+                    cart = [];
+                    updateCart();
+                }
+            });
+
+            // 折扣
+            document.getElementById('touchDiscountBtn')?.addEventListener('click', function() {
+                if (cart.length === 0) { alert('购物车为空'); return; }
+                const d = prompt('折扣百分比 (如: 10 表示9折)：', '0');
+                if (d === null) return;
+                const discount = parseFloat(d);
+                if (isNaN(discount) || discount < 0 || discount > 100) {
+                    alert('请输入0-100之间的数字');
+                    return;
+                }
+                const newTotal = total * (1 - discount / 100);
+                document.getElementById('touchTotal').textContent = '¥' + newTotal.toFixed(2);
+                alert('✅ 已应用 ' + discount + '% 折扣');
+            });
+
+            // 结算
+            document.getElementById('touchCheckoutBtn')?.addEventListener('click', function() {
+                if (cart.length === 0) return;
+                const totalAmount = parseFloat(document.getElementById('touchTotal').textContent.replace('¥', ''));
+                if (confirm('确认结算 ¥' + totalAmount.toFixed(2) + '？')) {
+                    alert('✅ 订单已创建！\n总金额: ¥' + totalAmount.toFixed(2) + '\n订单号: POS-' + Date.now().toString().slice(-6));
+                    cart = [];
+                    updateCart();
+                }
+            });
+
+            // 数字键盘
+            let keypadInput = '';
+
+            document.querySelectorAll('#touchKeypad .key:not(.clear):not(.enter)').forEach(key => {
+                key.addEventListener('click', function() {
+                    keypadInput += this.textContent;
+                    // 显示输入
+                    const totalEl = document.getElementById('touchTotal');
+                    if (keypadInput) {
+                        totalEl.textContent = '¥' + parseFloat(keypadInput).toFixed(2);
+                    }
+                });
+            });
+
+            document.getElementById('keyClear')?.addEventListener('click', function() {
+                keypadInput = keypadInput.slice(0, -1);
+                const totalEl = document.getElementById('touchTotal');
+                totalEl.textContent = keypadInput ? '¥' + parseFloat(keypadInput).toFixed(2) : '¥0.00';
+            });
+
+            document.getElementById('keyClearAll')?.addEventListener('click', function() {
+                keypadInput = '';
+                document.getElementById('touchTotal').textContent = '¥0.00';
+            });
+
+            document.getElementById('keyDouble')?.addEventListener('click', function() {
+                keypadInput += '00';
+                const totalEl = document.getElementById('touchTotal');
+                totalEl.textContent = '¥' + parseFloat(keypadInput).toFixed(2);
+            });
+
+            document.getElementById('keyConfirm')?.addEventListener('click', function() {
+                if (keypadInput && parseFloat(keypadInput) > 0) {
+                    alert('✅ 金额已确认: ¥' + parseFloat(keypadInput).toFixed(2));
+                    keypadInput = '';
+                } else {
+                    alert('请输入有效金额');
+                }
+            });
+
+            // 初始化
+            renderProducts('全部');
+            updateCart();
+
+            // 时钟
+            function updateClock() {
+                document.getElementById('touchTime').textContent = new Date().toLocaleTimeString('zh-CN', { hour12: false });
+            }
+            updateClock();
+            setInterval(updateClock, 1000);
+
+            // 初始化模块
+            init().catch(err => console.warn('触屏收银初始化失败:', err));
+        });
+    </script>
+</body>
+</html>

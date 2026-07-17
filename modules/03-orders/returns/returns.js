@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file returns.js
  * @module returns
  * @description 退货管理 - 退货申请、处理和记录
@@ -663,8 +663,7 @@ function bindEvents() {
  * @description 初始化退货管理
  */
 export async function init(options) {
-    console.log('↩️ 退货管理 初始化...');
-    
+
     // 如果传入了数据，使用传入数据
     if (options?.data) {
         state.returns = options.data;
@@ -698,8 +697,7 @@ export async function init(options) {
         getPendingReturns,
         saveReturns
     };
-    
-    console.log('✅ 退货管理 初始化完成');
+
 }
 
 // 自动初始化

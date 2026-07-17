@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file marketing.js
  * @module marketing
  * @description 营销概览 - 营销数据总览仪表板
@@ -185,7 +185,7 @@ function startAutoRefresh() {
         clearInterval(refreshInterval);
     }
     refreshInterval = setInterval(() => {
-        console.log('🔄 自动刷新营销数据...');
+
         loadMarketingData();
     }, 60000);
 }
@@ -223,8 +223,7 @@ function bindEvents() {
  * @description 初始化营销概览
  */
 export async function init(options) {
-    console.log('📢 营销概览 初始化...');
-    
+
     if (options?.data) {
         state.stats = options.data;
         renderStats();
@@ -242,8 +241,7 @@ export async function init(options) {
         refresh: loadMarketingData,
         stopAutoRefresh
     };
-    
-    console.log('✅ 营销概览 初始化完成');
+
 }
 
 /**

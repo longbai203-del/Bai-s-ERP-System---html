@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file branches.js
  * @module branches
  * @description 分支管理 - 门店分支机构管理
@@ -337,8 +337,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('🏪 分支管理 初始化...');
-    
+
     if (options?.data) {
         state.branches = options.data;
         localStorage.setItem('branch_data', JSON.stringify(state.branches));
@@ -361,8 +360,7 @@ export async function init(options) {
         saveBranches,
         applyFilters
     };
-    
-    console.log('✅ 分支管理 初始化完成');
+
 }
 
 // 自动初始化

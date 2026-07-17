@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file api-keys.js
  * @module api-keys
  * @description API密钥管理 - 生成、管理和监控API密钥
@@ -431,7 +431,7 @@ function bindEvents() {
  * @public
  */
 export async function init(options) {
-    console.log('🔑 API密钥管理 初始化...');
+
     loadKeys();
     bindEvents();
     render();
@@ -451,8 +451,7 @@ export async function init(options) {
         handleSearch,
         handleReset
     };
-    
-    console.log('✅ API密钥管理 初始化完成');
+
 }
 
 if (document.readyState === 'loading') {

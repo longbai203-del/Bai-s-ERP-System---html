@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file vehicles.js
  * @module vehicles
  * @description 车辆管理模块 - 车辆信息的CRUD操作和数据管理
@@ -747,8 +747,7 @@ function initModalEvents() {
  * @returns {Promise<void>}
  */
 export async function init(options) {
-    console.log('🚗 车辆管理 初始化...');
-    
+
     if (options?.data) {
         state.vehicles = options.data;
         localStorage.setItem('vehicle_data', JSON.stringify(state.vehicles));
@@ -786,8 +785,7 @@ export async function init(options) {
             }
         }
     };
-    
-    console.log('✅ 车辆管理 初始化完成');
+
 }
 
 // 自动初始化

@@ -1,0 +1,352 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分类管理 - Carwash Pro</title>
+    <link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body>
+    <div id="app">
+        <div id="navbar-container"></div>
+        <div class="main-wrapper">
+            <div id="sidebar-container"></div>
+            <main id="main-content">
+                <!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>分类管理 - Carwash Pro</title>
+    
+    
+    
+    <style>
+        .categories-container {
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .page-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1F2937;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-header .subtitle {
+            font-size: 14px;
+            color: #6B7280;
+            margin-top: 4px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #E5E7EB;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 14px 18px;
+            border-bottom: 1px solid #F3F4F6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .card-header h3 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1F2937;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-body {
+            padding: 16px 18px;
+        }
+
+        .category-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .category-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 12px 0;
+            border-bottom: 1px solid #F3F4F6;
+            transition: background 0.2s;
+        }
+
+        .category-item:last-child {
+            border-bottom: none;
+        }
+
+        .category-item:hover {
+            background: #F9FAFB;
+            margin: 0 -18px;
+            padding: 12px 18px;
+        }
+
+        .category-item .category-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .category-item .category-info .icon {
+            font-size: 28px;
+        }
+
+        .category-item .category-info .name {
+            font-size: 15px;
+            font-weight: 500;
+            color: #1F2937;
+        }
+
+        .category-item .category-info .count {
+            font-size: 12px;
+            color: #6B7280;
+        }
+
+        .category-item .category-actions {
+            display: flex;
+            gap: 4px;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .badge-success { background: #D1FAE5; color: #065F46; }
+        .badge-secondary { background: #F3F4F6; color: #6B7280; }
+
+        .btn-sm {
+            padding: 4px 8px;
+            font-size: 12px;
+            border-radius: 6px;
+        }
+
+        .add-category-form {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .add-category-form input {
+            flex: 1;
+            min-width: 180px;
+            padding: 8px 14px;
+            border: 1px solid #D1D5DB;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .add-category-form input:focus {
+            border-color: #4F46E5;
+            outline: none;
+        }
+
+        .add-category-form select {
+            padding: 8px 12px;
+            border: 1px solid #D1D5DB;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+        }
+
+        @media (max-width: 480px) {
+            .categories-container {
+                padding: 12px;
+            }
+            .header-actions {
+                width: 100%;
+            }
+            .header-actions button {
+                flex: 1;
+            }
+            .add-category-form {
+                flex-direction: column;
+            }
+            .add-category-form input,
+            .add-category-form select {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="categories-container">
+        <div class="page-header">
+            <div>
+                <h1>
+                    <i class="fas fa-tags" style="color:#4F46E5;"></i>
+                    分类管理
+                </h1>
+                <div class="subtitle">商品分类管理与排序</div>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-outline" id="refreshCategoriesBtn">
+                    <i class="fas fa-sync"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fas fa-list" style="color:#4F46E5;"></i> 所有分类</h3>
+                <span style="font-size:12px;color:#6B7280;">共 12 个分类</span>
+            </div>
+            <div class="card-body">
+                <ul class="category-list">
+                    <li class="category-item">
+                        <div class="category-info">
+                            <span class="icon">🚗</span>
+                            <div>
+                                <div class="name">洗车</div>
+                                <div class="count">24 个商品</div>
+                            </div>
+                        </div>
+                        <div class="category-actions">
+                            <span class="badge badge-success">在售</span>
+                            <button class="btn btn-sm btn-outline"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-sm btn-outline"><i class="fas fa-arrow-up"></i></button>
+                            <button class="btn btn-sm btn-outline"><i class="fas fa-arrow-down"></i></button>
+                        </div>
+                    </li>
+                    <li class="category-item">
+                        <div class="category-info">
+                            <span class="icon">🔧</span>
+                            <div>
+                                <div class="name">保养</div>
+                                <div class="count">18 个商品</div>
+                            </div>
+                        </div>
+                        <div class="category-actions">
+                            <span class="badge badge-success">在售</span>
+                            <button class="btn btn-sm btn-outline"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-sm btn-outline"><i class="fas fa-arrow-up"></i></button>
+                            <button class="btn btn-sm btn-outline"><i class="fas fa-arrow-down"></i></button>
+                        </div>
+                    </li>
+                    <li class="category-item">
+                        <div class="category-info">
+                            <span class="icon">✨</span>
+                            <div>
+                                <div class="name">美容</div>
+                                <div class="count">15 个商品</div>
+                            </div>
+                        </div>
+                        <div class="category-actions">
+                            <span class="badge badge-success">在售</span>
+                            <button class="btn btn-sm btn-outline"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-sm btn-outline"><i class="fas fa-arrow-up"></i></button>
+                            <button class="btn btn-sm btn-outline"><i class="fas fa-arrow-down"></i></button>
+                        </div>
+                    </li>
+                    <li class="category-item">
+                        <div class="category-info">
+                            <span class="icon">🧩</span>
+                            <div>
+                                <div class="name">配件</div>
+                                <div class="count">32 个商品</div>
+                            </div>
+                        </div>
+                        <div class="category-actions">
+                            <span class="badge badge-success">在售</span>
+                            <button class="btn btn-sm btn-outline"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-sm btn-outline"><i class="fas fa-arrow-up"></i></button>
+                            <button class="btn btn-sm btn-outline"><i class="fas fa-arrow-down"></i></button>
+                        </div>
+                    </li>
+                    <li class="category-item">
+                        <div class="category-info">
+                            <span class="icon">📦</span>
+                            <div>
+                                <div class="name">套餐</div>
+                                <div class="count">8 个商品</div>
+                            </div>
+                        </div>
+                        <div class="category-actions">
+                            <span class="badge badge-secondary">待上架</span>
+                            <button class="btn btn-sm btn-outline"><i class="fas fa-edit"></i></button>
+                            <button class="btn btn-sm btn-outline"><i class="fas fa-arrow-up"></i></button>
+                            <button class="btn btn-sm btn-outline"><i class="fas fa-arrow-down"></i></button>
+                        </div>
+                    </li>
+                </ul>
+
+                <!-- 添加分类 -->
+                <div style="margin-top:16px;padding-top:16px;border-top:1px solid #F3F4F6;">
+                    <div style="font-weight:500;color:#1F2937;margin-bottom:8px;">
+                        <i class="fas fa-plus-circle" style="color:#4F46E5;"></i> 添加新分类
+                    </div>
+                    <div class="add-category-form">
+                        <input type="text" placeholder="分类名称">
+                        <select>
+                            <option value="active">在售</option>
+                            <option value="inactive">待上架</option>
+                        </select>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-plus"></i> 添加
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { init } from './categories.js';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🏷️ 分类管理页面加载');
+            init().catch(err => console.warn('分类管理初始化失败:', err));
+
+            document.getElementById('refreshCategoriesBtn')?.addEventListener('click', function() {
+                const icon = this.querySelector('i');
+                icon.classList.add('fa-spin');
+                setTimeout(() => icon.classList.remove('fa-spin'), 800);
+            });
+        });
+    </script>
+</body>
+</html>
+            </main>
+        </div>
+    </div>
+    <script type="module" src="/core/app.js"></script>
+</body>
+</html>

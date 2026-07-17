@@ -1,4 +1,4 @@
-/**
+﻿/**
  * modules/05-customers/customers/customers.js - 客户管理
  * 直接使用 supabase.js 服务
  */
@@ -39,11 +39,10 @@ const LEVEL_MAP = {
 
 export async function init() {
     if (state._initialized) {
-        console.log('👥 客户管理已初始化，跳过');
+
         return;
     }
 
-    console.log('👥 客户管理初始化...');
     state._initialized = true;
 
     bindModalEvents();
@@ -51,7 +50,6 @@ export async function init() {
     await loadStats();
     bindEvents();
 
-    console.log('✅ 客户管理初始化完成');
 }
 
 // ============================================================
@@ -70,8 +68,6 @@ async function loadCustomers() {
             phone: state.filters.phone,
             level: state.filters.level
         });
-
-        console.log('📊 加载客户数据:', result);
 
         state.customers = result.list || [];
         state.pagination.total = result.total || 0;
@@ -92,7 +88,7 @@ async function loadCustomers() {
 async function loadStats() {
     try {
         const stats = await customerService.getStats();
-        console.log('📊 加载统计:', stats);
+
         renderStats(stats);
     } catch (error) {
         console.error('❌ 加载统计失败:', error);
@@ -363,5 +359,3 @@ if (document.readyState === 'loading') {
 } else {
     setTimeout(init, 100);
 }
-
-console.log('✅ 客户管理模块加载完成');

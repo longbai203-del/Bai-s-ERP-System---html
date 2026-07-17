@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file categories.js
  * @module categories
  * @description 分类管理 - 商品分类的CRUD操作
@@ -478,8 +478,7 @@ function bindEvents() {
  * @returns {Promise<void>}
  */
 export async function init(options) {
-    console.log('📁 分类管理 初始化...');
-    
+
     if (options?.data) {
         state.categories = options.data;
         saveCategories();
@@ -507,8 +506,7 @@ export async function init(options) {
         saveCategories,
         getProductCount
     };
-    
-    console.log('✅ 分类管理 初始化完成');
+
 }
 
 // 自动初始化

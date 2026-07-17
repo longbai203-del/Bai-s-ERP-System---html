@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file feedback.js
  * @module feedback
  * @description 客户反馈模块 - 客户反馈的CRUD操作和数据管理
@@ -563,8 +563,7 @@ function bindEvents() {
  * @returns {Promise<void>}
  */
 export async function init(options) {
-    console.log('💬 客户反馈 初始化...');
-    
+
     if (options?.data) {
         state.feedbacks = options.data;
         localStorage.setItem('feedback_data', JSON.stringify(state.feedbacks));
@@ -589,8 +588,7 @@ export async function init(options) {
         refresh,
         saveFeedbacks
     };
-    
-    console.log('✅ 客户反馈 初始化完成');
+
 }
 
 // 自动初始化

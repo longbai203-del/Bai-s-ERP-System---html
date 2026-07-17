@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file supplier-payments.js
  * @module supplier-payments
  * @description 供应商付款 - 供应商付款管理
@@ -535,8 +535,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('💰 供应商付款管理 初始化...');
-    
+
     if (options?.data) {
         state.payments = options.data;
         localStorage.setItem('supplier_payment_data', JSON.stringify(state.payments));
@@ -562,8 +561,7 @@ export async function init(options) {
         savePayments,
         applyFilters
     };
-    
-    console.log('✅ 供应商付款管理 初始化完成');
+
 }
 
 // 自动初始化

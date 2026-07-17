@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file finance.js
  * @module finance
  * @description 财务概览 - 财务状况总览仪表板
@@ -557,7 +557,7 @@ function startAutoRefresh() {
         clearInterval(refreshInterval);
     }
     refreshInterval = setInterval(() => {
-        console.log('🔄 自动刷新财务数据...');
+
         loadFinanceData();
     }, 60000);
 }
@@ -581,8 +581,7 @@ function stopAutoRefresh() {
  * @description 初始化财务概览
  */
 export async function init(options) {
-    console.log('💰 财务概览 初始化...');
-    
+
     if (options?.data) {
         localStorage.setItem('finance_stats', JSON.stringify(options.data));
     }
@@ -602,8 +601,7 @@ export async function init(options) {
         changeTrendPeriod,
         stopAutoRefresh
     };
-    
-    console.log('✅ 财务概览 初始化完成');
+
 }
 
 /**

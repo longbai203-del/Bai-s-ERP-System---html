@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file recommendations.js
  * @module recommendations
  * @description 智能推荐 - AI驱动的业务建议
@@ -425,8 +425,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('💡 智能推荐 初始化...');
-    
+
     if (options?.data) {
         state.recommendations = options.data;
         localStorage.setItem('recommendation_data', JSON.stringify(state.recommendations));
@@ -451,8 +450,7 @@ export async function init(options) {
         saveRecommendations,
         applyFilters
     };
-    
-    console.log('✅ 智能推荐 初始化完成');
+
 }
 
 // 自动初始化

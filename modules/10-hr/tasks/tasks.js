@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file tasks.js
  * @module tasks
  * @description 任务管理 - 员工任务分配和跟踪
@@ -538,8 +538,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('📋 任务管理 初始化...');
-    
+
     if (options?.data) {
         state.tasks = options.data;
         localStorage.setItem('task_data', JSON.stringify(state.tasks));
@@ -565,8 +564,7 @@ export async function init(options) {
         saveTasks,
         applyFilters
     };
-    
-    console.log('✅ 任务管理 初始化完成');
+
 }
 
 // 自动初始化

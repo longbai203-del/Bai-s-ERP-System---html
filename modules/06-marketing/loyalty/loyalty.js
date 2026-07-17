@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file loyalty.js
  * @module loyalty
  * @description 积分管理模块 - 积分规则和积分记录的CRUD操作
@@ -515,8 +515,7 @@ function bindEvents() {
  * @returns {Promise<void>}
  */
 export async function init(options) {
-    console.log('⭐ 积分管理 初始化...');
-    
+
     if (options?.rules) {
         state.rules = options.rules;
         localStorage.setItem('loyalty_rules', JSON.stringify(state.rules));
@@ -583,8 +582,7 @@ export async function init(options) {
         saveRules,
         saveRecords
     };
-    
-    console.log('✅ 积分管理 初始化完成');
+
 }
 
 // 自动初始化

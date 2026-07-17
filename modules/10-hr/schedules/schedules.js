@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file schedules.js
  * @module schedules
  * @description 排班管理 - 员工排班和轮班管理
@@ -448,8 +448,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('📅 排班管理 初始化...');
-    
+
     if (options?.data) {
         state.records = options.data;
         localStorage.setItem('schedule_data', JSON.stringify(state.records));
@@ -474,8 +473,7 @@ export async function init(options) {
         saveSchedules,
         applyFilters
     };
-    
-    console.log('✅ 排班管理 初始化完成');
+
 }
 
 // 自动初始化

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file vat.js
  * @module vat
  * @description 增值税管理 - 增值税申报和记录
@@ -438,8 +438,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('📊 增值税管理 初始化...');
-    
+
     if (options?.data) {
         state.records = options.data;
         localStorage.setItem('vat_data', JSON.stringify(state.records));
@@ -464,8 +463,7 @@ export async function init(options) {
         saveVAT,
         applyFilters
     };
-    
-    console.log('✅ 增值税管理 初始化完成');
+
 }
 
 // 自动初始化

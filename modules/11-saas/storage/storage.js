@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file storage.js
  * @module storage
  * @description 存储管理 - 租户存储空间管理
@@ -512,8 +512,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('💾 存储管理 初始化...');
-    
+
     if (options?.data) {
         state.records = options.data;
         localStorage.setItem('storage_data', JSON.stringify(state.records));
@@ -540,8 +539,7 @@ export async function init(options) {
         saveStorage,
         applyFilters
     };
-    
-    console.log('✅ 存储管理 初始化完成');
+
 }
 
 // 自动初始化

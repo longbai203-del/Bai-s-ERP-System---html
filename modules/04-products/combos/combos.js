@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file combos.js
  * @module combos
  * @description 组合产品管理 - 套餐组合的创建和管理
@@ -465,8 +465,7 @@ function bindEvents() {
  * @returns {Promise<void>}
  */
 export async function init(options) {
-    console.log('📦 组合产品 初始化...');
-    
+
     if (options?.data) {
         state.combos = options.data;
         saveCombos();
@@ -491,8 +490,7 @@ export async function init(options) {
         refresh,
         saveCombos
     };
-    
-    console.log('✅ 组合产品 初始化完成');
+
 }
 
 // 自动初始化

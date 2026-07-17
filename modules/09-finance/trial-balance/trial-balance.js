@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file trial-balance.js
  * @module trial-balance
  * @description 试算平衡表 - 科目余额汇总
@@ -360,8 +360,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('⚖️ 试算平衡表 初始化...');
-    
+
     if (options?.data) {
         state.accounts = options.data;
         localStorage.setItem('trial_balance_data', JSON.stringify(state.accounts));
@@ -383,8 +382,7 @@ export async function init(options) {
         saveTrialBalance,
         applyFilters
     };
-    
-    console.log('✅ 试算平衡表 初始化完成');
+
 }
 
 // 自动初始化

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file general.js
  * @module general
  * @description 通用设置 - 系统通用配置
@@ -260,7 +260,6 @@ function bindEvents() {
  * @returns {Promise<void>}
  */
 export async function init(options) {
-    console.log('⚙️ 通用设置 初始化...');
 
     if (options?.data) {
         state.settings = { ...state.settings, ...options.data };
@@ -280,7 +279,6 @@ export async function init(options) {
         renderForm
     };
 
-    console.log('✅ 通用设置 初始化完成');
 }
 
 // 自动初始化

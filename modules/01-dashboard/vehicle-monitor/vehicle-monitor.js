@@ -1,4 +1,4 @@
-/**
+﻿/**
  * vehicle-monitor.js - 车辆监控模块
  * @module vehicle-monitor
  * @description 车辆进出记录、停留时间追踪、实时计数、车牌智能识别
@@ -928,7 +928,7 @@
             VehicleMonitorModule.cacheDom();
             VehicleMonitorModule.bindEvents();
             VehicleMonitorModule.loadData();
-            console.log('✅ Vehicle Monitor 模块已初始化');
+
         } else {
             console.warn('⚠️ VehicleMonitorModule 未定义');
         }
@@ -943,7 +943,6 @@
         setTimeout(initModule, 300);
     }
 
-    console.log('[VehicleMonitor] 模块已加载');
 })();
 /**
  * @file vehicle-monitor.js
@@ -971,7 +970,7 @@ export async function init() {
         VehicleMonitorModule.bindEvents();
         VehicleMonitorModule.loadData();
         VehicleMonitorModule.initialized = true;
-        console.log('✅ Vehicle Monitor 模块已初始化');
+
         return true;
     }
     console.warn('⚠️ VehicleMonitorModule 未定义');

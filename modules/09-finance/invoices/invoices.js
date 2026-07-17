@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file invoices.js
  * @module invoices
  * @description 发票管理 - 发票记录和状态跟踪
@@ -524,8 +524,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('📄 发票管理 初始化...');
-    
+
     if (options?.data) {
         state.invoices = options.data;
         localStorage.setItem('invoice_data', JSON.stringify(state.invoices));
@@ -551,8 +550,7 @@ export async function init(options) {
         saveInvoices,
         applyFilters
     };
-    
-    console.log('✅ 发票管理 初始化完成');
+
 }
 
 // 自动初始化

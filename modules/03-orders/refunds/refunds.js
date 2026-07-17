@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file refunds.js
  * @module orders-refunds
  * @description 退款管理 - 退款申请、处理和记录
@@ -365,8 +365,7 @@ function bindEvents() {
  * @description 初始化退款管理
  */
 export async function init() {
-    console.log('💰 退款管理 初始化...');
-    
+
     loadRefunds();
     bindEvents();
     
@@ -381,8 +380,7 @@ export async function init() {
         searchRefunds,
         refresh
     };
-    
-    console.log('✅ 退款管理 初始化完成');
+
 }
 
 // 自动初始化

@@ -1,0 +1,318 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>品牌管理 - Carwash Pro</title>
+    <link rel="stylesheet" href="/assets/css/main.css">
+</head>
+<body>
+    <div id="app">
+        <div id="navbar-container"></div>
+        <div class="main-wrapper">
+            <div id="sidebar-container"></div>
+            <main id="main-content">
+                <!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>品牌管理 - Carwash Pro</title>
+    
+    
+    
+    <style>
+        .brands-container {
+            padding: 20px;
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .page-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1F2937;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .page-header .subtitle {
+            font-size: 14px;
+            color: #6B7280;
+            margin-top: 4px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #E5E7EB;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 14px 18px;
+            border-bottom: 1px solid #F3F4F6;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .card-header h3 {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1F2937;
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .card-body {
+            padding: 16px 18px;
+        }
+
+        .brand-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 14px;
+        }
+
+        .brand-card {
+            background: #F9FAFB;
+            border: 1px solid #E5E7EB;
+            border-radius: 10px;
+            padding: 16px;
+            text-align: center;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .brand-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            border-color: #4F46E5;
+        }
+
+        .brand-card .brand-logo {
+            font-size: 48px;
+            display: block;
+            margin-bottom: 8px;
+        }
+
+        .brand-card .brand-name {
+            font-size: 15px;
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        .brand-card .brand-count {
+            font-size: 12px;
+            color: #6B7280;
+        }
+
+        .brand-card .brand-status {
+            display: inline-block;
+            margin-top: 6px;
+            padding: 2px 10px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .brand-card .brand-status.active {
+            background: #D1FAE5;
+            color: #065F46;
+        }
+
+        .brand-card .brand-status.inactive {
+            background: #F3F4F6;
+            color: #6B7280;
+        }
+
+        .add-brand-form {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-top: 8px;
+        }
+
+        .add-brand-form input {
+            flex: 1;
+            min-width: 150px;
+            padding: 8px 14px;
+            border: 1px solid #D1D5DB;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .add-brand-form input:focus {
+            border-color: #4F46E5;
+            outline: none;
+        }
+
+        .add-brand-form select {
+            padding: 8px 12px;
+            border: 1px solid #D1D5DB;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+        }
+
+        @media (max-width: 480px) {
+            .brands-container {
+                padding: 12px;
+            }
+            .brand-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .header-actions {
+                width: 100%;
+            }
+            .header-actions button {
+                flex: 1;
+            }
+            .add-brand-form {
+                flex-direction: column;
+            }
+            .add-brand-form input,
+            .add-brand-form select {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="brands-container">
+        <div class="page-header">
+            <div>
+                <h1>
+                    <i class="fas fa-trademark" style="color:#4F46E5;"></i>
+                    品牌管理
+                </h1>
+                <div class="subtitle">品牌信息管理与展示</div>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-outline" id="refreshBrandsBtn">
+                    <i class="fas fa-sync"></i>
+                </button>
+            </div>
+        </div>
+
+        <div class="card">
+            <div class="card-header">
+                <h3><i class="fas fa-th" style="color:#4F46E5;"></i> 品牌列表</h3>
+                <span style="font-size:12px;color:#6B7280;">共 8 个品牌</span>
+            </div>
+            <div class="card-body">
+                <div class="brand-grid">
+                    <div class="brand-card">
+                        <span class="brand-logo">🏎️</span>
+                        <div class="brand-name">保时捷</div>
+                        <div class="brand-count">12 个商品</div>
+                        <span class="brand-status active">在售</span>
+                    </div>
+                    <div class="brand-card">
+                        <span class="brand-logo">🚗</span>
+                        <div class="brand-name">丰田</div>
+                        <div class="brand-count">23 个商品</div>
+                        <span class="brand-status active">在售</span>
+                    </div>
+                    <div class="brand-card">
+                        <span class="brand-logo">🚙</span>
+                        <div class="brand-name">本田</div>
+                        <div class="brand-count">18 个商品</div>
+                        <span class="brand-status active">在售</span>
+                    </div>
+                    <div class="brand-card">
+                        <span class="brand-logo">🚐</span>
+                        <div class="brand-name">奔驰</div>
+                        <div class="brand-count">15 个商品</div>
+                        <span class="brand-status active">在售</span>
+                    </div>
+                    <div class="brand-card">
+                        <span class="brand-logo">🚘</span>
+                        <div class="brand-name">宝马</div>
+                        <div class="brand-count">20 个商品</div>
+                        <span class="brand-status active">在售</span>
+                    </div>
+                    <div class="brand-card">
+                        <span class="brand-logo">🚕</span>
+                        <div class="brand-name">奥迪</div>
+                        <div class="brand-count">14 个商品</div>
+                        <span class="brand-status active">在售</span>
+                    </div>
+                    <div class="brand-card">
+                        <span class="brand-logo">🚌</span>
+                        <div class="brand-name">大众</div>
+                        <div class="brand-count">25 个商品</div>
+                        <span class="brand-status active">在售</span>
+                    </div>
+                    <div class="brand-card" style="border:2px dashed #D1D5DB;background:transparent;">
+                        <span class="brand-logo" style="color:#D1D5DB;">➕</span>
+                        <div class="brand-name" style="color:#6B7280;">添加品牌</div>
+                        <div class="brand-count" style="color:#9CA3AF;">点击创建</div>
+                    </div>
+                </div>
+
+                <!-- 添加品牌 -->
+                <div style="margin-top:16px;padding-top:16px;border-top:1px solid #F3F4F6;">
+                    <div style="font-weight:500;color:#1F2937;margin-bottom:8px;">
+                        <i class="fas fa-plus-circle" style="color:#4F46E5;"></i> 添加新品牌
+                    </div>
+                    <div class="add-brand-form">
+                        <input type="text" placeholder="品牌名称">
+                        <input type="text" placeholder="品牌图标 (Emoji)" style="max-width:80px;">
+                        <select>
+                            <option value="active">在售</option>
+                            <option value="inactive">待上架</option>
+                        </select>
+                        <button class="btn btn-primary">
+                            <i class="fas fa-plus"></i> 添加
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { init } from './brands.js';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('🏷️ 品牌管理页面加载');
+            init().catch(err => console.warn('品牌管理初始化失败:', err));
+
+            document.getElementById('refreshBrandsBtn')?.addEventListener('click', function() {
+                const icon = this.querySelector('i');
+                icon.classList.add('fa-spin');
+                setTimeout(() => icon.classList.remove('fa-spin'), 800);
+            });
+        });
+    </script>
+</body>
+</html>
+            </main>
+        </div>
+    </div>
+    <script type="module" src="/core/app.js"></script>
+</body>
+</html>

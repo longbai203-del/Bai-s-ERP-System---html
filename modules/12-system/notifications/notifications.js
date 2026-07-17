@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file notifications.js
  * @module notifications
  * @description 通知管理 - 系统通知和消息中心
@@ -485,7 +485,7 @@ function bindEvents() {
  * @public
  */
 export async function init(options) {
-    console.log('🔔 通知管理 初始化...');
+
     loadNotifications();
     bindEvents();
     render();
@@ -507,8 +507,7 @@ export async function init(options) {
         handleReset,
         applyFilters
     };
-    
-    console.log('✅ 通知管理 初始化完成');
+
 }
 
 if (document.readyState === 'loading') {

@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file stock.js
  * @module stock
  * @description 库存管理模块 - 库存查看、预警、调拨管理
@@ -489,8 +489,7 @@ function bindEvents() {
  * @returns {Promise<void>}
  */
 export async function init(options) {
-    console.log('📦 库存管理模块初始化...');
-    
+
     if (options?.data) {
         state.items = options.data;
         localStorage.setItem('stock_data', JSON.stringify(state.items));
@@ -514,8 +513,7 @@ export async function init(options) {
         saveStockItems,
         applyFilters
     };
-    
-    console.log('✅ 库存管理初始化完成');
+
 }
 
 // 自动初始化

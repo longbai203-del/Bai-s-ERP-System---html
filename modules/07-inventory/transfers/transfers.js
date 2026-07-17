@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file transfers.js
  * @module transfers
  * @description 调拨管理模块 - 库存调拨的CRUD操作
@@ -527,8 +527,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('📤 调拨管理 初始化...');
-    
+
     if (options?.data) {
         state.transfers = options.data;
         localStorage.setItem('transfer_data', JSON.stringify(state.transfers));
@@ -553,8 +552,7 @@ export async function init(options) {
         saveTransfers,
         applyFilters
     };
-    
-    console.log('✅ 调拨管理 初始化完成');
+
 }
 
 // 自动初始化

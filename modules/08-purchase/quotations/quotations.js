@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file quotations.js
  * @module quotations
  * @description 询价管理 - 供应商询价和报价管理
@@ -598,8 +598,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('📄 询价管理 初始化...');
-    
+
     if (options?.data) {
         state.quotations = options.data;
         localStorage.setItem('quotation_data', JSON.stringify(state.quotations));
@@ -627,8 +626,7 @@ export async function init(options) {
         saveQuotations,
         applyFilters
     };
-    
-    console.log('✅ 询价管理 初始化完成');
+
 }
 
 // 自动初始化

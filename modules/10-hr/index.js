@@ -10,11 +10,9 @@ export const MODULE = {
 };
 
 export function init() {
-    console.log('✅ 10-hr 模块已初始化');
+
 }
 
 export function onLoad(container) {
-    console.log('📄 10-hr 模块已加载');
-}
 
-console.log('✅ 10-hr 模块已注册');
+}

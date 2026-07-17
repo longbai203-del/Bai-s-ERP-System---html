@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file restore.js
  * @module restore
  * @description 数据恢复 - 从备份恢复数据
@@ -278,7 +278,7 @@ function bindEvents() {
  * @public
  */
 export async function init(options) {
-    console.log('♻️ 数据恢复 初始化...');
+
     loadHistory();
     bindEvents();
     renderRestoreStatus();
@@ -292,8 +292,7 @@ export async function init(options) {
         renderHistory,
         handleFileUpload
     };
-    
-    console.log('✅ 数据恢复 初始化完成');
+
 }
 
 if (document.readyState === 'loading') {

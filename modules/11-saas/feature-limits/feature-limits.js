@@ -1,4 +1,4 @@
-/**
+﻿/**
  * @file feature-limits.js
  * @module feature-limits
  * @description 功能限制管理 - 套餐功能限制配置
@@ -363,8 +363,7 @@ function bindEvents() {
  * @param {Object} options - 初始化选项
  */
 export async function init(options) {
-    console.log('📋 功能限制管理 初始化...');
-    
+
     if (options?.data) {
         state.limits = options.data;
         localStorage.setItem('feature_limit_data', JSON.stringify(state.limits));
@@ -387,8 +386,7 @@ export async function init(options) {
         saveLimits,
         applyFilters
     };
-    
-    console.log('✅ 功能限制管理 初始化完成');
+
 }
 
 // 自动初始化
