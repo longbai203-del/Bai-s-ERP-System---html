@@ -1,395 +1,425 @@
+@"
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BAI ERP - ??????</title>
+    <title>BAI ERP 企业管理系统</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background: #f1f5f9; color: #1e293b; height: 100vh; overflow: hidden; }
         #app { display: flex; flex-direction: column; height: 100vh; }
 
-        /* ??? */
-        #navbar { height: 60px; background: #fff; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; padding: 0 24px; z-index: 100; }
+        /* 导航栏 */
+        #navbar { height: 60px; background: #fff; border-bottom: 1px solid #e2e8f0; display: flex; align-items: center; padding: 0 24px; z-index: 100; flex-shrink: 0; }
         .navbar-brand { font-size: 20px; font-weight: 700; color: #2563eb; }
         .navbar-brand span { color: #1e293b; font-weight: 400; }
         .navbar-right { margin-left: auto; display: flex; align-items: center; gap: 16px; }
-        .logout-btn { padding: 6px 16px; border: none; background: #ef4444; color: #fff; border-radius: 6px; cursor: pointer; }
+        .logout-btn { padding: 6px 16px; border: none; background: #ef4444; color: #fff; border-radius: 6px; cursor: pointer; font-size: 13px; }
+        .logout-btn:hover { background: #dc2626; }
 
-        /* ?? */
         .main-wrapper { display: flex; flex: 1; overflow: hidden; }
 
-        /* ??? - ????? */
-        #sidebar { width: 240px; background: #fff; border-right: 1px solid #e2e8f0; overflow-y: auto; padding: 12px 0; flex-shrink: 0; }
+        /* 侧边栏 */
+        #sidebar { width: 240px; background: #fff; border-right: 1px solid #e2e8f0; overflow-y: auto; padding: 8px 0; flex-shrink: 0; }
         #sidebar::-webkit-scrollbar { width: 4px; }
         #sidebar::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 4px; }
 
-        .menu-item { cursor: pointer; user-select: none; }
-        .menu-header { display: flex; align-items: center; padding: 10px 20px; gap: 10px; font-weight: 500; font-size: 14px; color: #1e293b; border-radius: 8px; margin: 0 8px; }
-        .menu-header:hover { background: #f1f5f9; }
-        .menu-header .arrow { margin-left: auto; font-size: 12px; color: #94a3b8; transition: transform 0.25s; }
+        .menu-item { border-bottom: 1px solid #f1f5f9; }
+        .menu-header {
+            display: flex; align-items: center; padding: 10px 16px; gap: 10px;
+            font-weight: 500; font-size: 14px; color: #1e293b;
+            cursor: pointer; user-select: none;
+            transition: background 0.15s;
+        }
+        .menu-header:hover { background: #f8fafc; }
+        .menu-header .arrow { margin-left: auto; font-size: 12px; color: #94a3b8; transition: transform 0.3s; }
         .menu-header .arrow.open { transform: rotate(90deg); }
         .menu-header.active { background: #eff6ff; color: #2563eb; }
+        .menu-header.active .arrow { color: #2563eb; }
 
-        .menu-children { overflow: hidden; max-height: 0; transition: max-height 0.3s; }
-        .menu-children.open { max-height: 600px; }
-        .menu-child { padding: 8px 20px 8px 54px; font-size: 13px; color: #64748b; cursor: pointer; border-radius: 6px; margin: 2px 12px; }
+        .menu-children { overflow: hidden; max-height: 0; transition: max-height 0.3s ease; }
+        .menu-children.open { max-height: 800px; }
+        .menu-child {
+            padding: 7px 16px 7px 48px;
+            font-size: 13px; color: #64748b;
+            cursor: pointer;
+            transition: background 0.15s, color 0.15s;
+            border-left: 3px solid transparent;
+        }
         .menu-child:hover { background: #f8fafc; color: #1e293b; }
-        .menu-child.active { background: #eff6ff; color: #2563eb; font-weight: 500; }
+        .menu-child.active { background: #eff6ff; color: #2563eb; border-left-color: #2563eb; font-weight: 500; }
 
-        /* ??? */
+        /* 主内容 */
         #main-content { flex: 1; padding: 24px; overflow-y: auto; background: #f8fafc; }
         .loading { display: flex; justify-content: center; align-items: center; min-height: 400px; flex-direction: column; gap: 16px; }
         .spinner { width: 48px; height: 48px; border: 4px solid #e2e8f0; border-top-color: #2563eb; border-radius: 50%; animation: spin 0.8s linear infinite; }
         @keyframes spin { to { transform: rotate(360deg); } }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            #sidebar { width: 0; padding: 0; border: none; }
+            #sidebar.open { width: 260px; padding: 8px 0; border-right: 1px solid #e2e8f0; position: fixed; top: 60px; left: 0; bottom: 0; z-index: 99; background: #fff; box-shadow: 4px 0 20px rgba(0,0,0,0.08); }
+            #main-content { padding: 16px; }
+            .sidebar-toggle { display: flex !important; }
+        }
+        .sidebar-toggle { display: none; background: none; border: none; font-size: 22px; cursor: pointer; padding: 4px 8px; border-radius: 6px; color: #475569; }
+        .sidebar-toggle:hover { background: #f1f5f9; }
+        .sidebar-overlay { display: none; position: fixed; top: 60px; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.3); z-index: 98; }
+        .sidebar-overlay.show { display: block; }
     </style>
 </head>
 <body>
-    <div id="app">
 
-        <!-- ===== ??? ===== -->
-        <div id="navbar">
-            <div class="navbar-brand">?? BAI <span>ERP</span></div>
-            <div class="navbar-right">
-                <span>???</span>
-                <button class="logout-btn" onclick="localStorage.clear();location.reload();">??</button>
-            </div>
-        </div>
+<div id="app">
 
-        <div class="main-wrapper">
-
-            <!-- ===== ??? ===== -->
-            <div id="sidebar">
-
-                <!-- 1. ??? -->
-                <div class="menu-item">
-                    <div class="menu-header active" onclick="toggleMenu(this)">
-                        <span>??</span> ???
-                        <span class="arrow open">?</span>
-                    </div>
-                    <div class="menu-children open">
-                        <div class="menu-child active" onclick="loadPage('01-dashboard/dashboard/dashboard.html')">Dashboard</div>
-                        <div class="menu-child" onclick="loadPage('01-dashboard/employee/employee.html')">Employee</div>
-                        <div class="menu-child" onclick="loadPage('01-dashboard/executive/executive.html')">Executive</div>
-                        <div class="menu-child" onclick="loadPage('01-dashboard/vehicle-monitor/vehicle-monitor.html')">Vehicle Monitor</div>
-                    </div>
-                </div>
-
-                <!-- 2. POS ?? -->
-                <div class="menu-item">
-                    <div class="menu-header" onclick="toggleMenu(this)">
-                        <span>??</span> POS ??
-                        <span class="arrow">?</span>
-                    </div>
-                    <div class="menu-children">
-                        <div class="menu-child" onclick="loadPage('02-pos/cashier/cashier.html')">Cashier</div>
-                        <div class="menu-child" onclick="loadPage('02-pos/cash-register/cash-register.html')">Cash Register</div>
-                        <div class="menu-child" onclick="loadPage('02-pos/customer-display/customer-display.html')">Customer Display</div>
-                        <div class="menu-child" onclick="loadPage('02-pos/exchange/exchange.html')">Exchange</div>
-                        <div class="menu-child" onclick="loadPage('02-pos/kitchen-display/kitchen-display.html')">Kitchen Display</div>
-                        <div class="menu-child" onclick="loadPage('02-pos/offline-pos/offline-pos.html')">Offline POS</div>
-                        <div class="menu-child" onclick="loadPage('02-pos/quick-sale/quick-sale.html')">Quick Sale</div>
-                        <div class="menu-child" onclick="loadPage('02-pos/receipt/receipt.html')">Receipt</div>
-                        <div class="menu-child" onclick="loadPage('02-pos/touch-pos/touch-pos.html')">Touch POS</div>
-                    </div>
-                </div>
-
-                <!-- 3. ???? -->
-                <div class="menu-item">
-                    <div class="menu-header" onclick="toggleMenu(this)">
-                        <span>??</span> ????
-                        <span class="arrow">?</span>
-                    </div>
-                    <div class="menu-children">
-                        <div class="menu-child" onclick="loadPage('03-orders/detail/detail.html')">Detail</div>
-                        <div class="menu-child" onclick="loadPage('03-orders/list/list.html')">List</div>
-                        <div class="menu-child" onclick="loadPage('03-orders/refunds/refunds.html')">Refunds</div>
-                        <div class="menu-child" onclick="loadPage('03-orders/returns/returns.html')">Returns</div>
-                        <div class="menu-child" onclick="loadPage('03-orders/submodules/submodules.html')">Submodules</div>
-                    </div>
-                </div>
-
-                <!-- 4. ???? -->
-                <div class="menu-item">
-                    <div class="menu-header" onclick="toggleMenu(this)">
-                        <span>??</span> ????
-                        <span class="arrow">?</span>
-                    </div>
-                    <div class="menu-children">
-                        <div class="menu-child" onclick="loadPage('04-products/barcodes/barcodes.html')">Barcodes</div>
-                        <div class="menu-child" onclick="loadPage('04-products/brands/brands.html')">Brands</div>
-                        <div class="menu-child" onclick="loadPage('04-products/categories/categories.html')">Categories</div>
-                        <div class="menu-child" onclick="loadPage('04-products/combos/combos.html')">Combos</div>
-                        <div class="menu-child" onclick="loadPage('04-products/modifiers/modifiers.html')">Modifiers</div>
-                        <div class="menu-child" onclick="loadPage('04-products/price-lists/price-lists.html')">Price Lists</div>
-                        <div class="menu-child" onclick="loadPage('04-products/products/products.html')">Products</div>
-                        <div class="menu-child" onclick="loadPage('04-products/variants/variants.html')">Variants</div>
-                    </div>
-                </div>
-
-                <!-- 5. ???? -->
-                <div class="menu-item">
-                    <div class="menu-header" onclick="toggleMenu(this)">
-                        <span>??</span> ????
-                        <span class="arrow">?</span>
-                    </div>
-                    <div class="menu-children">
-                        <div class="menu-child" onclick="loadPage('05-customers/coupons/coupons.html')">Coupons</div>
-                        <div class="menu-child" onclick="loadPage('05-customers/customers/customers.html')">Customers</div>
-                        <div class="menu-child" onclick="loadPage('05-customers/feedback/feedback.html')">Feedback</div>
-                        <div class="menu-child" onclick="loadPage('05-customers/gift-cards/gift-cards.html')">Gift Cards</div>
-                        <div class="menu-child" onclick="loadPage('05-customers/membership/membership.html')">Membership</div>
-                        <div class="menu-child" onclick="loadPage('05-customers/vehicles/vehicles.html')">Vehicles</div>
-                        <div class="menu-child" onclick="loadPage('05-customers/wallet/wallet.html')">Wallet</div>
-                    </div>
-                </div>
-
-                <!-- 6. ???? -->
-                <div class="menu-item">
-                    <div class="menu-header" onclick="toggleMenu(this)">
-                        <span>??</span> ????
-                        <span class="arrow">?</span>
-                    </div>
-                    <div class="menu-children">
-                        <div class="menu-child" onclick="loadPage('06-marketing/campaigns/campaigns.html')">Campaigns</div>
-                        <div class="menu-child" onclick="loadPage('06-marketing/loyalty/loyalty.html')">Loyalty</div>
-                        <div class="menu-child" onclick="loadPage('06-marketing/promotions/promotions.html')">Promotions</div>
-                        <div class="menu-child" onclick="loadPage('06-marketing/referrals/referrals.html')">Referrals</div>
-                    </div>
-                </div>
-
-                <!-- 7. ???? -->
-                <div class="menu-item">
-                    <div class="menu-header" onclick="toggleMenu(this)">
-                        <span>??</span> ????
-                        <span class="arrow">?</span>
-                    </div>
-                    <div class="menu-children">
-                        <div class="menu-child" onclick="loadPage('07-inventory/adjustments/adjustments.html')">Adjustments</div>
-                        <div class="menu-child" onclick="loadPage('07-inventory/batches/batches.html')">Batches</div>
-                        <div class="menu-child" onclick="loadPage('07-inventory/cycle-counts/cycle-counts.html')">Cycle Counts</div>
-                        <div class="menu-child" onclick="loadPage('07-inventory/expiry/expiry.html')">Expiry</div>
-                        <div class="menu-child" onclick="loadPage('07-inventory/history/history.html')">History</div>
-                        <div class="menu-child" onclick="loadPage('07-inventory/low-stock/low-stock.html')">Low Stock</div>
-                        <div class="menu-child" onclick="loadPage('07-inventory/serial-numbers/serial-numbers.html')">Serial Numbers</div>
-                        <div class="menu-child" onclick="loadPage('07-inventory/stock/stock.html')">Stock</div>
-                        <div class="menu-child" onclick="loadPage('07-inventory/transfers/transfers.html')">Transfers</div>
-                        <div class="menu-child" onclick="loadPage('07-inventory/warehouses/warehouses.html')">Warehouses</div>
-                    </div>
-                </div>
-
-                <!-- 8. ???? -->
-                <div class="menu-item">
-                    <div class="menu-header" onclick="toggleMenu(this)">
-                        <span>??</span> ????
-                        <span class="arrow">?</span>
-                    </div>
-                    <div class="menu-children">
-                        <div class="menu-child" onclick="loadPage('08-purchase/import/import.html')">Import</div>
-                        <div class="menu-child" onclick="loadPage('08-purchase/quotations/quotations.html')">Quotations</div>
-                        <div class="menu-child" onclick="loadPage('08-purchase/receiving/receiving.html')">Receiving</div>
-                        <div class="menu-child" onclick="loadPage('08-purchase/supplier-payments/supplier-payments.html')">Supplier Payments</div>
-                        <div class="menu-child" onclick="loadPage('08-purchase/suppliers/suppliers.html')">Suppliers</div>
-                    </div>
-                </div>
-
-                <!-- 9. ???? -->
-                <div class="menu-item">
-                    <div class="menu-header" onclick="toggleMenu(this)">
-                        <span>??</span> ????
-                        <span class="arrow">?</span>
-                    </div>
-                    <div class="menu-children">
-                        <div class="menu-child" onclick="loadPage('09-finance/balance-sheet/balance-sheet.html')">Balance Sheet</div>
-                        <div class="menu-child" onclick="loadPage('09-finance/bank/bank.html')">Bank</div>
-                        <div class="menu-child" onclick="loadPage('09-finance/cash-flow/cash-flow.html')">Cash Flow</div>
-                        <div class="menu-child" onclick="loadPage('09-finance/expenses/expenses.html')">Expenses</div>
-                        <div class="menu-child" onclick="loadPage('09-finance/income/income.html')">Income</div>
-                        <div class="menu-child" onclick="loadPage('09-finance/invoices/invoices.html')">Invoices</div>
-                        <div class="menu-child" onclick="loadPage('09-finance/journal/journal.html')">Journal</div>
-                        <div class="menu-child" onclick="loadPage('09-finance/payments/payments.html')">Payments</div>
-                        <div class="menu-child" onclick="loadPage('09-finance/profit-loss/profit-loss.html')">Profit Loss</div>
-                        <div class="menu-child" onclick="loadPage('09-finance/settlements/settlements.html')">Settlements</div>
-                        <div class="menu-child" onclick="loadPage('09-finance/taxes/taxes.html')">Taxes</div>
-                        <div class="menu-child" onclick="loadPage('09-finance/trial-balance/trial-balance.html')">Trial Balance</div>
-                        <div class="menu-child" onclick="loadPage('09-finance/vat/vat.html')">VAT</div>
-                    </div>
-                </div>
-
-                <!-- 10. ?????? -->
-                <div class="menu-item">
-                    <div class="menu-header" onclick="toggleMenu(this)">
-                        <span>??</span> ??????
-                        <span class="arrow">?</span>
-                    </div>
-                    <div class="menu-children">
-                        <div class="menu-child" onclick="loadPage('10-hr/attendance/attendance.html')">Attendance</div>
-                        <div class="menu-child" onclick="loadPage('10-hr/bonuses/bonuses.html')">Bonuses</div>
-                        <div class="menu-child" onclick="loadPage('10-hr/commissions/commissions.html')">Commissions</div>
-                        <div class="menu-child" onclick="loadPage('10-hr/employees/employees.html')">Employees</div>
-                        <div class="menu-child" onclick="loadPage('10-hr/leaves/leaves.html')">Leaves</div>
-                        <div class="menu-child" onclick="loadPage('10-hr/payroll/payroll.html')">Payroll</div>
-                        <div class="menu-child" onclick="loadPage('10-hr/penalties/penalties.html')">Penalties</div>
-                        <div class="menu-child" onclick="loadPage('10-hr/performance/performance.html')">Performance</div>
-                        <div class="menu-child" onclick="loadPage('10-hr/permissions/permissions.html')">Permissions</div>
-                        <div class="menu-child" onclick="loadPage('10-hr/schedules/schedules.html')">Schedules</div>
-                        <div class="menu-child" onclick="loadPage('10-hr/shifts/shifts.html')">Shifts</div>
-                        <div class="menu-child" onclick="loadPage('10-hr/tasks/tasks.html')">Tasks</div>
-                    </div>
-                </div>
-
-                <!-- 11. SaaS ?? -->
-                <div class="menu-item">
-                    <div class="menu-header" onclick="toggleMenu(this)">
-                        <span>??</span> SaaS ??
-                        <span class="arrow">?</span>
-                    </div>
-                    <div class="menu-children">
-                        <div class="menu-child" onclick="loadPage('11-saas/billing/billing.html')">Billing</div>
-                        <div class="menu-child" onclick="loadPage('11-saas/feature-limits/feature-limits.html')">Feature Limits</div>
-                        <div class="menu-child" onclick="loadPage('11-saas/packages/packages.html')">Packages</div>
-                        <div class="menu-child" onclick="loadPage('11-saas/plans/plans.html')">Plans</div>
-                        <div class="menu-child" onclick="loadPage('11-saas/storage/storage.html')">Storage</div>
-                        <div class="menu-child" onclick="loadPage('11-saas/subscriptions/subscriptions.html')">Subscriptions</div>
-                        <div class="menu-child" onclick="loadPage('11-saas/tenants/tenants.html')">Tenants</div>
-                        <div class="menu-child" onclick="loadPage('11-saas/usage/usage.html')">Usage</div>
-                    </div>
-                </div>
-
-                <!-- 12. ???? -->
-                <div class="menu-item">
-                    <div class="menu-header" onclick="toggleMenu(this)">
-                        <span>??</span> ????
-                        <span class="arrow">?</span>
-                    </div>
-                    <div class="menu-children">
-                        <div class="menu-child" onclick="loadPage('12-system/api-keys/api-keys.html')">API Keys</div>
-                        <div class="menu-child" onclick="loadPage('12-system/audit-logs/audit-logs.html')">Audit Logs</div>
-                        <div class="menu-child" onclick="loadPage('12-system/backup/backup.html')">Backup</div>
-                        <div class="menu-child" onclick="loadPage('12-system/integrations/integrations.html')">Integrations</div>
-                        <div class="menu-child" onclick="loadPage('12-system/marketplace/marketplace.html')">Marketplace</div>
-                        <div class="menu-child" onclick="loadPage('12-system/notifications/notifications.html')">Notifications</div>
-                        <div class="menu-child" onclick="loadPage('12-system/permissions/permissions.html')">Permissions</div>
-                        <div class="menu-child" onclick="loadPage('12-system/restore/restore.html')">Restore</div>
-                        <div class="menu-child" onclick="loadPage('12-system/roles/roles.html')">Roles</div>
-                        <div class="menu-child" onclick="loadPage('12-system/settings/settings.html')">Settings</div>
-                        <div class="menu-child" onclick="loadPage('12-system/system-logs/system-logs.html')">System Logs</div>
-                        <div class="menu-child" onclick="loadPage('12-system/webhooks/webhooks.html')">Webhooks</div>
-                    </div>
-                </div>
-
-                <!-- 13. ???? -->
-                <div class="menu-item">
-                    <div class="menu-header" onclick="toggleMenu(this)">
-                        <span>??</span> ????
-                        <span class="arrow">?</span>
-                    </div>
-                    <div class="menu-children">
-                        <div class="menu-child" onclick="loadPage('13-analytics/business-health/business-health.html')">Business Health</div>
-                        <div class="menu-child" onclick="loadPage('13-analytics/custom-reports/custom-reports.html')">Custom Reports</div>
-                        <div class="menu-child" onclick="loadPage('13-analytics/forecast/forecast.html')">Forecast</div>
-                        <div class="menu-child" onclick="loadPage('13-analytics/recommendations/recommendations.html')">Recommendations</div>
-                        <div class="menu-child" onclick="loadPage('13-analytics/reports/reports.html')">Reports</div>
-                        <div class="menu-child" onclick="loadPage('13-analytics/visualizations/visualizations.html')">Visualizations</div>
-                    </div>
-                </div>
-
-                <!-- 14. ???? -->
-                <div class="menu-item">
-                    <div class="menu-header" onclick="toggleMenu(this)">
-                        <span>??</span> ????
-                        <span class="arrow">?</span>
-                    </div>
-                    <div class="menu-children">
-                        <div class="menu-child" onclick="loadPage('14-settings/branches/branches.html')">Branches</div>
-                        <div class="menu-child" onclick="loadPage('14-settings/company/company.html')">Company</div>
-                        <div class="menu-child" onclick="loadPage('14-settings/general/general.html')">General</div>
-                        <div class="menu-child" onclick="loadPage('14-settings/preferences/preferences.html')">Preferences</div>
-                        <div class="menu-child" onclick="loadPage('14-settings/profile/profile.html')">Profile</div>
-                    </div>
-                </div>
-
-                <!-- 15. AI ???? -->
-                <div class="menu-item">
-                    <div class="menu-header" onclick="toggleMenu(this)">
-                        <span>??</span> AI ????
-                        <span class="arrow">?</span>
-                    </div>
-                    <div class="menu-children">
-                        <div class="menu-child" onclick="loadPage('15-ai/ai/ai.html')">AI</div>
-                        <div class="menu-child" onclick="loadPage('15-ai/crm/crm.html')">CRM</div>
-                    </div>
-                </div>
-
-            </div>
-
-            <!-- ===== ??? ===== -->
-            <div id="main-content">
-                <div class="loading">
-                    <div class="spinner"></div>
-                    <span>???...</span>
-                </div>
-            </div>
-
+    <!-- 导航栏 -->
+    <div id="navbar">
+        <button class="sidebar-toggle" id="sidebarToggle">☰</button>
+        <div class="navbar-brand">🏢 BAI <span>ERP</span></div>
+        <div class="navbar-right">
+            <span id="userName">管理员</span>
+            <button class="logout-btn" onclick="localStorage.clear();location.reload();">退出</button>
         </div>
     </div>
 
-    <script>
-        // ============================================================
-        // ??????
-        // ============================================================
-        function toggleMenu(header) {
-            const children = header.nextElementSibling;
-            const arrow = header.querySelector('.arrow');
+    <div class="main-wrapper">
+
+        <!-- 遮罩层 -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <!-- 侧边栏 -->
+        <div id="sidebar">
+
+            <!-- 1. 仪表盘 -->
+            <div class="menu-item">
+                <div class="menu-header active" data-target="menu1">📊 仪表盘 <span class="arrow open">▶</span></div>
+                <div class="menu-children open" id="menu1">
+                    <div class="menu-child active" data-path="01-dashboard/dashboard/dashboard.html">Dashboard</div>
+                    <div class="menu-child" data-path="01-dashboard/employee/employee.html">Employee</div>
+                    <div class="menu-child" data-path="01-dashboard/executive/executive.html">Executive</div>
+                    <div class="menu-child" data-path="01-dashboard/vehicle-monitor/vehicle-monitor.html">Vehicle Monitor</div>
+                </div>
+            </div>
+
+            <!-- 2. POS 收银 -->
+            <div class="menu-item">
+                <div class="menu-header" data-target="menu2">🛒 POS 收银 <span class="arrow">▶</span></div>
+                <div class="menu-children" id="menu2">
+                    <div class="menu-child" data-path="02-pos/cashier/cashier.html">Cashier</div>
+                    <div class="menu-child" data-path="02-pos/cash-register/cash-register.html">Cash Register</div>
+                    <div class="menu-child" data-path="02-pos/customer-display/customer-display.html">Customer Display</div>
+                    <div class="menu-child" data-path="02-pos/exchange/exchange.html">Exchange</div>
+                    <div class="menu-child" data-path="02-pos/kitchen-display/kitchen-display.html">Kitchen Display</div>
+                    <div class="menu-child" data-path="02-pos/offline-pos/offline-pos.html">Offline POS</div>
+                    <div class="menu-child" data-path="02-pos/quick-sale/quick-sale.html">Quick Sale</div>
+                    <div class="menu-child" data-path="02-pos/receipt/receipt.html">Receipt</div>
+                    <div class="menu-child" data-path="02-pos/touch-pos/touch-pos.html">Touch POS</div>
+                </div>
+            </div>
+
+            <!-- 3. 订单管理 -->
+            <div class="menu-item">
+                <div class="menu-header" data-target="menu3">📋 订单管理 <span class="arrow">▶</span></div>
+                <div class="menu-children" id="menu3">
+                    <div class="menu-child" data-path="03-orders/detail/detail.html">Detail</div>
+                    <div class="menu-child" data-path="03-orders/list/list.html">List</div>
+                    <div class="menu-child" data-path="03-orders/refunds/refunds.html">Refunds</div>
+                    <div class="menu-child" data-path="03-orders/returns/returns.html">Returns</div>
+                    <div class="menu-child" data-path="03-orders/submodules/submodules.html">Submodules</div>
+                </div>
+            </div>
+
+            <!-- 4. 商品管理 -->
+            <div class="menu-item">
+                <div class="menu-header" data-target="menu4">📦 商品管理 <span class="arrow">▶</span></div>
+                <div class="menu-children" id="menu4">
+                    <div class="menu-child" data-path="04-products/barcodes/barcodes.html">Barcodes</div>
+                    <div class="menu-child" data-path="04-products/brands/brands.html">Brands</div>
+                    <div class="menu-child" data-path="04-products/categories/categories.html">Categories</div>
+                    <div class="menu-child" data-path="04-products/combos/combos.html">Combos</div>
+                    <div class="menu-child" data-path="04-products/modifiers/modifiers.html">Modifiers</div>
+                    <div class="menu-child" data-path="04-products/price-lists/price-lists.html">Price Lists</div>
+                    <div class="menu-child" data-path="04-products/products/products.html">Products</div>
+                    <div class="menu-child" data-path="04-products/variants/variants.html">Variants</div>
+                </div>
+            </div>
+
+            <!-- 5. 客户管理 -->
+            <div class="menu-item">
+                <div class="menu-header" data-target="menu5">👥 客户管理 <span class="arrow">▶</span></div>
+                <div class="menu-children" id="menu5">
+                    <div class="menu-child" data-path="05-customers/coupons/coupons.html">Coupons</div>
+                    <div class="menu-child" data-path="05-customers/customers/customers.html">Customers</div>
+                    <div class="menu-child" data-path="05-customers/feedback/feedback.html">Feedback</div>
+                    <div class="menu-child" data-path="05-customers/gift-cards/gift-cards.html">Gift Cards</div>
+                    <div class="menu-child" data-path="05-customers/membership/membership.html">Membership</div>
+                    <div class="menu-child" data-path="05-customers/vehicles/vehicles.html">Vehicles</div>
+                    <div class="menu-child" data-path="05-customers/wallet/wallet.html">Wallet</div>
+                </div>
+            </div>
+
+            <!-- 6. 营销中心 -->
+            <div class="menu-item">
+                <div class="menu-header" data-target="menu6">📣 营销中心 <span class="arrow">▶</span></div>
+                <div class="menu-children" id="menu6">
+                    <div class="menu-child" data-path="06-marketing/campaigns/campaigns.html">Campaigns</div>
+                    <div class="menu-child" data-path="06-marketing/loyalty/loyalty.html">Loyalty</div>
+                    <div class="menu-child" data-path="06-marketing/promotions/promotions.html">Promotions</div>
+                    <div class="menu-child" data-path="06-marketing/referrals/referrals.html">Referrals</div>
+                </div>
+            </div>
+
+            <!-- 7. 库存管理 -->
+            <div class="menu-item">
+                <div class="menu-header" data-target="menu7">🏪 库存管理 <span class="arrow">▶</span></div>
+                <div class="menu-children" id="menu7">
+                    <div class="menu-child" data-path="07-inventory/adjustments/adjustments.html">Adjustments</div>
+                    <div class="menu-child" data-path="07-inventory/batches/batches.html">Batches</div>
+                    <div class="menu-child" data-path="07-inventory/cycle-counts/cycle-counts.html">Cycle Counts</div>
+                    <div class="menu-child" data-path="07-inventory/expiry/expiry.html">Expiry</div>
+                    <div class="menu-child" data-path="07-inventory/history/history.html">History</div>
+                    <div class="menu-child" data-path="07-inventory/low-stock/low-stock.html">Low Stock</div>
+                    <div class="menu-child" data-path="07-inventory/serial-numbers/serial-numbers.html">Serial Numbers</div>
+                    <div class="menu-child" data-path="07-inventory/stock/stock.html">Stock</div>
+                    <div class="menu-child" data-path="07-inventory/transfers/transfers.html">Transfers</div>
+                    <div class="menu-child" data-path="07-inventory/warehouses/warehouses.html">Warehouses</div>
+                </div>
+            </div>
+
+            <!-- 8. 采购管理 -->
+            <div class="menu-item">
+                <div class="menu-header" data-target="menu8">📥 采购管理 <span class="arrow">▶</span></div>
+                <div class="menu-children" id="menu8">
+                    <div class="menu-child" data-path="08-purchase/import/import.html">Import</div>
+                    <div class="menu-child" data-path="08-purchase/quotations/quotations.html">Quotations</div>
+                    <div class="menu-child" data-path="08-purchase/receiving/receiving.html">Receiving</div>
+                    <div class="menu-child" data-path="08-purchase/supplier-payments/supplier-payments.html">Supplier Payments</div>
+                    <div class="menu-child" data-path="08-purchase/suppliers/suppliers.html">Suppliers</div>
+                </div>
+            </div>
+
+            <!-- 9. 财务管理 -->
+            <div class="menu-item">
+                <div class="menu-header" data-target="menu9">💰 财务管理 <span class="arrow">▶</span></div>
+                <div class="menu-children" id="menu9">
+                    <div class="menu-child" data-path="09-finance/balance-sheet/balance-sheet.html">Balance Sheet</div>
+                    <div class="menu-child" data-path="09-finance/bank/bank.html">Bank</div>
+                    <div class="menu-child" data-path="09-finance/cash-flow/cash-flow.html">Cash Flow</div>
+                    <div class="menu-child" data-path="09-finance/expenses/expenses.html">Expenses</div>
+                    <div class="menu-child" data-path="09-finance/income/income.html">Income</div>
+                    <div class="menu-child" data-path="09-finance/invoices/invoices.html">Invoices</div>
+                    <div class="menu-child" data-path="09-finance/journal/journal.html">Journal</div>
+                    <div class="menu-child" data-path="09-finance/payments/payments.html">Payments</div>
+                    <div class="menu-child" data-path="09-finance/profit-loss/profit-loss.html">Profit Loss</div>
+                    <div class="menu-child" data-path="09-finance/settlements/settlements.html">Settlements</div>
+                    <div class="menu-child" data-path="09-finance/taxes/taxes.html">Taxes</div>
+                    <div class="menu-child" data-path="09-finance/trial-balance/trial-balance.html">Trial Balance</div>
+                    <div class="menu-child" data-path="09-finance/vat/vat.html">VAT</div>
+                </div>
+            </div>
+
+            <!-- 10. 人力资源管理 -->
+            <div class="menu-item">
+                <div class="menu-header" data-target="menu10">👔 人力资源管理 <span class="arrow">▶</span></div>
+                <div class="menu-children" id="menu10">
+                    <div class="menu-child" data-path="10-hr/attendance/attendance.html">Attendance</div>
+                    <div class="menu-child" data-path="10-hr/bonuses/bonuses.html">Bonuses</div>
+                    <div class="menu-child" data-path="10-hr/commissions/commissions.html">Commissions</div>
+                    <div class="menu-child" data-path="10-hr/employees/employees.html">Employees</div>
+                    <div class="menu-child" data-path="10-hr/leaves/leaves.html">Leaves</div>
+                    <div class="menu-child" data-path="10-hr/payroll/payroll.html">Payroll</div>
+                    <div class="menu-child" data-path="10-hr/penalties/penalties.html">Penalties</div>
+                    <div class="menu-child" data-path="10-hr/performance/performance.html">Performance</div>
+                    <div class="menu-child" data-path="10-hr/permissions/permissions.html">Permissions</div>
+                    <div class="menu-child" data-path="10-hr/schedules/schedules.html">Schedules</div>
+                    <div class="menu-child" data-path="10-hr/shifts/shifts.html">Shifts</div>
+                    <div class="menu-child" data-path="10-hr/tasks/tasks.html">Tasks</div>
+                </div>
+            </div>
+
+            <!-- 11. SaaS 管理 -->
+            <div class="menu-item">
+                <div class="menu-header" data-target="menu11">☁️ SaaS 管理 <span class="arrow">▶</span></div>
+                <div class="menu-children" id="menu11">
+                    <div class="menu-child" data-path="11-saas/billing/billing.html">Billing</div>
+                    <div class="menu-child" data-path="11-saas/feature-limits/feature-limits.html">Feature Limits</div>
+                    <div class="menu-child" data-path="11-saas/packages/packages.html">Packages</div>
+                    <div class="menu-child" data-path="11-saas/plans/plans.html">Plans</div>
+                    <div class="menu-child" data-path="11-saas/storage/storage.html">Storage</div>
+                    <div class="menu-child" data-path="11-saas/subscriptions/subscriptions.html">Subscriptions</div>
+                    <div class="menu-child" data-path="11-saas/tenants/tenants.html">Tenants</div>
+                    <div class="menu-child" data-path="11-saas/usage/usage.html">Usage</div>
+                </div>
+            </div>
+
+            <!-- 12. 系统管理 -->
+            <div class="menu-item">
+                <div class="menu-header" data-target="menu12">⚙️ 系统管理 <span class="arrow">▶</span></div>
+                <div class="menu-children" id="menu12">
+                    <div class="menu-child" data-path="12-system/api-keys/api-keys.html">API Keys</div>
+                    <div class="menu-child" data-path="12-system/audit-logs/audit-logs.html">Audit Logs</div>
+                    <div class="menu-child" data-path="12-system/backup/backup.html">Backup</div>
+                    <div class="menu-child" data-path="12-system/integrations/integrations.html">Integrations</div>
+                    <div class="menu-child" data-path="12-system/marketplace/marketplace.html">Marketplace</div>
+                    <div class="menu-child" data-path="12-system/notifications/notifications.html">Notifications</div>
+                    <div class="menu-child" data-path="12-system/permissions/permissions.html">Permissions</div>
+                    <div class="menu-child" data-path="12-system/restore/restore.html">Restore</div>
+                    <div class="menu-child" data-path="12-system/roles/roles.html">Roles</div>
+                    <div class="menu-child" data-path="12-system/settings/settings.html">Settings</div>
+                    <div class="menu-child" data-path="12-system/system-logs/system-logs.html">System Logs</div>
+                    <div class="menu-child" data-path="12-system/webhooks/webhooks.html">Webhooks</div>
+                </div>
+            </div>
+
+            <!-- 13. 数据分析 -->
+            <div class="menu-item">
+                <div class="menu-header" data-target="menu13">📈 数据分析 <span class="arrow">▶</span></div>
+                <div class="menu-children" id="menu13">
+                    <div class="menu-child" data-path="13-analytics/business-health/business-health.html">Business Health</div>
+                    <div class="menu-child" data-path="13-analytics/custom-reports/custom-reports.html">Custom Reports</div>
+                    <div class="menu-child" data-path="13-analytics/forecast/forecast.html">Forecast</div>
+                    <div class="menu-child" data-path="13-analytics/recommendations/recommendations.html">Recommendations</div>
+                    <div class="menu-child" data-path="13-analytics/reports/reports.html">Reports</div>
+                    <div class="menu-child" data-path="13-analytics/visualizations/visualizations.html">Visualizations</div>
+                </div>
+            </div>
+
+            <!-- 14. 个人设置 -->
+            <div class="menu-item">
+                <div class="menu-header" data-target="menu14">🔧 个人设置 <span class="arrow">▶</span></div>
+                <div class="menu-children" id="menu14">
+                    <div class="menu-child" data-path="14-settings/branches/branches.html">Branches</div>
+                    <div class="menu-child" data-path="14-settings/company/company.html">Company</div>
+                    <div class="menu-child" data-path="14-settings/general/general.html">General</div>
+                    <div class="menu-child" data-path="14-settings/preferences/preferences.html">Preferences</div>
+                    <div class="menu-child" data-path="14-settings/profile/profile.html">Profile</div>
+                </div>
+            </div>
+
+            <!-- 15. AI 智能中心 -->
+            <div class="menu-item">
+                <div class="menu-header" data-target="menu15">🤖 AI 智能中心 <span class="arrow">▶</span></div>
+                <div class="menu-children" id="menu15">
+                    <div class="menu-child" data-path="15-ai/ai/ai.html">AI</div>
+                    <div class="menu-child" data-path="15-ai/crm/crm.html">CRM</div>
+                </div>
+            </div>
+
+        </div>
+
+        <!-- 主内容 -->
+        <div id="main-content">
+            <div class="loading"><div class="spinner"></div><span>加载中...</span></div>
+        </div>
+
+    </div>
+</div>
+
+<script>
+    // ============================================================
+    // 菜单折叠/展开
+    // ============================================================
+    document.querySelectorAll('.menu-header').forEach(function(header) {
+        header.addEventListener('click', function() {
+            var targetId = this.dataset.target;
+            var children = document.getElementById(targetId);
+            var arrow = this.querySelector('.arrow');
             if (children) {
                 children.classList.toggle('open');
                 if (arrow) arrow.classList.toggle('open');
             }
-        }
-
-        // ============================================================
-        // ????
-        // ============================================================
-        function loadPage(path) {
-            // ??????
-            document.querySelectorAll('.menu-child').forEach(el => el.classList.remove('active'));
-            const clicked = event.target.closest('.menu-child');
-            if (clicked) clicked.classList.add('active');
-
-            const mainContent = document.getElementById('main-content');
-            mainContent.innerHTML = '<div class="loading"><div class="spinner"></div><span>???...</span></div>';
-
-            // ???? modules/
-            const fullPath = 'modules/' + path;
-
-            fetch(fullPath)
-                .then(res => {
-                    if (!res.ok) throw new Error('?????: ' + fullPath);
-                    return res.text();
-                })
-                .then(html => {
-                    // ?? body ??
-                    const match = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
-                    if (match) {
-                        mainContent.innerHTML = match[1];
-                    } else {
-                        mainContent.innerHTML = html;
-                    }
-                })
-                .catch(err => {
-                    mainContent.innerHTML = '<div style="padding:40px;text-align:center;"><h2>?? ????</h2><p style="color:#999;">' + err.message + '</p></div>';
-                    console.error('????:', err);
-                });
-        }
-
-        // ============================================================
-        // ???? Dashboard
-        // ============================================================
-        document.addEventListener('DOMContentLoaded', function() {
-            // ???????
-            loadPage('01-dashboard/dashboard/dashboard.html');
         });
-    </script>
+    });
+
+    // ============================================================
+    // 加载页面
+    // ============================================================
+    function loadPage(path) {
+        // 高亮菜单
+        document.querySelectorAll('.menu-child').forEach(function(el) {
+            el.classList.remove('active');
+        });
+        var clicked = event.target.closest('.menu-child');
+        if (clicked) clicked.classList.add('active');
+
+        var mainContent = document.getElementById('main-content');
+        mainContent.innerHTML = '<div class="loading"><div class="spinner"></div><span>加载中...</span></div>';
+
+        var fullPath = 'modules/' + path;
+
+        fetch(fullPath)
+            .then(function(res) {
+                if (!res.ok) throw new Error('页面不存在: ' + fullPath);
+                return res.text();
+            })
+            .then(function(html) {
+                var match = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
+                if (match) {
+                    mainContent.innerHTML = match[1];
+                } else {
+                    mainContent.innerHTML = html;
+                }
+                // 执行页面内 script
+                var scripts = mainContent.querySelectorAll('script');
+                scripts.forEach(function(script) {
+                    var newScript = document.createElement('script');
+                    if (script.src) {
+                        newScript.src = script.src;
+                    } else {
+                        newScript.textContent = script.textContent;
+                    }
+                    document.body.appendChild(newScript);
+                });
+            })
+            .catch(function(err) {
+                mainContent.innerHTML = '<div style="padding:60px;text-align:center;color:#ef4444;"><h2>⚠️ 加载失败</h2><p style="color:#94a3b8;">' + err.message + '</p></div>';
+                console.error('加载失败:', err);
+            });
+    }
+
+    // ============================================================
+    // 菜单点击事件
+    // ============================================================
+    document.querySelectorAll('.menu-child').forEach(function(item) {
+        item.addEventListener('click', function(e) {
+            var path = this.dataset.path;
+            if (path) {
+                // 高亮
+                document.querySelectorAll('.menu-child').forEach(function(el) {
+                    el.classList.remove('active');
+                });
+                this.classList.add('active');
+                loadPage(path);
+            }
+        });
+    });
+
+    // ============================================================
+    // 侧边栏切换（移动端）
+    // ============================================================
+    document.getElementById('sidebarToggle').addEventListener('click', function() {
+        var sidebar = document.getElementById('sidebar');
+        var overlay = document.getElementById('sidebarOverlay');
+        sidebar.classList.toggle('open');
+        overlay.classList.toggle('show');
+    });
+    document.getElementById('sidebarOverlay').addEventListener('click', function() {
+        var sidebar = document.getElementById('sidebar');
+        var overlay = document.getElementById('sidebarOverlay');
+        sidebar.classList.remove('open');
+        overlay.classList.remove('show');
+    });
+
+    // ============================================================
+    // 默认加载仪表盘
+    // ============================================================
+    document.addEventListener('DOMContentLoaded', function() {
+        // 默认加载 Dashboard
+        loadPage('01-dashboard/dashboard/dashboard.html');
+    });
+</script>
 
 </body>
 </html>
+"@ | Out-File -FilePath "frontend/index.html" -Encoding ASCII
