@@ -2,19 +2,17 @@
 import { resolve } from 'path'
 
 export default defineConfig({
-  root: '.',
+  root: resolve(__dirname, 'frontend'),
   build: {
-    outDir: 'dist',
+    outDir: resolve(__dirname, 'frontend'),
     rollupOptions: {
       input: {
-        main: resolve(__dirname, 'dashboard.html')
+        main: resolve(__dirname, 'frontend/dashboard.html')
       }
     }
   },
   server: {
     port: 3000,
     open: true
-  },
-  // 关键：让构建输出 index.html
-  publicDir: false
+  }
 })
