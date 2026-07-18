@@ -2,7 +2,7 @@
   "version": 2,
   "outputDirectory": "frontend",
   "installCommand": "npm install",
-  "buildCommand": "npm run build",
+  "buildCommand": "echo 'Static deployment - no build needed'",
   "rewrites": [
     {
       "source": "/(.*)",
