@@ -1,4 +1,4 @@
-﻿\frontend
+\frontend
 \frontend\assets
 \frontend\assets\css
 \frontend\config

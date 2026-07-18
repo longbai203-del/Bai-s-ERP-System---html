@@ -1,4 +1,4 @@
-﻿    |-- frontend [DIR]
+    |-- frontend [DIR]
     |-- node_modules [DIR]
     |-- .env.local [FILE]
     |-- .gitignore [FILE]

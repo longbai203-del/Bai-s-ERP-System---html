@@ -1,4 +1,4 @@
-﻿// core/module-loader.js
+// core/module-loader.js
 // 动态加载模块
 
 import { MENU_CONFIG } from '../config/modules.config.js';
