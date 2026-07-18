@@ -29,11 +29,15 @@ async function loadPageContent(module, childId) {
     const mainContent = document.getElementById('main-content');
     if (!mainContent) return;
 
+    // 查找子模块
     const child = module.children.find(function(c) { return c.id === childId; });
-    const filePath = child ? child.file : 'index.html';
+    
+    // 获取文件路径
+    let filePath = child ? child.file : 'index.html';
+    let modulePath = child ? child.modulePath : module.modulePath;
 
-    // ✅ 修复：添加 modules/ 前缀
-    const htmlPath = 'modules/' + module.modulePath + '/' + filePath;
+    // 构建完整路径: modules/01-dashboard/dashboard/dashboard.html
+    const htmlPath = 'modules/' + modulePath + '/' + filePath;
 
     console.log('📄 加载页面:', htmlPath);
 
@@ -68,10 +72,12 @@ async function loadPageContent(module, childId) {
 // 加载模块JS
 async function loadModuleScript(module, childId) {
     const child = module.children.find(function(c) { return c.id === childId; });
-    const filePath = child ? child.file : 'index.js';
+    
+    let filePath = child ? child.file : 'index.js';
+    let modulePath = child ? child.modulePath : module.modulePath;
 
-    // ✅ 修复：添加 modules/ 前缀，将 .html 替换为 .js
-    const jsPath = 'modules/' + module.modulePath + '/' + filePath.replace('.html', '.js');
+    // 构建JS路径: modules/01-dashboard/dashboard/dashboard.js
+    const jsPath = 'modules/' + modulePath + '/' + filePath.replace('.html', '.js');
 
     console.log('📜 加载脚本:', jsPath);
 
