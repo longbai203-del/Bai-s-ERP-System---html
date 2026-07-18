@@ -56,7 +56,7 @@ function renderSidebar() {
     // 事件绑定
     // ============================================================
 
-    // 主模块点击 - 折叠/展开
+    // 主模块点击 - 折叠/展开 + 加载第一个子模块
     container.querySelectorAll('.sidebar-module-header').forEach(function(header) {
         header.addEventListener('click', function(e) {
             e.stopPropagation();
@@ -78,10 +78,14 @@ function renderSidebar() {
             });
             this.classList.add('active');
 
-            // 加载模块
-            import('./module-loader.js').then(function(module) {
-                module.loadModule(moduleId, null);
-            });
+            // ✅ 加载第一个子模块
+            const module = MENU_CONFIG.find(function(m) { return m.id === moduleId; });
+            if (module && module.children && module.children.length > 0) {
+                const firstChild = module.children[0];
+                import('./module-loader.js').then(function(moduleLoader) {
+                    moduleLoader.loadModule(moduleId, firstChild.id);
+                });
+            }
         });
     });
 
@@ -117,8 +121,8 @@ function renderSidebar() {
             }
 
             // 加载模块
-            import('./module-loader.js').then(function(module) {
-                module.loadModule(moduleId, childId);
+            import('./module-loader.js').then(function(moduleLoader) {
+                moduleLoader.loadModule(moduleId, childId);
             });
         });
     });
