@@ -1,15 +1,14 @@
 ﻿// core/module-loader.js
 // 动态加载模块
 
-import { MENU_CONFIG, findMenuItemByPath, getLabelByPath } from '../config/modules.config.js';
+import { MENU_CONFIG } from '../config/modules.config.js';
 
 let currentModule = null;
 let currentChild = null;
 
 // 加载模块
 export async function loadModule(moduleId, childId) {
-    // 根据模块ID查找
-    const module = MENU_CONFIG.find(m => m.id === moduleId);
+    const module = MENU_CONFIG.find(function(m) { return m.id === moduleId; });
     if (!module) {
         console.error('❌ 模块不存在:', moduleId);
         return;
@@ -20,13 +19,8 @@ export async function loadModule(moduleId, childId) {
 
     console.log('📦 加载模块:', moduleId, '->', currentChild);
 
-    // 更新侧边栏高亮
     updateSidebarActive(moduleId, currentChild);
-
-    // 加载页面内容
     await loadPageContent(module, currentChild);
-
-    // 加载对应的JS
     await loadModuleScript(module, currentChild);
 }
 
@@ -35,13 +29,11 @@ async function loadPageContent(module, childId) {
     const mainContent = document.getElementById('main-content');
     if (!mainContent) return;
 
-    // 查找子模块
     const child = module.children.find(function(c) { return c.id === childId; });
-    const pagePath = child ? child.file : null;
-    const modulePath = child ? child.modulePath : module.modulePath;
+    const filePath = child ? child.file : 'index.html';
 
-    // 构建HTML路径
-    let htmlPath = modulePath + '/' + (pagePath || 'index.html');
+    // ✅ 修复：添加 modules/ 前缀
+    const htmlPath = 'modules/' + module.modulePath + '/' + filePath;
 
     console.log('📄 加载页面:', htmlPath);
 
@@ -49,16 +41,11 @@ async function loadPageContent(module, childId) {
         const response = await fetch(htmlPath);
         if (response.ok) {
             let html = await response.text();
-
-            // 提取 body 内容
             const bodyMatch = html.match(/<body[^>]*>([\s\S]*?)<\/body>/i);
             if (bodyMatch) {
                 html = bodyMatch[1];
             }
-
-            // 移除 script 标签（避免重复执行）
             html = html.replace(/<script[^>]*>[\s\S]*?<\/script>/gi, '');
-
             mainContent.innerHTML = html;
             console.log('✅ 页面加载成功');
         } else {
@@ -81,22 +68,19 @@ async function loadPageContent(module, childId) {
 // 加载模块JS
 async function loadModuleScript(module, childId) {
     const child = module.children.find(function(c) { return c.id === childId; });
-    const pagePath = child ? child.file : null;
-    const modulePath = child ? child.modulePath : module.modulePath;
+    const filePath = child ? child.file : 'index.js';
 
-    // 构建JS路径
-    let jsPath = modulePath + '/' + (pagePath ? pagePath.replace('.html', '.js') : 'index.js');
+    // ✅ 修复：添加 modules/ 前缀，将 .html 替换为 .js
+    const jsPath = 'modules/' + module.modulePath + '/' + filePath.replace('.html', '.js');
 
     console.log('📜 加载脚本:', jsPath);
 
     try {
-        // 移除旧的脚本
         const oldScript = document.getElementById('module-script');
         if (oldScript) {
             oldScript.remove();
         }
 
-        // 动态加载新脚本
         const script = document.createElement('script');
         script.id = 'module-script';
         script.type = 'module';
@@ -108,7 +92,6 @@ async function loadModuleScript(module, childId) {
             console.warn('⚠️ 脚本加载失败（可能不存在）:', jsPath);
         };
         document.body.appendChild(script);
-
     } catch (error) {
         console.warn('⚠️ 加载脚本失败:', error);
     }
@@ -116,18 +99,15 @@ async function loadModuleScript(module, childId) {
 
 // 更新侧边栏高亮
 function updateSidebarActive(moduleId, childId) {
-    // 移除所有高亮
     document.querySelectorAll('.sidebar-item').forEach(function(el) {
         el.classList.remove('active');
     });
 
-    // 高亮主模块
     var moduleLink = document.querySelector('.sidebar-item[data-module="' + moduleId + '"]');
     if (moduleLink) {
         moduleLink.classList.add('active');
     }
 
-    // 高亮子模块
     var childLink = document.querySelector('.sidebar-item[data-child="' + childId + '"]');
     if (childLink) {
         childLink.classList.add('active');
@@ -139,14 +119,11 @@ export function loadModuleFromURL() {
     var params = new URLSearchParams(window.location.search);
     var moduleId = params.get('module') || 'dashboard';
     var childId = params.get('child') || null;
-
     loadModule(moduleId, childId);
 }
 
-// 监听hash变化
 window.addEventListener('hashchange', function() {
     loadModuleFromURL();
 });
 
-// 自动初始化
 document.addEventListener('DOMContentLoaded', loadModuleFromURL);

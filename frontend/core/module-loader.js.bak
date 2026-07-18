@@ -1,4 +1,4 @@
-﻿// core/module-loader.js
+// core/module-loader.js
 // 动态加载模块
 
 import { MODULES, getModule, getDefaultPage } from '/config/modules.config.js';
