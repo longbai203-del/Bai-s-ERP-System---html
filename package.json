@@ -1,16 +1,5 @@
 ﻿{
   "name": "bai-erp-system",
   "version": "2.0.0",
-  "description": "BAI ERP System - 企业管理系统",
-  "main": "frontend/dashboard.html",
-  "scripts": {
-    "start": "npx serve frontend",
-    "dev": "npx serve frontend"
-  },
-  "keywords": ["erp", "dashboard", "management"],
-  "author": "BAI ERP Team",
-  "license": "MIT",
-  "devDependencies": {
-    "serve": "^14.2.1"
-  }
+  "main": "frontend/dashboard.html"
 }
