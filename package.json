@@ -1,5 +1,8 @@
-
+{
   "name": "bai-erp-system",
   "version": "2.0.0",
-  "main": "frontend/dashboard.html"
+  "main": "frontend/index.html",
+  "scripts": {
+    "build": "echo 'No build needed'"
+  }
 }
