@@ -15,9 +15,6 @@ export default defineConfig({
     port: 3000,
     open: true
   },
-  esbuild: {
-    jsx: 'transform',
-    jsxFactory: 'h',
-    jsxFragment: 'Fragment'
-  }
+  // 关键：让构建输出 index.html
+  publicDir: false
 })
