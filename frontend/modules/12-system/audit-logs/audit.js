@@ -85,7 +85,7 @@
     window.AuditModule.refresh = function() {
         var self = this;
         AppApi.getAuditLogs().then(function(data) {
-            AppStore.set('allAuditLogs', data || []);
+            AppappStore.setState('allAuditLogs', data || []);
             self.loadData();
             self.toast('✅ 审计日志已刷新', 'success');
         }).catch(function(err) {
@@ -126,3 +126,5 @@
     };
 
 })();
+
+

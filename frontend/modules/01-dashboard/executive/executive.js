@@ -11,9 +11,9 @@
  * @version 1.0.0
  */
 
-import { apiClient } from '../../js/services/api-client.js';
-import { store } from '../js/core/store.js';
-import { showToast } from '../js/core/init.js';
+import { apiClient } from '../../../services/api-client.js';
+import { store } from '../../../core/store.js';
+import { showToast } from '../../../core/init.js';
 
 /**
  * @typedef {Object} MetricData
@@ -484,3 +484,5 @@ export default {
     quickEntry,
     quickExit
 };
+
+

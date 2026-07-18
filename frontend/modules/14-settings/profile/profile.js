@@ -11,8 +11,8 @@
  * @version 1.0.0
  */
 
-import { store } from '../js/core/store.js';
-import { showToast } from '../js/core/init.js';
+import { store } from '../../../core/store.js';
+import { showToast } from '../../../core/init.js';
 
 /**
  * @typedef {Object} ProfileInfo
@@ -54,7 +54,7 @@ function loadProfile() {
             state.profile = { ...state.profile, ...parsed };
         }
         // 从store获取用户信息
-        const user = store.get('user');
+        const user = appStore.getState('user');
         if (user) {
             state.profile.fullName = user.name || user.full_name || state.profile.fullName;
             state.profile.email = user.email || state.profile.email;
@@ -221,11 +221,11 @@ function saveProfileInfo() {
 
     if (saveProfile()) {
         // 更新store中的用户信息
-        const user = store.get('user');
+        const user = appStore.getState('user');
         if (user) {
             user.name = fullName;
             user.email = email;
-            store.set('user', user);
+            appStore.setState('user', user);
         }
         showToast('个人信息已保存', 'success');
     } else {
@@ -327,3 +327,5 @@ export default {
     saveProfileInfo,
     changePassword
 };
+
+

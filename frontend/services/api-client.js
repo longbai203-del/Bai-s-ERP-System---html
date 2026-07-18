@@ -5,9 +5,9 @@ export class ApiClient {
     constructor(baseURL = '/api') {
         this.baseURL = baseURL;
     }
-    
+
     async request(endpoint, options = {}) {
-        const url = ${this.baseURL};
+        const url = this.baseURL + endpoint;
         const response = await fetch(url, {
             ...options,
             headers: {
@@ -15,18 +15,18 @@ export class ApiClient {
                 ...options.headers
             }
         });
-        
+
         if (!response.ok) {
-            throw new Error(API Error: );
+            throw new Error('API Error: ' + response.status);
         }
-        
+
         return response.json();
     }
-    
+
     get(endpoint) {
         return this.request(endpoint, { method: 'GET' });
     }
-    
+
     post(endpoint, data) {
         return this.request(endpoint, {
             method: 'POST',

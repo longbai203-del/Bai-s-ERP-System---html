@@ -21,3 +21,4 @@ export async function render(container) {
 }
 export async function init() { console.log('✅ [Receipt] 已初始化'); }
 export default { meta, render, init };
+

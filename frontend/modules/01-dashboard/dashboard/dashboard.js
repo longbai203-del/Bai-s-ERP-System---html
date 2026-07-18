@@ -11,9 +11,9 @@
  * @version 1.0.0
  */
 
-import { apiClient } from '../../js/services/api-client.js';
-import { store } from '../js/core/store.js';
-import { showToast } from '../js/core/init.js';
+import { apiClient } from '../../../services/api-client.js';
+import { store } from '../../../core/store.js';
+import { showToast } from '../../../core/init.js';
 
 /**
  * @typedef {Object} DashboardStats
@@ -131,14 +131,14 @@ async function loadDashboardData() {
             state.chartData = data.chartData || state.chartData;
             
             // 缓存数据
-            store.set('dashboardData', {
+            appStore.setState('dashboardData', {
                 stats: state.stats,
                 recentOrders: state.recentOrders,
                 chartData: state.chartData
             });
         } else {
             // 如果API返回错误，尝试从Store获取缓存
-            const cached = store.get('dashboardData');
+            const cached = appStore.getState('dashboardData');
             if (cached) {
                 state.stats = cached.stats || state.stats;
                 state.recentOrders = cached.recentOrders || [];
@@ -150,7 +150,7 @@ async function loadDashboardData() {
     } catch (error) {
         console.warn('⚠️ API获取失败，使用缓存数据:', error);
         // 使用缓存数据
-        const cached = store.get('dashboardData');
+        const cached = appStore.getState('dashboardData');
         if (cached) {
             state.stats = cached.stats || state.stats;
             state.recentOrders = cached.recentOrders || [];
@@ -281,7 +281,7 @@ function bindEvents() {
     if (refreshBtn) {
         refreshBtn.addEventListener('click', async () => {
             // 清除缓存
-            store.remove('dashboardData');
+            appStore.remove('dashboardData');
             await loadDashboardData();
             renderStats();
             renderRecentOrders();
@@ -373,3 +373,5 @@ export default {
     destroy,
     refresh: loadDashboardData
 };
+
+

@@ -7,7 +7,7 @@
  * @version 1.0.0
  */
 
-import { showToast } from '../js/core/init.js';
+import { showToast } from '../../../core/init.js';
 
 /**
  * @typedef {Object} Role
@@ -458,3 +458,5 @@ export default {
     deleteRole,
     goToPage
 };
+
+

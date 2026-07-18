@@ -12,8 +12,8 @@
  */
 
 import { apiClient } from '../../../js/core/api/api-client.js';
-import { store } from '../js/core/store.js';
-import { showToast } from '../js/core/init.js';
+import { store } from '../../../core/store.js';
+import { showToast } from '../../../core/init.js';
 
 /**
  * @typedef {Object} Product
@@ -787,3 +787,5 @@ export default {
     exportData,
     saveProducts
 };
+
+

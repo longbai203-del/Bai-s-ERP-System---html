@@ -13,3 +13,4 @@ export async function render(container) {
 }
 export async function init() { console.log('✅ [KitchenDisplay] 已初始化'); }
 export default { meta, render, init };
+

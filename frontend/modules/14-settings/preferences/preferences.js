@@ -11,8 +11,8 @@
  * @version 1.0.0
  */
 
-import { store } from '../js/core/store.js';
-import { showToast } from '../js/core/init.js';
+import { store } from '../../../core/store.js';
+import { showToast } from '../../../core/init.js';
 
 /**
  * @typedef {Object} Preferences
@@ -64,7 +64,7 @@ function loadPreferences() {
             state.prefs = { ...state.prefs, ...parsed };
         }
         // 从store获取主题
-        const theme = store.get('theme');
+        const theme = appStore.getState('theme');
         if (theme) {
             state.prefs.theme = theme;
         }
@@ -82,8 +82,8 @@ function savePreferences() {
         state.prefs.updatedAt = new Date().toISOString();
         localStorage.setItem('user_preferences', JSON.stringify(state.prefs));
         // 同步到store
-        store.set('theme', state.prefs.theme);
-        store.set('language', state.prefs.language);
+        appStore.setState('theme', state.prefs.theme);
+        appStore.setState('language', state.prefs.language);
         state.saved = true;
         return true;
     } catch (e) {
@@ -357,3 +357,5 @@ export default {
     saveAllPreferences,
     resetPreferences
 };
+
+

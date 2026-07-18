@@ -65,3 +65,4 @@ export async function render(container, params = {}) {
 
 export async function init() { console.log('✅ [OrderDetail] 已初始化'); }
 export default { meta, render, init };
+

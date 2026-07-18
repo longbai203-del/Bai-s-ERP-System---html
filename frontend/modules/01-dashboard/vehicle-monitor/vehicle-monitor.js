@@ -69,7 +69,7 @@
     // ============================================================
 
     function checkPermission() {
-        var user = AppStore.get('currentUser');
+        var user = AppappStore.getState('currentUser');
         if (!user) return false;
         return user.role === 'owner' || user.role === 'admin';
     }
@@ -1035,3 +1035,5 @@ export default {
     quickExit,
     destroy
 };
+
+

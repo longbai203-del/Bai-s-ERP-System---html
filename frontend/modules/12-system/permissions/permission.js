@@ -233,7 +233,7 @@
             return;
         }
 
-        var user = AppStore.get('currentUser');
+        var user = AppappStore.getState('currentUser');
 
         var data = {
             role_name: name,
@@ -440,7 +440,7 @@
             return;
         }
 
-        var user = AppStore.get('currentUser');
+        var user = AppappStore.getState('currentUser');
 
         var data = {
             menu_name: name,
@@ -644,7 +644,7 @@
             return;
         }
 
-        var user = AppStore.get('currentUser');
+        var user = AppappStore.getState('currentUser');
 
         // 先删除旧的权限关联
         client.from('sys_role_permission')
@@ -792,7 +792,7 @@
             return;
         }
 
-        var user = AppStore.get('currentUser');
+        var user = AppappStore.getState('currentUser');
 
         var data = {
             user_id: userId,
@@ -1059,3 +1059,5 @@
     };
 
 })();
+
+

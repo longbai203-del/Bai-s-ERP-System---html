@@ -155,3 +155,4 @@ export async function init() {
 }
 
 export default { meta, render, init };
+

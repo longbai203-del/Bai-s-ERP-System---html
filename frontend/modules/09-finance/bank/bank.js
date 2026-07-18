@@ -11,8 +11,8 @@
  * @version 1.0.0
  */
 
-import { store } from '../js/core/store.js';
-import { showToast } from '../js/core/init.js';
+import { store } from '../../../core/store.js';
+import { showToast } from '../../../core/init.js';
 
 /**
  * @typedef {Object} BankAccount
@@ -253,3 +253,5 @@ export default {
     loadData,
     selectAccount
 };
+
+
