@@ -6,12 +6,24 @@ import { loadModuleFromURL } from './module-loader.js';
 
 console.log('🚀 BAI ERP 应用启动中...');
 
+// ============================================================
+// 渲染导航栏
+// ============================================================
+function renderNavbar() {
+    const container = document.getElementById('navbar-container');
+    if (!container) return;
+    console.log('✅ 导航栏加载完成');
+}
+
+// ============================================================
 // 渲染侧边栏
+// ============================================================
 function renderSidebar() {
     const container = document.getElementById('sidebar-container');
     if (!container) return;
 
     let html = '';
+
     MENU_CONFIG.forEach(function(module) {
         const hasChildren = module.children && module.children.length > 0;
         const icon = module.icon || '📄';
@@ -40,24 +52,73 @@ function renderSidebar() {
 
     container.innerHTML = html;
 
+    // ============================================================
     // 事件绑定
+    // ============================================================
+
+    // 主模块点击 - 折叠/展开
     container.querySelectorAll('.sidebar-module-header').forEach(function(header) {
-        header.addEventListener('click', function() {
+        header.addEventListener('click', function(e) {
+            e.stopPropagation();
+
+            const moduleId = this.dataset.module;
             const children = this.nextElementSibling;
             const arrow = this.querySelector('.arrow');
+
             if (children) {
                 children.classList.toggle('open');
-                if (arrow) arrow.classList.toggle('open');
+                if (arrow) {
+                    arrow.classList.toggle('open');
+                }
             }
+
+            // 高亮
+            container.querySelectorAll('.sidebar-module-header').forEach(function(h) {
+                h.classList.remove('active');
+            });
+            this.classList.add('active');
+
+            // 加载模块
+            import('./module-loader.js').then(function(module) {
+                module.loadModule(moduleId, null);
+            });
         });
     });
 
+    // 子模块点击
     container.querySelectorAll('.sidebar-child-item').forEach(function(item) {
-        item.addEventListener('click', function() {
+        item.addEventListener('click', function(e) {
+            e.stopPropagation();
+
             const moduleId = this.dataset.module;
             const childId = this.dataset.child;
-            import('./module-loader.js').then(function(m) {
-                m.loadModule(moduleId, childId);
+
+            // 高亮
+            container.querySelectorAll('.sidebar-child-item').forEach(function(c) {
+                c.classList.remove('active');
+            });
+            this.classList.add('active');
+
+            // 高亮父模块
+            container.querySelectorAll('.sidebar-module-header').forEach(function(h) {
+                h.classList.remove('active');
+            });
+            const parentHeader = container.querySelector('.sidebar-module-header[data-module="' + moduleId + '"]');
+            if (parentHeader) {
+                parentHeader.classList.add('active');
+                const arrow = parentHeader.querySelector('.arrow');
+                if (arrow) {
+                    arrow.classList.add('open');
+                }
+                const children = parentHeader.nextElementSibling;
+                if (children) {
+                    children.classList.add('open');
+                }
+            }
+
+            // 加载模块
+            import('./module-loader.js').then(function(module) {
+                module.loadModule(moduleId, childId);
             });
         });
     });
@@ -65,15 +126,9 @@ function renderSidebar() {
     console.log('✅ 侧边栏渲染完成');
 }
 
-// 渲染导航栏
-function renderNavbar() {
-    const container = document.getElementById('navbar-container');
-    if (!container) return;
-    // 导航栏已在 HTML 中硬编码，不需要额外渲染
-    console.log('✅ 导航栏加载完成');
-}
-
+// ============================================================
 // 初始化应用
+// ============================================================
 async function initApp() {
     console.log('📦 初始化应用...');
 
