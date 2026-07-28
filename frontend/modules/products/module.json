@@ -1,24 +1,16 @@
-﻿{
-    "permissions":  {
-                        "export":  "products.export",
-                        "delete":  "products.delete",
-                        "create":  "products.create",
-                        "view":  "products.view",
-                        "edit":  "products.edit"
-                    },
+
     "id":  "products",
-    "enabled":  true,
-    "version":  "3.0.0",
-    "description":  "产品信息、分类品牌、价格管理",
-    "icon":  "📦",
-    "name":  "产品管理",
-    "author":  "Enterprise ERP Team",
-    "routes":  [
-                   {
-                       "path":  "/modules/products/products.html",
-                       "default":  true,
-                       "name":  "产品列表",
-                       "icon":  "📦"
-                   }
-               ]
+    "version":  "1.0.0",
+    "description":  "04-products 模块",
+    "name":  "04-products",
+    "children":  [
+                     "barcodes",
+                     "brands",
+                     "categories",
+                     "combos",
+                     "modifiers",
+                     "price-lists",
+                     "products",
+                     "variants"
+                 ]
 }

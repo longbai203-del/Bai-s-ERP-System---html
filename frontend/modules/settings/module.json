@@ -1,21 +1,13 @@
-﻿{
-    "permissions":  {
-                        "edit":  "settings.edit",
-                        "view":  "settings.view"
-                    },
+
     "id":  "settings",
-    "enabled":  true,
-    "version":  "3.0.0",
-    "description":  "系统配置、公司信息、用户偏好",
-    "icon":  "⚙️",
-    "name":  "系统设置",
-    "author":  "Enterprise ERP Team",
-    "routes":  [
-                   {
-                       "path":  "/modules/settings/settings.html",
-                       "default":  true,
-                       "name":  "系统设置",
-                       "icon":  "⚙️"
-                   }
-               ]
+    "version":  "1.0.0",
+    "description":  "14-settings 模块",
+    "name":  "14-settings",
+    "children":  [
+                     "branches",
+                     "company",
+                     "general",
+                     "preferences",
+                     "profile"
+                 ]
 }

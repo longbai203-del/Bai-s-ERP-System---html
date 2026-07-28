@@ -1,23 +1,15 @@
-﻿{
-    "permissions":  {
-                        "delete":  "customers.delete",
-                        "create":  "customers.create",
-                        "view":  "customers.view",
-                        "edit":  "customers.edit"
-                    },
+
     "id":  "customers",
-    "enabled":  true,
-    "version":  "3.0.0",
-    "description":  "客户信息、会员管理、车辆管理",
-    "icon":  "👥",
-    "name":  "客户管理",
-    "author":  "Enterprise ERP Team",
-    "routes":  [
-                   {
-                       "path":  "/modules/customers/customers.html",
-                       "default":  true,
-                       "name":  "客户列表",
-                       "icon":  "👥"
-                   }
-               ]
+    "version":  "1.0.0",
+    "description":  "05-customers 模块",
+    "name":  "05-customers",
+    "children":  [
+                     "coupons",
+                     "customers",
+                     "feedback",
+                     "gift-cards",
+                     "membership",
+                     "vehicles",
+                     "wallet"
+                 ]
 }

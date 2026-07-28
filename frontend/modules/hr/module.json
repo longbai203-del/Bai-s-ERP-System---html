@@ -1,23 +1,20 @@
-﻿{
-    "permissions":  {
-                        "delete":  "hr.delete",
-                        "create":  "hr.create",
-                        "view":  "hr.view",
-                        "edit":  "hr.edit"
-                    },
+
     "id":  "hr",
-    "enabled":  true,
-    "version":  "3.0.0",
-    "description":  "员工管理、考勤薪资、绩效管理",
-    "icon":  "👔",
-    "name":  "人力资源",
-    "author":  "Enterprise ERP Team",
-    "routes":  [
-                   {
-                       "path":  "/modules/hr/hr.html",
-                       "default":  true,
-                       "name":  "人力资源",
-                       "icon":  "👔"
-                   }
-               ]
+    "version":  "1.0.0",
+    "description":  "10-hr 模块",
+    "name":  "10-hr",
+    "children":  [
+                     "attendance",
+                     "bonuses",
+                     "commissions",
+                     "employees",
+                     "leaves",
+                     "payroll",
+                     "penalties",
+                     "performance",
+                     "permissions",
+                     "schedules",
+                     "shifts",
+                     "tasks"
+                 ]
 }

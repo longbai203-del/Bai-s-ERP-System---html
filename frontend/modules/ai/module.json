@@ -1,21 +1,10 @@
-﻿{
-    "permissions":  {
-                        "create":  "ai.create",
-                        "view":  "ai.view"
-                    },
+
     "id":  "ai",
-    "enabled":  true,
-    "version":  "3.0.0",
-    "description":  "智能对话、CRM、数据分析助手",
-    "icon":  "🤖",
-    "name":  "AI智能助手",
-    "author":  "Enterprise ERP Team",
-    "routes":  [
-                   {
-                       "path":  "/modules/ai/ai.html",
-                       "default":  true,
-                       "name":  "智能对话",
-                       "icon":  "🤖"
-                   }
-               ]
+    "version":  "1.0.0",
+    "description":  "15-ai 模块",
+    "name":  "15-ai",
+    "children":  [
+                     "ai",
+                     "crm"
+                 ]
 }

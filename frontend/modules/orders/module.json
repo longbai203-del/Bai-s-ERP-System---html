@@ -1,24 +1,13 @@
-﻿{
-    "permissions":  {
-                        "export":  "orders.export",
-                        "delete":  "orders.delete",
-                        "create":  "orders.create",
-                        "view":  "orders.view",
-                        "edit":  "orders.edit"
-                    },
+
     "id":  "orders",
-    "enabled":  true,
-    "version":  "3.0.0",
-    "description":  "订单管理、退款退货、订单历史",
-    "icon":  "📋",
-    "name":  "订单管理",
-    "author":  "Enterprise ERP Team",
-    "routes":  [
-                   {
-                       "path":  "/modules/orders/orders.html",
-                       "default":  true,
-                       "name":  "订单列表",
-                       "icon":  "📋"
-                   }
-               ]
+    "version":  "1.0.0",
+    "description":  "03-orders 模块",
+    "name":  "03-orders",
+    "children":  [
+                     "detail",
+                     "list",
+                     "refunds",
+                     "returns",
+                     "submodules"
+                 ]
 }

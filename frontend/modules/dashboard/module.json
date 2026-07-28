@@ -1,20 +1,12 @@
-﻿{
-    "permissions":  {
-                        "view":  "dashboard.view"
-                    },
+
     "id":  "dashboard",
-    "enabled":  true,
-    "version":  "3.0.0",
-    "description":  "系统概览、数据统计、快捷操作",
-    "icon":  "📊",
-    "name":  "仪表盘",
-    "author":  "Enterprise ERP Team",
-    "routes":  [
-                   {
-                       "path":  "/modules/dashboard/dashboard.html",
-                       "default":  true,
-                       "name":  "仪表盘",
-                       "icon":  "📊"
-                   }
-               ]
+    "version":  "1.0.0",
+    "description":  "01-dashboard 模块",
+    "name":  "01-dashboard",
+    "children":  [
+                     "dashboard",
+                     "employee",
+                     "executive",
+                     "vehicle-monitor"
+                 ]
 }
