@@ -1,0 +1,23 @@
+﻿{
+    "permissions":  {
+                        "export":  "inventory.export",
+                        "create":  "inventory.create",
+                        "view":  "inventory.view",
+                        "edit":  "inventory.edit"
+                    },
+    "id":  "inventory",
+    "enabled":  true,
+    "version":  "3.0.0",
+    "description":  "库存管理、仓库管理、库存调整",
+    "icon":  "📊",
+    "name":  "库存管理",
+    "author":  "Enterprise ERP Team",
+    "routes":  [
+                   {
+                       "path":  "/modules/inventory/inventory.html",
+                       "default":  true,
+                       "name":  "库存列表",
+                       "icon":  "📊"
+                   }
+               ]
+}

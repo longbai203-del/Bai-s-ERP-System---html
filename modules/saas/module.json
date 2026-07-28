@@ -1,0 +1,24 @@
+{
+    "id": "saas",
+    "name": "SaaS管理",
+    "icon": "☁️",
+    "description": "订阅计划管理、租户管理、计费与用量管理",
+    "version": "3.0.0",
+    "author": "Enterprise ERP Team",
+    "enabled": true,
+    "routes": [
+      {
+        "path": "/modules/saas/saas.html",
+        "name": "SaaS管理",
+        "icon": "☁️",
+        "default": true
+      }
+    ],
+    "permissions": {
+      "view": "saas.view",
+      "create": "saas.create",
+      "edit": "saas.edit",
+      "delete": "saas.delete",
+      "export": "saas.export"
+    }
+  }

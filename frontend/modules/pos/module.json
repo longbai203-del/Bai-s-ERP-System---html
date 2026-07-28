@@ -1,0 +1,22 @@
+﻿{
+    "permissions":  {
+                        "create":  "pos.create",
+                        "view":  "pos.view",
+                        "edit":  "pos.edit"
+                    },
+    "id":  "pos",
+    "enabled":  true,
+    "version":  "3.0.0",
+    "description":  "POS收银、购物车管理、小票打印",
+    "icon":  "🛒",
+    "name":  "销售点",
+    "author":  "Enterprise ERP Team",
+    "routes":  [
+                   {
+                       "path":  "/modules/pos/pos.html",
+                       "default":  true,
+                       "name":  "销售点",
+                       "icon":  "🛒"
+                   }
+               ]
+}

@@ -1,0 +1,825 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>库存管理 - Enterprise ERP</title>
+</head>
+<body>
+    <div class="page inventory-page">
+        <!-- ============================================================
+        库存管理
+        ============================================================ -->
+        <div class="inventory-header">
+            <div>
+                <h1>📊 库存管理</h1>
+                <p class="subtitle">管理所有库存，监控库存水平</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-primary" onclick="showCreateInventoryModal()">＋ 添加库存</button>
+                <button class="btn btn-outline" onclick="exportInventory()">📥 导出</button>
+                <button class="btn btn-outline" onclick="refreshInventory()">🔄 刷新</button>
+            </div>
+        </div>
+
+        <!-- 统计卡片 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📦</div>
+                <div class="stat-info">
+                    <div class="stat-label">总库存项</div>
+                    <div class="stat-value" id="totalItems">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-info">
+                    <div class="stat-label">总库存量</div>
+                    <div class="stat-value" id="totalQuantity">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⚠️</div>
+                <div class="stat-info">
+                    <div class="stat-label">低库存预警</div>
+                    <div class="stat-value" id="lowStockItems">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💰</div>
+                <div class="stat-info">
+                    <div class="stat-label">库存总值</div>
+                    <div class="stat-value" id="totalValue">¥0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 工具栏 -->
+        <div class="toolbar">
+            <div class="left">
+                <div class="search-box">
+                    <span class="icon">🔍</span>
+                    <input type="text" id="inventorySearch" placeholder="搜索产品名称、SKU..." oninput="filterInventory()">
+                </div>
+                <select id="categoryFilter" onchange="filterInventory()" class="form-control">
+                    <option value="all">全部分类</option>
+                </select>
+                <select id="stockFilter" onchange="filterInventory()" class="form-control">
+                    <option value="all">全部状态</option>
+                    <option value="normal">充足</option>
+                    <option value="low">低库存</option>
+                    <option value="out">缺货</option>
+                </select>
+            </div>
+            <div class="right">
+                <span id="resultCount" style="color:var(--text-muted);font-size:13px;">共 0 条</span>
+            </div>
+        </div>
+
+        <!-- 库存列表 -->
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>产品名称</th>
+                        <th>SKU</th>
+                        <th>分类</th>
+                        <th>库存</th>
+                        <th>最低库存</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="inventoryBody">
+                    <tr>
+                        <td colspan="8" class="empty-state">暂无库存数据</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 分页 -->
+        <div class="pagination" id="inventoryPagination">
+            <div class="info">显示 <span id="pageStart">0</span>-<span id="pageEnd">0</span> 条，共 <span id="pageTotal">0</span> 条</div>
+            <div class="buttons" id="pageButtons"></div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    库存调整模态框
+    ============================================================ -->
+    <div class="modal-overlay" id="inventoryModal">
+        <div class="modal-content" style="max-width:500px;">
+            <div class="modal-header">
+                <div class="modal-title" id="inventoryModalTitle">调整库存</div>
+                <button class="modal-close" onclick="closeInventoryModal()">✕</button>
+            </div>
+            <form id="inventoryForm" onsubmit="saveInventory(event)">
+                <input type="hidden" id="inventoryEditId">
+                <div class="form-group">
+                    <label class="form-label required">产品</label>
+                    <select class="form-control" id="inventoryProduct" required>
+                        <option value="">请选择产品</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label required">当前库存</label>
+                    <input type="number" class="form-control" id="inventoryCurrent" readonly>
+                </div>
+                <div class="form-group">
+                    <label class="form-label required">调整数量</label>
+                    <input type="number" class="form-control" id="inventoryQuantity" placeholder="输入调整数量" required>
+                    <small style="color:var(--text-muted);">正数增加，负数减少</small>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">调整原因</label>
+                    <textarea class="form-control" id="inventoryReason" rows="2" placeholder="请输入调整原因"></textarea>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeInventoryModal()">取消</button>
+                    <button type="submit" class="btn btn-primary">确认调整</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <style>
+        .inventory-page {
+            padding: 0;
+        }
+
+        .inventory-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .inventory-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary, #0f172a);
+            margin: 0;
+        }
+
+        .inventory-header .subtitle {
+            color: var(--text-secondary, #475569);
+            margin: 4px 0 0;
+            font-size: 14px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg-card, #ffffff);
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: var(--radius, 12px);
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .stat-card .stat-icon {
+            font-size: 28px;
+            flex-shrink: 0;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-input, #f1f5f9);
+            border-radius: var(--radius, 8px);
+        }
+
+        .stat-card .stat-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .stat-card .stat-label {
+            font-size: 12px;
+            color: var(--text-muted, #94a3b8);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary, #0f172a);
+            line-height: 1.2;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .toolbar .left {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+            flex: 1;
+        }
+
+        .toolbar .search-box {
+            display: flex;
+            align-items: center;
+            background: var(--bg-input, #f1f5f9);
+            border: 2px solid transparent;
+            border-radius: 10px;
+            padding: 0 14px;
+            transition: all 0.3s;
+            min-width: 200px;
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .toolbar .search-box:focus-within {
+            border-color: #4f46e5;
+            background: var(--bg-card, #ffffff);
+        }
+
+        .toolbar .search-box input {
+            border: none;
+            background: transparent;
+            padding: 8px 0;
+            font-size: 14px;
+            color: var(--text-primary, #0f172a);
+            width: 100%;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .toolbar .search-box .icon {
+            color: var(--text-muted, #94a3b8);
+            margin-right: 10px;
+        }
+
+        .form-control {
+            padding: 8px 14px;
+            border: 2px solid var(--border-color, #e2e8f0);
+            border-radius: var(--radius, 8px);
+            background: var(--bg-input, #f1f5f9);
+            color: var(--text-primary, #0f172a);
+            font-size: 14px;
+            outline: none;
+            min-width: 120px;
+        }
+
+        .form-control:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .table-container {
+            background: var(--bg-card, #ffffff);
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: var(--radius, 12px);
+            overflow: hidden;
+        }
+
+        .table-container .table {
+            margin: 0;
+        }
+
+        .table-container .table .actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .table-container .table .actions button {
+            padding: 4px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.15s;
+        }
+
+        .table-container .table .actions .btn-edit {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+        }
+
+        .table-container .table .actions .btn-edit:hover {
+            background: #3b82f6;
+            color: #fff;
+        }
+
+        .table-container .table .actions .btn-delete {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        .table-container .table .actions .btn-delete:hover {
+            background: #ef4444;
+            color: #fff;
+        }
+
+        .table-container .table .stock-status {
+            padding: 2px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .table-container .table .stock-status.normal {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+        }
+
+        .table-container .table .stock-status.low {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+        }
+
+        .table-container .table .stock-status.out {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            border-top: 1px solid var(--border-color, #e2e8f0);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .pagination .info {
+            font-size: 13px;
+            color: var(--text-secondary, #475569);
+        }
+
+        .pagination .buttons {
+            display: flex;
+            gap: 4px;
+        }
+
+        .pagination .buttons button {
+            padding: 6px 12px;
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: 6px;
+            background: transparent;
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--text-secondary, #475569);
+            transition: all 0.15s;
+        }
+
+        .pagination .buttons button:hover:not(:disabled) {
+            background: #4f46e5;
+            color: #fff;
+            border-color: #4f46e5;
+        }
+
+        .pagination .buttons button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination .buttons button.active {
+            background: #4f46e5;
+            color: #fff;
+            border-color: #4f46e5;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted, #94a3b8);
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .inventory-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .toolbar .left {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .toolbar .search-box {
+                max-width: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    <script>
+        let inventoryData = [];
+        let filteredInventory = [];
+        let currentPage = 1;
+        const pageSize = 10;
+
+        function getStorage(key) {
+            try { return JSON.parse(localStorage.getItem('erp_' + key)); } catch { return null; }
+        }
+
+        function setStorage(key, data) {
+            try { localStorage.setItem('erp_' + key, JSON.stringify(data)); return true; } catch { return false; }
+        }
+
+        function showToast(message, type) {
+            type = type || 'info';
+            if (typeof window.showToast === 'function') {
+                window.showToast(message, type);
+                return;
+            }
+            const container = document.getElementById('toastContainer') || (function() {
+                const c = document.createElement('div');
+                c.id = 'toastContainer';
+                c.style.cssText =
+                    'position:fixed;top:20px;right:20px;z-index:10000;display:flex;flex-direction:column;gap:8px;max-width:400px;';
+                document.body.appendChild(c);
+                return c;
+            })();
+            const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+            const toast = document.createElement('div');
+            toast.style.cssText =
+                'padding:12px 20px;border-radius:12px;background:#fff;box-shadow:0 8px 32px rgba(0,0,0,0.15);border-left:4px solid #4f46e5;display:flex;align-items:center;gap:12px;animation:slideIn 0.3s ease;';
+            toast.innerHTML =
+                `<span>${icons[type] || 'ℹ️'}</span><span>${message}</span><button onclick="this.parentElement.remove()" style="background:none;border:none;font-size:18px;cursor:pointer;color:#94a3b8;margin-left:auto;">✕</button>`;
+            container.appendChild(toast);
+            setTimeout(function() {
+                if (toast.parentElement) {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateX(100%)';
+                    setTimeout(function() { toast.remove(); }, 300);
+                }
+            }, 3000);
+        }
+
+        function initInventory() {
+            console.log('📊 库存管理初始化...');
+            loadInventory();
+            loadCategories();
+            updateInventoryStats();
+            renderInventory();
+            console.log('✅ 库存管理初始化完成');
+        }
+
+        function loadInventory() {
+            // 从产品数据生成库存
+            const products = getStorage('products');
+            if (!products || products.length === 0) {
+                // 如果没有产品，创建演示库存
+                const demoProducts = generateDemoProducts();
+                setStorage('products', demoProducts);
+                inventoryData = demoProducts.map(p => ({
+                    id: p.id,
+                    product_id: p.id,
+                    product_name: p.name,
+                    sku: p.sku,
+                    category: p.category,
+                    quantity: p.stock || Math.floor(Math.random() * 100 + 10),
+                    min_quantity: p.min_stock || 5,
+                    location: 'A' + (Math.floor(Math.random() * 10) + 1) + '-' + (Math.floor(Math.random() * 10) + 1),
+                    last_count: new Date().toISOString()
+                }));
+            } else {
+                inventoryData = products.map(p => ({
+                    id: p.id,
+                    product_id: p.id,
+                    product_name: p.name,
+                    sku: p.sku,
+                    category: p.category,
+                    quantity: p.stock || 0,
+                    min_quantity: p.min_stock || 5,
+                    location: 'A' + (Math.floor(Math.random() * 10) + 1) + '-' + (Math.floor(Math.random() * 10) + 1),
+                    last_count: new Date().toISOString()
+                }));
+            }
+            setStorage('inventory', inventoryData);
+            filteredInventory = [...inventoryData];
+        }
+
+        function generateDemoProducts() {
+            const categories = ['洗车', '保养', '维修', '美容', '配件'];
+            const names = {
+                '洗车': ['标准洗车', '精洗服务', '内饰清洗'],
+                '保养': ['机油保养', '空调保养', '刹车保养'],
+                '维修': ['发动机维修', '变速箱维修', '电路维修'],
+                '美容': ['抛光打蜡', '镀晶保护', '内饰美容'],
+                '配件': ['机油滤芯', '空气滤芯', '刹车片']
+            };
+            const products = [];
+            let id = 1;
+            for (const category of categories) {
+                const items = names[category] || [`${category}服务`];
+                for (const name of items) {
+                    products.push({
+                        id: id++,
+                        name: name,
+                        sku: 'SKU-' + String(id).padStart(6, '0'),
+                        category: category,
+                        price: Math.round((Math.random() * 500 + 50) * 100) / 100,
+                        stock: Math.floor(Math.random() * 100 + 5),
+                        min_stock: Math.floor(Math.random() * 10 + 3),
+                        created_at: new Date().toISOString()
+                    });
+                }
+            }
+            return products;
+        }
+
+        function loadCategories() {
+            const categories = [...new Set(inventoryData.map(p => p.category))];
+            const filter = document.getElementById('categoryFilter');
+            filter.innerHTML = '<option value="all">全部分类</option>' +
+                categories.map(c => `<option value="${c}">${c}</option>`).join('');
+
+            const productSelect = document.getElementById('inventoryProduct');
+            productSelect.innerHTML = '<option value="">请选择产品</option>' +
+                inventoryData.map(p =>
+                    `<option value="${p.product_id}">${p.product_name} (${p.sku})</option>`
+                ).join('');
+        }
+
+        function updateInventoryStats() {
+            const total = inventoryData.length;
+            const totalQty = inventoryData.reduce((sum, p) => sum + (p.quantity || 0), 0);
+            const lowStock = inventoryData.filter(p => (p.quantity || 0) <= (p.min_quantity || 5)).length;
+            const products = getStorage('products') || [];
+            const totalValue = inventoryData.reduce((sum, p) => {
+                const product = products.find(pr => pr.id === p.product_id);
+                return sum + (product ? product.price || 0 : 0) * (p.quantity || 0);
+            }, 0);
+
+            document.getElementById('totalItems').textContent = total;
+            document.getElementById('totalQuantity').textContent = totalQty;
+            document.getElementById('lowStockItems').textContent = lowStock;
+            document.getElementById('totalValue').textContent = '¥' + totalValue.toFixed(2);
+        }
+
+        function filterInventory() {
+            const search = document.getElementById('inventorySearch').value.toLowerCase();
+            const category = document.getElementById('categoryFilter').value;
+            const stockStatus = document.getElementById('stockFilter').value;
+
+            filteredInventory = inventoryData.filter(p => {
+                let match = true;
+                if (search) {
+                    match = match && (p.product_name.toLowerCase().includes(search) ||
+                        (p.sku && p.sku.toLowerCase().includes(search)));
+                }
+                if (category !== 'all') {
+                    match = match && p.category === category;
+                }
+                if (stockStatus !== 'all') {
+                    const qty = p.quantity || 0;
+                    const min = p.min_quantity || 5;
+                    if (stockStatus === 'normal') match = match && qty > min;
+                    else if (stockStatus === 'low') match = match && qty <= min && qty > 0;
+                    else if (stockStatus === 'out') match = match && qty <= 0;
+                }
+                return match;
+            });
+
+            currentPage = 1;
+            renderInventory();
+        }
+
+        function renderInventory() {
+            const tbody = document.getElementById('inventoryBody');
+            const total = filteredInventory.length;
+            const start = (currentPage - 1) * pageSize;
+            const end = Math.min(start + pageSize, total);
+            const pageData = filteredInventory.slice(start, end);
+
+            document.getElementById('resultCount').textContent = `共 ${total} 条`;
+            document.getElementById('pageStart').textContent = total > 0 ? start + 1 : 0;
+            document.getElementById('pageEnd').textContent = end;
+            document.getElementById('pageTotal').textContent = total;
+
+            if (pageData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="empty-state">暂无库存数据</td></tr>';
+                renderPagination(total);
+                return;
+            }
+
+            tbody.innerHTML = pageData.map(p => {
+                const qty = p.quantity || 0;
+                const min = p.min_quantity || 5;
+                let status = 'normal';
+                let statusLabel = '充足';
+                if (qty <= 0) { status = 'out';
+                    statusLabel = '缺货'; } else if (qty <= min) { status = 'low';
+                    statusLabel = '低库存'; }
+
+                return `
+                    <tr>
+                        <td>${p.id}</td>
+                        <td><strong>${p.product_name}</strong></td>
+                        <td>${p.sku || '-'}</td>
+                        <td>${p.category}</td>
+                        <td><strong>${qty}</strong></td>
+                        <td>${min}</td>
+                        <td><span class="stock-status ${status}">${statusLabel}</span></td>
+                        <td>
+                            <div class="actions">
+                                <button class="btn-edit" onclick="editInventory(${p.product_id})">✏️</button>
+                                <button class="btn-delete" onclick="deleteInventory(${p.product_id})">🗑️</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            renderPagination(total);
+        }
+
+        function renderPagination(total) {
+            const container = document.getElementById('pageButtons');
+            const totalPages = Math.ceil(total / pageSize);
+            if (totalPages <= 1) { container.innerHTML = ''; return; }
+
+            let html =
+                `<button onclick="goToPage(${currentPage - 1})" ${currentPage <= 1 ? 'disabled' : ''}>‹</button>`;
+            const maxShow = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxShow / 2));
+            let endPage = Math.min(totalPages, startPage + maxShow - 1);
+            if (endPage - startPage < maxShow - 1) {
+                startPage = Math.max(1, endPage - maxShow + 1);
+            }
+            if (startPage > 1) {
+                html += `<button onclick="goToPage(1)">1</button>`;
+                if (startPage > 2) html += `<button disabled>...</button>`;
+            }
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<button class="${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+            }
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) html += `<button disabled>...</button>`;
+                html += `<button onclick="goToPage(${totalPages})">${totalPages}</button>`;
+            }
+            html +=
+                `<button onclick="goToPage(${currentPage + 1})" ${currentPage >= totalPages ? 'disabled' : ''}>›</button>`;
+            container.innerHTML = html;
+        }
+
+        function goToPage(page) {
+            const totalPages = Math.ceil(filteredInventory.length / pageSize);
+            if (page < 1 || page > totalPages) return;
+            currentPage = page;
+            renderInventory();
+        }
+
+        function showCreateInventoryModal() {
+            document.getElementById('inventoryModalTitle').textContent = '调整库存';
+            document.getElementById('inventoryEditId').value = '';
+            document.getElementById('inventoryForm').reset();
+            document.getElementById('inventoryQuantity').value = '';
+            document.getElementById('inventoryCurrent').value = '0';
+            document.getElementById('inventoryModal').classList.add('show');
+        }
+
+        function editInventory(productId) {
+            const item = inventoryData.find(p => p.product_id === productId);
+            if (!item) { showToast('库存项不存在', 'error'); return; }
+
+            document.getElementById('inventoryModalTitle').textContent = '调整库存 - ' + item.product_name;
+            document.getElementById('inventoryEditId').value = productId;
+            document.getElementById('inventoryProduct').value = productId;
+            document.getElementById('inventoryCurrent').value = item.quantity || 0;
+            document.getElementById('inventoryQuantity').value = '';
+            document.getElementById('inventoryReason').value = '';
+            document.getElementById('inventoryModal').classList.add('show');
+        }
+
+        function closeInventoryModal() {
+            document.getElementById('inventoryModal').classList.remove('show');
+        }
+
+        function saveInventory(event) {
+            event.preventDefault();
+            const productId = parseInt(document.getElementById('inventoryEditId').value) ||
+                parseInt(document.getElementById('inventoryProduct').value);
+            const quantity = parseInt(document.getElementById('inventoryQuantity').value);
+            const reason = document.getElementById('inventoryReason').value.trim();
+
+            if (!productId) { showToast('请选择产品', 'warning'); return; }
+            if (isNaN(quantity) || quantity === 0) { showToast('请输入有效的调整数量', 'warning'); return; }
+
+            const item = inventoryData.find(p => p.product_id === productId);
+            if (!item) { showToast('库存项不存在', 'error'); return; }
+
+            const newQty = (item.quantity || 0) + quantity;
+            if (newQty < 0) { showToast('库存不能为负数', 'error'); return; }
+
+            item.quantity = newQty;
+            item.last_count = new Date().toISOString();
+
+            // 同步更新产品库存
+            const products = getStorage('products') || [];
+            const product = products.find(p => p.id === productId);
+            if (product) {
+                product.stock = newQty;
+                setStorage('products', products);
+            }
+
+            setStorage('inventory', inventoryData);
+            updateInventoryStats();
+            filterInventory();
+            closeInventoryModal();
+
+            const action = quantity > 0 ? '增加' : '减少';
+            showToast(`库存已${action} ${Math.abs(quantity)} 件`, 'success');
+        }
+
+        function deleteInventory(productId) {
+            if (!confirm(`确定要删除此库存项吗？`)) return;
+            inventoryData = inventoryData.filter(p => p.product_id !== productId);
+            setStorage('inventory', inventoryData);
+            updateInventoryStats();
+            filterInventory();
+            showToast('库存项已删除', 'success');
+        }
+
+        function refreshInventory() {
+            loadInventory();
+            loadCategories();
+            updateInventoryStats();
+            filterInventory();
+            showToast('库存已刷新', 'success');
+        }
+
+        function exportInventory() {
+            if (filteredInventory.length === 0) { showToast('没有数据可导出', 'warning'); return; }
+
+            const products = getStorage('products') || [];
+            const exportData = filteredInventory.map(p => {
+                const product = products.find(pr => pr.id === p.product_id);
+                return {
+                    'ID': p.id,
+                    '产品名称': p.product_name,
+                    'SKU': p.sku || '',
+                    '分类': p.category,
+                    '库存': p.quantity || 0,
+                    '最低库存': p.min_quantity || 5,
+                    '单价': product ? product.price || 0 : 0,
+                    '库存价值': (product ? product.price || 0 : 0) * (p.quantity || 0),
+                    '库位': p.location || '',
+                    '最后盘点': p.last_count ? new Date(p.last_count).toLocaleString() : ''
+                };
+            });
+
+            const headers = Object.keys(exportData[0]);
+            let csv = headers.join(',') + '\n';
+            exportData.forEach(row => {
+                csv += headers.map(h => row[h] || '').join(',') + '\n';
+            });
+
+            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = '库存数据_' + new Date().toISOString().split('T')[0] + '.csv';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast('导出成功', 'success');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(initInventory, 100);
+        });
+    </script>
+</body>
+</html>

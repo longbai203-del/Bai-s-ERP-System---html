@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI助手 - Enterprise ERP</title>
+</head>
+<body>
+    <div class="page ai-page">
+        <!-- ============================================================
+        AI助手
+        ============================================================ -->
+        <div class="ai-header">
+            <div>
+                <h1>🤖 AI智能助手</h1>
+                <p class="subtitle">智能问答、数据分析和业务建议</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-outline" onclick="clearAIChat()">🗑️ 清空对话</button>
+            </div>
+        </div>
+
+        <!-- 统计卡片 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">💬</div>
+                <div class="stat-info">
+                    <div class="stat-label">对话次数</div>
+                    <div class="stat-value" id="chatCount">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📊</div>
+                <div class="stat-info">
+                    <div class="stat-label">分析报告</div>
+                    <div class="stat-value" id="reportCount">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💡</div>
+                <div class="stat-info">
+                    <div class="stat-label">智能建议</div>
+                    <div class="stat-value" id="suggestionCount">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⭐</div>
+                <div class="stat-info">
+                    <div class="stat-label">满意度</div>
+                    <div class="stat-value" id="satisfactionScore">96%</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 快捷问题 -->
+        <div class="quick-questions">
+            <span class="quick-label">💡 快速提问：</span>
+            <button class="quick-btn" onclick="askAI('今日销售情况如何？')">📊 今日销售</button>
+            <button class="quick-btn" onclick="askAI('库存预警信息有哪些？')">⚠️ 库存预警</button>
+            <button class="quick-btn" onclick="askAI('最近订单趋势分析')">📈 订单趋势</button>
+            <button class="quick-btn" onclick="askAI('客户满意度如何？')">⭐ 客户满意度</button>
+            <button class="quick-btn" onclick="askAI('给出业务优化建议')">💡 优化建议</button>
+        </div>
+
+        <!-- 对话区域 -->
+        <div class="chat-container">
+            <div class="chat-messages" id="chatMessages">
+                <div class="message ai">
+                    <div class="message-avatar">🤖</div>
+                    <div class="message-content">
+                        <div class="message-text">你好！我是 Enterprise ERP 智能助手，可以帮助你分析业务数据、提供建议和解答问题。请问有什么可以帮助你的？</div>
+                        <div class="message-time">刚刚</div>
+                    </div>
+                </div>
+            </div>
+            <div class="chat-input">
+                <input type="text" id="aiInput" placeholder="输入你的问题..." onkeydown="if(event.key==='Enter')sendAIMessage()">
+                <button class="btn btn-primary" onclick="sendAIMessage()">发送</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .ai-page {
+            padding: 0;
+        }
+
+        .ai-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .ai-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary, #0f172a);
+            margin: 0;
+        }
+
+        .ai-header .subtitle {
+            color: var(--text-secondary, #475569);
+            margin: 4px 0 0;
+            font-size: 14px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .stat-card {
+            background: var(--bg-card, #ffffff);
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: var(--radius, 12px);
+            padding: 12px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .stat-card .stat-icon {
+            font-size: 24px;
+            flex-shrink: 0;
+            width: 36px;
+            height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-input, #f1f5f9);
+            border-radius: var(--radius, 8px);
+        }
+
+        .stat-card .stat-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .stat-card .stat-label {
+            font-size: 11px;
+            color: var(--text-muted, #94a3b8);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card .stat-value {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary, #0f172a);
+            line-height: 1.2;
+        }
+
+        .quick-questions {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+            padding: 10px 16px;
+            background: var(--bg-card, #ffffff);
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: var(--radius, 12px);
+            margin-bottom: 16px;
+        }
+
+        .quick-label {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-secondary, #475569);
+        }
+
+        .quick-btn {
+            padding: 4px 14px;
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: 20px;
+            background: transparent;
+            cursor: pointer;
+            font-size: 12px;
+            color: var(--text-secondary, #475569);
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .quick-btn:hover {
+            border-color: #4f46e5;
+            color: #4f46e5;
+            background: rgba(79, 70, 229, 0.05);
+        }
+
+        .chat-container {
+            background: var(--bg-card, #ffffff);
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: var(--radius, 12px);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            height: 420px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 16px 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .message {
+            display: flex;
+            gap: 12px;
+            max-width: 80%;
+        }
+
+        .message.user {
+            align-self: flex-end;
+            flex-direction: row-reverse;
+        }
+
+        .message .message-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            flex-shrink: 0;
+            background: var(--bg-input, #f1f5f9);
+        }
+
+        .message.user .message-avatar {
+            background: #4f46e5;
+        }
+
+        .message .message-content {
+            background: var(--bg-input, #f1f5f9);
+            padding: 10px 16px;
+            border-radius: 12px;
+            border-top-left-radius: 4px;
+            min-width: 60px;
+        }
+
+        .message.user .message-content {
+            background: #4f46e5;
+            color: #fff;
+            border-top-left-radius: 12px;
+            border-top-right-radius: 4px;
+        }
+
+        .message .message-text {
+            font-size: 14px;
+            line-height: 1.6;
+            word-wrap: break-word;
+        }
+
+        .message .message-text strong {
+            font-weight: 600;
+        }
+
+        .message .message-time {
+            font-size: 11px;
+            color: var(--text-muted, #94a3b8);
+            margin-top: 4px;
+        }
+
+        .message.user .message-time {
+            color: rgba(255, 255, 255, 0.6);
+        }
+
+        .message .message-text ul {
+            margin: 4px 0 4px 16px;
+        }
+
+        .chat-input {
+            display: flex;
+            gap: 12px;
+            padding: 12px 16px;
+            border-top: 1px solid var(--border-color, #e2e8f0);
+            flex-shrink: 0;
+        }
+
+        .chat-input input {
+            flex: 1;
+            padding: 10px 16px;
+            border: 2px solid var(--border-color, #e2e8f0);
+            border-radius: var(--radius, 8px);
+            background: var(--bg-input, #f1f5f9);
+            color: var(--text-primary, #0f172a);
+            font-size: 14px;
+            outline: none;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .chat-input input:focus {
+            border-color: #4f46e5;
+            background: var(--bg-card, #ffffff);
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.08);
+        }
+
+        .chat-input input::placeholder {
+            color: var(--text-muted, #94a3b8);
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+            padding: 4px 0;
+        }
+
+        .typing-indicator span {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background: var(--text-muted, #94a3b8);
+            animation: typing 1.4s infinite both;
+        }
+
+        .typing-indicator span:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-indicator span:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%,
+            80%,
+            100% {
+                transform: scale(0.6);
+                opacity: 0.4;
+            }
+            40% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .ai-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .quick-questions {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .quick-questions .quick-label {
+                margin-bottom: 4px;
+            }
+            .message {
+                max-width: 95%;
+            }
+            .chat-container {
+                height: 350px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    <script>
+        let chatHistory = [];
+        let messageCount = 0;
+
+        function getStorage(key) {
+            try { return JSON.parse(localStorage.getItem('erp_' + key)); } catch { return null; }
+        }
+
+        function setStorage(key, data) {
+            try { localStorage.setItem('erp_' + key, JSON.stringify(data)); return true; } catch { return false; }
+        }
+
+        function showToast(message, type) {
+            type = type || 'info';
+            if (typeof window.showToast === 'function') {
+                window.showToast(message, type);
+                return;
+            }
+            const container = document.getElementById('toastContainer') || (function() {
+                const c = document.createElement('div');
+                c.id = 'toastContainer';
+                c.style.cssText =
+                    'position:fixed;top:20px;right:20px;z-index:10000;display:flex;flex-direction:column;gap:8px;max-width:400px;';
+                document.body.appendChild(c);
+                return c;
+            })();
+            const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+            const toast = document.createElement('div');
+            toast.style.cssText =
+                'padding:12px 20px;border-radius:12px;background:#fff;box-shadow:0 8px 32px rgba(0,0,0,0.15);border-left:4px solid #4f46e5;display:flex;align-items:center;gap:12px;animation:slideIn 0.3s ease;';
+            toast.innerHTML =
+                `<span>${icons[type] || 'ℹ️'}</span><span>${message}</span><button onclick="this.parentElement.remove()" style="background:none;border:none;font-size:18px;cursor:pointer;color:#94a3b8;margin-left:auto;">✕</button>`;
+            container.appendChild(toast);
+            setTimeout(function() {
+                if (toast.parentElement) {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateX(100%)';
+                    setTimeout(function() { toast.remove(); }, 300);
+                }
+            }, 3000);
+        }
+
+        function initAI() {
+            console.log('🤖 AI助手初始化...');
+            loadAIChat();
+            updateAIStats();
+            console.log('✅ AI助手初始化完成');
+        }
+
+        function loadAIChat() {
+            const saved = getStorage('ai_chat');
+            if (saved && Array.isArray(saved)) {
+                chatHistory = saved;
+                // 渲染已有对话
+                const container = document.getElementById('chatMessages');
+                // 清空初始欢迎消息
+                container.innerHTML = '';
+                chatHistory.forEach(msg => {
+                    appendMessage(msg.role, msg.content, false);
+                });
+                // 如果没有消息，显示欢迎
+                if (chatHistory.length === 0) {
+                    addWelcomeMessage();
+                }
+                messageCount = chatHistory.filter(m => m.role === 'user').length;
+            } else {
+                addWelcomeMessage();
+            }
+        }
+
+        function addWelcomeMessage() {
+            const container = document.getElementById('chatMessages');
+            container.innerHTML = '';
+            const msg = {
+                role: 'ai',
+                content: '你好！我是 Enterprise ERP 智能助手，可以帮助你分析业务数据、提供建议和解答问题。请问有什么可以帮助你的？'
+            };
+            chatHistory.push(msg);
+            appendMessage('ai', msg.content, false);
+        }
+
+        function appendMessage(role, content, save = true) {
+            const container = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${role}`;
+
+            const avatar = role === 'ai' ? '🤖' : '👤';
+
+            const now = new Date();
+            const timeStr = now.getHours().toString().padStart(2, '0') + ':' + now.getMinutes().toString().padStart(2, '0');
+
+            messageDiv.innerHTML = `
+                <div class="message-avatar">${avatar}</div>
+                <div class="message-content">
+                    <div class="message-text">${content}</div>
+                    <div class="message-time">${timeStr}</div>
+                </div>
+            `;
+
+            container.appendChild(messageDiv);
+            container.scrollTop = container.scrollHeight;
+
+            if (save && role === 'user') {
+                chatHistory.push({ role: 'user', content: content });
+                setStorage('ai_chat', chatHistory);
+                messageCount++;
+                updateAIStats();
+            }
+        }
+
+        function sendAIMessage() {
+            const input = document.getElementById('aiInput');
+            const text = input.value.trim();
+
+            if (!text) return;
+
+            // 添加用户消息
+            appendMessage('user', text, true);
+            input.value = '';
+
+            // 显示AI正在输入
+            showTypingIndicator();
+
+            // 模拟AI响应
+            setTimeout(() => {
+                removeTypingIndicator();
+                const response = generateAIResponse(text);
+                appendMessage('ai', response, true);
+            }, 800 + Math.random() * 1000);
+        }
+
+        function askAI(question) {
+            document.getElementById('aiInput').value = question;
+            sendAIMessage();
+        }
+
+        function showTypingIndicator() {
+            const container = document.getElementById('chatMessages');
+            const indicator = document.createElement('div');
+            indicator.className = 'message ai';
+            indicator.id = 'typingIndicator';
+            indicator.innerHTML = `
+                <div class="message-avatar">🤖</div>
+                <div class="message-content">
+                    <div class="typing-indicator">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                </div>
+            `;
+            container.appendChild(indicator);
+            container.scrollTop = container.scrollHeight;
+        }
+
+        function removeTypingIndicator() {
+            const indicator = document.getElementById('typingIndicator');
+            if (indicator) {
+                indicator.remove();
+            }
+        }
+
+        function generateAIResponse(question) {
+            const q = question.toLowerCase();
+
+            // 获取实时数据
+            const orders = getStorage('orders') || [];
+            const products = getStorage('products') || [];
+            const customers = getStorage('customers') || [];
+            const finance = getStorage('finance') || [];
+
+            const today = new Date().toDateString();
+            const todayOrders = orders.filter(o => new Date(o.created_at).toDateString() === today);
+            const todayRevenue = todayOrders.reduce((sum, o) => sum + (o.total || 0), 0);
+            const lowStock = products.filter(p => (p.stock || 0) <= (p.min_stock || 5));
+
+            // 关键词匹配
+            if (q.includes('今日销售') || q.includes('今天销售') || q.includes('销售情况')) {
+                return `
+                    <strong>📊 今日销售概况</strong><br><br>
+                    今日订单：<strong>${todayOrders.length}</strong> 笔<br>
+                    今日收入：<strong>¥${todayRevenue.toFixed(2)}</strong><br>
+                    订单数较昨日：${todayOrders.length > 5 ? '↑ 增长' : '↓ 下降'}<br><br>
+                    <small>💡 建议：${todayOrders.length > 3 ? '销售表现良好，继续保持！' : '建议加大推广力度，提升销售量。'}</small>
+                `;
+            }
+
+            if (q.includes('库存') || q.includes('预警') || q.includes('缺货')) {
+                if (lowStock.length === 0) {
+                    return `
+                        <strong>✅ 库存状态良好</strong><br><br>
+                        目前没有低库存预警项目。<br>
+                        总产品数：<strong>${products.length}</strong> 个<br>
+                        库存充足，无需补货。<br><br>
+                        <small>💡 建议：定期盘点库存，确保数据准确。</small>
+                    `;
+                }
+                return `
+                    <strong>⚠️ 库存预警信息</strong><br><br>
+                    共有 <strong>${lowStock.length}</strong> 个产品库存低于最低阈值：<br><br>
+                    ${lowStock.slice(0, 5).map(p => `• ${p.name}：当前 ${p.stock} 件 (最低 ${p.min_stock || 5} 件)`).join('<br>')}
+                    ${lowStock.length > 5 ? `<br>... 还有 ${lowStock.length - 5} 个产品` : ''}<br><br>
+                    <small>💡 建议：尽快补货，避免断货影响销售。</small>
+                `;
+            }
+
+            if (q.includes('订单') || q.includes('趋势') || q.includes('分析')) {
+                const totalOrders = orders.length;
+                const pending = orders.filter(o => o.status === 'pending' || o.status === 'processing').length;
+                const completed = orders.filter(o => o.status === 'completed').length;
+                const totalRevenue = orders.reduce((sum, o) => sum + (o.total || 0), 0);
+
+                return `
+                    <strong>📈 订单趋势分析</strong><br><br>
+                    总订单数：<strong>${totalOrders}</strong> 笔<br>
+                    待处理：<strong>${pending}</strong> 笔<br>
+                    已完成：<strong>${completed}</strong> 笔<br>
+                    总营业额：<strong>¥${totalRevenue.toFixed(2)}</strong><br>
+                    完成率：${totalOrders > 0 ? Math.round(completed / totalOrders * 100) : 0}%<br><br>
+                    <small>💡 建议：${pending > 5 ? '有较多订单待处理，请及时跟进。' : '订单处理效率良好。'}</small>
+                `;
+            }
+
+            if (q.includes('客户') || q.includes('满意度')) {
+                const totalCustomers = customers.length;
+                const recentCustomers = customers.filter(c => {
+                    const d = new Date(c.created_at);
+                    const monthAgo = new Date();
+                    monthAgo.setMonth(monthAgo.getMonth() - 1);
+                    return d >= monthAgo;
+                });
+
+                return `
+                    <strong>⭐ 客户数据分析</strong><br><br>
+                    总客户数：<strong>${totalCustomers}</strong> 人<br>
+                    本月新增：<strong>${recentCustomers.length}</strong> 人<br>
+                    客户活跃度：${totalCustomers > 0 ? '良好' : '需要拓展'}<br>
+                    客户满意度评分：<strong>92%</strong><br><br>
+                    <small>💡 建议：${recentCustomers.length > 3 ? '客户增长稳定，继续保持服务质量。' : '建议加大客户拓展力度。'}</small>
+                `;
+            }
+
+            if (q.includes('优化') || q.includes('建议') || q.includes('改进')) {
+                return `
+                    <strong>💡 业务优化建议</strong><br><br>
+                    基于当前数据分析，建议：<br><br>
+                    1. 📊 <strong>销售策略</strong>：${todayOrders.length > 3 ? '当前销售表现良好，建议继续维持现有策略。' : '建议推出促销活动，提升销售额。'}<br>
+                    2. 📦 <strong>库存管理</strong>：${lowStock.length > 0 ? `建议立即补货 ${lowStock.length} 个低库存产品。` : '库存管理良好，继续保持。'}<br>
+                    3. 👥 <strong>客户维护</strong>：建议定期回访重要客户，提升客户粘性。<br>
+                    4. 📈 <strong>数据分析</strong>：建议每周进行数据复盘，及时调整策略。<br><br>
+                    <small>💡 如需详细分析，请告诉我具体模块。</small>
+                `;
+            }
+
+            // 默认响应 - 智能提示
+            return `
+                <strong>🤖 收到你的问题</strong><br><br>
+                我理解你想了解：<strong>"${question}"</strong><br><br>
+                我可以帮你分析以下方面的数据：<br>
+                • 📊 今日销售情况<br>
+                • ⚠️ 库存预警信息<br>
+                • 📈 订单趋势分析<br>
+                • ⭐ 客户满意度<br>
+                • 💡 业务优化建议<br><br>
+                <small>💡 试试点击上方 "快速提问" 按钮，或输入更具体的问题。</small>
+            `;
+        }
+
+        function clearAIChat() {
+            if (chatHistory.length === 0) return;
+            if (!confirm('确定要清空所有对话记录吗？')) return;
+
+            chatHistory = [];
+            setStorage('ai_chat', chatHistory);
+            messageCount = 0;
+            document.getElementById('chatMessages').innerHTML = '';
+            addWelcomeMessage();
+            updateAIStats();
+            showToast('对话已清空', 'info');
+        }
+
+        function updateAIStats() {
+            document.getElementById('chatCount').textContent = messageCount;
+            const reports = getStorage('ai_reports') || [];
+            document.getElementById('reportCount').textContent = reports.length || 0;
+            const suggestions = getStorage('ai_suggestions') || [];
+            document.getElementById('suggestionCount').textContent = suggestions.length || 0;
+
+            // 从设置获取满意度
+            const settings = getStorage('settings') || {};
+            const satisfaction = settings.ai_satisfaction || 96;
+            document.getElementById('satisfactionScore').textContent = satisfaction + '%';
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(initAI, 100);
+        });
+    </script>
+</body>
+</html>

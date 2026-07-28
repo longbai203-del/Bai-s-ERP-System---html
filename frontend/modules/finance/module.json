@@ -1,0 +1,23 @@
+﻿{
+    "permissions":  {
+                        "export":  "finance.export",
+                        "create":  "finance.create",
+                        "view":  "finance.view",
+                        "edit":  "finance.edit"
+                    },
+    "id":  "finance",
+    "enabled":  true,
+    "version":  "3.0.0",
+    "description":  "收入支出、账户管理、财务报表",
+    "icon":  "💰",
+    "name":  "财务管理",
+    "author":  "Enterprise ERP Team",
+    "routes":  [
+                   {
+                       "path":  "/modules/finance/finance.html",
+                       "default":  true,
+                       "name":  "财务总览",
+                       "icon":  "💰"
+                   }
+               ]
+}

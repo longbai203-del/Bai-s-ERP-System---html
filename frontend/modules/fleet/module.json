@@ -1,0 +1,22 @@
+﻿{
+    "permissions":  {
+                        "export":  "fleet.export",
+                        "create":  "fleet.create",
+                        "view":  "fleet.view"
+                    },
+    "id":  "fleet",
+    "enabled":  true,
+    "version":  "3.0.0",
+    "description":  "系统监控车辆进出、员工录入对比、逃单预警",
+    "icon":  "🚗",
+    "name":  "车辆监控",
+    "author":  "Enterprise ERP Team",
+    "routes":  [
+                   {
+                       "path":  "/modules/fleet/fleet.html",
+                       "default":  true,
+                       "name":  "车辆监控",
+                       "icon":  "🚗"
+                   }
+               ]
+}

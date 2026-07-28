@@ -1,0 +1,21 @@
+﻿{
+    "permissions":  {
+                        "export":  "analytics.export",
+                        "view":  "analytics.view"
+                    },
+    "id":  "analytics",
+    "enabled":  true,
+    "version":  "3.0.0",
+    "description":  "销售分析、报表中心、数据可视化",
+    "icon":  "📈",
+    "name":  "数据分析",
+    "author":  "Enterprise ERP Team",
+    "routes":  [
+                   {
+                       "path":  "/modules/analytics/analytics.html",
+                       "default":  true,
+                       "name":  "分析总览",
+                       "icon":  "📈"
+                   }
+               ]
+}

@@ -1,0 +1,24 @@
+﻿{
+    "permissions":  {
+                        "export":  "marketing.export",
+                        "delete":  "marketing.delete",
+                        "create":  "marketing.create",
+                        "view":  "marketing.view",
+                        "edit":  "marketing.edit"
+                    },
+    "id":  "marketing",
+    "enabled":  true,
+    "version":  "3.0.0",
+    "description":  "营销活动管理、促销策略、客户忠诚度计划、推荐活动",
+    "icon":  "📢",
+    "name":  "营销管理",
+    "author":  "Enterprise ERP Team",
+    "routes":  [
+                   {
+                       "path":  "/modules/marketing/marketing.html",
+                       "default":  true,
+                       "name":  "营销活动",
+                       "icon":  "📢"
+                   }
+               ]
+}

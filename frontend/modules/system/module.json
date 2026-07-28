@@ -1,0 +1,22 @@
+﻿{
+    "permissions":  {
+                        "export":  "system.export",
+                        "view":  "system.view",
+                        "manage":  "system.manage"
+                    },
+    "id":  "system",
+    "enabled":  true,
+    "version":  "3.0.0",
+    "description":  "系统运维、审计日志、备份管理、权限管理、Webhook配置",
+    "icon":  "🔧",
+    "name":  "系统管理",
+    "author":  "Enterprise ERP Team",
+    "routes":  [
+                   {
+                       "path":  "/modules/system/system.html",
+                       "default":  true,
+                       "name":  "系统管理",
+                       "icon":  "🔧"
+                   }
+               ]
+}
