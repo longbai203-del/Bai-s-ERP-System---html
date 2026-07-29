@@ -284,99 +284,64 @@
     
     
     
-    <script>
-        // 初始化默认用户
-        (function initDefaultUser() {
-            const users = Storage.get('users');
-            if (!users || users.length === 0) {
+        <script>
+        if (typeof Storage === 'undefined') {
+            const Storage = {
+                get: function(key, defaultValue) {
+                    try { const data = localStorage.getItem('erp_' + key); return data ? JSON.parse(data) : defaultValue; } 
+                    catch { return defaultValue; }
+                },
+                set: function(key, value) {
+                    try { localStorage.setItem('erp_' + key, JSON.stringify(value)); return true; } 
+                    catch { return false; }
+                },
+                remove: function(key) { localStorage.removeItem('erp_' + key); }
+            };
+        }
+
+        (function initDB() {
+            if (!Storage.get('users') || Storage.get('users').length === 0) {
                 Storage.set('users', [
-                    {
-                        id: 1,
-                        username: 'admin',
-                        password: '123456',
-                        name: '系统管理员',
-                        role: 'admin',
-                        email: 'admin@enterprise-erp.com',
-                        avatar: '',
-                        created_at: new Date().toISOString(),
-                        last_login: null
-                    },
-                    {
-                        id: 2,
-                        username: 'manager',
-                        password: '123456',
-                        name: '张经理',
-                        role: 'manager',
-                        email: 'manager@enterprise-erp.com',
-                        avatar: '',
-                        created_at: new Date().toISOString(),
-                        last_login: null
-                    },
-                    {
-                        id: 3,
-                        username: 'cashier',
-                        password: '123456',
-                        name: '李收银员',
-                        role: 'cashier',
-                        email: 'cashier@enterprise-erp.com',
-                        avatar: '',
-                        created_at: new Date().toISOString(),
-                        last_login: null
-                    }
+                    { id: 1, username: 'admin', password: '123456', name: '系统管理员', role: 'admin' },
+                    { id: 2, username: 'manager', password: '123456', name: '张经理', role: 'manager' },
+                    { id: 3, username: 'cashier', password: '123456', name: '李收银员', role: 'cashier' }
                 ]);
             }
         })();
-        
+
         function handleLogin(e) {
             e.preventDefault();
-            
             const username = document.getElementById('username').value.trim();
             const password = document.getElementById('password').value.trim();
             const errorEl = document.getElementById('loginError');
-            
+
             if (!username || !password) {
                 errorEl.textContent = '请输入用户名和密码';
                 errorEl.classList.add('show');
                 return;
             }
-            
+
             const users = Storage.get('users') || [];
             const user = users.find(u => u.username === username && u.password === password);
-            
+
             if (user) {
-                // 更新最后登录时间
-                user.last_login = new Date().toISOString();
-                const updatedUsers = users.map(u => u.id === user.id ? user : u);
-                Storage.set('users', updatedUsers);
-                
-                // 保存登录状态
-                Auth.login(user);
-                
-                // 跳转到主系统
-                window.location.href = '/index.html';
+                Storage.set('user', user);
+                window.location.href = './index.html';
             } else {
                 errorEl.textContent = '用户名或密码错误，请重试';
                 errorEl.classList.add('show');
-                setTimeout(() => {
-                    errorEl.classList.remove('show');
-                }, 3000);
+                setTimeout(() => { errorEl.classList.remove('show'); }, 3000);
             }
         }
-        
-        // 回车登录
+
+        document.getElementById('loginForm').addEventListener('submit', handleLogin);
         document.getElementById('password').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                document.getElementById('loginForm').dispatchEvent(new Event('submit'));
-            }
-        });
-        document.getElementById('username').addEventListener('keydown', function(e) {
-            if (e.key === 'Enter') {
-                document.getElementById('password').focus();
-            }
+            if (e.key === 'Enter') { handleLogin(e); }
         });
     </script>
 </body>
 </html>
+
 
 
 
