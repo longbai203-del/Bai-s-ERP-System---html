@@ -1,0 +1,773 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>产品管理 - Enterprise ERP</title>
+</head>
+<body>
+    <div class="page products-page">
+        <!-- ============================================================
+        产品管理
+        ============================================================ -->
+        <div class="products-header">
+            <div>
+                <h1>📦 产品管理</h1>
+                <p class="subtitle">管理所有产品信息，库存和价格</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-primary" onclick="showCreateProductModal()">＋ 添加产品</button>
+                <button class="btn btn-outline" onclick="exportProducts()">📥 导出</button>
+            </div>
+        </div>
+
+        <!-- 统计卡片 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">📦</div>
+                <div class="stat-info">
+                    <div class="stat-label">总产品</div>
+                    <div class="stat-value" id="totalProducts">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⚠️</div>
+                <div class="stat-info">
+                    <div class="stat-label">低库存</div>
+                    <div class="stat-value" id="lowStockCount">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">🏷️</div>
+                <div class="stat-info">
+                    <div class="stat-label">分类数</div>
+                    <div class="stat-value" id="categoryCount">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💰</div>
+                <div class="stat-info">
+                    <div class="stat-label">库存总值</div>
+                    <div class="stat-value" id="totalStockValue">¥0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 工具栏 -->
+        <div class="toolbar">
+            <div class="left">
+                <div class="search-box">
+                    <span class="icon">🔍</span>
+                    <input type="text" id="productSearch" placeholder="搜索产品名称、SKU..." oninput="filterProducts()">
+                </div>
+                <select id="categoryFilter" onchange="filterProducts()" class="form-control">
+                    <option value="all">全部分类</option>
+                </select>
+            </div>
+            <div class="right">
+                <span id="resultCount" style="color:var(--text-muted);font-size:13px;">共 0 条</span>
+            </div>
+        </div>
+
+        <!-- 产品列表 -->
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>名称</th>
+                        <th>SKU</th>
+                        <th>分类</th>
+                        <th>价格</th>
+                        <th>库存</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="productsBody">
+                    <tr>
+                        <td colspan="8" class="empty-state">暂无产品</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 分页 -->
+        <div class="pagination" id="productPagination">
+            <div class="info">显示 <span id="pageStart">0</span>-<span id="pageEnd">0</span> 条，共 <span id="pageTotal">0</span> 条</div>
+            <div class="buttons" id="pageButtons"></div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    产品模态框
+    ============================================================ -->
+    <div class="modal-overlay" id="productModal">
+        <div class="modal-content" style="max-width:500px;">
+            <div class="modal-header">
+                <div class="modal-title" id="productModalTitle">添加产品</div>
+                <button class="modal-close" onclick="closeProductModal()">✕</button>
+            </div>
+            <form id="productForm" onsubmit="saveProduct(event)">
+                <input type="hidden" id="productEditId">
+                <div class="form-group">
+                    <label class="form-label required">产品名称</label>
+                    <input type="text" class="form-control" id="productName" placeholder="请输入产品名称" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">SKU</label>
+                    <input type="text" class="form-control" id="productSku" placeholder="请输入SKU编号">
+                </div>
+                <div class="form-group">
+                    <label class="form-label required">分类</label>
+                    <select class="form-control" id="productCategory" required>
+                        <option value="">请选择分类</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label required">价格</label>
+                    <input type="number" class="form-control" id="productPrice" placeholder="0.00" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label required">库存</label>
+                    <input type="number" class="form-control" id="productStock" placeholder="0" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">最低库存</label>
+                    <input type="number" class="form-control" id="productMinStock" value="5">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeProductModal()">取消</button>
+                    <button type="submit" class="btn btn-primary">保存产品</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <style>
+        .products-page {
+            padding: 0;
+        }
+
+        .products-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .products-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary, #0f172a);
+            margin: 0;
+        }
+
+        .products-header .subtitle {
+            color: var(--text-secondary, #475569);
+            margin: 4px 0 0;
+            font-size: 14px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg-card, #ffffff);
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: var(--radius, 12px);
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .stat-card .stat-icon {
+            font-size: 28px;
+            flex-shrink: 0;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-input, #f1f5f9);
+            border-radius: var(--radius, 8px);
+        }
+
+        .stat-card .stat-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .stat-card .stat-label {
+            font-size: 12px;
+            color: var(--text-muted, #94a3b8);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary, #0f172a);
+            line-height: 1.2;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .toolbar .left {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+            flex: 1;
+        }
+
+        .toolbar .search-box {
+            display: flex;
+            align-items: center;
+            background: var(--bg-input, #f1f5f9);
+            border: 2px solid transparent;
+            border-radius: 10px;
+            padding: 0 14px;
+            transition: all 0.3s;
+            min-width: 200px;
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .toolbar .search-box:focus-within {
+            border-color: #4f46e5;
+            background: var(--bg-card, #ffffff);
+        }
+
+        .toolbar .search-box input {
+            border: none;
+            background: transparent;
+            padding: 8px 0;
+            font-size: 14px;
+            color: var(--text-primary, #0f172a);
+            width: 100%;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .toolbar .search-box .icon {
+            color: var(--text-muted, #94a3b8);
+            margin-right: 10px;
+        }
+
+        .form-control {
+            padding: 8px 14px;
+            border: 2px solid var(--border-color, #e2e8f0);
+            border-radius: var(--radius, 8px);
+            background: var(--bg-input, #f1f5f9);
+            color: var(--text-primary, #0f172a);
+            font-size: 14px;
+            outline: none;
+            min-width: 120px;
+        }
+
+        .form-control:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .table-container {
+            background: var(--bg-card, #ffffff);
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: var(--radius, 12px);
+            overflow: hidden;
+        }
+
+        .table-container .table {
+            margin: 0;
+        }
+
+        .table-container .table .actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .table-container .table .actions button {
+            padding: 4px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.15s;
+        }
+
+        .table-container .table .actions .btn-edit {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+        }
+
+        .table-container .table .actions .btn-edit:hover {
+            background: #3b82f6;
+            color: #fff;
+        }
+
+        .table-container .table .actions .btn-delete {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        .table-container .table .actions .btn-delete:hover {
+            background: #ef4444;
+            color: #fff;
+        }
+
+        .table-container .table .stock-badge {
+            padding: 2px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .table-container .table .stock-badge.normal {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+        }
+
+        .table-container .table .stock-badge.low {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+        }
+
+        .table-container .table .stock-badge.critical {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            border-top: 1px solid var(--border-color, #e2e8f0);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .pagination .info {
+            font-size: 13px;
+            color: var(--text-secondary, #475569);
+        }
+
+        .pagination .buttons {
+            display: flex;
+            gap: 4px;
+        }
+
+        .pagination .buttons button {
+            padding: 6px 12px;
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: 6px;
+            background: transparent;
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--text-secondary, #475569);
+            transition: all 0.15s;
+        }
+
+        .pagination .buttons button:hover:not(:disabled) {
+            background: #4f46e5;
+            color: #fff;
+            border-color: #4f46e5;
+        }
+
+        .pagination .buttons button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination .buttons button.active {
+            background: #4f46e5;
+            color: #fff;
+            border-color: #4f46e5;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted, #94a3b8);
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .products-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .toolbar .left {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .toolbar .search-box {
+                max-width: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    <script>
+        let productsData = [];
+        let filteredProducts = [];
+        let currentPage = 1;
+        const pageSize = 10;
+
+        function getStorage(key) {
+            try { return JSON.parse(localStorage.getItem('erp_' + key)); } catch { return null; }
+        }
+
+        function setStorage(key, data) {
+            try { localStorage.setItem('erp_' + key, JSON.stringify(data)); return true; } catch { return false; }
+        }
+
+        function showToast(message, type) {
+            type = type || 'info';
+            if (typeof window.showToast === 'function') {
+                window.showToast(message, type);
+                return;
+            }
+            const container = document.getElementById('toastContainer') || (function() {
+                const c = document.createElement('div');
+                c.id = 'toastContainer';
+                c.style.cssText =
+                    'position:fixed;top:20px;right:20px;z-index:10000;display:flex;flex-direction:column;gap:8px;max-width:400px;';
+                document.body.appendChild(c);
+                return c;
+            })();
+            const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+            const toast = document.createElement('div');
+            toast.style.cssText =
+                'padding:12px 20px;border-radius:12px;background:#fff;box-shadow:0 8px 32px rgba(0,0,0,0.15);border-left:4px solid #4f46e5;display:flex;align-items:center;gap:12px;animation:slideIn 0.3s ease;';
+            toast.innerHTML =
+                `<span>${icons[type] || 'ℹ️'}</span><span>${message}</span><button onclick="this.parentElement.remove()" style="background:none;border:none;font-size:18px;cursor:pointer;color:#94a3b8;margin-left:auto;">✕</button>`;
+            container.appendChild(toast);
+            setTimeout(function() {
+                if (toast.parentElement) {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateX(100%)';
+                    setTimeout(function() { toast.remove(); }, 300);
+                }
+            }, 3000);
+        }
+
+        function initProducts() {
+            console.log('📦 产品管理初始化...');
+            loadProducts();
+            loadCategories();
+            updateProductStats();
+            renderProducts();
+            console.log('✅ 产品管理初始化完成');
+        }
+
+        function loadProducts() {
+            let data = getStorage('products');
+            if (!data || data.length === 0) {
+                data = generateDemoProducts();
+                setStorage('products', data);
+            }
+            productsData = data;
+            filteredProducts = [...productsData];
+        }
+
+        function generateDemoProducts() {
+            const categories = ['洗车', '保养', '维修', '美容', '配件'];
+            const names = {
+                '洗车': ['标准洗车', '精洗服务', '内饰清洗', '外部清洗', '轮毂清洗'],
+                '保养': ['机油保养', '空调保养', '刹车保养', '轮胎保养', '电瓶保养'],
+                '维修': ['发动机维修', '变速箱维修', '电路维修', '空调维修', '制动维修'],
+                '美容': ['抛光打蜡', '镀晶保护', '内饰美容', '真皮护理', '漆面修复'],
+                '配件': ['机油滤芯', '空气滤芯', '刹车片', '雨刮器', '火花塞']
+            };
+            const products = [];
+            let id = 1;
+            for (const category of categories) {
+                const items = names[category] || [`${category}服务`];
+                for (const name of items) {
+                    products.push({
+                        id: id++,
+                        name: name,
+                        sku: 'SKU-' + String(id).padStart(6, '0'),
+                        category: category,
+                        price: Math.round((Math.random() * 500 + 50) * 100) / 100,
+                        stock: Math.floor(Math.random() * 100 + 5),
+                        min_stock: Math.floor(Math.random() * 10 + 3),
+                        created_at: new Date().toISOString()
+                    });
+                }
+            }
+            return products;
+        }
+
+        function loadCategories() {
+            const categories = [...new Set(productsData.map(p => p.category))];
+            const select = document.getElementById('productCategory');
+            const filter = document.getElementById('categoryFilter');
+            const options = categories.map(c => `<option value="${c}">${c}</option>`).join('');
+            select.innerHTML = '<option value="">请选择分类</option>' + options;
+            filter.innerHTML = '<option value="all">全部分类</option>' + options;
+        }
+
+        function updateProductStats() {
+            const total = productsData.length;
+            const lowStock = productsData.filter(p => (p.stock || 0) <= (p.min_stock || 5)).length;
+            const categories = [...new Set(productsData.map(p => p.category))];
+            const totalValue = productsData.reduce((sum, p) => sum + (p.price || 0) * (p.stock || 0), 0);
+            document.getElementById('totalProducts').textContent = total;
+            document.getElementById('lowStockCount').textContent = lowStock;
+            document.getElementById('categoryCount').textContent = categories.length;
+            document.getElementById('totalStockValue').textContent = '¥' + totalValue.toFixed(2);
+        }
+
+        function filterProducts() {
+            const search = document.getElementById('productSearch').value.toLowerCase();
+            const category = document.getElementById('categoryFilter').value;
+            filteredProducts = productsData.filter(p => {
+                let match = true;
+                if (search) {
+                    match = match && (p.name.toLowerCase().includes(search) ||
+                        (p.sku && p.sku.toLowerCase().includes(search)));
+                }
+                if (category !== 'all') {
+                    match = match && p.category === category;
+                }
+                return match;
+            });
+            currentPage = 1;
+            renderProducts();
+        }
+
+        function renderProducts() {
+            const tbody = document.getElementById('productsBody');
+            const total = filteredProducts.length;
+            const start = (currentPage - 1) * pageSize;
+            const end = Math.min(start + pageSize, total);
+            const pageData = filteredProducts.slice(start, end);
+
+            document.getElementById('resultCount').textContent = `共 ${total} 条`;
+            document.getElementById('pageStart').textContent = total > 0 ? start + 1 : 0;
+            document.getElementById('pageEnd').textContent = end;
+            document.getElementById('pageTotal').textContent = total;
+
+            if (pageData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="empty-state">暂无产品</td></tr>';
+                renderPagination(total);
+                return;
+            }
+
+            tbody.innerHTML = pageData.map(p => {
+                const stock = p.stock || 0;
+                const minStock = p.min_stock || 5;
+                let stockClass = 'normal';
+                let stockLabel = '充足';
+                if (stock <= 0) { stockClass = 'critical';
+                    stockLabel = '缺货'; } else if (stock <= minStock) { stockClass = 'low';
+                    stockLabel = '低库存'; }
+                return `
+                    <tr>
+                        <td>${p.id}</td>
+                        <td><strong>${p.name}</strong></td>
+                        <td>${p.sku || '-'}</td>
+                        <td>${p.category}</td>
+                        <td>¥${(p.price || 0).toFixed(2)}</td>
+                        <td>${stock}</td>
+                        <td><span class="stock-badge ${stockClass}">${stockLabel}</span></td>
+                        <td>
+                            <div class="actions">
+                                <button class="btn-edit" onclick="editProduct(${p.id})">✏️</button>
+                                <button class="btn-delete" onclick="deleteProduct(${p.id})">🗑️</button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }).join('');
+
+            renderPagination(total);
+        }
+
+        function renderPagination(total) {
+            const container = document.getElementById('pageButtons');
+            const totalPages = Math.ceil(total / pageSize);
+            if (totalPages <= 1) { container.innerHTML = ''; return; }
+
+            let html =
+                `<button onclick="goToPage(${currentPage - 1})" ${currentPage <= 1 ? 'disabled' : ''}>‹</button>`;
+            const maxShow = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxShow / 2));
+            let endPage = Math.min(totalPages, startPage + maxShow - 1);
+            if (endPage - startPage < maxShow - 1) {
+                startPage = Math.max(1, endPage - maxShow + 1);
+            }
+            if (startPage > 1) {
+                html += `<button onclick="goToPage(1)">1</button>`;
+                if (startPage > 2) html += `<button disabled>...</button>`;
+            }
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<button class="${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+            }
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) html += `<button disabled>...</button>`;
+                html += `<button onclick="goToPage(${totalPages})">${totalPages}</button>`;
+            }
+            html +=
+                `<button onclick="goToPage(${currentPage + 1})" ${currentPage >= totalPages ? 'disabled' : ''}>›</button>`;
+            container.innerHTML = html;
+        }
+
+        function goToPage(page) {
+            const totalPages = Math.ceil(filteredProducts.length / pageSize);
+            if (page < 1 || page > totalPages) return;
+            currentPage = page;
+            renderProducts();
+        }
+
+        function showCreateProductModal() {
+            document.getElementById('productModalTitle').textContent = '添加产品';
+            document.getElementById('productEditId').value = '';
+            document.getElementById('productForm').reset();
+            document.getElementById('productMinStock').value = '5';
+            document.getElementById('productModal').classList.add('show');
+        }
+
+        function editProduct(id) {
+            const product = productsData.find(p => p.id === id);
+            if (!product) { showToast('产品不存在', 'error'); return; }
+            document.getElementById('productModalTitle').textContent = '编辑产品';
+            document.getElementById('productEditId').value = id;
+            document.getElementById('productName').value = product.name;
+            document.getElementById('productSku').value = product.sku || '';
+            document.getElementById('productCategory').value = product.category;
+            document.getElementById('productPrice').value = product.price || 0;
+            document.getElementById('productStock').value = product.stock || 0;
+            document.getElementById('productMinStock').value = product.min_stock || 5;
+            document.getElementById('productModal').classList.add('show');
+        }
+
+        function closeProductModal() {
+            document.getElementById('productModal').classList.remove('show');
+        }
+
+        function saveProduct(event) {
+            event.preventDefault();
+            const editId = document.getElementById('productEditId').value;
+            const name = document.getElementById('productName').value.trim();
+            const sku = document.getElementById('productSku').value.trim();
+            const category = document.getElementById('productCategory').value;
+            const price = parseFloat(document.getElementById('productPrice').value);
+            const stock = parseInt(document.getElementById('productStock').value);
+            const minStock = parseInt(document.getElementById('productMinStock').value) || 5;
+
+            if (!name) { showToast('请输入产品名称', 'warning'); return; }
+            if (!category) { showToast('请选择分类', 'warning'); return; }
+            if (!price || price <= 0) { showToast('请输入有效价格', 'warning'); return; }
+            if (isNaN(stock) || stock < 0) { showToast('请输入有效库存数量', 'warning'); return; }
+
+            if (editId) {
+                const index = productsData.findIndex(p => p.id === parseInt(editId));
+                if (index === -1) { showToast('产品不存在', 'error'); return; }
+                productsData[index] = { ...productsData[index], name, sku, category, price, stock, min_stock };
+                showToast('产品已更新', 'success');
+            } else {
+                const maxId = productsData.reduce((max, p) => Math.max(max, p.id), 0);
+                productsData.push({
+                    id: maxId + 1,
+                    name,
+                    sku: sku || ('SKU-' + String(maxId + 2).padStart(6, '0')),
+                    category,
+                    price,
+                    stock,
+                    min_stock: minStock,
+                    created_at: new Date().toISOString()
+                });
+                showToast('产品已添加', 'success');
+            }
+
+            setStorage('products', productsData);
+            loadProducts();
+            loadCategories();
+            updateProductStats();
+            filterProducts();
+            closeProductModal();
+        }
+
+        function deleteProduct(id) {
+            if (!confirm(`确定要删除产品 ${id} 吗？`)) return;
+            productsData = productsData.filter(p => p.id !== id);
+            setStorage('products', productsData);
+            loadProducts();
+            loadCategories();
+            updateProductStats();
+            filterProducts();
+            showToast('产品已删除', 'success');
+        }
+
+        function exportProducts() {
+            if (filteredProducts.length === 0) { showToast('没有数据可导出', 'warning'); return; }
+            const exportData = filteredProducts.map(p => ({
+                'ID': p.id,
+                '名称': p.name,
+                'SKU': p.sku || '',
+                '分类': p.category,
+                '价格': p.price || 0,
+                '库存': p.stock || 0,
+                '最低库存': p.min_stock || 5,
+                '创建时间': new Date(p.created_at).toLocaleString()
+            }));
+            const headers = Object.keys(exportData[0]);
+            let csv = headers.join(',') + '\n';
+            exportData.forEach(row => {
+                csv += headers.map(h => row[h] || '').join(',') + '\n';
+            });
+            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = '产品数据_' + new Date().toISOString().split('T')[0] + '.csv';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast('导出成功', 'success');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(initProducts, 100);
+        });
+    </script>
+</body>
+</html>
+

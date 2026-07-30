@@ -1,0 +1,1282 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>销售点 - Enterprise ERP</title>
+</head>
+<body>
+    <div class="page pos-page">
+
+        <!-- ============================================================
+        POS 销售点 - 完整重写
+        ============================================================ -->
+
+        <!-- 顶部标题 -->
+        <div class="pos-header">
+            <div>
+                <h1>🛒 销售点</h1>
+                <p class="subtitle">快速收银 · 购物车管理 · 小票打印</p>
+            </div>
+            <div class="header-actions">
+                <span class="order-count" id="orderCount">今日订单: 0</span>
+                <button class="btn btn-outline btn-sm" onclick="resetPOS()">🔄 重置</button>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        主布局: 产品区 + 购物车
+        ============================================================ -->
+        <div class="pos-layout">
+
+            <!-- ==========================================================
+            左侧: 产品区
+            ========================================================== -->
+            <div class="pos-products">
+
+                <!-- 工具栏 -->
+                <div class="pos-toolbar">
+                    <div class="search-box">
+                        <span class="search-icon">🔍</span>
+                        <input type="text" id="posSearch" placeholder="搜索产品名称或SKU..." oninput="filterProducts()">
+                    </div>
+                    <div class="category-tabs" id="categoryTabs">
+                        <button class="cat-btn active" data-cat="all" onclick="filterByCategory('all')">全部</button>
+                        <!-- 动态生成分类按钮 -->
+                    </div>
+                </div>
+
+                <!-- 产品网格 -->
+                <div class="product-grid" id="productGrid">
+                    <!-- 动态生成产品卡片 -->
+                </div>
+
+            </div>
+
+            <!-- ==========================================================
+            右侧: 购物车
+            ========================================================== -->
+            <div class="pos-cart">
+
+                <!-- 购物车头部 -->
+                <div class="cart-header">
+                    <span class="cart-title">🛒 购物车</span>
+                    <span class="cart-count" id="cartCount">0 件</span>
+                </div>
+
+                <!-- 购物车列表 -->
+                <div class="cart-list" id="cartList">
+                    <div class="cart-empty">
+                        <span class="empty-icon">🛒</span>
+                        <p>购物车为空</p>
+                        <small>点击左侧产品添加</small>
+                    </div>
+                </div>
+
+                <!-- 购物车底部 -->
+                <div class="cart-footer">
+                    <div class="cart-summary">
+                        <div class="summary-row">
+                            <span>小计</span>
+                            <span id="cartSubtotal">¥0.00</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>税费 (10%)</span>
+                            <span id="cartTax">¥0.00</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>总计</span>
+                            <span id="cartTotal">¥0.00</span>
+                        </div>
+                    </div>
+
+                    <div class="cart-actions">
+                        <button class="btn btn-outline btn-block" onclick="clearCart()">
+                            🗑️ 清空
+                        </button>
+                        <button class="btn btn-primary btn-block" id="checkoutBtn" onclick="checkout()" disabled>
+                            💳 结账
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </div>
+
+        <!-- ============================================================
+        支付模态框
+        ============================================================ -->
+        <div class="modal-overlay" id="paymentModal">
+            <div class="modal-content" style="max-width:420px;">
+                <div class="modal-header">
+                    <div class="modal-title">💳 支付确认</div>
+                    <button class="modal-close" onclick="closePaymentModal()">✕</button>
+                </div>
+                <div style="text-align:center;padding:16px 0;">
+                    <div style="font-size:32px;font-weight:700;color:var(--text-primary);" id="paymentTotal">¥0.00</div>
+                    <p style="color:var(--text-secondary);font-size:13px;">请选择支付方式</p>
+                </div>
+                <div class="payment-grid">
+                    <button class="payment-btn" onclick="completePayment('cash')">💵 现金</button>
+                    <button class="payment-btn" onclick="completePayment('card')">💳 银行卡</button>
+                    <button class="payment-btn" onclick="completePayment('wechat')">💚 微信</button>
+                    <button class="payment-btn" onclick="completePayment('alipay')">💙 支付宝</button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <style>
+        /* ============================================================
+           POS 模块样式 - 完整重写
+           ============================================================ */
+
+        /* -------- 页面布局 -------- */
+        .pos-page {
+            padding: 0;
+        }
+
+        .pos-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .pos-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary, #0f172a);
+            margin: 0;
+        }
+
+        .pos-header .subtitle {
+            color: var(--text-secondary, #475569);
+            margin: 2px 0 0;
+            font-size: 14px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .order-count {
+            font-size: 13px;
+            color: var(--text-secondary, #475569);
+            background: var(--bg-input, #f1f5f9);
+            padding: 4px 14px;
+            border-radius: 16px;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px 18px;
+            border: none;
+            border-radius: var(--radius, 8px);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-height: 36px;
+            font-family: inherit;
+        }
+
+        .btn-primary {
+            background: #4f46e5;
+            color: #fff;
+        }
+        .btn-primary:hover:not(:disabled) {
+            background: #4338ca;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+        .btn-primary:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--border-color, #e2e8f0);
+            color: var(--text-secondary, #475569);
+        }
+        .btn-outline:hover {
+            border-color: #4f46e5;
+            color: #4f46e5;
+        }
+
+        .btn-sm {
+            padding: 4px 12px;
+            font-size: 12px;
+            min-height: 28px;
+        }
+
+        .btn-block {
+            width: 100%;
+            justify-content: center;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: #fff;
+        }
+        .btn-danger:hover {
+            opacity: 0.9;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: #fff;
+        }
+        .btn-success:hover {
+            opacity: 0.9;
+        }
+
+        /* -------- 主布局 -------- */
+        .pos-layout {
+            display: grid;
+            grid-template-columns: 1fr 360px;
+            gap: 20px;
+            height: calc(100vh - 200px);
+            min-height: 460px;
+        }
+
+        /* -------- 左侧: 产品区 -------- */
+        .pos-products {
+            display: flex;
+            flex-direction: column;
+            gap: 14px;
+            overflow: hidden;
+        }
+
+        .pos-toolbar {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+            flex-shrink: 0;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 180px;
+            display: flex;
+            align-items: center;
+            background: var(--bg-input, #f1f5f9);
+            border: 2px solid transparent;
+            border-radius: 10px;
+            padding: 0 14px;
+            transition: all 0.3s;
+        }
+        .search-box:focus-within {
+            border-color: #4f46e5;
+            background: var(--bg-card, #ffffff);
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.08);
+        }
+        .search-box .search-icon {
+            color: var(--text-muted, #94a3b8);
+            margin-right: 10px;
+            font-size: 14px;
+        }
+        .search-box input {
+            border: none;
+            background: transparent;
+            padding: 10px 0;
+            font-size: 14px;
+            color: var(--text-primary, #0f172a);
+            width: 100%;
+            outline: none;
+            font-family: inherit;
+        }
+        .search-box input::placeholder {
+            color: var(--text-muted, #94a3b8);
+        }
+
+        .category-tabs {
+            display: flex;
+            gap: 6px;
+            flex-wrap: wrap;
+            flex-shrink: 0;
+        }
+
+        .cat-btn {
+            padding: 6px 16px;
+            border: 2px solid var(--border-color, #e2e8f0);
+            border-radius: 20px;
+            background: transparent;
+            color: var(--text-secondary, #475569);
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 500;
+            transition: all 0.2s;
+            white-space: nowrap;
+            font-family: inherit;
+        }
+        .cat-btn:hover {
+            border-color: #4f46e5;
+            color: #4f46e5;
+        }
+        .cat-btn.active {
+            background: #4f46e5;
+            border-color: #4f46e5;
+            color: #fff;
+        }
+
+        /* -------- 产品网格 -------- */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+            gap: 12px;
+            overflow-y: auto;
+            padding: 4px 2px 8px;
+            flex: 1;
+            align-content: start;
+        }
+
+        .product-grid::-webkit-scrollbar {
+            width: 4px;
+        }
+        .product-grid::-webkit-scrollbar-thumb {
+            background: var(--border-color, #e2e8f0);
+            border-radius: 2px;
+        }
+        .product-grid::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .product-card {
+            background: var(--bg-card, #ffffff);
+            border: 2px solid var(--border-color, #e2e8f0);
+            border-radius: 12px;
+            padding: 14px 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            position: relative;
+            min-height: 110px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+        .product-card:hover:not(.disabled) {
+            border-color: #4f46e5;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+        .product-card.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+        .product-card.disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
+
+        .product-card .p-icon {
+            font-size: 28px;
+            margin-bottom: 4px;
+        }
+        .product-card .p-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary, #0f172a);
+            line-height: 1.3;
+            display: -webkit-box;
+            display: box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            box-orient: vertical;
+            overflow: hidden;
+            max-height: 34px;
+        }
+        .product-card .p-price {
+            font-size: 15px;
+            font-weight: 700;
+            color: #4f46e5;
+            margin-top: 4px;
+        }
+        .product-card .p-stock {
+            font-size: 10px;
+            padding: 1px 10px;
+            border-radius: 10px;
+            margin-top: 4px;
+            font-weight: 500;
+        }
+        .product-card .p-stock.in-stock {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+        }
+        .product-card .p-stock.low-stock {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+        }
+        .product-card .p-stock.out-of-stock {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+
+        .product-card .p-badge {
+            position: absolute;
+            top: 6px;
+            right: 6px;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 10px;
+        }
+
+        /* -------- 右侧: 购物车 -------- */
+        .pos-cart {
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-card, #ffffff);
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: 16px;
+            overflow: hidden;
+            height: 100%;
+        }
+
+        .cart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 14px 18px;
+            border-bottom: 1px solid var(--border-color, #e2e8f0);
+            flex-shrink: 0;
+        }
+        .cart-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary, #0f172a);
+        }
+        .cart-count {
+            font-size: 13px;
+            color: var(--text-secondary, #475569);
+            background: var(--bg-input, #f1f5f9);
+            padding: 2px 14px;
+            border-radius: 12px;
+        }
+
+        .cart-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 12px;
+        }
+        .cart-list::-webkit-scrollbar {
+            width: 4px;
+        }
+        .cart-list::-webkit-scrollbar-thumb {
+            background: var(--border-color, #e2e8f0);
+            border-radius: 2px;
+        }
+
+        .cart-empty {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-muted, #94a3b8);
+            text-align: center;
+        }
+        .cart-empty .empty-icon {
+            font-size: 48px;
+            margin-bottom: 8px;
+        }
+        .cart-empty p {
+            margin: 0;
+            font-size: 14px;
+        }
+        .cart-empty small {
+            font-size: 12px;
+            color: var(--text-muted, #94a3b8);
+        }
+
+        .cart-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 10px;
+            border-bottom: 1px solid var(--border-light, #f1f5f9);
+            transition: background 0.15s;
+        }
+        .cart-item:hover {
+            background: var(--bg-hover, #f1f5f9);
+        }
+
+        .cart-item .item-info {
+            flex: 1;
+            min-width: 0;
+        }
+        .cart-item .item-info .item-name {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary, #0f172a);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+        .cart-item .item-info .item-price {
+            font-size: 12px;
+            color: var(--text-secondary, #475569);
+        }
+
+        .cart-item .item-qty {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .cart-item .item-qty button {
+            width: 26px;
+            height: 26px;
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: 6px;
+            background: transparent;
+            cursor: pointer;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-primary, #0f172a);
+            transition: all 0.15s;
+            font-family: inherit;
+        }
+        .cart-item .item-qty button:hover {
+            background: #4f46e5;
+            color: #fff;
+            border-color: #4f46e5;
+        }
+        .cart-item .item-qty .qty-num {
+            font-weight: 600;
+            min-width: 20px;
+            text-align: center;
+            font-size: 14px;
+        }
+
+        .cart-item .item-total {
+            font-weight: 600;
+            font-size: 13px;
+            color: var(--text-primary, #0f172a);
+            min-width: 60px;
+            text-align: right;
+        }
+        .cart-item .item-remove {
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            color: var(--text-muted, #94a3b8);
+            padding: 2px 4px;
+            border-radius: 4px;
+            transition: all 0.15s;
+        }
+        .cart-item .item-remove:hover {
+            color: #ef4444;
+            background: rgba(239, 68, 68, 0.1);
+        }
+
+        /* -------- 购物车底部 -------- */
+        .cart-footer {
+            border-top: 2px solid var(--border-color, #e2e8f0);
+            padding: 14px 18px;
+            flex-shrink: 0;
+            background: var(--bg-secondary, #f8fafc);
+        }
+
+        .cart-summary {
+            margin-bottom: 12px;
+        }
+        .summary-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 3px 0;
+            font-size: 14px;
+            color: var(--text-secondary, #475569);
+        }
+        .summary-row.total {
+            font-size: 18px;
+            font-weight: 700;
+            color: var(--text-primary, #0f172a);
+            padding-top: 8px;
+            border-top: 1px solid var(--border-color, #e2e8f0);
+            margin-top: 4px;
+        }
+
+        .cart-actions {
+            display: grid;
+            grid-template-columns: 1fr 1.5fr;
+            gap: 10px;
+        }
+
+        /* -------- 支付按钮 -------- */
+        .payment-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+            padding: 4px 0;
+        }
+
+        .payment-btn {
+            padding: 14px;
+            border: 2px solid var(--border-color, #e2e8f0);
+            border-radius: 12px;
+            background: var(--bg-card, #ffffff);
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.2s;
+            color: var(--text-primary, #0f172a);
+            font-family: inherit;
+        }
+        .payment-btn:hover {
+            border-color: #4f46e5;
+            background: var(--bg-hover, #f1f5f9);
+        }
+
+        /* -------- 模态框 -------- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-card, #ffffff);
+            border-radius: var(--radius-lg, 12px);
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 24px;
+            box-shadow: var(--shadow-xl, 0 20px 60px rgba(0, 0, 0, 0.15));
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color, #e2e8f0);
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary, #0f172a);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-muted, #94a3b8);
+            padding: 0 4px;
+            line-height: 1;
+        }
+        .modal-close:hover {
+            color: var(--text-primary, #0f172a);
+        }
+
+        /* -------- 响应式 -------- */
+        @media (max-width: 1024px) {
+            .pos-layout {
+                grid-template-columns: 1fr;
+                height: auto;
+                min-height: auto;
+            }
+            .product-grid {
+                max-height: 320px;
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+            }
+            .pos-cart {
+                height: 400px;
+                max-height: 500px;
+            }
+            .pos-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .pos-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .category-tabs {
+                flex-wrap: nowrap;
+                overflow-x: auto;
+                padding-bottom: 4px;
+            }
+            .product-grid {
+                grid-template-columns: repeat(auto-fill, minmax(100px, 1fr));
+                max-height: 260px;
+            }
+            .product-card {
+                padding: 10px 6px;
+                min-height: 80px;
+            }
+            .product-card .p-icon {
+                font-size: 22px;
+            }
+            .product-card .p-name {
+                font-size: 12px;
+            }
+            .product-card .p-price {
+                font-size: 13px;
+            }
+            .cart-actions {
+                grid-template-columns: 1fr;
+            }
+            .payment-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .pos-header h1 {
+                font-size: 20px;
+            }
+            .product-grid {
+                grid-template-columns: repeat(auto-fill, minmax(80px, 1fr));
+            }
+            .payment-grid {
+                grid-template-columns: 1fr;
+            }
+            .cart-item {
+                flex-wrap: wrap;
+            }
+            .cart-item .item-total {
+                min-width: auto;
+            }
+        }
+    </style>
+
+    <script>
+        /**
+         * ============================================================
+         * POS 销售点 - 完整业务逻辑
+         * ============================================================
+         */
+
+        // ============================================================
+        // 状态管理
+        // ============================================================
+        const POS = {
+            cart: [],
+            products: [],
+            categories: [],
+            currentCategory: 'all',
+            searchQuery: '',
+            orderCount: 0
+        };
+
+        // ============================================================
+        // 存储工具
+        // ============================================================
+        function getStorage(key) {
+            try { return JSON.parse(localStorage.getItem('erp_' + key)); } catch { return null; }
+        }
+
+        function setStorage(key, data) {
+            try { localStorage.setItem('erp_' + key, JSON.stringify(data)); return true; } catch { return false; }
+        }
+
+        // ============================================================
+        // Toast 通知
+        // ============================================================
+        function showToast(message, type) {
+            type = type || 'info';
+            const container = document.getElementById('toastContainer') || (function() {
+                const c = document.createElement('div');
+                c.id = 'toastContainer';
+                c.style.cssText =
+                    'position:fixed;top:20px;right:20px;z-index:10000;display:flex;flex-direction:column;gap:8px;max-width:400px;';
+                document.body.appendChild(c);
+                return c;
+            })();
+            const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+            const toast = document.createElement('div');
+            toast.style.cssText =
+                'padding:12px 20px;border-radius:12px;background:var(--bg-card,#fff);box-shadow:0 8px 32px rgba(0,0,0,0.15);border-left:4px solid #4f46e5;display:flex;align-items:center;gap:12px;animation:slideIn 0.3s ease;';
+            toast.innerHTML =
+                `<span>${icons[type] || 'ℹ️'}</span><span>${message}</span><button onclick="this.parentElement.remove()" style="background:none;border:none;font-size:18px;cursor:pointer;color:#94a3b8;margin-left:auto;">✕</button>`;
+            container.appendChild(toast);
+            setTimeout(function() {
+                if (toast.parentElement) {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateX(100%)';
+                    setTimeout(function() { toast.remove(); }, 300);
+                }
+            }, 3000);
+        }
+
+        // ============================================================
+        // 初始化
+        // ============================================================
+        function initPOS() {
+            console.log('🛒 POS 初始化...');
+            loadProducts();
+            loadCategories();
+            loadCart();
+            updateStats();
+            console.log('✅ POS 初始化完成');
+        }
+
+        // ============================================================
+        // 加载产品
+        // ============================================================
+        function loadProducts() {
+            let products = getStorage('products');
+            if (!products || products.length === 0) {
+                products = generateDemoProducts();
+                setStorage('products', products);
+            }
+            POS.products = products;
+            renderProducts();
+        }
+
+        // ============================================================
+        // 生成演示产品
+        // ============================================================
+        function generateDemoProducts() {
+            const categories = ['洗车', '保养', '维修', '美容', '配件'];
+            const names = {
+                '洗车': ['标准洗车', '精洗服务', '内饰清洗', '外部清洗', '轮毂清洗'],
+                '保养': ['机油保养', '空调保养', '刹车保养', '轮胎保养', '电瓶保养'],
+                '维修': ['发动机维修', '变速箱维修', '电路维修', '空调维修', '制动维修'],
+                '美容': ['抛光打蜡', '镀晶保护', '内饰美容', '真皮护理', '漆面修复'],
+                '配件': ['机油滤芯', '空气滤芯', '刹车片', '雨刮器', '火花塞']
+            };
+            const icons = ['🚗', '🔧', '🔩', '🧹', '⚡'];
+            const products = [];
+            let id = 1;
+            for (const category of categories) {
+                const items = names[category] || [`${category}服务`];
+                for (const name of items) {
+                    products.push({
+                        id: id++,
+                        name: name,
+                        sku: 'SKU-' + String(id).padStart(6, '0'),
+                        category: category,
+                        price: Math.round((Math.random() * 500 + 50) * 100) / 100,
+                        stock: Math.floor(Math.random() * 80 + 10),
+                        icon: icons[id % icons.length],
+                        description: `${category}类: ${name}`
+                    });
+                }
+            }
+            // 额外补充产品
+            for (let i = 0; i < 20; i++) {
+                const cat = categories[i % categories.length];
+                products.push({
+                    id: id++,
+                    name: `服务项目 ${i+1}`,
+                    sku: 'SKU-' + String(id).padStart(6, '0'),
+                    category: cat,
+                    price: Math.round((Math.random() * 300 + 30) * 100) / 100,
+                    stock: Math.floor(Math.random() * 50 + 5),
+                    icon: icons[id % icons.length],
+                    description: `${cat}类服务项目 ${i+1}`
+                });
+            }
+            return products;
+        }
+
+        // ============================================================
+        // 加载分类
+        // ============================================================
+        function loadCategories() {
+            const cats = [...new Set(POS.products.map(p => p.category))];
+            POS.categories = cats;
+            const container = document.getElementById('categoryTabs');
+            container.innerHTML = `
+                <button class="cat-btn active" data-cat="all" onclick="filterByCategory('all')">全部</button>
+                ${cats.map(c => `<button class="cat-btn" data-cat="${c}" onclick="filterByCategory('${c}')">${c}</button>`).join('')}
+            `;
+        }
+
+        // ============================================================
+        // 渲染产品
+        // ============================================================
+        function renderProducts() {
+            const grid = document.getElementById('productGrid');
+            const products = POS.products;
+            const category = POS.currentCategory;
+            const query = POS.searchQuery.toLowerCase();
+
+            let filtered = products;
+            if (category !== 'all') {
+                filtered = filtered.filter(p => p.category === category);
+            }
+            if (query) {
+                filtered = filtered.filter(p =>
+                    p.name.toLowerCase().includes(query) ||
+                    p.sku.toLowerCase().includes(query)
+                );
+            }
+
+            if (filtered.length === 0) {
+                grid.innerHTML = `
+                    <div style="grid-column:1/-1;text-align:center;padding:40px 20px;color:var(--text-muted);">
+                        <div style="font-size:48px;margin-bottom:8px;">🔍</div>
+                        <p>未找到匹配产品</p>
+                        <small>请尝试其他关键词或分类</small>
+                    </div>
+                `;
+                return;
+            }
+
+            grid.innerHTML = filtered.map(p => {
+                const isOutOfStock = p.stock <= 0;
+                const stockClass = p.stock > 20 ? 'in-stock' : p.stock > 0 ? 'low-stock' : 'out-of-stock';
+                const stockLabel = p.stock > 20 ? '充足' : p.stock > 0 ? `仅剩 ${p.stock}` : '缺货';
+
+                return `
+                    <div class="product-card ${isOutOfStock ? 'disabled' : ''}" 
+                         onclick="${isOutOfStock ? '' : `addToCart(${p.id})`}"
+                         title="${p.description || p.name}">
+                        <span class="p-stock ${stockClass}">${stockLabel}</span>
+                        <span class="p-icon">${p.icon || '📦'}</span>
+                        <div class="p-name">${p.name}</div>
+                        <div class="p-price">¥${p.price.toFixed(2)}</div>
+                        ${isOutOfStock ? '<div style="font-size:10px;color:#ef4444;margin-top:2px;">缺货</div>' : ''}
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // ============================================================
+        // 过滤
+        // ============================================================
+        function filterByCategory(category) {
+            POS.currentCategory = category;
+            document.querySelectorAll('.cat-btn').forEach(el => {
+                el.classList.toggle('active', el.dataset.cat === category);
+            });
+            renderProducts();
+        }
+
+        function filterProducts() {
+            POS.searchQuery = document.getElementById('posSearch').value;
+            renderProducts();
+        }
+
+        // ============================================================
+        // 购物车操作
+        // ============================================================
+        function addToCart(productId) {
+            const product = POS.products.find(p => p.id === productId);
+            if (!product) { showToast('产品不存在', 'error'); return; }
+            if (product.stock <= 0) { showToast('该产品已缺货', 'warning'); return; }
+
+            const existing = POS.cart.find(item => item.id === productId);
+            if (existing) {
+                if (existing.qty >= product.stock) { showToast('库存不足', 'warning'); return; }
+                existing.qty++;
+            } else {
+                POS.cart.push({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    qty: 1,
+                    maxStock: product.stock,
+                    icon: product.icon || '📦'
+                });
+            }
+            saveCart();
+            renderCart();
+            showToast(`${product.name} 已加入购物车`, 'success');
+        }
+
+        function removeFromCart(productId) {
+            POS.cart = POS.cart.filter(item => item.id !== productId);
+            saveCart();
+            renderCart();
+        }
+
+        function updateQty(productId, delta) {
+            const item = POS.cart.find(i => i.id === productId);
+            if (!item) return;
+            const newQty = item.qty + delta;
+            if (newQty <= 0) { removeFromCart(productId); return; }
+            if (newQty > item.maxStock) { showToast('库存不足', 'warning'); return; }
+            item.qty = newQty;
+            saveCart();
+            renderCart();
+        }
+
+        function clearCart() {
+            if (POS.cart.length === 0) return;
+            if (!confirm('确定要清空购物车吗？')) return;
+            POS.cart = [];
+            saveCart();
+            renderCart();
+            showToast('购物车已清空', 'info');
+        }
+
+        // ============================================================
+        // 购物车存储
+        // ============================================================
+        function saveCart() {
+            setStorage('pos_cart', POS.cart);
+        }
+
+        function loadCart() {
+            const cart = getStorage('pos_cart');
+            if (cart && Array.isArray(cart)) {
+                POS.cart = cart;
+            }
+            renderCart();
+        }
+
+        // ============================================================
+        // 渲染购物车
+        // ============================================================
+        function renderCart() {
+            const list = document.getElementById('cartList');
+            const countEl = document.getElementById('cartCount');
+            const subtotalEl = document.getElementById('cartSubtotal');
+            const taxEl = document.getElementById('cartTax');
+            const totalEl = document.getElementById('cartTotal');
+            const checkoutBtn = document.getElementById('checkoutBtn');
+
+            const totalItems = POS.cart.reduce((sum, item) => sum + item.qty, 0);
+            const subtotal = POS.cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+            const tax = subtotal * 0.10;
+            const total = subtotal + tax;
+
+            countEl.textContent = `${totalItems} 件`;
+            subtotalEl.textContent = `¥${subtotal.toFixed(2)}`;
+            taxEl.textContent = `¥${tax.toFixed(2)}`;
+            totalEl.textContent = `¥${total.toFixed(2)}`;
+            checkoutBtn.disabled = POS.cart.length === 0;
+
+            if (POS.cart.length === 0) {
+                list.innerHTML = `
+                    <div class="cart-empty">
+                        <span class="empty-icon">🛒</span>
+                        <p>购物车为空</p>
+                        <small>点击左侧产品添加</small>
+                    </div>
+                `;
+                return;
+            }
+
+            list.innerHTML = POS.cart.map(item => `
+                <div class="cart-item">
+                    <div class="item-info">
+                        <div class="item-name">${item.icon || '📦'} ${item.name}</div>
+                        <div class="item-price">¥${item.price.toFixed(2)} × ${item.qty}</div>
+                    </div>
+                    <div class="item-qty">
+                        <button onclick="updateQty(${item.id}, -1)">−</button>
+                        <span class="qty-num">${item.qty}</span>
+                        <button onclick="updateQty(${item.id}, 1)">+</button>
+                    </div>
+                    <div class="item-total">¥${(item.price * item.qty).toFixed(2)}</div>
+                    <button class="item-remove" onclick="removeFromCart(${item.id})">✕</button>
+                </div>
+            `).join('');
+        }
+
+        // ============================================================
+        // 更新统计
+        // ============================================================
+        function updateStats() {
+            const today = new Date().toISOString().split('T')[0];
+            const orders = getStorage('orders') || [];
+            const todayOrders = orders.filter(o => o.created_at && o.created_at.startsWith(today));
+            POS.orderCount = todayOrders.length;
+            document.getElementById('orderCount').textContent = `今日订单: ${POS.orderCount}`;
+        }
+
+        // ============================================================
+        // 结账
+        // ============================================================
+        function checkout() {
+            if (POS.cart.length === 0) { showToast('购物车为空', 'warning'); return; }
+
+            // 检查库存
+            for (const item of POS.cart) {
+                const product = POS.products.find(p => p.id === item.id);
+                if (!product) { showToast(`产品 ${item.name} 不存在`, 'error'); return; }
+                if (product.stock < item.qty) {
+                    showToast(`产品 ${item.name} 库存不足 (可用: ${product.stock})`, 'error');
+                    return;
+                }
+            }
+
+            // 计算总计
+            const subtotal = POS.cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+            const tax = subtotal * 0.10;
+            const total = subtotal + tax;
+
+            document.getElementById('paymentTotal').textContent = `¥${total.toFixed(2)}`;
+            document.getElementById('paymentModal').classList.add('show');
+        }
+
+        // ============================================================
+        // 支付
+        // ============================================================
+        function closePaymentModal() {
+            document.getElementById('paymentModal').classList.remove('show');
+        }
+
+        function completePayment(method) {
+            const cart = POS.cart;
+            const subtotal = cart.reduce((sum, item) => sum + item.price * item.qty, 0);
+            const tax = subtotal * 0.10;
+            const total = subtotal + tax;
+
+            // 更新库存
+            for (const item of cart) {
+                const product = POS.products.find(p => p.id === item.id);
+                if (product) {
+                    product.stock -= item.qty;
+                }
+            }
+            setStorage('products', POS.products);
+
+            // 创建订单
+            const order = {
+                id: 'ORD-' + Date.now().toString().slice(-8) + '-' + Math.random().toString(36).substr(2, 4).toUpperCase(),
+                items: cart.map(item => ({
+                    product_id: item.id,
+                    product_name: item.name,
+                    quantity: item.qty,
+                    price: item.price,
+                    subtotal: item.price * item.qty
+                })),
+                subtotal: subtotal,
+                tax: tax,
+                total: total,
+                status: 'completed',
+                payment_method: method,
+                created_at: new Date().toISOString()
+            };
+
+            let orders = getStorage('orders') || [];
+            orders.unshift(order);
+            setStorage('orders', orders);
+
+            // 清空购物车
+            POS.cart = [];
+            saveCart();
+            renderCart();
+            renderProducts();
+            updateStats();
+            closePaymentModal();
+
+            showToast(`✅ 订单 ${order.id} 完成！总计 ¥${total.toFixed(2)}`, 'success');
+
+            // 打印小票
+            setTimeout(() => printReceipt(order), 500);
+        }
+
+        // ============================================================
+        // 打印小票
+        // ============================================================
+        function printReceipt(order) {
+            const html = `
+                <div style="font-family:monospace;max-width:300px;margin:0 auto;padding:20px;text-align:center;">
+                    <h2 style="margin:0 0 4px;">🏢 Enterprise ERP</h2>
+                    <p style="margin:0 0 8px;font-size:12px;color:#666;">POS 销售小票</p>
+                    <hr style="border-top:1px dashed #ccc;margin:8px 0;">
+                    <p style="font-size:12px;margin:4px 0;">订单号: ${order.id}</p>
+                    <p style="font-size:12px;margin:4px 0;">日期: ${new Date(order.created_at).toLocaleString()}</p>
+                    <hr style="border-top:1px dashed #ccc;margin:8px 0;">
+                    <div style="text-align:left;font-size:12px;">
+                        ${order.items.map(item => `
+                            <div style="display:flex;justify-content:space-between;padding:2px 0;">
+                                <span>${item.product_name} × ${item.quantity}</span>
+                                <span>¥${item.subtotal.toFixed(2)}</span>
+                            </div>
+                        `).join('')}
+                    </div>
+                    <hr style="border-top:1px dashed #ccc;margin:8px 0;">
+                    <div style="text-align:right;font-size:12px;">
+                        <div>小计: ¥${order.subtotal.toFixed(2)}</div>
+                        <div>税费: ¥${order.tax.toFixed(2)}</div>
+                        <div style="font-size:16px;font-weight:bold;">总计: ¥${order.total.toFixed(2)}</div>
+                    </div>
+                    <hr style="border-top:1px dashed #ccc;margin:8px 0;">
+                    <p style="font-size:11px;color:#999;">感谢您的光临！</p>
+                </div>
+            `;
+
+            const win = window.open('', '_blank', 'width=400,height=600');
+            if (win) {
+                win.document.write(html);
+                win.document.close();
+                win.onload = function() { win.print(); };
+            }
+        }
+
+        // ============================================================
+        // 重置
+        // ============================================================
+        function resetPOS() {
+            if (POS.cart.length > 0) {
+                if (!confirm('确定要重置POS吗？购物车将被清空。')) return;
+            }
+            POS.cart = [];
+            saveCart();
+            renderCart();
+            document.getElementById('posSearch').value = '';
+            POS.searchQuery = '';
+            filterByCategory('all');
+            showToast('POS已重置', 'info');
+        }
+
+        // ============================================================
+        // 暴露到全局
+        // ============================================================
+        window.addToCart = addToCart;
+        window.removeFromCart = removeFromCart;
+        window.updateQty = updateQty;
+        window.clearCart = clearCart;
+        window.checkout = checkout;
+        window.completePayment = completePayment;
+        window.closePaymentModal = closePaymentModal;
+        window.filterByCategory = filterByCategory;
+        window.filterProducts = filterProducts;
+        window.resetPOS = resetPOS;
+
+        // ============================================================
+        // 页面加载初始化
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(initPOS, 100);
+        });
+    </script>
+
+</body>
+</html>
+

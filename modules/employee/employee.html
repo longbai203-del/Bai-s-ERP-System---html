@@ -1,0 +1,1350 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>车辆录入 - Enterprise ERP</title>
+</head>
+<body>
+    <div class="page employee-page">
+        <!-- ============================================================
+        员工车辆录入
+        ============================================================ -->
+        <div class="employee-header">
+            <div>
+                <h1>📷 车辆录入</h1>
+                <p class="subtitle">拍照上传车辆信息，记录服务项目</p>
+            </div>
+            <div class="header-actions">
+                <span class="user-badge" id="employeeName">👤 员工: 李收银员</span>
+            </div>
+        </div>
+
+        <!-- 统计卡片 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">🚗</div>
+                <div class="stat-info">
+                    <div class="stat-label">今日录入</div>
+                    <div class="stat-value" id="todayCount">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📸</div>
+                <div class="stat-info">
+                    <div class="stat-label">总录入</div>
+                    <div class="stat-value" id="totalCount">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-info">
+                    <div class="stat-label">已匹配</div>
+                    <div class="stat-value" id="matchedCount">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⏳</div>
+                <div class="stat-info">
+                    <div class="stat-label">待匹配</div>
+                    <div class="stat-value" id="pendingCount">0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 录入表单 -->
+        <div class="form-card">
+            <h3>📝 录入车辆信息</h3>
+            <form id="vehicleForm" onsubmit="saveVehicle(event)">
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label required">车牌号</label>
+                        <input type="text" class="form-control" id="vPlate" placeholder="例如: 京A·88888" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label required">客户姓名</label>
+                        <input type="text" class="form-control" id="vCustomer" placeholder="请输入客户姓名" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">联系电话</label>
+                        <input type="text" class="form-control" id="vPhone" placeholder="请输入电话号码">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label required">服务项目</label>
+                        <select class="form-control" id="vService" required>
+                            <option value="">请选择服务项目</option>
+                            <option value="洗车">洗车</option>
+                            <option value="精洗">精洗</option>
+                            <option value="保养">保养</option>
+                            <option value="维修">维修</option>
+                            <option value="美容">美容</option>
+                            <option value="抛光打蜡">抛光打蜡</option>
+                            <option value="镀晶">镀晶</option>
+                            <option value="贴膜">贴膜</option>
+                            <option value="其他">其他</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">车辆品牌</label>
+                        <input type="text" class="form-control" id="vBrand" placeholder="例如: 特斯拉、宝马">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">车辆颜色</label>
+                        <input type="text" class="form-control" id="vColor" placeholder="例如: 白色、黑色">
+                    </div>
+                </div>
+
+                <!-- 拍照上传 -->
+                <div class="photo-section">
+                    <label class="form-label">📸 车辆照片</label>
+                    <div class="photo-upload-area" id="photoArea" onclick="document.getElementById('photoInput').click()">
+                        <div class="photo-placeholder">
+                            <span class="photo-icon">📷</span>
+                            <p>点击拍照或选择照片</p>
+                            <small>支持 JPG、PNG，最多5张</small>
+                        </div>
+                        <div class="photo-preview" id="photoPreview"></div>
+                        <input type="file" id="photoInput" accept="image/*" multiple capture="environment" style="display:none;" onchange="handlePhotoUpload(event)">
+                    </div>
+                    <div class="photo-actions">
+                        <button type="button" class="btn btn-outline btn-sm" onclick="clearPhotos()">🗑️ 清空照片</button>
+                        <span class="photo-count" id="photoCount">已选 0 张</span>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">备注</label>
+                    <textarea class="form-control" id="vNotes" rows="2" placeholder="其他备注信息"></textarea>
+                </div>
+
+                <div class="form-actions">
+                    <button type="reset" class="btn btn-outline">🔄 重置</button>
+                    <button type="submit" class="btn btn-primary">💾 保存录入</button>
+                </div>
+            </form>
+        </div>
+
+        <!-- 我的录入记录 -->
+        <div class="records-card">
+            <div class="records-header">
+                <h3>📋 我的录入记录</h3>
+                <div class="records-filter">
+                    <input type="text" class="form-control-sm" id="recordSearch" placeholder="搜索车牌..." oninput="filterRecords()">
+                    <select class="form-control-sm" id="recordFilter" onchange="filterRecords()">
+                        <option value="all">全部</option>
+                        <option value="pending">待匹配</option>
+                        <option value="matched">已匹配</option>
+                        <option value="unmatched">未匹配</option>
+                    </select>
+                </div>
+            </div>
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>车牌号</th>
+                            <th>客户</th>
+                            <th>服务</th>
+                            <th>录入时间</th>
+                            <th>照片</th>
+                            <th>状态</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="recordsBody">
+                        <tr>
+                            <td colspan="7" class="empty-state">暂无录入记录</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <!-- 分页 -->
+            <div class="pagination" id="recordPagination">
+                <div class="info">显示 <span id="pageStart">0</span>-<span id="pageEnd">0</span> 条，共 <span id="pageTotal">0</span> 条</div>
+                <div class="buttons" id="pageButtons"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    照片预览模态框
+    ============================================================ -->
+    <div class="modal-overlay" id="photoModal">
+        <div class="modal-content" style="max-width:600px;">
+            <div class="modal-header">
+                <div class="modal-title">📸 车辆照片</div>
+                <button class="modal-close" onclick="closePhotoModal()">✕</button>
+            </div>
+            <div id="photoModalBody" style="text-align:center;">
+                <img id="photoModalImg" src="" alt="车辆照片" style="max-width:100%;max-height:400px;border-radius:8px;">
+            </div>
+            <div class="modal-footer">
+                <button class="btn btn-outline" onclick="closePhotoModal()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        /* ============================================================
+        员工车辆录入样式
+        ============================================================ */
+        .employee-page {
+            padding: 0;
+        }
+
+        .employee-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .employee-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary, #0f172a);
+            margin: 0;
+        }
+
+        .employee-header .subtitle {
+            color: var(--text-secondary, #475569);
+            margin: 4px 0 0;
+            font-size: 14px;
+        }
+
+        .user-badge {
+            padding: 8px 16px;
+            background: var(--bg-input, #f1f5f9);
+            border-radius: 20px;
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-primary, #0f172a);
+            display: inline-block;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg-card, #ffffff);
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: var(--radius, 12px);
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .stat-card .stat-icon {
+            font-size: 28px;
+            flex-shrink: 0;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-input, #f1f5f9);
+            border-radius: var(--radius, 8px);
+        }
+
+        .stat-card .stat-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .stat-card .stat-label {
+            font-size: 12px;
+            color: var(--text-muted, #94a3b8);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary, #0f172a);
+            line-height: 1.2;
+        }
+
+        .form-card {
+            background: var(--bg-card, #ffffff);
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: var(--radius, 12px);
+            padding: 20px 24px;
+            margin-bottom: 24px;
+        }
+
+        .form-card h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary, #0f172a);
+            margin: 0 0 16px 0;
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .form-group {
+            margin-bottom: 0;
+        }
+
+        .form-group .form-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 4px;
+            font-size: 13px;
+            color: var(--text-primary, #0f172a);
+        }
+
+        .form-group .form-label.required::after {
+            content: " *";
+            color: var(--danger, #ef4444);
+        }
+
+        .form-control {
+            width: 100%;
+            padding: 8px 14px;
+            border: 2px solid var(--border-color, #e2e8f0);
+            border-radius: var(--radius, 8px);
+            background: var(--bg-input, #f1f5f9);
+            color: var(--text-primary, #0f172a);
+            font-size: 14px;
+            outline: none;
+            font-family: inherit;
+            transition: all 0.3s;
+        }
+
+        .form-control:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+            background: var(--bg-card, #ffffff);
+        }
+
+        .form-control-sm {
+            padding: 4px 12px;
+            border: 2px solid var(--border-color, #e2e8f0);
+            border-radius: var(--radius, 6px);
+            background: var(--bg-input, #f1f5f9);
+            color: var(--text-primary, #0f172a);
+            font-size: 13px;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .form-control-sm:focus {
+            border-color: #4f46e5;
+        }
+
+        select.form-control {
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 8L1 3h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+            padding-right: 36px;
+        }
+
+        textarea.form-control {
+            resize: vertical;
+            min-height: 60px;
+        }
+
+        /* 照片上传 */
+        .photo-section {
+            margin: 16px 0;
+            padding: 16px;
+            border: 2px dashed var(--border-color, #e2e8f0);
+            border-radius: var(--radius, 8px);
+            grid-column: 1 / -1;
+        }
+
+        .photo-section .form-label {
+            display: block;
+            font-weight: 500;
+            margin-bottom: 8px;
+            font-size: 13px;
+            color: var(--text-primary, #0f172a);
+        }
+
+        .photo-upload-area {
+            cursor: pointer;
+            min-height: 120px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s;
+            border-radius: var(--radius, 8px);
+            padding: 12px;
+        }
+
+        .photo-upload-area:hover {
+            background: var(--bg-hover, #f1f5f9);
+        }
+
+        .photo-placeholder {
+            text-align: center;
+            color: var(--text-muted, #94a3b8);
+        }
+
+        .photo-placeholder .photo-icon {
+            font-size: 48px;
+            display: block;
+        }
+
+        .photo-placeholder p {
+            margin: 4px 0;
+        }
+
+        .photo-placeholder small {
+            font-size: 12px;
+        }
+
+        .photo-preview {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 8px;
+            width: 100%;
+        }
+
+        .photo-preview .photo-item {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            border-radius: var(--radius, 6px);
+            overflow: hidden;
+            border: 2px solid var(--border-color, #e2e8f0);
+        }
+
+        .photo-preview .photo-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .photo-preview .photo-item .remove-photo {
+            position: absolute;
+            top: 2px;
+            right: 2px;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            border: none;
+            background: rgba(239, 68, 68, 0.8);
+            color: #fff;
+            cursor: pointer;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .photo-preview .photo-item .remove-photo:hover {
+            background: #ef4444;
+        }
+
+        .photo-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 8px;
+        }
+
+        .photo-count {
+            font-size: 13px;
+            color: var(--text-muted, #94a3b8);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 12px;
+            margin-top: 16px;
+            grid-column: 1 / -1;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 8px 20px;
+            border: none;
+            border-radius: var(--radius, 8px);
+            font-size: 14px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            min-height: 36px;
+        }
+
+        .btn-primary {
+            background: #4f46e5;
+            color: #fff;
+        }
+
+        .btn-primary:hover {
+            background: #4338ca;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(79, 70, 229, 0.3);
+        }
+
+        .btn-outline {
+            background: transparent;
+            border: 2px solid var(--border-color, #e2e8f0);
+            color: var(--text-secondary, #475569);
+        }
+
+        .btn-outline:hover {
+            border-color: #4f46e5;
+            color: #4f46e5;
+        }
+
+        .btn-sm {
+            padding: 4px 12px;
+            font-size: 12px;
+            min-height: 28px;
+        }
+
+        .btn-success {
+            background: #10b981;
+            color: #fff;
+        }
+
+        .btn-success:hover {
+            opacity: 0.9;
+        }
+
+        .btn-danger {
+            background: #ef4444;
+            color: #fff;
+        }
+
+        .btn-danger:hover {
+            opacity: 0.9;
+        }
+
+        /* 记录列表 */
+        .records-card {
+            background: var(--bg-card, #ffffff);
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: var(--radius, 12px);
+            overflow: hidden;
+        }
+
+        .records-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border-color, #e2e8f0);
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .records-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary, #0f172a);
+            margin: 0;
+        }
+
+        .records-filter {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .records-filter input,
+        .records-filter select {
+            padding: 4px 12px;
+            border: 2px solid var(--border-color, #e2e8f0);
+            border-radius: var(--radius, 6px);
+            background: var(--bg-input, #f1f5f9);
+            color: var(--text-primary, #0f172a);
+            font-size: 13px;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .records-filter input:focus,
+        .records-filter select:focus {
+            border-color: #4f46e5;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 14px;
+        }
+
+        .table th {
+            background: var(--bg-secondary, #f8fafc);
+            color: var(--text-secondary, #475569);
+            font-weight: 600;
+            padding: 10px 14px;
+            text-align: left;
+            border-bottom: 2px solid var(--border-color, #e2e8f0);
+            white-space: nowrap;
+        }
+
+        .table td {
+            padding: 10px 14px;
+            border-bottom: 1px solid var(--border-light, #f1f5f9);
+            vertical-align: middle;
+        }
+
+        .table tbody tr:hover {
+            background: var(--bg-hover, #f1f5f9);
+        }
+
+        .table .status-badge {
+            padding: 2px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .table .status-badge.matched {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+        }
+
+        .table .status-badge.pending {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+        }
+
+        .table .status-badge.unmatched {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+
+        .table .photo-thumb {
+            width: 40px;
+            height: 40px;
+            border-radius: var(--radius, 4px);
+            object-fit: cover;
+            cursor: pointer;
+            border: 1px solid var(--border-color, #e2e8f0);
+        }
+
+        .table .photo-thumb:hover {
+            border-color: #4f46e5;
+        }
+
+        .table .actions {
+            display: flex;
+            gap: 4px;
+        }
+
+        .table .actions button {
+            padding: 2px 8px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.15s;
+        }
+
+        .table .actions .btn-view {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+        }
+
+        .table .actions .btn-view:hover {
+            background: #3b82f6;
+            color: #fff;
+        }
+
+        .table .actions .btn-delete {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        .table .actions .btn-delete:hover {
+            background: #ef4444;
+            color: #fff;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px 20px;
+            color: var(--text-muted, #94a3b8);
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            border-top: 1px solid var(--border-color, #e2e8f0);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .pagination .info {
+            font-size: 13px;
+            color: var(--text-secondary, #475569);
+        }
+
+        .pagination .buttons {
+            display: flex;
+            gap: 4px;
+        }
+
+        .pagination .buttons button {
+            padding: 4px 10px;
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: 4px;
+            background: transparent;
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--text-secondary, #475569);
+            transition: all 0.15s;
+        }
+
+        .pagination .buttons button:hover:not(:disabled) {
+            background: #4f46e5;
+            color: #fff;
+            border-color: #4f46e5;
+        }
+
+        .pagination .buttons button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination .buttons button.active {
+            background: #4f46e5;
+            color: #fff;
+            border-color: #4f46e5;
+        }
+
+        /* 模态框 */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 2000;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .modal-overlay.show {
+            display: flex;
+        }
+
+        .modal-content {
+            background: var(--bg-card, #ffffff);
+            border-radius: var(--radius-lg, 12px);
+            max-width: 600px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            padding: 24px;
+            box-shadow: var(--shadow-xl, 0 20px 60px rgba(0, 0, 0, 0.15));
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color, #e2e8f0);
+        }
+
+        .modal-title {
+            font-size: 18px;
+            font-weight: 600;
+            color: var(--text-primary, #0f172a);
+        }
+
+        .modal-close {
+            background: none;
+            border: none;
+            font-size: 24px;
+            cursor: pointer;
+            color: var(--text-muted, #94a3b8);
+            padding: 0 4px;
+        }
+
+        .modal-close:hover {
+            color: var(--text-primary, #0f172a);
+        }
+
+        .modal-footer {
+            margin-top: 16px;
+            padding-top: 12px;
+            border-top: 1px solid var(--border-color, #e2e8f0);
+            display: flex;
+            gap: 8px;
+            justify-content: flex-end;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .employee-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .records-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .records-filter {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .photo-upload-area {
+                min-height: 80px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            .photo-preview .photo-item {
+                width: 60px;
+                height: 60px;
+            }
+        }
+    </style>
+
+    <script>
+        /**
+         * ============================================================
+         * 员工车辆录入模块 - 完整企业级实现
+         * ============================================================
+         */
+
+        // ============================================================
+        // 状态管理
+        // ============================================================
+        let employeeRecords = [];
+        let filteredRecords = [];
+        let currentPage = 1;
+        const pageSize = 10;
+        let photos = [];
+        const MAX_PHOTOS = 5;
+
+        // ============================================================
+        // 存储工具
+        // ============================================================
+        function getStorage(key) {
+            try { return JSON.parse(localStorage.getItem('erp_' + key)); } catch { return null; }
+        }
+
+        function setStorage(key, data) {
+            try { localStorage.setItem('erp_' + key, JSON.stringify(data)); return true; } catch { return false; }
+        }
+
+        function showToast(message, type) {
+            type = type || 'info';
+            if (typeof window.showToast === 'function') {
+                window.showToast(message, type);
+                return;
+            }
+            const container = document.getElementById('toastContainer') || (function() {
+                const c = document.createElement('div');
+                c.id = 'toastContainer';
+                c.style.cssText =
+                    'position:fixed;top:20px;right:20px;z-index:10000;display:flex;flex-direction:column;gap:8px;max-width:400px;';
+                document.body.appendChild(c);
+                return c;
+            })();
+            const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+            const toast = document.createElement('div');
+            toast.style.cssText =
+                'padding:12px 20px;border-radius:12px;background:#fff;box-shadow:0 8px 32px rgba(0,0,0,0.15);border-left:4px solid #4f46e5;display:flex;align-items:center;gap:12px;animation:slideIn 0.3s ease;';
+            toast.innerHTML =
+                `<span>${icons[type] || 'ℹ️'}</span><span>${message}</span><button onclick="this.parentElement.remove()" style="background:none;border:none;font-size:18px;cursor:pointer;color:#94a3b8;margin-left:auto;">✕</button>`;
+            container.appendChild(toast);
+            setTimeout(function() {
+                if (toast.parentElement) {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateX(100%)';
+                    setTimeout(function() { toast.remove(); }, 300);
+                }
+            }, 3000);
+        }
+
+        // ============================================================
+        // 初始化
+        // ============================================================
+        function initEmployee() {
+            console.log('👤 员工车辆录入初始化...');
+
+            // 获取当前用户
+            const user = getStorage('user');
+            if (user) {
+                document.getElementById('employeeName').textContent = '👤 员工: ' + (user.name || user.username || '未知');
+            }
+
+            loadRecords();
+            updateStats();
+            renderRecords();
+            console.log('✅ 员工车辆录入初始化完成');
+        }
+
+        // ============================================================
+        // 数据加载
+        // ============================================================
+        function loadRecords() {
+            const allRecords = getStorage('employee_vehicles') || [];
+            const user = getStorage('user');
+            const username = user ? (user.username || user.name || 'unknown') : 'unknown';
+
+            // 只加载当前员工的记录
+            employeeRecords = allRecords.filter(r => r.employee === username);
+            filteredRecords = [...employeeRecords];
+        }
+
+        function getAllRecords() {
+            return getStorage('employee_vehicles') || [];
+        }
+
+        function saveAllRecords(records) {
+            setStorage('employee_vehicles', records);
+        }
+
+        // ============================================================
+        // 统计更新
+        // ============================================================
+        function updateStats() {
+            const today = new Date().toISOString().split('T')[0];
+            const todayRecords = employeeRecords.filter(r => r.created_at && r.created_at.startsWith(today));
+            const matched = employeeRecords.filter(r => r.status === 'matched');
+            const pending = employeeRecords.filter(r => r.status === 'pending' || r.status === 'unmatched');
+
+            document.getElementById('todayCount').textContent = todayRecords.length;
+            document.getElementById('totalCount').textContent = employeeRecords.length;
+            document.getElementById('matchedCount').textContent = matched.length;
+            document.getElementById('pendingCount').textContent = pending.length;
+        }
+
+        // ============================================================
+        // 照片处理
+        // ============================================================
+        function handlePhotoUpload(event) {
+            const files = event.target.files;
+            if (!files) return;
+
+            for (let file of files) {
+                if (photos.length >= MAX_PHOTOS) {
+                    showToast('最多只能上传 ' + MAX_PHOTOS + ' 张照片', 'warning');
+                    break;
+                }
+                if (!file.type.startsWith('image/')) {
+                    showToast('请上传图片文件', 'warning');
+                    continue;
+                }
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    photos.push({
+                        id: 'photo_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
+                        data: e.target.result,
+                        name: file.name,
+                        size: file.size
+                    });
+                    renderPhotos();
+                    updatePhotoCount();
+                };
+                reader.readAsDataURL(file);
+            }
+            // 重置input以便重复选择相同文件
+            event.target.value = '';
+        }
+
+        function renderPhotos() {
+            const container = document.getElementById('photoPreview');
+            if (photos.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+
+            container.innerHTML = photos.map(p => `
+                <div class="photo-item">
+                    <img src="${p.data}" alt="车辆照片">
+                    <button class="remove-photo" onclick="removePhoto('${p.id}')">✕</button>
+                </div>
+            `).join('');
+        }
+
+        function removePhoto(id) {
+            photos = photos.filter(p => p.id !== id);
+            renderPhotos();
+            updatePhotoCount();
+        }
+
+        function clearPhotos() {
+            if (photos.length === 0) return;
+            photos = [];
+            renderPhotos();
+            updatePhotoCount();
+            document.getElementById('photoInput').value = '';
+            showToast('已清空所有照片', 'info');
+        }
+
+        function updatePhotoCount() {
+            document.getElementById('photoCount').textContent = '已选 ' + photos.length + ' 张';
+        }
+
+        // ============================================================
+        // 保存车辆录入
+        // ============================================================
+        function saveVehicle(event) {
+            event.preventDefault();
+
+            const plate = document.getElementById('vPlate').value.trim().toUpperCase();
+            const customer = document.getElementById('vCustomer').value.trim();
+            const phone = document.getElementById('vPhone').value.trim();
+            const service = document.getElementById('vService').value;
+            const brand = document.getElementById('vBrand').value.trim();
+            const color = document.getElementById('vColor').value.trim();
+            const notes = document.getElementById('vNotes').value.trim();
+
+            if (!plate) { showToast('请输入车牌号', 'warning'); return; }
+            if (!customer) { showToast('请输入客户姓名', 'warning'); return; }
+            if (!service) { showToast('请选择服务项目', 'warning'); return; }
+
+            // 检查是否已存在相同车牌
+            const existing = employeeRecords.find(r => r.plate === plate);
+            if (existing) {
+                showToast('该车牌已录入，请勿重复录入', 'warning');
+                return;
+            }
+
+            const user = getStorage('user');
+            const record = {
+                id: 'EV_' + Date.now() + '_' + Math.random().toString(36).substr(2, 6),
+                plate: plate,
+                customer: customer,
+                phone: phone,
+                service: service,
+                brand: brand || '未知',
+                color: color || '未知',
+                notes: notes,
+                photos: photos.map(p => p.data),
+                employee: user ? (user.username || user.name || '未知') : '未知',
+                employee_id: user ? user.id : null,
+                status: 'pending', // pending, matched, unmatched
+                matched_with: null,
+                created_at: new Date().toISOString(),
+                updated_at: new Date().toISOString()
+            };
+
+            // 保存到所有记录
+            const allRecords = getAllRecords();
+            allRecords.unshift(record);
+            saveAllRecords(allRecords);
+
+            // 更新当前员工记录
+            employeeRecords = allRecords.filter(r => r.employee === record.employee);
+            filteredRecords = [...employeeRecords];
+
+            // 重置表单
+            document.getElementById('vehicleForm').reset();
+            clearPhotos();
+
+            // 更新统计和列表
+            updateStats();
+            renderRecords();
+            showToast('✅ 车辆录入成功！车牌: ' + plate, 'success');
+
+            // 自动匹配检查
+            checkAutoMatch(record);
+        }
+
+        // ============================================================
+        // 自动匹配检查
+        // ============================================================
+        function checkAutoMatch(record) {
+            // 检查系统监控中是否有该车辆
+            const fleetRecords = getStorage('fleet_records') || [];
+            const matched = fleetRecords.find(f => f.plate === record.plate && f.status === 'in');
+
+            if (matched) {
+                // 更新状态为已匹配
+                const allRecords = getAllRecords();
+                const idx = allRecords.findIndex(r => r.id === record.id);
+                if (idx !== -1) {
+                    allRecords[idx].status = 'matched';
+                    allRecords[idx].matched_with = matched.id;
+                    saveAllRecords(allRecords);
+                    employeeRecords = allRecords.filter(r => r.employee === record.employee);
+                    filteredRecords = [...employeeRecords];
+                    updateStats();
+                    renderRecords();
+                    showToast('✅ 车辆已匹配系统监控数据', 'success');
+                }
+            } else {
+                // 检查是否已出场但未录入
+                const exited = fleetRecords.find(f => f.plate === record.plate && f.status === 'out');
+                if (exited) {
+                    // 车辆已出场但员工才录入，可能是补录
+                    showToast('⚠️ 该车辆已出场，请确认是否补录', 'warning');
+                }
+            }
+        }
+
+        // ============================================================
+        // 记录列表渲染
+        // ============================================================
+        function filterRecords() {
+            const search = document.getElementById('recordSearch').value.toLowerCase();
+            const status = document.getElementById('recordFilter').value;
+
+            filteredRecords = employeeRecords.filter(r => {
+                let match = true;
+                if (search) {
+                    match = match && (r.plate.toLowerCase().includes(search) ||
+                        r.customer.toLowerCase().includes(search));
+                }
+                if (status !== 'all') {
+                    match = match && r.status === status;
+                }
+                return match;
+            });
+
+            currentPage = 1;
+            renderRecords();
+        }
+
+        function renderRecords() {
+            const tbody = document.getElementById('recordsBody');
+            const total = filteredRecords.length;
+            const start = (currentPage - 1) * pageSize;
+            const end = Math.min(start + pageSize, total);
+            const pageData = filteredRecords.slice(start, end);
+
+            document.getElementById('pageStart').textContent = total > 0 ? start + 1 : 0;
+            document.getElementById('pageEnd').textContent = end;
+            document.getElementById('pageTotal').textContent = total;
+
+            const statusMap = {
+                'matched': { label: '✅ 已匹配', class: 'matched' },
+                'pending': { label: '⏳ 待匹配', class: 'pending' },
+                'unmatched': { label: '❌ 未匹配', class: 'unmatched' }
+            };
+
+            if (pageData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="7" class="empty-state">暂无录入记录</td></tr>';
+                renderPagination(total);
+                return;
+            }
+
+            tbody.innerHTML = pageData.map(r => `
+                <tr>
+                    <td><strong>${r.plate}</strong></td>
+                    <td>${r.customer}</td>
+                    <td>${r.service}</td>
+                    <td>${new Date(r.created_at).toLocaleString()}</td>
+                    <td>
+                        ${r.photos && r.photos.length > 0 ? 
+                            `<img src="${r.photos[0]}" class="photo-thumb" onclick="viewPhoto('${r.id}')" title="点击查看照片">` : 
+                            '无照片'
+                        }
+                    </td>
+                    <td><span class="status-badge ${statusMap[r.status]?.class || 'pending'}">${statusMap[r.status]?.label || r.status}</span></td>
+                    <td>
+                        <div class="actions">
+                            <button class="btn-view" onclick="viewRecord('${r.id}')">📄</button>
+                            <button class="btn-delete" onclick="deleteRecord('${r.id}')">🗑️</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+
+            renderPagination(total);
+        }
+
+        function renderPagination(total) {
+            const container = document.getElementById('pageButtons');
+            const totalPages = Math.ceil(total / pageSize);
+            if (totalPages <= 1) { container.innerHTML = ''; return; }
+
+            let html =
+                `<button onclick="goToPage(${currentPage - 1})" ${currentPage <= 1 ? 'disabled' : ''}>‹</button>`;
+            const maxShow = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxShow / 2));
+            let endPage = Math.min(totalPages, startPage + maxShow - 1);
+            if (endPage - startPage < maxShow - 1) {
+                startPage = Math.max(1, endPage - maxShow + 1);
+            }
+            if (startPage > 1) {
+                html += `<button onclick="goToPage(1)">1</button>`;
+                if (startPage > 2) html += `<button disabled>...</button>`;
+            }
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<button class="${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+            }
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) html += `<button disabled>...</button>`;
+                html += `<button onclick="goToPage(${totalPages})">${totalPages}</button>`;
+            }
+            html +=
+                `<button onclick="goToPage(${currentPage + 1})" ${currentPage >= totalPages ? 'disabled' : ''}>›</button>`;
+            container.innerHTML = html;
+        }
+
+        function goToPage(page) {
+            const totalPages = Math.ceil(filteredRecords.length / pageSize);
+            if (page < 1 || page > totalPages) return;
+            currentPage = page;
+            renderRecords();
+        }
+
+        // ============================================================
+        // 记录操作
+        // ============================================================
+        function viewRecord(id) {
+            const record = employeeRecords.find(r => r.id === id);
+            if (!record) { showToast('记录不存在', 'error'); return; }
+
+            let photosHtml = '';
+            if (record.photos && record.photos.length > 0) {
+                photosHtml = record.photos.map(p =>
+                    `<img src="${p}" style="max-width:120px;max-height:120px;border-radius:6px;margin:4px;border:1px solid var(--border-color);cursor:pointer;" onclick="window.open('${p}','_blank')">`
+                ).join('');
+            } else {
+                photosHtml = '<span style="color:var(--text-muted);">无照片</span>';
+            }
+
+            const statusMap = {
+                'matched': '✅ 已匹配',
+                'pending': '⏳ 待匹配',
+                'unmatched': '❌ 未匹配'
+            };
+
+            showModal('📄 车辆详情',
+                `
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div><strong>车牌号</strong><br>${record.plate}</div>
+                    <div><strong>客户姓名</strong><br>${record.customer}</div>
+                    <div><strong>联系电话</strong><br>${record.phone || '-'}</div>
+                    <div><strong>服务项目</strong><br>${record.service}</div>
+                    <div><strong>车辆品牌</strong><br>${record.brand || '-'}</div>
+                    <div><strong>车辆颜色</strong><br>${record.color || '-'}</div>
+                    <div><strong>录入员工</strong><br>${record.employee}</div>
+                    <div><strong>状态</strong><br>${statusMap[record.status] || record.status}</div>
+                    <div style="grid-column:1/-1;"><strong>录入时间</strong><br>${new Date(record.created_at).toLocaleString()}</div>
+                    <div style="grid-column:1/-1;"><strong>备注</strong><br>${record.notes || '-'}</div>
+                    <div style="grid-column:1/-1;"><strong>📸 照片</strong><br><div style="display:flex;flex-wrap:wrap;gap:4px;margin-top:4px;">${photosHtml}</div></div>
+                </div>
+                `,
+                `<button class="btn btn-outline" onclick="closeModal()">关闭</button>`
+            );
+        }
+
+        function viewPhoto(recordId) {
+            const record = employeeRecords.find(r => r.id === recordId);
+            if (!record || !record.photos || record.photos.length === 0) {
+                showToast('没有照片', 'info');
+                return;
+            }
+
+            const modal = document.getElementById('photoModal');
+            const img = document.getElementById('photoModalImg');
+            img.src = record.photos[0];
+            modal.classList.add('show');
+        }
+
+        function closePhotoModal() {
+            document.getElementById('photoModal').classList.remove('show');
+        }
+
+        function deleteRecord(id) {
+            if (!confirm('确定要删除此录入记录吗？')) return;
+
+            const allRecords = getAllRecords();
+            const newRecords = allRecords.filter(r => r.id !== id);
+            saveAllRecords(newRecords);
+
+            const user = getStorage('user');
+            const username = user ? (user.username || user.name || 'unknown') : 'unknown';
+            employeeRecords = newRecords.filter(r => r.employee === username);
+            filteredRecords = [...employeeRecords];
+
+            updateStats();
+            renderRecords();
+            showToast('记录已删除', 'success');
+        }
+
+        // ============================================================
+        // 模态框（备用实现）
+        // ============================================================
+        function showModal(title, bodyHTML, footerHTML) {
+            if (typeof window.showModal === 'function') {
+                window.showModal(title, bodyHTML, footerHTML);
+                return;
+            }
+            const overlay = document.createElement('div');
+            overlay.style.cssText =
+                'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+            overlay.innerHTML = `
+                <div style="background:var(--bg-card);border-radius:12px;max-width:600px;width:100%;max-height:90vh;overflow-y:auto;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+                    <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--border-color);">
+                        <div style="font-size:18px;font-weight:600;color:var(--text-primary);">${title}</div>
+                        <button onclick="this.closest('div[style]').parentElement.remove()" style="background:none;border:none;font-size:24px;cursor:pointer;color:var(--text-muted);">✕</button>
+                    </div>
+                    <div style="color:var(--text-secondary);">${bodyHTML}</div>
+                    <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border-color);display:flex;gap:8px;justify-content:flex-end;">${footerHTML || '<button class="btn btn-primary" onclick="this.closest(\'div[style]\').parentElement.remove()">确定</button>'}</div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) this.remove();
+            });
+        }
+
+        function closeModal() {
+            const modal = document.querySelector('div[style*="position:fixed"][style*="z-index:9999"]');
+            if (modal) modal.remove();
+        }
+
+        // ============================================================
+        // 导出模块
+        // ============================================================
+        window.Employee = {
+            init: initEmployee,
+            saveVehicle: saveVehicle,
+            getRecords: () => employeeRecords,
+            clearPhotos: clearPhotos
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(initEmployee, 100);
+        });
+    </script>
+</body>
+</html>
+

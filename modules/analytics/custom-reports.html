@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>自定义报表 - Enterprise ERP</title>
+    <style>
+        /* ============================================================
+           1. 赛博科技风自包含主题变量
+           ============================================================ */
+        :root {
+            --bg-deep: #080C18;
+            --bg-panel: rgba(13, 22, 48, 0.7);
+            --glass-edge: rgba(0, 255, 255, 0.15);
+            --neon-blue: #00E5FF;
+            --neon-purple: #8B5CF6;
+            --neon-green: #34D399;
+            --neon-glow: 0 0 20px rgba(0, 229, 255, 0.3);
+            --text-primary: #E2E8F0;
+            --text-secondary: #94A3B8;
+            --text-muted: #475569;
+            --radius-glass: 16px;
+            --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: var(--font-sans); }
+        body { background: var(--bg-deep); color: var(--text-primary); min-height: 100vh; }
+        
+        /* 宇宙空间背景 */
+        body::before {
+            content: ''; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: radial-gradient(circle at 70% 30%, rgba(139, 92, 246, 0.1), transparent 60%),
+                        radial-gradient(circle at 20% 70%, rgba(0, 229, 255, 0.05), transparent 50%);
+            z-index: -1; pointer-events: none;
+        }
+
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: var(--bg-deep); }
+        ::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 10px; }
+
+        /* ============================================================
+           2. 全息 UI 组件库
+           ============================================================ */
+        .cyber-container { max-width: 1200px; margin: 0 auto; padding: 24px; }
+
+        .holo-panel {
+            background: var(--bg-panel);
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border: 1px solid var(--glass-edge);
+            border-radius: var(--radius-glass);
+            box-shadow: inset 0 0 30px rgba(0, 229, 255, 0.05), var(--neon-glow);
+            padding: 24px;
+            transition: all 0.3s;
+        }
+
+        .cyber-header { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 16px; margin-bottom: 24px; }
+        .cyber-header h1 { font-size: 26px; font-weight: 700; background: linear-gradient(135deg, #00E5FF, #8B5CF6); background-clip: text; -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .btn-neon {
+            padding: 8px 20px; border: 1px solid var(--neon-blue); border-radius: 8px;
+            background: rgba(0, 229, 255, 0.1); color: var(--neon-blue);
+            cursor: pointer; font-weight: 600; font-size: 13px; transition: all 0.3s;
+        }
+        .btn-neon:hover { background: var(--neon-blue); color: var(--bg-deep); box-shadow: 0 0 30px var(--neon-blue); transform: scale(1.02); }
+        .btn-neon-success { border-color: var(--neon-green); color: var(--neon-green); background: rgba(52, 211, 153, 0.1); }
+        .btn-neon-success:hover { background: var(--neon-green); color: var(--bg-deep); }
+
+        /* 筛选器面板 */
+        .filter-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 16px; margin-bottom: 24px; padding: 16px; background: rgba(13, 22, 48, 0.4); border-radius: 12px; border: 1px solid var(--glass-edge); }
+        .filter-group { display: flex; flex-direction: column; gap: 6px; }
+        .filter-group label { color: var(--text-secondary); font-size: 12px; letter-spacing: 1px; text-transform: uppercase; }
+        .filter-group input, .filter-group select { padding: 8px 12px; background: rgba(13, 22, 48, 0.6); border: 1px solid var(--glass-edge); border-radius: 6px; color: #fff; outline: none; font-size: 13px; }
+        .filter-group input:focus, .filter-group select:focus { border-color: var(--neon-blue); box-shadow: 0 0 15px rgba(0, 229, 255, 0.2); }
+
+        /* 全息数据表格 */
+        .table-wrap { overflow-x: auto; margin-top: 16px; }
+        .cyber-table { width: 100%; border-collapse: collapse; font-size: 14px; }
+        .cyber-table th { padding: 16px; text-align: left; color: var(--text-muted); font-weight: 500; border-bottom: 1px solid var(--glass-edge); letter-spacing: 1px; }
+        .cyber-table td { padding: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.03); color: var(--text-secondary); vertical-align: middle; }
+        .cyber-table tr:hover td { background: rgba(0, 229, 255, 0.03); }
+        .status-chip { display: inline-block; padding: 2px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; border: 1px solid; }
+        .status-chip.completed { border-color: var(--neon-green); color: var(--neon-green); }
+        .status-chip.pending { border-color: #FBBF24; color: #FBBF24; }
+        .status-chip.cancelled { border-color: var(--neon-red); color: var(--neon-red); }
+
+        .empty-state { text-align: center; padding: 40px; color: var(--text-muted); font-size: 14px; }
+
+        @media (max-width: 768px) { .filter-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div class="cyber-container">
+        <div class="cyber-header">
+            <h1>📊 全息自定义报表</h1>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;">
+                <button class="btn-neon btn-neon-success" onclick="CustomReportModule.exportCSV()">📥 导出 CSV</button>
+                <button class="btn-neon" onclick="CustomReportModule.refresh()">⟳ 刷新</button>
+            </div>
+        </div>
+
+        <div class="holo-panel">
+            <!-- 多维度筛选器 -->
+            <div class="filter-grid">
+                <div class="filter-group">
+                    <label>开始日期</label>
+                    <input type="date" id="filterStart" onchange="CustomReportModule.applyFilters()">
+                </div>
+                <div class="filter-group">
+                    <label>结束日期</label>
+                    <input type="date" id="filterEnd" onchange="CustomReportModule.applyFilters()">
+                </div>
+                <div class="filter-group">
+                    <label>订单状态</label>
+                    <select id="filterStatus" onchange="CustomReportModule.applyFilters()">
+                        <option value="all">全部状态</option>
+                        <option value="completed">已完成</option>
+                        <option value="pending">待处理</option>
+                        <option value="cancelled">已取消</option>
+                    </select>
+                </div>
+                <div class="filter-group" style="justify-content:flex-end;">
+                    <button class="btn-neon" onclick="CustomReportModule.applyFilters()" style="margin-top:auto;">🔍 生成报表</button>
+                </div>
+            </div>
+
+            <!-- 自定义数据表格 -->
+            <div class="table-wrap">
+                <table class="cyber-table">
+                    <thead>
+                        <tr><th>订单号</th><th>客户名称</th><th>金额</th><th>状态</th><th>创建时间</th></tr>
+                    </thead>
+                    <tbody id="reportBody">
+                        <!-- 动态渲染 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        /**
+         * ============================================================
+         * CustomReportModule - 全息自定义报表引擎
+         * 基于多维度筛选生成定制化数据表格
+         * ============================================================
+         */
+        const CustomReportModule = (function() {
+            'use strict';
+            const ORDERS_KEY = 'erp_orders';
+            let allOrders = [];
+
+            // 1. 数据层
+            const _loadData = () => {
+                try { allOrders = JSON.parse(localStorage.getItem(ORDERS_KEY) || '[]'); } catch { allOrders = []; }
+                if (allOrders.length === 0) {
+                    for (let i = 0; i < 30; i++) {
+                        const d = new Date(); d.setDate(d.getDate() - Math.floor(Math.random() * 60));
+                        allOrders.push({
+                            id: 'ORD-' + String(i+1).padStart(4,'0'),
+                            customer_name: '客户' + (i+1),
+                            total: Math.round((Math.random() * 2500 + 200) * 100) / 100,
+                            status: ['completed', 'pending', 'completed', 'cancelled'][i % 4],
+                            created_at: d.toISOString()
+                        });
+                    }
+                    localStorage.setItem(ORDERS_KEY, JSON.stringify(allOrders));
+                }
+            };
+
+            // 2. 多维筛选引擎
+            const _filterData = () => {
+                const start = document.getElementById('filterStart').value;
+                const end = document.getElementById('filterEnd').value;
+                const status = document.getElementById('filterStatus').value;
+
+                return allOrders.filter(o => {
+                    let match = true;
+                    if (start) match = match && o.created_at >= start;
+                    if (end) match = match && o.created_at <= end + 'T23:59:59';
+                    if (status !== 'all') match = match && o.status === status;
+                    return match;
+                });
+            };
+
+            // 3. 渲染引擎
+            const _render = (data) => {
+                const tbody = document.getElementById('reportBody');
+                if (data.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="5"><div class="empty-state">未找到匹配该条件的数据</div></td></tr>`;
+                } else {
+                    tbody.innerHTML = data.map(o => `
+                        <tr>
+                            <td><strong style="color:#fff;">${o.id}</strong></td>
+                            <td>${o.customer_name}</td>
+                            <td>¥${(o.total || 0).toFixed(0)}</td>
+                            <td><span class="status-chip ${o.status}">${o.status === 'pending' ? '待处理' : o.status === 'cancelled' ? '已取消' : '已完成'}</span></td>
+                            <td>${new Date(o.created_at).toLocaleDateString()}</td>
+                        </tr>
+                    `).join('');
+                }
+            };
+
+            // 4. 公开接口
+            return {
+                init: function() {
+                    _loadData();
+                    // 设置日期默认值
+                    const now = new Date(); const past = new Date(now); past.setDate(past.getDate() - 30);
+                    document.getElementById('filterStart').value = past.toISOString().split('T')[0];
+                    document.getElementById('filterEnd').value = now.toISOString().split('T')[0];
+                    this.applyFilters();
+                },
+                applyFilters: function() {
+                    const filtered = _filterData();
+                    _render(filtered);
+                },
+                refresh: function() {
+                    _loadData();
+                    this.applyFilters();
+                },
+                exportCSV: function() {
+                    const data = _filterData();
+                    if (data.length === 0) return alert('当前筛选结果无数据可导出');
+                    let csv = '订单号,客户名称,金额,状态,创建时间\n';
+                    data.forEach(o => { csv += `${o.id},${o.customer_name},${o.total},${o.status},${o.created_at}\n`; });
+                    const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+                    const link = document.createElement('a');
+                    link.href = URL.createObjectURL(blob);
+                    link.download = `自定义报表_${new Date().toISOString().split('T')[0]}.csv`;
+                    document.body.appendChild(link); link.click(); document.body.removeChild(link);
+                }
+            };
+        })();
+
+        document.addEventListener('DOMContentLoaded', function() {
+            CustomReportModule.init();
+        });
+    </script>
+</body>
+</html>

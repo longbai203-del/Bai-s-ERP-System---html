@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>人力资源管理 - Enterprise ERP</title>
+</head>
+<body>
+    <div class="page hr-page">
+        <!-- ============================================================
+        人力资源管理
+        ============================================================ -->
+        <div class="hr-header">
+            <div>
+                <h1>👔 人力资源管理</h1>
+                <p class="subtitle">管理员工信息、考勤、薪资和绩效</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-primary" onclick="showCreateEmployeeModal()">＋ 添加员工</button>
+                <button class="btn btn-outline" onclick="exportHR()">📥 导出</button>
+            </div>
+        </div>
+
+        <!-- 统计卡片 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-info">
+                    <div class="stat-label">总员工</div>
+                    <div class="stat-value" id="totalEmployees">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-info">
+                    <div class="stat-label">在职</div>
+                    <div class="stat-value" id="activeEmployees">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📋</div>
+                <div class="stat-info">
+                    <div class="stat-label">部门数</div>
+                    <div class="stat-value" id="departmentCount">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💰</div>
+                <div class="stat-info">
+                    <div class="stat-label">月薪总额</div>
+                    <div class="stat-value" id="totalSalary">¥0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 工具栏 -->
+        <div class="toolbar">
+            <div class="left">
+                <div class="search-box">
+                    <span class="icon">🔍</span>
+                    <input type="text" id="hrSearch" placeholder="搜索姓名、职位、部门..." oninput="filterHR()">
+                </div>
+                <select id="departmentFilter" onchange="filterHR()" class="form-control">
+                    <option value="all">全部部门</option>
+                </select>
+                <select id="statusFilter" onchange="filterHR()" class="form-control">
+                    <option value="all">全部状态</option>
+                    <option value="active">在职</option>
+                    <option value="on_leave">休假中</option>
+                    <option value="inactive">已离职</option>
+                </select>
+            </div>
+            <div class="right">
+                <span id="resultCount" style="color:var(--text-muted);font-size:13px;">共 0 条</span>
+            </div>
+        </div>
+
+        <!-- 员工列表 -->
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>姓名</th>
+                        <th>职位</th>
+                        <th>部门</th>
+                        <th>薪资</th>
+                        <th>入职日期</th>
+                        <th>状态</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="hrBody">
+                    <tr>
+                        <td colspan="8" class="empty-state">暂无员工</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 分页 -->
+        <div class="pagination" id="hrPagination">
+            <div class="info">显示 <span id="pageStart">0</span>-<span id="pageEnd">0</span> 条，共 <span id="pageTotal">0</span> 条</div>
+            <div class="buttons" id="pageButtons"></div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    员工模态框
+    ============================================================ -->
+    <div class="modal-overlay" id="hrModal">
+        <div class="modal-content" style="max-width:500px;">
+            <div class="modal-header">
+                <div class="modal-title" id="hrModalTitle">添加员工</div>
+                <button class="modal-close" onclick="closeHRModal()">✕</button>
+            </div>
+            <form id="hrForm" onsubmit="saveEmployee(event)">
+                <input type="hidden" id="hrEditId">
+                <div class="form-group">
+                    <label class="form-label required">姓名</label>
+                    <input type="text" class="form-control" id="hrName" placeholder="请输入姓名" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label required">职位</label>
+                    <input type="text" class="form-control" id="hrPosition" placeholder="请输入职位" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label required">部门</label>
+                    <select class="form-control" id="hrDepartment" required>
+                        <option value="">请选择部门</option>
+                        <option value="管理部">管理部</option>
+                        <option value="销售部">销售部</option>
+                        <option value="服务部">服务部</option>
+                        <option value="维修部">维修部</option>
+                        <option value="财务部">财务部</option>
+                        <option value="仓储部">仓储部</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label required">薪资</label>
+                    <input type="number" class="form-control" id="hrSalary" placeholder="0.00" step="0.01" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label required">入职日期</label>
+                    <input type="date" class="form-control" id="hrHireDate" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">状态</label>
+                    <select class="form-control" id="hrStatus">
+                        <option value="active">在职</option>
+                        <option value="on_leave">休假中</option>
+                        <option value="inactive">已离职</option>
+                    </select>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeHRModal()">取消</button>
+                    <button type="submit" class="btn btn-primary">保存员工</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <style>
+        .hr-page {
+            padding: 0;
+        }
+
+        .hr-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .hr-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary, #0f172a);
+            margin: 0;
+        }
+
+        .hr-header .subtitle {
+            color: var(--text-secondary, #475569);
+            margin: 4px 0 0;
+            font-size: 14px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg-card, #ffffff);
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: var(--radius, 12px);
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .stat-card .stat-icon {
+            font-size: 28px;
+            flex-shrink: 0;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-input, #f1f5f9);
+            border-radius: var(--radius, 8px);
+        }
+
+        .stat-card .stat-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .stat-card .stat-label {
+            font-size: 12px;
+            color: var(--text-muted, #94a3b8);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary, #0f172a);
+            line-height: 1.2;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .toolbar .left {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+            flex: 1;
+        }
+
+        .toolbar .search-box {
+            display: flex;
+            align-items: center;
+            background: var(--bg-input, #f1f5f9);
+            border: 2px solid transparent;
+            border-radius: 10px;
+            padding: 0 14px;
+            transition: all 0.3s;
+            min-width: 200px;
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .toolbar .search-box:focus-within {
+            border-color: #4f46e5;
+            background: var(--bg-card, #ffffff);
+        }
+
+        .toolbar .search-box input {
+            border: none;
+            background: transparent;
+            padding: 8px 0;
+            font-size: 14px;
+            color: var(--text-primary, #0f172a);
+            width: 100%;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .toolbar .search-box .icon {
+            color: var(--text-muted, #94a3b8);
+            margin-right: 10px;
+        }
+
+        .form-control {
+            padding: 8px 14px;
+            border: 2px solid var(--border-color, #e2e8f0);
+            border-radius: var(--radius, 8px);
+            background: var(--bg-input, #f1f5f9);
+            color: var(--text-primary, #0f172a);
+            font-size: 14px;
+            outline: none;
+            min-width: 120px;
+        }
+
+        .form-control:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .table-container {
+            background: var(--bg-card, #ffffff);
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: var(--radius, 12px);
+            overflow: hidden;
+        }
+
+        .table-container .table {
+            margin: 0;
+        }
+
+        .table-container .table .actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .table-container .table .actions button {
+            padding: 4px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.15s;
+        }
+
+        .table-container .table .actions .btn-edit {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+        }
+
+        .table-container .table .actions .btn-edit:hover {
+            background: #3b82f6;
+            color: #fff;
+        }
+
+        .table-container .table .actions .btn-delete {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        .table-container .table .actions .btn-delete:hover {
+            background: #ef4444;
+            color: #fff;
+        }
+
+        .table-container .table .status-badge {
+            padding: 2px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .table-container .table .status-badge.active {
+            background: rgba(16, 185, 129, 0.15);
+            color: #10b981;
+        }
+
+        .table-container .table .status-badge.on_leave {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+        }
+
+        .table-container .table .status-badge.inactive {
+            background: rgba(148, 163, 184, 0.15);
+            color: #64748b;
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            border-top: 1px solid var(--border-color, #e2e8f0);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .pagination .info {
+            font-size: 13px;
+            color: var(--text-secondary, #475569);
+        }
+
+        .pagination .buttons {
+            display: flex;
+            gap: 4px;
+        }
+
+        .pagination .buttons button {
+            padding: 6px 12px;
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: 6px;
+            background: transparent;
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--text-secondary, #475569);
+            transition: all 0.15s;
+        }
+
+        .pagination .buttons button:hover:not(:disabled) {
+            background: #4f46e5;
+            color: #fff;
+            border-color: #4f46e5;
+        }
+
+        .pagination .buttons button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination .buttons button.active {
+            background: #4f46e5;
+            color: #fff;
+            border-color: #4f46e5;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted, #94a3b8);
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .hr-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .toolbar .left {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .toolbar .search-box {
+                max-width: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    <script>
+        let hrData = [];
+        let filteredHR = [];
+        let currentPage = 1;
+        const pageSize = 10;
+
+        function getStorage(key) {
+            try { return JSON.parse(localStorage.getItem('erp_' + key)); } catch { return null; }
+        }
+
+        function setStorage(key, data) {
+            try { localStorage.setItem('erp_' + key, JSON.stringify(data)); return true; } catch { return false; }
+        }
+
+        function showToast(message, type) {
+            type = type || 'info';
+            if (typeof window.showToast === 'function') {
+                window.showToast(message, type);
+                return;
+            }
+            const container = document.getElementById('toastContainer') || (function() {
+                const c = document.createElement('div');
+                c.id = 'toastContainer';
+                c.style.cssText =
+                    'position:fixed;top:20px;right:20px;z-index:10000;display:flex;flex-direction:column;gap:8px;max-width:400px;';
+                document.body.appendChild(c);
+                return c;
+            })();
+            const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+            const toast = document.createElement('div');
+            toast.style.cssText =
+                'padding:12px 20px;border-radius:12px;background:#fff;box-shadow:0 8px 32px rgba(0,0,0,0.15);border-left:4px solid #4f46e5;display:flex;align-items:center;gap:12px;animation:slideIn 0.3s ease;';
+            toast.innerHTML =
+                `<span>${icons[type] || 'ℹ️'}</span><span>${message}</span><button onclick="this.parentElement.remove()" style="background:none;border:none;font-size:18px;cursor:pointer;color:#94a3b8;margin-left:auto;">✕</button>`;
+            container.appendChild(toast);
+            setTimeout(function() {
+                if (toast.parentElement) {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateX(100%)';
+                    setTimeout(function() { toast.remove(); }, 300);
+                }
+            }, 3000);
+        }
+
+        function initHR() {
+            console.log('👔 人力资源管理初始化...');
+            loadHR();
+            updateHRStats();
+            renderHR();
+            console.log('✅ 人力资源管理初始化完成');
+        }
+
+        function loadHR() {
+            let data = getStorage('employees');
+            if (!data || data.length === 0) {
+                data = generateDemoEmployees();
+                setStorage('employees', data);
+            }
+            hrData = data;
+            filteredHR = [...hrData];
+        }
+
+        function generateDemoEmployees() {
+            const positions = ['经理', '主管', '收银员', '洗车工', '维修技师', '美容师', '销售顾问', '客服', '会计', '仓库管理员'];
+            const departments = ['管理部', '销售部', '服务部', '维修部', '财务部', '仓储部'];
+            const statuses = ['active', 'active', 'active', 'on_leave', 'inactive'];
+            const employees = [];
+
+            for (let i = 1; i <= 25; i++) {
+                const date = new Date();
+                date.setFullYear(date.getFullYear() - Math.floor(Math.random() * 5 + 1));
+
+                employees.push({
+                    id: i,
+                    name: '员工' + i,
+                    position: positions[i % positions.length],
+                    department: departments[i % departments.length],
+                    salary: Math.round((Math.random() * 8000 + 4000) * 100) / 100,
+                    hire_date: date.toISOString().split('T')[0],
+                    status: statuses[i % statuses.length],
+                    phone: '1' + (Math.floor(Math.random() * 9) + 3) + String(Math.floor(Math.random() * 1000000000))
+                        .padStart(9, '0'),
+                    email: 'employee' + i + '@company.com',
+                    created_at: date.toISOString()
+                });
+            }
+            return employees;
+        }
+
+        function updateHRStats() {
+            const total = hrData.length;
+            const active = hrData.filter(e => e.status === 'active').length;
+            const departments = [...new Set(hrData.map(e => e.department))];
+            const totalSalary = hrData.filter(e => e.status === 'active').reduce((sum, e) => sum + (e.salary || 0), 0);
+
+            document.getElementById('totalEmployees').textContent = total;
+            document.getElementById('activeEmployees').textContent = active;
+            document.getElementById('departmentCount').textContent = departments.length;
+            document.getElementById('totalSalary').textContent = '¥' + totalSalary.toFixed(2);
+
+            // 更新部门过滤选项
+            const filter = document.getElementById('departmentFilter');
+            filter.innerHTML = '<option value="all">全部部门</option>' +
+                departments.map(d => `<option value="${d}">${d}</option>`).join('');
+        }
+
+        function filterHR() {
+            const search = document.getElementById('hrSearch').value.toLowerCase();
+            const department = document.getElementById('departmentFilter').value;
+            const status = document.getElementById('statusFilter').value;
+
+            filteredHR = hrData.filter(e => {
+                let match = true;
+                if (search) {
+                    match = match && (e.name.toLowerCase().includes(search) ||
+                        e.position.toLowerCase().includes(search) ||
+                        e.department.toLowerCase().includes(search));
+                }
+                if (department !== 'all') {
+                    match = match && e.department === department;
+                }
+                if (status !== 'all') {
+                    match = match && e.status === status;
+                }
+                return match;
+            });
+
+            currentPage = 1;
+            renderHR();
+        }
+
+        function renderHR() {
+            const tbody = document.getElementById('hrBody');
+            const total = filteredHR.length;
+            const start = (currentPage - 1) * pageSize;
+            const end = Math.min(start + pageSize, total);
+            const pageData = filteredHR.slice(start, end);
+
+            document.getElementById('resultCount').textContent = `共 ${total} 条`;
+            document.getElementById('pageStart').textContent = total > 0 ? start + 1 : 0;
+            document.getElementById('pageEnd').textContent = end;
+            document.getElementById('pageTotal').textContent = total;
+
+            const statusMap = {
+                'active': { label: '在职', class: 'active' },
+                'on_leave': { label: '休假中', class: 'on_leave' },
+                'inactive': { label: '已离职', class: 'inactive' }
+            };
+
+            if (pageData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="empty-state">暂无员工</td></tr>';
+                renderPagination(total);
+                return;
+            }
+
+            tbody.innerHTML = pageData.map(e => `
+                <tr>
+                    <td>${e.id}</td>
+                    <td><strong>${e.name}</strong></td>
+                    <td>${e.position}</td>
+                    <td>${e.department}</td>
+                    <td>¥${(e.salary || 0).toFixed(2)}</td>
+                    <td>${e.hire_date}</td>
+                    <td><span class="status-badge ${statusMap[e.status]?.class || 'active'}">${statusMap[e.status]?.label || e.status}</span></td>
+                    <td>
+                        <div class="actions">
+                            <button class="btn-edit" onclick="editEmployee(${e.id})">✏️</button>
+                            <button class="btn-delete" onclick="deleteEmployee(${e.id})">🗑️</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+
+            renderPagination(total);
+        }
+
+        function renderPagination(total) {
+            const container = document.getElementById('pageButtons');
+            const totalPages = Math.ceil(total / pageSize);
+            if (totalPages <= 1) { container.innerHTML = ''; return; }
+
+            let html =
+                `<button onclick="goToPage(${currentPage - 1})" ${currentPage <= 1 ? 'disabled' : ''}>‹</button>`;
+            const maxShow = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxShow / 2));
+            let endPage = Math.min(totalPages, startPage + maxShow - 1);
+            if (endPage - startPage < maxShow - 1) {
+                startPage = Math.max(1, endPage - maxShow + 1);
+            }
+            if (startPage > 1) {
+                html += `<button onclick="goToPage(1)">1</button>`;
+                if (startPage > 2) html += `<button disabled>...</button>`;
+            }
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<button class="${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+            }
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) html += `<button disabled>...</button>`;
+                html += `<button onclick="goToPage(${totalPages})">${totalPages}</button>`;
+            }
+            html +=
+                `<button onclick="goToPage(${currentPage + 1})" ${currentPage >= totalPages ? 'disabled' : ''}>›</button>`;
+            container.innerHTML = html;
+        }
+
+        function goToPage(page) {
+            const totalPages = Math.ceil(filteredHR.length / pageSize);
+            if (page < 1 || page > totalPages) return;
+            currentPage = page;
+            renderHR();
+        }
+
+        function showCreateEmployeeModal() {
+            document.getElementById('hrModalTitle').textContent = '添加员工';
+            document.getElementById('hrEditId').value = '';
+            document.getElementById('hrForm').reset();
+            document.getElementById('hrHireDate').value = new Date().toISOString().split('T')[0];
+            document.getElementById('hrStatus').value = 'active';
+            document.getElementById('hrModal').classList.add('show');
+        }
+
+        function editEmployee(id) {
+            const employee = hrData.find(e => e.id === id);
+            if (!employee) { showToast('员工不存在', 'error'); return; }
+
+            document.getElementById('hrModalTitle').textContent = '编辑员工';
+            document.getElementById('hrEditId').value = id;
+            document.getElementById('hrName').value = employee.name;
+            document.getElementById('hrPosition').value = employee.position;
+            document.getElementById('hrDepartment').value = employee.department;
+            document.getElementById('hrSalary').value = employee.salary || 0;
+            document.getElementById('hrHireDate').value = employee.hire_date;
+            document.getElementById('hrStatus').value = employee.status;
+            document.getElementById('hrModal').classList.add('show');
+        }
+
+        function closeHRModal() {
+            document.getElementById('hrModal').classList.remove('show');
+        }
+
+        function saveEmployee(event) {
+            event.preventDefault();
+
+            const editId = document.getElementById('hrEditId').value;
+            const name = document.getElementById('hrName').value.trim();
+            const position = document.getElementById('hrPosition').value.trim();
+            const department = document.getElementById('hrDepartment').value;
+            const salary = parseFloat(document.getElementById('hrSalary').value);
+            const hireDate = document.getElementById('hrHireDate').value;
+            const status = document.getElementById('hrStatus').value;
+
+            if (!name) { showToast('请输入员工姓名', 'warning'); return; }
+            if (!position) { showToast('请输入职位', 'warning'); return; }
+            if (!department) { showToast('请选择部门', 'warning'); return; }
+            if (!salary || salary <= 0) { showToast('请输入有效薪资', 'warning'); return; }
+            if (!hireDate) { showToast('请选择入职日期', 'warning'); return; }
+
+            if (editId) {
+                const index = hrData.findIndex(e => e.id === parseInt(editId));
+                if (index === -1) { showToast('员工不存在', 'error'); return; }
+                hrData[index] = { ...hrData[index], name, position, department, salary, hire_date: hireDate, status };
+                showToast('员工信息已更新', 'success');
+            } else {
+                const maxId = hrData.reduce((max, e) => Math.max(max, e.id), 0);
+                hrData.push({
+                    id: maxId + 1,
+                    name,
+                    position,
+                    department,
+                    salary,
+                    hire_date: hireDate,
+                    status,
+                    phone: '',
+                    email: '',
+                    created_at: new Date().toISOString()
+                });
+                showToast('员工已添加', 'success');
+            }
+
+            setStorage('employees', hrData);
+            loadHR();
+            updateHRStats();
+            filterHR();
+            closeHRModal();
+        }
+
+        function deleteEmployee(id) {
+            if (!confirm(`确定要删除员工 ${id} 吗？`)) return;
+            hrData = hrData.filter(e => e.id !== id);
+            setStorage('employees', hrData);
+            loadHR();
+            updateHRStats();
+            filterHR();
+            showToast('员工已删除', 'success');
+        }
+
+        function exportHR() {
+            if (filteredHR.length === 0) { showToast('没有数据可导出', 'warning'); return; }
+
+            const exportData = filteredHR.map(e => ({
+                'ID': e.id,
+                '姓名': e.name,
+                '职位': e.position,
+                '部门': e.department,
+                '薪资': e.salary || 0,
+                '入职日期': e.hire_date,
+                '状态': e.status === 'active' ? '在职' : e.status === 'on_leave' ? '休假中' : '已离职',
+                '电话': e.phone || '',
+                '邮箱': e.email || '',
+                '创建时间': new Date(e.created_at).toLocaleString()
+            }));
+
+            const headers = Object.keys(exportData[0]);
+            let csv = headers.join(',') + '\n';
+            exportData.forEach(row => {
+                csv += headers.map(h => row[h] || '').join(',') + '\n';
+            });
+
+            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = '员工数据_' + new Date().toISOString().split('T')[0] + '.csv';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast('导出成功', 'success');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(initHR, 100);
+        });
+    </script>
+</body>
+</html>
+

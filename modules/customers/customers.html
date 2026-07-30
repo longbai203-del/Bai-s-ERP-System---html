@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>客户管理 - Enterprise ERP</title>
+</head>
+<body>
+    <div class="page customers-page">
+        <!-- ============================================================
+        客户管理
+        ============================================================ -->
+        <div class="customers-header">
+            <div>
+                <h1>👥 客户管理</h1>
+                <p class="subtitle">管理所有客户信息，查看客户消费记录</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-primary" onclick="showCreateCustomerModal()">＋ 添加客户</button>
+                <button class="btn btn-outline" onclick="exportCustomers()">📥 导出</button>
+            </div>
+        </div>
+
+        <!-- 统计卡片 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-icon">👥</div>
+                <div class="stat-info">
+                    <div class="stat-label">总客户</div>
+                    <div class="stat-value" id="totalCustomers">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⭐</div>
+                <div class="stat-info">
+                    <div class="stat-label">VIP客户</div>
+                    <div class="stat-value" id="vipCustomers">0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">💰</div>
+                <div class="stat-info">
+                    <div class="stat-label">总消费金额</div>
+                    <div class="stat-value" id="totalSpent">¥0</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📅</div>
+                <div class="stat-info">
+                    <div class="stat-label">本月新增</div>
+                    <div class="stat-value" id="newCustomers">0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 工具栏 -->
+        <div class="toolbar">
+            <div class="left">
+                <div class="search-box">
+                    <span class="icon">🔍</span>
+                    <input type="text" id="customerSearch" placeholder="搜索姓名、电话、邮箱..." oninput="filterCustomers()">
+                </div>
+                <select id="levelFilter" onchange="filterCustomers()" class="form-control">
+                    <option value="all">全部等级</option>
+                    <option value="普通">普通</option>
+                    <option value="银卡">银卡</option>
+                    <option value="金卡">金卡</option>
+                    <option value="钻石">钻石</option>
+                </select>
+            </div>
+            <div class="right">
+                <span id="resultCount" style="color:var(--text-muted);font-size:13px;">共 0 条</span>
+            </div>
+        </div>
+
+        <!-- 客户列表 -->
+        <div class="table-container">
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>姓名</th>
+                        <th>电话</th>
+                        <th>邮箱</th>
+                        <th>等级</th>
+                        <th>积分</th>
+                        <th>累计消费</th>
+                        <th>操作</th>
+                    </tr>
+                </thead>
+                <tbody id="customersBody">
+                    <tr>
+                        <td colspan="8" class="empty-state">暂无客户</td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <!-- 分页 -->
+        <div class="pagination" id="customerPagination">
+            <div class="info">显示 <span id="pageStart">0</span>-<span id="pageEnd">0</span> 条，共 <span id="pageTotal">0</span> 条</div>
+            <div class="buttons" id="pageButtons"></div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    客户模态框
+    ============================================================ -->
+    <div class="modal-overlay" id="customerModal">
+        <div class="modal-content" style="max-width:500px;">
+            <div class="modal-header">
+                <div class="modal-title" id="customerModalTitle">添加客户</div>
+                <button class="modal-close" onclick="closeCustomerModal()">✕</button>
+            </div>
+            <form id="customerForm" onsubmit="saveCustomer(event)">
+                <input type="hidden" id="customerEditId">
+                <div class="form-group">
+                    <label class="form-label required">姓名</label>
+                    <input type="text" class="form-control" id="customerName" placeholder="请输入姓名" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">电话</label>
+                    <input type="text" class="form-control" id="customerPhone" placeholder="请输入电话号码">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">邮箱</label>
+                    <input type="email" class="form-control" id="customerEmail" placeholder="请输入邮箱地址">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">地址</label>
+                    <input type="text" class="form-control" id="customerAddress" placeholder="请输入地址">
+                </div>
+                <div class="form-group">
+                    <label class="form-label">等级</label>
+                    <select class="form-control" id="customerLevel">
+                        <option value="普通">普通</option>
+                        <option value="银卡">银卡</option>
+                        <option value="金卡">金卡</option>
+                        <option value="钻石">钻石</option>
+                    </select>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">积分</label>
+                    <input type="number" class="form-control" id="customerPoints" value="0">
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-outline" onclick="closeCustomerModal()">取消</button>
+                    <button type="submit" class="btn btn-primary">保存客户</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <style>
+        .customers-page {
+            padding: 0;
+        }
+
+        .customers-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .customers-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary, #0f172a);
+            margin: 0;
+        }
+
+        .customers-header .subtitle {
+            color: var(--text-secondary, #475569);
+            margin: 4px 0 0;
+            font-size: 14px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .stat-card {
+            background: var(--bg-card, #ffffff);
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: var(--radius, 12px);
+            padding: 14px 18px;
+            display: flex;
+            align-items: center;
+            gap: 14px;
+        }
+
+        .stat-card .stat-icon {
+            font-size: 28px;
+            flex-shrink: 0;
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: var(--bg-input, #f1f5f9);
+            border-radius: var(--radius, 8px);
+        }
+
+        .stat-card .stat-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .stat-card .stat-label {
+            font-size: 12px;
+            color: var(--text-muted, #94a3b8);
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .stat-card .stat-value {
+            font-size: 20px;
+            font-weight: 700;
+            color: var(--text-primary, #0f172a);
+            line-height: 1.2;
+        }
+
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+        }
+
+        .toolbar .left {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            align-items: center;
+            flex: 1;
+        }
+
+        .toolbar .search-box {
+            display: flex;
+            align-items: center;
+            background: var(--bg-input, #f1f5f9);
+            border: 2px solid transparent;
+            border-radius: 10px;
+            padding: 0 14px;
+            transition: all 0.3s;
+            min-width: 200px;
+            flex: 1;
+            max-width: 300px;
+        }
+
+        .toolbar .search-box:focus-within {
+            border-color: #4f46e5;
+            background: var(--bg-card, #ffffff);
+        }
+
+        .toolbar .search-box input {
+            border: none;
+            background: transparent;
+            padding: 8px 0;
+            font-size: 14px;
+            color: var(--text-primary, #0f172a);
+            width: 100%;
+            outline: none;
+            font-family: inherit;
+        }
+
+        .toolbar .search-box .icon {
+            color: var(--text-muted, #94a3b8);
+            margin-right: 10px;
+        }
+
+        .form-control {
+            padding: 8px 14px;
+            border: 2px solid var(--border-color, #e2e8f0);
+            border-radius: var(--radius, 8px);
+            background: var(--bg-input, #f1f5f9);
+            color: var(--text-primary, #0f172a);
+            font-size: 14px;
+            outline: none;
+            min-width: 120px;
+        }
+
+        .form-control:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+        }
+
+        .table-container {
+            background: var(--bg-card, #ffffff);
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: var(--radius, 12px);
+            overflow: hidden;
+        }
+
+        .table-container .table {
+            margin: 0;
+        }
+
+        .table-container .table .actions {
+            display: flex;
+            gap: 6px;
+        }
+
+        .table-container .table .actions button {
+            padding: 4px 10px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.15s;
+        }
+
+        .table-container .table .actions .btn-edit {
+            background: rgba(59, 130, 246, 0.1);
+            color: #3b82f6;
+        }
+
+        .table-container .table .actions .btn-edit:hover {
+            background: #3b82f6;
+            color: #fff;
+        }
+
+        .table-container .table .actions .btn-delete {
+            background: rgba(239, 68, 68, 0.1);
+            color: #ef4444;
+        }
+
+        .table-container .table .actions .btn-delete:hover {
+            background: #ef4444;
+            color: #fff;
+        }
+
+        .table-container .table .level-badge {
+            padding: 2px 12px;
+            border-radius: 12px;
+            font-size: 12px;
+            font-weight: 500;
+            display: inline-block;
+        }
+
+        .table-container .table .level-badge.普通 {
+            background: rgba(148, 163, 184, 0.15);
+            color: #64748b;
+        }
+
+        .table-container .table .level-badge.银卡 {
+            background: rgba(148, 163, 184, 0.2);
+            color: #64748b;
+        }
+
+        .table-container .table .level-badge.金卡 {
+            background: rgba(245, 158, 11, 0.15);
+            color: #f59e0b;
+        }
+
+        .table-container .table .level-badge.钻石 {
+            background: rgba(79, 70, 229, 0.15);
+            color: #4f46e5;
+        }
+
+        .pagination {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 20px;
+            border-top: 1px solid var(--border-color, #e2e8f0);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .pagination .info {
+            font-size: 13px;
+            color: var(--text-secondary, #475569);
+        }
+
+        .pagination .buttons {
+            display: flex;
+            gap: 4px;
+        }
+
+        .pagination .buttons button {
+            padding: 6px 12px;
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: 6px;
+            background: transparent;
+            cursor: pointer;
+            font-size: 13px;
+            color: var(--text-secondary, #475569);
+            transition: all 0.15s;
+        }
+
+        .pagination .buttons button:hover:not(:disabled) {
+            background: #4f46e5;
+            color: #fff;
+            border-color: #4f46e5;
+        }
+
+        .pagination .buttons button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .pagination .buttons button.active {
+            background: #4f46e5;
+            color: #fff;
+            border-color: #4f46e5;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-muted, #94a3b8);
+        }
+
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .customers-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .toolbar {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .toolbar .left {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .toolbar .search-box {
+                max-width: none;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    <script>
+        let customersData = [];
+        let filteredCustomers = [];
+        let currentPage = 1;
+        const pageSize = 10;
+
+        function getStorage(key) {
+            try { return JSON.parse(localStorage.getItem('erp_' + key)); } catch { return null; }
+        }
+
+        function setStorage(key, data) {
+            try { localStorage.setItem('erp_' + key, JSON.stringify(data)); return true; } catch { return false; }
+        }
+
+        function showToast(message, type) {
+            type = type || 'info';
+            if (typeof window.showToast === 'function') {
+                window.showToast(message, type);
+                return;
+            }
+            const container = document.getElementById('toastContainer') || (function() {
+                const c = document.createElement('div');
+                c.id = 'toastContainer';
+                c.style.cssText =
+                    'position:fixed;top:20px;right:20px;z-index:10000;display:flex;flex-direction:column;gap:8px;max-width:400px;';
+                document.body.appendChild(c);
+                return c;
+            })();
+            const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+            const toast = document.createElement('div');
+            toast.style.cssText =
+                'padding:12px 20px;border-radius:12px;background:#fff;box-shadow:0 8px 32px rgba(0,0,0,0.15);border-left:4px solid #4f46e5;display:flex;align-items:center;gap:12px;animation:slideIn 0.3s ease;';
+            toast.innerHTML =
+                `<span>${icons[type] || 'ℹ️'}</span><span>${message}</span><button onclick="this.parentElement.remove()" style="background:none;border:none;font-size:18px;cursor:pointer;color:#94a3b8;margin-left:auto;">✕</button>`;
+            container.appendChild(toast);
+            setTimeout(function() {
+                if (toast.parentElement) {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateX(100%)';
+                    setTimeout(function() { toast.remove(); }, 300);
+                }
+            }, 3000);
+        }
+
+        function initCustomers() {
+            console.log('👥 客户管理初始化...');
+            loadCustomers();
+            updateCustomerStats();
+            renderCustomers();
+            console.log('✅ 客户管理初始化完成');
+        }
+
+        function loadCustomers() {
+            let data = getStorage('customers');
+            if (!data || data.length === 0) {
+                data = generateDemoCustomers();
+                setStorage('customers', data);
+            }
+            customersData = data;
+            filteredCustomers = [...customersData];
+        }
+
+        function generateDemoCustomers() {
+            const names = ['张伟', '王芳', '李明', '刘洋', '陈静', '杨帆', '赵磊', '黄丽', '周涛', '吴雪'];
+            const levels = ['普通', '普通', '银卡', '银卡', '金卡', '钻石'];
+            const customers = [];
+            for (let i = 1; i <= 25; i++) {
+                customers.push({
+                    id: i,
+                    name: names[i % names.length] + (i + 1),
+                    phone: '1' + (Math.floor(Math.random() * 9) + 3) + String(Math.floor(Math.random() * 1000000000))
+                        .padStart(9, '0'),
+                    email: 'customer' + i + '@example.com',
+                    address: '深圳市南山区科技园' + i + '号',
+                    level: levels[i % levels.length],
+                    points: Math.floor(Math.random() * 5000),
+                    total_spent: Math.round((Math.random() * 10000 + 100) * 100) / 100,
+                    created_at: new Date(Date.now() - Math.random() * 365 * 24 * 60 * 60 * 1000).toISOString()
+                });
+            }
+            return customers;
+        }
+
+        function updateCustomerStats() {
+            const total = customersData.length;
+            const vip = customersData.filter(c => c.level === '金卡' || c.level === '钻石').length;
+            const totalSpent = customersData.reduce((sum, c) => sum + (c.total_spent || 0), 0);
+            const monthStart = new Date();
+            monthStart.setDate(1);
+            monthStart.setHours(0, 0, 0, 0);
+            const newCustomers = customersData.filter(c => new Date(c.created_at) >= monthStart).length;
+            document.getElementById('totalCustomers').textContent = total;
+            document.getElementById('vipCustomers').textContent = vip;
+            document.getElementById('totalSpent').textContent = '¥' + totalSpent.toFixed(2);
+            document.getElementById('newCustomers').textContent = newCustomers;
+        }
+
+        function filterCustomers() {
+            const search = document.getElementById('customerSearch').value.toLowerCase();
+            const level = document.getElementById('levelFilter').value;
+            filteredCustomers = customersData.filter(c => {
+                let match = true;
+                if (search) {
+                    match = match && (c.name.toLowerCase().includes(search) ||
+                        (c.phone && c.phone.includes(search)) ||
+                        (c.email && c.email.toLowerCase().includes(search)));
+                }
+                if (level !== 'all') {
+                    match = match && c.level === level;
+                }
+                return match;
+            });
+            currentPage = 1;
+            renderCustomers();
+        }
+
+        function renderCustomers() {
+            const tbody = document.getElementById('customersBody');
+            const total = filteredCustomers.length;
+            const start = (currentPage - 1) * pageSize;
+            const end = Math.min(start + pageSize, total);
+            const pageData = filteredCustomers.slice(start, end);
+
+            document.getElementById('resultCount').textContent = `共 ${total} 条`;
+            document.getElementById('pageStart').textContent = total > 0 ? start + 1 : 0;
+            document.getElementById('pageEnd').textContent = end;
+            document.getElementById('pageTotal').textContent = total;
+
+            if (pageData.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="8" class="empty-state">暂无客户</td></tr>';
+                renderPagination(total);
+                return;
+            }
+
+            tbody.innerHTML = pageData.map(c => `
+                <tr>
+                    <td>${c.id}</td>
+                    <td><strong>${c.name}</strong></td>
+                    <td>${c.phone || '-'}</td>
+                    <td>${c.email || '-'}</td>
+                    <td><span class="level-badge ${c.level}">${c.level}</span></td>
+                    <td>${c.points || 0}</td>
+                    <td>¥${(c.total_spent || 0).toFixed(2)}</td>
+                    <td>
+                        <div class="actions">
+                            <button class="btn-edit" onclick="editCustomer(${c.id})">✏️</button>
+                            <button class="btn-delete" onclick="deleteCustomer(${c.id})">🗑️</button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+
+            renderPagination(total);
+        }
+
+        function renderPagination(total) {
+            const container = document.getElementById('pageButtons');
+            const totalPages = Math.ceil(total / pageSize);
+            if (totalPages <= 1) { container.innerHTML = ''; return; }
+
+            let html =
+                `<button onclick="goToPage(${currentPage - 1})" ${currentPage <= 1 ? 'disabled' : ''}>‹</button>`;
+            const maxShow = 5;
+            let startPage = Math.max(1, currentPage - Math.floor(maxShow / 2));
+            let endPage = Math.min(totalPages, startPage + maxShow - 1);
+            if (endPage - startPage < maxShow - 1) {
+                startPage = Math.max(1, endPage - maxShow + 1);
+            }
+            if (startPage > 1) {
+                html += `<button onclick="goToPage(1)">1</button>`;
+                if (startPage > 2) html += `<button disabled>...</button>`;
+            }
+            for (let i = startPage; i <= endPage; i++) {
+                html += `<button class="${i === currentPage ? 'active' : ''}" onclick="goToPage(${i})">${i}</button>`;
+            }
+            if (endPage < totalPages) {
+                if (endPage < totalPages - 1) html += `<button disabled>...</button>`;
+                html += `<button onclick="goToPage(${totalPages})">${totalPages}</button>`;
+            }
+            html +=
+                `<button onclick="goToPage(${currentPage + 1})" ${currentPage >= totalPages ? 'disabled' : ''}>›</button>`;
+            container.innerHTML = html;
+        }
+
+        function goToPage(page) {
+            const totalPages = Math.ceil(filteredCustomers.length / pageSize);
+            if (page < 1 || page > totalPages) return;
+            currentPage = page;
+            renderCustomers();
+        }
+
+        function showCreateCustomerModal() {
+            document.getElementById('customerModalTitle').textContent = '添加客户';
+            document.getElementById('customerEditId').value = '';
+            document.getElementById('customerForm').reset();
+            document.getElementById('customerLevel').value = '普通';
+            document.getElementById('customerPoints').value = '0';
+            document.getElementById('customerModal').classList.add('show');
+        }
+
+        function editCustomer(id) {
+            const customer = customersData.find(c => c.id === id);
+            if (!customer) { showToast('客户不存在', 'error'); return; }
+            document.getElementById('customerModalTitle').textContent = '编辑客户';
+            document.getElementById('customerEditId').value = id;
+            document.getElementById('customerName').value = customer.name;
+            document.getElementById('customerPhone').value = customer.phone || '';
+            document.getElementById('customerEmail').value = customer.email || '';
+            document.getElementById('customerAddress').value = customer.address || '';
+            document.getElementById('customerLevel').value = customer.level;
+            document.getElementById('customerPoints').value = customer.points || 0;
+            document.getElementById('customerModal').classList.add('show');
+        }
+
+        function closeCustomerModal() {
+            document.getElementById('customerModal').classList.remove('show');
+        }
+
+        function saveCustomer(event) {
+            event.preventDefault();
+            const editId = document.getElementById('customerEditId').value;
+            const name = document.getElementById('customerName').value.trim();
+            const phone = document.getElementById('customerPhone').value.trim();
+            const email = document.getElementById('customerEmail').value.trim();
+            const address = document.getElementById('customerAddress').value.trim();
+            const level = document.getElementById('customerLevel').value;
+            const points = parseInt(document.getElementById('customerPoints').value) || 0;
+
+            if (!name) { showToast('请输入客户姓名', 'warning'); return; }
+
+            if (editId) {
+                const index = customersData.findIndex(c => c.id === parseInt(editId));
+                if (index === -1) { showToast('客户不存在', 'error'); return; }
+                customersData[index] = { ...customersData[index], name, phone, email, address, level, points };
+                showToast('客户已更新', 'success');
+            } else {
+                const maxId = customersData.reduce((max, c) => Math.max(max, c.id), 0);
+                customersData.push({
+                    id: maxId + 1,
+                    name,
+                    phone,
+                    email,
+                    address,
+                    level,
+                    points,
+                    total_spent: 0,
+                    created_at: new Date().toISOString()
+                });
+                showToast('客户已添加', 'success');
+            }
+
+            setStorage('customers', customersData);
+            loadCustomers();
+            updateCustomerStats();
+            filterCustomers();
+            closeCustomerModal();
+        }
+
+        function deleteCustomer(id) {
+            if (!confirm(`确定要删除客户 ${id} 吗？`)) return;
+            customersData = customersData.filter(c => c.id !== id);
+            setStorage('customers', customersData);
+            loadCustomers();
+            updateCustomerStats();
+            filterCustomers();
+            showToast(`客户已删除`, 'success');
+        }
+
+        function exportCustomers() {
+            if (filteredCustomers.length === 0) { showToast('没有数据可导出', 'warning'); return; }
+            const exportData = filteredCustomers.map(c => ({
+                'ID': c.id,
+                '姓名': c.name,
+                '电话': c.phone || '',
+                '邮箱': c.email || '',
+                '地址': c.address || '',
+                '等级': c.level,
+                '积分': c.points || 0,
+                '累计消费': c.total_spent || 0,
+                '创建时间': new Date(c.created_at).toLocaleString()
+            }));
+            const headers = Object.keys(exportData[0]);
+            let csv = headers.join(',') + '\n';
+            exportData.forEach(row => {
+                csv += headers.map(h => row[h] || '').join(',') + '\n';
+            });
+            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = '客户数据_' + new Date().toISOString().split('T')[0] + '.csv';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast('导出成功', 'success');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(initCustomers, 100);
+        });
+    </script>
+</body>
+</html>
+

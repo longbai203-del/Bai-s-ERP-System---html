@@ -1,0 +1,789 @@
+<!-- ============================================================
+     Enterprise ERP System - 侧边栏布局
+     ============================================================ -->
+     <style>
+        /* ============================================================
+           侧边栏样式
+           ============================================================ */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 260px;
+            background: var(--bg-card, #ffffff);
+            border-right: 1px solid var(--border-color, #e2e8f0);
+            z-index: 1050;
+            display: flex;
+            flex-direction: column;
+            transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            overflow: hidden;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.05);
+        }
+    
+        .theme-dark .sidebar {
+            background: #1e293b;
+            border-right-color: #334155;
+        }
+    
+        /* 侧边栏头部 */
+        .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 16px 20px;
+            min-height: 64px;
+            border-bottom: 1px solid var(--border-color, #e2e8f0);
+            flex-shrink: 0;
+        }
+    
+        .sidebar-brand {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text-primary, #0f172a);
+        }
+    
+        .sidebar-brand-icon {
+            font-size: 28px;
+            line-height: 1;
+        }
+    
+        .sidebar-brand-text {
+            font-size: 18px;
+            font-weight: 700;
+            letter-spacing: -0.5px;
+            background: linear-gradient(135deg, #4f46e5, #818cf8);
+            background-clip: text; -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+    
+        .sidebar-toggle-btn {
+            background: none;
+            border: none;
+            font-size: 20px;
+            cursor: pointer;
+            color: var(--text-secondary, #475569);
+            padding: 4px 8px;
+            border-radius: 6px;
+            transition: background 0.2s;
+        }
+    
+        .sidebar-toggle-btn:hover {
+            background: var(--bg-hover, #f1f5f9);
+        }
+    
+        /* 侧边栏搜索 */
+        .sidebar-search {
+            padding: 12px 16px;
+            flex-shrink: 0;
+        }
+    
+        .sidebar-search-input {
+            width: 100%;
+            padding: 8px 14px;
+            border: 2px solid var(--border-color, #e2e8f0);
+            border-radius: 8px;
+            font-size: 13px;
+            background: var(--bg-input, #f1f5f9);
+            color: var(--text-primary, #0f172a);
+            transition: all 0.3s;
+            outline: none;
+        }
+    
+        .sidebar-search-input:focus {
+            border-color: #4f46e5;
+            box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.1);
+            background: var(--bg-card, #ffffff);
+        }
+    
+        .sidebar-search-input::placeholder {
+            color: var(--text-muted, #94a3b8);
+        }
+    
+        /* 侧边栏导航 */
+        .sidebar-nav {
+            flex: 1;
+            overflow-y: auto;
+            padding: 8px 0;
+            scrollbar-width: thin;
+        }
+    
+        .sidebar-nav::-webkit-scrollbar {
+            width: 4px;
+        }
+    
+        .sidebar-nav::-webkit-scrollbar-thumb {
+            background: var(--border-color, #e2e8f0);
+            border-radius: 2px;
+        }
+    
+        .sidebar-nav::-webkit-scrollbar-track {
+            background: transparent;
+        }
+    
+        .sidebar-nav .nav-section-title {
+            padding: 8px 20px 4px;
+            font-size: 11px;
+            font-weight: 600;
+            color: var(--text-muted, #94a3b8);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+    
+        .nav-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+    
+        .nav-item {
+            margin: 1px 8px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+    
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 10px 14px;
+            color: var(--text-secondary, #475569);
+            text-decoration: none;
+            border-radius: 8px;
+            transition: all 0.2s;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            position: relative;
+        }
+    
+        .nav-link:hover {
+            background: var(--bg-hover, #f1f5f9);
+            color: var(--text-primary, #0f172a);
+        }
+    
+        .nav-link.active {
+            background: rgba(79, 70, 229, 0.1);
+            color: #4f46e5;
+        }
+    
+        .theme-dark .nav-link.active {
+            background: rgba(79, 70, 229, 0.2);
+        }
+    
+        .nav-link.active::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 3px;
+            height: 24px;
+            background: #4f46e5;
+            border-radius: 0 3px 3px 0;
+        }
+    
+        .nav-icon {
+            font-size: 18px;
+            width: 24px;
+            text-align: center;
+            flex-shrink: 0;
+        }
+    
+        .nav-text {
+            flex: 1;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    
+        .nav-badge {
+            background: #ef4444;
+            color: #fff;
+            font-size: 10px;
+            font-weight: 600;
+            padding: 1px 8px;
+            border-radius: 10px;
+            min-width: 18px;
+            text-align: center;
+        }
+    
+        .nav-link .nav-arrow {
+            font-size: 12px;
+            color: var(--text-muted, #94a3b8);
+            transition: transform 0.3s;
+        }
+    
+        .nav-link.expanded .nav-arrow {
+            transform: rotate(90deg);
+        }
+    
+        /* 子菜单 */
+        .sub-menu {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            overflow: hidden;
+            max-height: 0;
+            transition: max-height 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    
+        .sub-menu.open {
+            max-height: 500px;
+        }
+    
+        .sub-menu .nav-link {
+            padding-left: 50px;
+            font-size: 13px;
+            font-weight: 400;
+            color: var(--text-secondary, #475569);
+        }
+    
+        .sub-menu .nav-link:hover {
+            background: var(--bg-hover, #f1f5f9);
+            color: var(--text-primary, #0f172a);
+        }
+    
+        .sub-menu .nav-link.active {
+            background: rgba(79, 70, 229, 0.08);
+            color: #4f46e5;
+        }
+    
+        /* 侧边栏底部 */
+        .sidebar-footer {
+            padding: 12px 16px;
+            border-top: 1px solid var(--border-color, #e2e8f0);
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: var(--bg-secondary, #f8fafc);
+        }
+    
+        .theme-dark .sidebar-footer {
+            background: #1e293b;
+            border-top-color: #334155;
+        }
+    
+        .sidebar-user-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            background: rgba(79, 70, 229, 0.1);
+            color: #4f46e5;
+            flex-shrink: 0;
+        }
+    
+        .sidebar-user-info {
+            flex: 1;
+            min-width: 0;
+        }
+    
+        .sidebar-user-name {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary, #0f172a);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+    
+        .sidebar-user-role {
+            font-size: 11px;
+            color: var(--text-muted, #94a3b8);
+        }
+    
+        .sidebar-footer-actions {
+            display: flex;
+            gap: 4px;
+            flex-shrink: 0;
+        }
+    
+        .sidebar-footer-actions button {
+            background: none;
+            border: none;
+            font-size: 16px;
+            cursor: pointer;
+            padding: 6px 8px;
+            border-radius: 6px;
+            color: var(--text-secondary, #475569);
+            transition: background 0.2s;
+        }
+    
+        .sidebar-footer-actions button:hover {
+            background: var(--bg-hover, #f1f5f9);
+        }
+    
+        /* 响应式 */
+        @media (max-width: 1024px) {
+            .sidebar {
+                transform: translateX(-100%);
+                width: 280px;
+            }
+    
+            .sidebar.open {
+                transform: translateX(0);
+            }
+    
+            .sidebar-overlay {
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(0, 0, 0, 0.4);
+                z-index: 1040;
+                display: none;
+            }
+    
+            .sidebar-overlay.open {
+                display: block;
+            }
+        }
+    
+        /* 折叠状态 */
+        .sidebar.collapsed {
+            width: 64px;
+        }
+    
+        .sidebar.collapsed .sidebar-brand-text,
+        .sidebar.collapsed .nav-text,
+        .sidebar.collapsed .nav-badge,
+        .sidebar.collapsed .nav-arrow,
+        .sidebar.collapsed .sidebar-user-name,
+        .sidebar.collapsed .sidebar-user-role,
+        .sidebar.collapsed .sidebar-search {
+            display: none;
+        }
+    
+        .sidebar.collapsed .nav-link {
+            justify-content: center;
+            padding: 10px 0;
+        }
+    
+        .sidebar.collapsed .sidebar-header {
+            justify-content: center;
+            padding: 16px 0;
+        }
+    
+        .sidebar.collapsed .sidebar-footer {
+            justify-content: center;
+            padding: 12px 0;
+        }
+    
+        .sidebar.collapsed .sidebar-user-avatar {
+            width: 32px;
+            height: 32px;
+            font-size: 16px;
+        }
+    
+        .sidebar.collapsed .sidebar-footer-actions {
+            display: none;
+        }
+    </style>
+    
+    <!-- ============================================================
+         侧边栏 HTML
+         ============================================================ -->
+    <aside class="sidebar" id="sidebar" role="navigation" aria-label="侧边导航">
+        <!-- 侧边栏遮罩（移动端） -->
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    
+        <!-- 头部 -->
+        <div class="sidebar-header">
+            <a href="/index.html" class="sidebar-brand" onclick="navigate('/'); return false;">
+                <span class="sidebar-brand-icon">🏢</span>
+                <span class="sidebar-brand-text">Enterprise ERP</span>
+            </a>
+            <button class="sidebar-toggle-btn" onclick="toggleSidebarCollapse()" title="折叠侧边栏">
+                ☰
+            </button>
+        </div>
+    
+        <!-- 搜索 -->
+        <div class="sidebar-search">
+            <input type="text" class="sidebar-search-input" placeholder="搜索菜单..." id="sidebarSearch"
+                   oninput="filterMenu(this.value)">
+        </div>
+    
+        <!-- 导航菜单 -->
+        <nav class="sidebar-nav" id="sidebarNav">
+            <div id="menuContainer">
+                <!-- 菜单由 JavaScript 动态生成 -->
+            </div>
+        </nav>
+    
+        <!-- 底部 -->
+        <div class="sidebar-footer">
+            <div class="sidebar-user-avatar">👤</div>
+            <div class="sidebar-user-info">
+                <div class="sidebar-user-name" id="sidebarUserName">管理员</div>
+                <div class="sidebar-user-role" id="sidebarUserRole">系统管理员</div>
+            </div>
+            <div class="sidebar-footer-actions">
+                <button onclick="toggleTheme()" title="切换主题">🌓</button>
+                <button onclick="handleLogout()" title="退出登录">🚪</button>
+            </div>
+        </div>
+    </aside>
+    
+    <script>
+        // ============================================================
+        // 侧边栏 JavaScript
+        // ============================================================
+    
+        /**
+         * 菜单数据结构
+         */
+        const MENU_STRUCTURE = [
+            {
+                id: 'dashboard',
+                icon: '📊',
+                name: '仪表盘',
+                path: 'modules/dashboard/dashboard.html',
+                children: []
+            },
+            {
+                id: 'pos',
+                icon: '🛒',
+                name: '销售点',
+                path: 'modules/pos/pos.html',
+                children: []
+            },
+            {
+                id: 'orders',
+                icon: '📋',
+                name: '订单管理',
+                path: 'modules/orders/orders.html',
+                children: [
+                    { id: 'orders-list', name: '订单列表', path: 'modules/orders/list.html' },
+                    { id: 'orders-detail', name: '订单详情', path: 'modules/orders/detail.html' },
+                    { id: 'orders-refunds', name: '退款管理', path: 'modules/orders/refunds.html' },
+                    { id: 'orders-returns', name: '退货管理', path: 'modules/orders/returns.html' }
+                ]
+            },
+            {
+                id: 'customers',
+                icon: '👥',
+                name: '客户管理',
+                path: 'modules/customers/customers.html',
+                children: [
+                    { id: 'customers-list', name: '客户列表', path: 'modules/customers/customers.html' },
+                    { id: 'customers-membership', name: '会员管理', path: 'modules/customers/membership.html' },
+                    { id: 'customers-feedback', name: '客户反馈', path: 'modules/customers/feedback.html' },
+                    { id: 'customers-vehicles', name: '车辆管理', path: 'modules/customers/vehicles.html' },
+                    { id: 'customers-wallet', name: '钱包管理', path: 'modules/customers/wallet.html' },
+                    { id: 'customers-coupons', name: '优惠券管理', path: 'modules/customers/coupons.html' },
+                    { id: 'customers-gift-cards', name: '礼品卡管理', path: 'modules/customers/gift-cards.html' }
+                ]
+            },
+            {
+                id: 'products',
+                icon: '📦',
+                name: '产品管理',
+                path: 'modules/products/products.html',
+                children: [
+                    { id: 'products-list', name: '产品列表', path: 'modules/products/products.html' },
+                    { id: 'products-categories', name: '分类管理', path: 'modules/products/categories.html' },
+                    { id: 'products-brands', name: '品牌管理', path: 'modules/products/brands.html' },
+                    { id: 'products-variants', name: '规格管理', path: 'modules/products/variants.html' },
+                    { id: 'products-price-lists', name: '价格管理', path: 'modules/products/price-lists.html' },
+                    { id: 'products-barcodes', name: '条码管理', path: 'modules/products/barcodes.html' },
+                    { id: 'products-combos', name: '套餐管理', path: 'modules/products/combos.html' },
+                    { id: 'products-modifiers', name: '附加项管理', path: 'modules/products/modifiers.html' }
+                ]
+            },
+            {
+                id: 'inventory',
+                icon: '📊',
+                name: '库存管理',
+                path: 'modules/inventory/inventory.html',
+                children: [
+                    { id: 'inventory-list', name: '库存列表', path: 'modules/inventory/inventory.html' },
+                    { id: 'inventory-stock', name: '实时库存', path: 'modules/inventory/stock.html' },
+                    { id: 'inventory-transfers', name: '库存调拨', path: 'modules/inventory/transfers.html' },
+                    { id: 'inventory-adjustments', name: '库存调整', path: 'modules/inventory/adjustments.html' },
+                    { id: 'inventory-cycle-count', name: '盘点管理', path: 'modules/inventory/cycle-count.html' },
+                    { id: 'inventory-low-stock', name: '低库存预警', path: 'modules/inventory/low-stock.html' },
+                    { id: 'inventory-expiry', name: '过期管理', path: 'modules/inventory/expiry.html' },
+                    { id: 'inventory-serial', name: '序列号管理', path: 'modules/inventory/serial-numbers.html' },
+                    { id: 'inventory-batches', name: '批次管理', path: 'modules/inventory/batches.html' },
+                    { id: 'inventory-history', name: '库存历史', path: 'modules/inventory/history.html' },
+                    { id: 'inventory-warehouses', name: '仓库管理', path: 'modules/inventory/warehouses.html' }
+                ]
+            },
+            {
+                id: 'purchase',
+                icon: '🛍️',
+                name: '采购管理',
+                path: 'modules/purchase/purchase.html',
+                children: [
+                    { id: 'purchase-list', name: '采购订单', path: 'modules/purchase/purchase.html' },
+                    { id: 'purchase-quotations', name: '询价管理', path: 'modules/purchase/quotations.html' },
+                    { id: 'purchase-receiving', name: '收货管理', path: 'modules/purchase/receiving.html' },
+                    { id: 'purchase-import', name: '导入采购', path: 'modules/purchase/import.html' },
+                    { id: 'purchase-suppliers', name: '供应商管理', path: 'modules/purchase/suppliers.html' },
+                    { id: 'purchase-supplier-payments', name: '供应商付款', path: 'modules/purchase/supplier-payments.html' }
+                ]
+            },
+            {
+                id: 'finance',
+                icon: '💰',
+                name: '财务管理',
+                path: 'modules/finance/finance.html',
+                children: [
+                    { id: 'finance-overview', name: '财务总览', path: 'modules/finance/finance.html' },
+                    { id: 'finance-income', name: '收入管理', path: 'modules/finance/income.html' },
+                    { id: 'finance-expenses', name: '支出管理', path: 'modules/finance/expenses.html' },
+                    { id: 'finance-invoices', name: '发票管理', path: 'modules/finance/invoices.html' },
+                    { id: 'finance-payments', name: '收款管理', path: 'modules/finance/payments.html' },
+                    { id: 'finance-bank', name: '银行账户', path: 'modules/finance/bank.html' },
+                    { id: 'finance-cash-flow', name: '现金流分析', path: 'modules/finance/cash-flow.html' },
+                    { id: 'finance-profit-loss', name: '损益表', path: 'modules/finance/profit-loss.html' },
+                    { id: 'finance-trial-balance', name: '试算平衡', path: 'modules/finance/trial-balance.html' },
+                    { id: 'finance-journal', name: '日记账', path: 'modules/finance/journal.html' },
+                    { id: 'finance-vat', name: '增值税管理', path: 'modules/finance/vat.html' },
+                    { id: 'finance-taxes', name: '税务管理', path: 'modules/finance/taxes.html' },
+                    { id: 'finance-settlements', name: '结算管理', path: 'modules/finance/settlements.html' }
+                ]
+            },
+            {
+                id: 'hr',
+                icon: '👔',
+                name: '人力资源',
+                path: 'modules/hr/hr.html',
+                children: [
+                    { id: 'hr-employees', name: '员工管理', path: 'modules/hr/employees.html' },
+                    { id: 'hr-attendance', name: '考勤管理', path: 'modules/hr/attendance.html' },
+                    { id: 'hr-payroll', name: '薪资管理', path: 'modules/hr/payroll.html' },
+                    { id: 'hr-leaves', name: '请假管理', path: 'modules/hr/leaves.html' },
+                    { id: 'hr-schedules', name: '排班管理', path: 'modules/hr/schedules.html' },
+                    { id: 'hr-shifts', name: '班次管理', path: 'modules/hr/shifts.html' },
+                    { id: 'hr-performance', name: '绩效管理', path: 'modules/hr/performance.html' },
+                    { id: 'hr-tasks', name: '任务管理', path: 'modules/hr/tasks.html' },
+                    { id: 'hr-bonuses', name: '奖金管理', path: 'modules/hr/bonuses.html' },
+                    { id: 'hr-commissions', name: '佣金管理', path: 'modules/hr/commissions.html' },
+                    { id: 'hr-penalties', name: '处罚管理', path: 'modules/hr/penalties.html' },
+                    { id: 'hr-permissions', name: '权限管理', path: 'modules/hr/permissions.html' }
+                ]
+            },
+            {
+                id: 'analytics',
+                icon: '📈',
+                name: '数据分析',
+                path: 'modules/analytics/analytics.html',
+                children: [
+                    { id: 'analytics-dashboard', name: '分析总览', path: 'modules/analytics/analytics.html' },
+                    { id: 'analytics-reports', name: '报表中心', path: 'modules/analytics/reports.html' },
+                    { id: 'analytics-forecast', name: '销售预测', path: 'modules/analytics/forecast.html' },
+                    { id: 'analytics-visualization', name: '数据可视化', path: 'modules/analytics/visualization.html' },
+                    { id: 'analytics-business-health', name: '经营健康度', path: 'modules/analytics/business-health.html' },
+                    { id: 'analytics-custom-reports', name: '自定义报表', path: 'modules/analytics/custom-reports.html' },
+                    { id: 'analytics-recommendations', name: '智能推荐', path: 'modules/analytics/recommendations.html' }
+                ]
+            },
+            {
+                id: 'settings',
+                icon: '⚙️',
+                name: '系统设置',
+                path: 'modules/settings/settings.html',
+                children: [
+                    { id: 'settings-general', name: '通用设置', path: 'modules/settings/general.html' },
+                    { id: 'settings-company', name: '公司信息', path: 'modules/settings/company.html' },
+                    { id: 'settings-branches', name: '分支管理', path: 'modules/settings/branches.html' },
+                    { id: 'settings-profile', name: '个人资料', path: 'modules/settings/profile.html' },
+                    { id: 'settings-preferences', name: '偏好设置', path: 'modules/settings/preferences.html' }
+                ]
+            },
+            {
+                id: 'ai',
+                icon: '🤖',
+                name: 'AI助手',
+                path: 'modules/ai/ai.html',
+                children: [
+                    { id: 'ai-chat', name: '智能对话', path: 'modules/ai/ai.html' },
+                    { id: 'ai-crm', name: '智能CRM', path: 'modules/ai/crm.html' }
+                ]
+            }
+        ];
+    
+        /**
+         * 渲染菜单
+         */
+        function renderMenu() {
+            const container = document.getElementById('menuContainer');
+            if (!container) return;
+    
+            let html = '';
+    
+            MENU_STRUCTURE.forEach((item, index) => {
+                const hasChildren = item.children && item.children.length > 0;
+                const currentPath = window.location.pathname;
+                const isActive = currentPath === item.path || (hasChildren && item.children.some(c => currentPath === c.path));
+    
+                html += `<ul class="nav-list">`;
+    
+                // 主菜单项
+                html += `
+                    <li class="nav-item">
+                        <a class="nav-link ${isActive ? 'active' : ''} ${hasChildren ? 'has-children' : ''}"
+                           ${hasChildren ? `onclick="toggleSubMenu(this)"` : `href="${item.path}" onclick="navigate('${item.path}'); return false;"`}
+                           data-target="sub_${item.id}">
+                            <span class="nav-icon">${item.icon}</span>
+                            <span class="nav-text">${item.name}</span>
+                            ${hasChildren ? `<span class="nav-arrow">▶</span>` : ''}
+                        </a>
+                    </li>
+                `;
+    
+                // 子菜单
+                if (hasChildren) {
+                    const isOpen = isActive || item.children.some(c => currentPath === c.path);
+                    html += `
+                        <ul class="sub-menu ${isOpen ? 'open' : ''}" id="sub_${item.id}">
+                    `;
+                    item.children.forEach(child => {
+                        const isChildActive = currentPath === child.path;
+                        html += `
+                            <li class="nav-item">
+                                <a class="nav-link ${isChildActive ? 'active' : ''}"
+                                   href="${child.path}"
+                                   onclick="navigate('${child.path}'); return false;">
+                                    <span class="nav-icon" style="font-size:14px;">•</span>
+                                    <span class="nav-text">${child.name}</span>
+                                </a>
+                            </li>
+                        `;
+                    });
+                    html += `</ul>`;
+                }
+    
+                html += `</ul>`;
+            });
+    
+            container.innerHTML = html;
+        }
+    
+        /**
+         * 切换子菜单展开/折叠
+         */
+        function toggleSubMenu(element) {
+            const targetId = element.dataset.target;
+            const subMenu = document.getElementById(targetId);
+            if (subMenu) {
+                subMenu.classList.toggle('open');
+                element.classList.toggle('expanded');
+            }
+        }
+    
+        /**
+         * 搜索菜单过滤
+         */
+        function filterMenu(query) {
+            query = query.toLowerCase().trim();
+            const items = document.querySelectorAll('.nav-item');
+    
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (query === '' || text.includes(query)) {
+                    item.style.display = '';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+    
+            // 展开所有子菜单
+            if (query !== '') {
+                document.querySelectorAll('.sub-menu').forEach(el => {
+                    el.classList.add('open');
+                });
+            }
+        }
+    
+        /**
+         * 切换侧边栏折叠
+         */
+        function toggleSidebarCollapse() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('collapsed');
+            localStorage.setItem('sidebar_collapsed', sidebar.classList.contains('collapsed'));
+        }
+    
+        /**
+         * 切换侧边栏（移动端）
+         */
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebarOverlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('open');
+            document.body.style.overflow = sidebar.classList.contains('open') ? 'hidden' : '';
+        }
+    
+        /**
+         * 更新用户信息
+         */
+        function updateSidebarUser() {
+            const user = Auth && Auth.getCurrentUser ? Auth.getCurrentUser() : null;
+            if (user) {
+                const nameEl = document.getElementById('sidebarUserName');
+                const roleEl = document.getElementById('sidebarUserRole');
+                if (nameEl) nameEl.textContent = user.name || user.username || '用户';
+                if (roleEl) roleEl.textContent = user.role || '普通用户';
+            }
+        }
+    
+        /**
+         * 退出登录
+         */
+        function handleLogout() {
+            if (confirm('确定要退出登录吗？')) {
+                if (typeof Auth !== 'undefined' && Auth.logout) {
+                    Auth.logout();
+                } else {
+                    localStorage.clear();
+                    window.location.href = '/login.html';
+                }
+            }
+        }
+    
+        // ============================================================
+        // 初始化
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function() {
+            renderMenu();
+            updateSidebarUser();
+    
+            // 恢复折叠状态
+            const isCollapsed = localStorage.getItem('sidebar_collapsed') === 'true';
+            if (isCollapsed) {
+                document.getElementById('sidebar').classList.add('collapsed');
+            }
+    
+            // 点击遮罩关闭侧边栏
+            document.getElementById('sidebarOverlay').addEventListener('click', function() {
+                toggleSidebar();
+            });
+    
+            // 键盘快捷键：Ctrl+Shift+S 切换侧边栏
+            document.addEventListener('keydown', function(e) {
+                if (e.ctrlKey && e.shiftKey && e.key === 'S') {
+                    e.preventDefault();
+                    toggleSidebar();
+                }
+            });
+        });
+    
+        // 监听模块加载完成，更新菜单高亮
+        document.addEventListener('moduleLoaded', function() {
+            renderMenu();
+        });
+    </script>
+

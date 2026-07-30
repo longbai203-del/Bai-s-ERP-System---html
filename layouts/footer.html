@@ -1,0 +1,247 @@
+<!-- ============================================================
+     Enterprise ERP System - 页脚布局
+     ============================================================ -->
+     <style>
+        /* ============================================================
+           页脚样式
+           ============================================================ */
+        .app-footer {
+            background: var(--bg-secondary, #f8fafc);
+            border-top: 1px solid var(--border-color, #e2e8f0);
+            padding: 12px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 8px 16px;
+            font-size: 13px;
+            color: var(--text-secondary, #475569);
+            flex-shrink: 0;
+            min-height: 48px;
+        }
+    
+        .theme-dark .app-footer {
+            background: #0f172a;
+            border-top-color: #334155;
+        }
+    
+        .app-footer .footer-left {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+    
+        .app-footer .footer-left .brand {
+            font-weight: 600;
+            color: var(--text-primary, #0f172a);
+        }
+    
+        .app-footer .footer-left .version {
+            color: var(--text-muted, #94a3b8);
+            font-size: 12px;
+            padding: 2px 8px;
+            background: var(--bg-input, #f1f5f9);
+            border-radius: 4px;
+        }
+    
+        .app-footer .footer-right {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+    
+        .app-footer .footer-right a {
+            color: var(--text-secondary, #475569);
+            text-decoration: none;
+            transition: color 0.2s;
+            font-size: 13px;
+        }
+    
+        .app-footer .footer-right a:hover {
+            color: #4f46e5;
+        }
+    
+        .app-footer .footer-right .divider {
+            color: var(--border-color, #e2e8f0);
+        }
+    
+        .app-footer .footer-right .status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 12px;
+            color: var(--text-muted, #94a3b8);
+        }
+    
+        .app-footer .footer-right .status .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            display: inline-block;
+            animation: pulse-dot 2s ease-in-out infinite;
+        }
+    
+        .app-footer .footer-right .status .dot.online {
+            background: #10b981;
+        }
+    
+        @keyframes pulse-dot {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.3; }
+        }
+    
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .app-footer {
+                padding: 10px 16px;
+                flex-direction: column;
+                text-align: center;
+            }
+            .app-footer .footer-right {
+                justify-content: center;
+            }
+        }
+    
+        @media (max-width: 480px) {
+            .app-footer .footer-right {
+                gap: 8px;
+                font-size: 12px;
+            }
+            .app-footer .footer-right .divider {
+                display: none;
+            }
+        }
+    </style>
+    
+    <!-- ============================================================
+         页脚 HTML
+         ============================================================ -->
+    <footer class="app-footer" role="contentinfo">
+        <div class="footer-left">
+            <span class="brand">🏢 Enterprise ERP</span>
+            <span class="version">v3.0.0</span>
+        </div>
+        <div class="footer-right">
+            <span class="status">
+                <span class="dot online"></span>
+                系统运行中
+            </span>
+            <span class="divider">|</span>
+            <a href="#" onclick="showAbout(); return false;">关于</a>
+            <span class="divider">|</span>
+            <a href="#" onclick="showHelp(); return false;">帮助</a>
+            <span class="divider">|</span>
+            <a href="#" onclick="showSupport(); return false;">技术支持</a>
+            <span class="divider">|</span>
+            <span id="footerTime" style="color:var(--text-muted);font-size:12px;"></span>
+        </div>
+    </footer>
+    
+    <script>
+        // ============================================================
+        // 页脚 JavaScript
+        // ============================================================
+    
+        /**
+         * 显示关于对话框
+         */
+        function showAbout() {
+            if (typeof Dialog !== 'undefined' && Dialog.alert) {
+                Dialog.alert({
+                    title: '关于 Enterprise ERP',
+                    message: `
+                        <div style="text-align:center;padding:8px 0;">
+                            <div style="font-size:48px;margin-bottom:8px;">🏢</div>
+                            <h3 style="margin:0;color:var(--text-primary);">Enterprise ERP v3.0.0</h3>
+                            <p style="color:var(--text-secondary);margin:4px 0;">企业资源计划管理系统</p>
+                            <p style="color:var(--text-muted);font-size:12px;margin-top:8px;">
+                                © 2024 Enterprise ERP. All Rights Reserved.<br>
+                                纯前端 · 离线运行 · 开源免费
+                            </p>
+                        </div>
+                    `,
+                    type: 'info',
+                    buttonText: '知道了'
+                });
+            } else {
+                alert('Enterprise ERP v3.0.0\n企业资源计划管理系统');
+            }
+        }
+    
+        /**
+         * 显示帮助
+         */
+        function showHelp() {
+            if (typeof Dialog !== 'undefined' && Dialog.alert) {
+                Dialog.alert({
+                    title: '📖 帮助中心',
+                    message: `
+                        <div style="padding:4px 0;">
+                            <p><strong>快速开始</strong></p>
+                            <p style="color:var(--text-secondary);font-size:13px;">
+                                1. 使用侧边栏导航到各个模块<br>
+                                2. 使用顶部搜索快速查找功能<br>
+                                3. 所有数据保存在本地浏览器中
+                            </p>
+                            <p style="color:var(--text-muted);font-size:12px;margin-top:8px;">
+                                更多帮助请访问文档中心
+                            </p>
+                        </div>
+                    `,
+                    type: 'info',
+                    buttonText: '我知道了'
+                });
+            } else {
+                alert('帮助文档\n\n1. 侧边栏导航\n2. 全局搜索\n3. 本地数据存储');
+            }
+        }
+    
+        /**
+         * 显示技术支持
+         */
+        function showSupport() {
+            if (typeof Dialog !== 'undefined' && Dialog.alert) {
+                Dialog.alert({
+                    title: '🛠️ 技术支持',
+                    message: `
+                        <div style="padding:4px 0;">
+                            <p style="color:var(--text-secondary);">
+                                邮箱：support@enterprise-erp.com<br>
+                                电话：400-888-9999<br>
+                                工作时间：周一至周五 9:00-18:00
+                            </p>
+                        </div>
+                    `,
+                    type: 'info',
+                    buttonText: '关闭'
+                });
+            } else {
+                alert('技术支持\n\n邮箱：support@enterprise-erp.com\n电话：400-888-9999');
+            }
+        }
+    
+        /**
+         * 更新页脚时间
+         */
+        function updateFooterTime() {
+            const el = document.getElementById('footerTime');
+            if (el) {
+                const now = new Date();
+                const timeStr = now.toLocaleString('zh-CN', {
+                    year: 'numeric',
+                    month: '2-digit',
+                    day: '2-digit',
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    second: '2-digit'
+                });
+                el.textContent = '🕐 ' + timeStr;
+            }
+        }
+    
+        // 初始化时间并每秒更新
+        updateFooterTime();
+        setInterval(updateFooterTime, 1000);
+    </script>
+

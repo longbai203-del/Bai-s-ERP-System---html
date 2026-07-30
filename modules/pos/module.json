@@ -1,0 +1,24 @@
+{
+    "id": "pos",
+    "name": "销售点",
+    "icon": "🛒",
+    "description": "POS销售点管理模块，支持快速收银、购物车管理、小票打印",
+    "version": "3.0.0",
+    "author": "Enterprise ERP Team",
+    "enabled": true,
+    "routes": [
+      {
+        "path": "/modules/pos/pos.html",
+        "name": "销售点",
+        "icon": "🛒",
+        "default": true
+      }
+    ],
+    "permissions": {
+      "view": "pos.view",
+      "create": "pos.create",
+      "edit": "pos.edit",
+      "delete": "pos.delete",
+      "export": "pos.export"
+    }
+  }

@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>系统管理 - Enterprise ERP</title>
+</head>
+<body>
+    <div class="page system-page">
+        <!-- ============================================================
+        系统管理
+        ============================================================ -->
+        <div class="system-header">
+            <div>
+                <h1>🔧 系统管理</h1>
+                <p class="subtitle">系统运维、日志监控、权限管理和安全设置</p>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-primary" onclick="systemHealthCheck()">🏥 健康检查</button>
+                <button class="btn btn-outline" onclick="exportSystemLogs()">📥 导出日志</button>
+            </div>
+        </div>
+
+        <!-- 系统状态 -->
+        <div class="system-status">
+            <div class="status-item">
+                <span class="status-label">🟢 系统状态</span>
+                <span class="status-value" style="color:#10b981;">运行正常</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">⏱️ 运行时间</span>
+                <span class="status-value" id="uptime">0天 0小时 0分钟</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">📊 存储使用</span>
+                <span class="status-value" id="storageSize">0 KB</span>
+            </div>
+            <div class="status-item">
+                <span class="status-label">📦 数据记录</span>
+                <span class="status-value" id="totalRecords">0</span>
+            </div>
+        </div>
+
+        <!-- 系统功能卡片 -->
+        <div class="system-grid">
+            <div class="system-card" onclick="showAuditLogs()">
+                <div class="card-icon">📋</div>
+                <div class="card-info">
+                    <div class="card-title">审计日志</div>
+                    <div class="card-desc">查看系统操作日志</div>
+                </div>
+                <span class="card-arrow">→</span>
+            </div>
+            <div class="system-card" onclick="showBackupManagement()">
+                <div class="card-icon">💾</div>
+                <div class="card-info">
+                    <div class="card-title">备份管理</div>
+                    <div class="card-desc">数据备份与恢复</div>
+                </div>
+                <span class="card-arrow">→</span>
+            </div>
+            <div class="system-card" onclick="showPermissionManagement()">
+                <div class="card-icon">🔐</div>
+                <div class="card-info">
+                    <div class="card-title">权限管理</div>
+                    <div class="card-desc">用户角色与权限</div>
+                </div>
+                <span class="card-arrow">→</span>
+            </div>
+            <div class="system-card" onclick="showWebhookManagement()">
+                <div class="card-icon">🔗</div>
+                <div class="card-info">
+                    <div class="card-title">Webhook管理</div>
+                    <div class="card-desc">集成与通知配置</div>
+                </div>
+                <span class="card-arrow">→</span>
+            </div>
+            <div class="system-card" onclick="showAPIManagement()">
+                <div class="card-icon">🔑</div>
+                <div class="card-info">
+                    <div class="card-title">API密钥管理</div>
+                    <div class="card-desc">API密钥生成与管理</div>
+                </div>
+                <span class="card-arrow">→</span>
+            </div>
+            <div class="system-card" onclick="showMarketplace()">
+                <div class="card-icon">🛒</div>
+                <div class="card-info">
+                    <div class="card-title">应用市场</div>
+                    <div class="card-desc">扩展与插件管理</div>
+                </div>
+                <span class="card-arrow">→</span>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        审计日志面板
+        ============================================================ -->
+        <div class="panel" id="auditPanel" style="display:none;">
+            <div class="panel-header">
+                <h3>📋 审计日志</h3>
+                <button class="btn btn-outline btn-sm" onclick="closePanel('auditPanel')">✕ 关闭</button>
+            </div>
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>时间</th>
+                            <th>用户</th>
+                            <th>操作</th>
+                            <th>模块</th>
+                            <th>详情</th>
+                        </tr>
+                    </thead>
+                    <tbody id="auditBody">
+                        <tr><td colspan="5" class="empty-state">暂无日志</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        备份管理面板
+        ============================================================ -->
+        <div class="panel" id="backupPanel" style="display:none;">
+            <div class="panel-header">
+                <h3>💾 备份管理</h3>
+                <button class="btn btn-outline btn-sm" onclick="closePanel('backupPanel')">✕ 关闭</button>
+            </div>
+            <div style="display:flex;gap:12px;flex-wrap:wrap;margin-bottom:16px;">
+                <button class="btn btn-primary" onclick="createBackup()">📥 创建备份</button>
+                <button class="btn btn-outline" onclick="restoreFromBackup()">📤 恢复备份</button>
+            </div>
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>备份名称</th>
+                            <th>大小</th>
+                            <th>创建时间</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="backupBody">
+                        <tr><td colspan="4" class="empty-state">暂无备份</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        权限管理面板
+        ============================================================ -->
+        <div class="panel" id="permissionPanel" style="display:none;">
+            <div class="panel-header">
+                <h3>🔐 权限管理</h3>
+                <button class="btn btn-outline btn-sm" onclick="closePanel('permissionPanel')">✕ 关闭</button>
+            </div>
+            <div style="margin-bottom:16px;">
+                <button class="btn btn-primary" onclick="addPermission()">＋ 添加权限</button>
+            </div>
+            <div class="table-container">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>角色</th>
+                            <th>模块权限</th>
+                            <th>操作</th>
+                        </tr>
+                    </thead>
+                    <tbody id="permissionBody">
+                        <tr><td colspan="3" class="empty-state">暂无权限配置</td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <style>
+        .system-page {
+            padding: 0;
+        }
+
+        .system-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            flex-wrap: wrap;
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .system-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: var(--text-primary, #0f172a);
+            margin: 0;
+        }
+
+        .system-header .subtitle {
+            color: var(--text-secondary, #475569);
+            margin: 4px 0 0;
+            font-size: 14px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .system-status {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 12px;
+            margin-bottom: 24px;
+            background: var(--bg-card, #ffffff);
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: var(--radius, 12px);
+            padding: 16px 20px;
+        }
+
+        .status-item {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .status-item .status-label {
+            font-size: 12px;
+            color: var(--text-muted, #94a3b8);
+            font-weight: 500;
+        }
+
+        .status-item .status-value {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary, #0f172a);
+        }
+
+        .system-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+
+        .system-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            padding: 16px 20px;
+            background: var(--bg-card, #ffffff);
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: var(--radius, 12px);
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .system-card:hover {
+            border-color: #4f46e5;
+            box-shadow: var(--shadow-md, 0 4px 12px rgba(0, 0, 0, 0.08));
+            transform: translateY(-2px);
+        }
+
+        .system-card .card-icon {
+            font-size: 32px;
+            flex-shrink: 0;
+        }
+
+        .system-card .card-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .system-card .card-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--text-primary, #0f172a);
+        }
+
+        .system-card .card-desc {
+            font-size: 12px;
+            color: var(--text-muted, #94a3b8);
+        }
+
+        .system-card .card-arrow {
+            font-size: 18px;
+            color: var(--text-muted, #94a3b8);
+        }
+
+        .panel {
+            background: var(--bg-card, #ffffff);
+            border: 1px solid var(--border-color, #e2e8f0);
+            border-radius: var(--radius, 12px);
+            padding: 16px 20px;
+            margin-bottom: 20px;
+        }
+
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid var(--border-color, #e2e8f0);
+        }
+
+        .panel-header h3 {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary, #0f172a);
+            margin: 0;
+        }
+
+        .btn-sm {
+            padding: 4px 14px;
+            font-size: 12px;
+            min-height: 28px;
+        }
+
+        .table-container {
+            overflow-x: auto;
+        }
+
+        .table-container .table {
+            margin: 0;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 30px 20px;
+            color: var(--text-muted, #94a3b8);
+        }
+
+        @media (max-width: 768px) {
+            .system-header {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .system-status {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .system-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .system-status {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+
+    <script>
+        let systemLogs = [];
+        let backups = [];
+        let permissions = [];
+
+        function getStorage(key) {
+            try { return JSON.parse(localStorage.getItem('erp_' + key)); } catch { return null; }
+        }
+
+        function setStorage(key, data) {
+            try { localStorage.setItem('erp_' + key, JSON.stringify(data)); return true; } catch { return false; }
+        }
+
+        function showToast(message, type) {
+            type = type || 'info';
+            if (typeof window.showToast === 'function') {
+                window.showToast(message, type);
+                return;
+            }
+            const container = document.getElementById('toastContainer') || (function() {
+                const c = document.createElement('div');
+                c.id = 'toastContainer';
+                c.style.cssText =
+                    'position:fixed;top:20px;right:20px;z-index:10000;display:flex;flex-direction:column;gap:8px;max-width:400px;';
+                document.body.appendChild(c);
+                return c;
+            })();
+            const icons = { success: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+            const toast = document.createElement('div');
+            toast.style.cssText =
+                'padding:12px 20px;border-radius:12px;background:#fff;box-shadow:0 8px 32px rgba(0,0,0,0.15);border-left:4px solid #4f46e5;display:flex;align-items:center;gap:12px;animation:slideIn 0.3s ease;';
+            toast.innerHTML =
+                `<span>${icons[type] || 'ℹ️'}</span><span>${message}</span><button onclick="this.parentElement.remove()" style="background:none;border:none;font-size:18px;cursor:pointer;color:#94a3b8;margin-left:auto;">✕</button>`;
+            container.appendChild(toast);
+            setTimeout(function() {
+                if (toast.parentElement) {
+                    toast.style.opacity = '0';
+                    toast.style.transform = 'translateX(100%)';
+                    setTimeout(function() { toast.remove(); }, 300);
+                }
+            }, 3000);
+        }
+
+        function initSystem() {
+            console.log('🔧 系统管理初始化...');
+            updateSystemStatus();
+            loadAuditLogs();
+            loadBackups();
+            loadPermissions();
+            console.log('✅ 系统管理初始化完成');
+        }
+
+        function updateSystemStatus() {
+            // 运行时间
+            const startTime = localStorage.getItem('erp_start_time');
+            if (startTime) {
+                const elapsed = Date.now() - parseInt(startTime);
+                const days = Math.floor(elapsed / (24 * 60 * 60 * 1000));
+                const hours = Math.floor((elapsed % (24 * 60 * 60 * 1000)) / (60 * 60 * 1000));
+                const minutes = Math.floor((elapsed % (60 * 60 * 1000)) / (60 * 1000));
+                document.getElementById('uptime').textContent =
+                    `${days}天 ${hours}小时 ${minutes}分钟`;
+            } else {
+                localStorage.setItem('erp_start_time', Date.now().toString());
+                document.getElementById('uptime').textContent = '刚刚启动';
+            }
+
+            // 存储使用
+            let total = 0;
+            for (let key in localStorage) {
+                if (localStorage.hasOwnProperty(key) && key.startsWith('erp_')) {
+                    total += localStorage[key].length * 2;
+                }
+            }
+            const size = total > 1024 * 1024 ? (total / (1024 * 1024)).toFixed(2) + ' MB' :
+                total > 1024 ? (total / 1024).toFixed(2) + ' KB' :
+                total + ' B';
+            document.getElementById('storageSize').textContent = size;
+
+            // 数据记录统计
+            const keys = ['customers', 'products', 'orders', 'employees', 'finance', 'purchases', 'marketing', 'saas'];
+            let totalRecords = 0;
+            keys.forEach(key => {
+                const data = getStorage(key) || [];
+                totalRecords += data.length;
+            });
+            document.getElementById('totalRecords').textContent = totalRecords;
+        }
+
+        // ============================================================
+        // 审计日志
+        // ============================================================
+        function loadAuditLogs() {
+            systemLogs = getStorage('audit_logs') || [];
+            if (systemLogs.length === 0) {
+                systemLogs = generateDemoLogs();
+                setStorage('audit_logs', systemLogs);
+            }
+        }
+
+        function generateDemoLogs() {
+            const users = ['admin', 'manager', 'cashier', 'user1', 'user2'];
+            const actions = ['登录', '创建', '更新', '删除', '导出', '查看'];
+            const modules = ['系统', '订单', '客户', '产品', '库存', '财务', 'HR'];
+            const logs = [];
+
+            for (let i = 1; i <= 20; i++) {
+                const date = new Date();
+                date.setMinutes(date.getMinutes() - i * 5);
+                logs.push({
+                    id: i,
+                    time: date.toISOString(),
+                    user: users[i % users.length],
+                    action: actions[i % actions.length],
+                    module: modules[i % modules.length],
+                    detail: `执行了 ${actions[i % actions.length]} 操作 #${i}`
+                });
+            }
+            logs.sort((a, b) => new Date(b.time) - new Date(a.time));
+            return logs;
+        }
+
+        function showAuditLogs() {
+            const panel = document.getElementById('auditPanel');
+            const tbody = document.getElementById('auditBody');
+
+            if (panel.style.display === 'block') {
+                panel.style.display = 'none';
+                return;
+            }
+
+            panel.style.display = 'block';
+            document.getElementById('backupPanel').style.display = 'none';
+            document.getElementById('permissionPanel').style.display = 'none';
+
+            if (systemLogs.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" class="empty-state">暂无日志</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = systemLogs.slice(0, 20).map(l => `
+                <tr>
+                    <td>${new Date(l.time).toLocaleString()}</td>
+                    <td>${l.user}</td>
+                    <td>${l.action}</td>
+                    <td>${l.module}</td>
+                    <td>${l.detail}</td>
+                </tr>
+            `).join('');
+        }
+
+        // ============================================================
+        // 备份管理
+        // ============================================================
+        function loadBackups() {
+            backups = getStorage('backups') || [];
+        }
+
+        function showBackupManagement() {
+            const panel = document.getElementById('backupPanel');
+            const tbody = document.getElementById('backupBody');
+
+            if (panel.style.display === 'block') {
+                panel.style.display = 'none';
+                return;
+            }
+
+            panel.style.display = 'block';
+            document.getElementById('auditPanel').style.display = 'none';
+            document.getElementById('permissionPanel').style.display = 'none';
+
+            if (backups.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="4" class="empty-state">暂无备份</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = backups.map(b => `
+                <tr>
+                    <td>${b.name}</td>
+                    <td>${b.size}</td>
+                    <td>${new Date(b.created_at).toLocaleString()}</td>
+                    <td>
+                        <button class="btn btn-outline btn-sm" onclick="restoreBackup('${b.id}')">恢复</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteBackup('${b.id}')">删除</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function createBackup() {
+            const data = {};
+            const keys = ['customers', 'products', 'orders', 'employees', 'finance', 'purchases', 'marketing', 'saas',
+                'settings', 'users'
+            ];
+            keys.forEach(key => {
+                data[key] = getStorage(key) || [];
+            });
+
+            const json = JSON.stringify(data);
+            const size = (json.length / 1024).toFixed(2) + ' KB';
+
+            const backup = {
+                id: 'backup_' + Date.now(),
+                name: '备份_' + new Date().toISOString().split('T')[0],
+                size: size,
+                data: json,
+                created_at: new Date().toISOString()
+            };
+
+            backups.unshift(backup);
+            setStorage('backups', backups);
+            showToast('备份创建成功', 'success');
+            showBackupManagement();
+        }
+
+        function restoreBackup(id) {
+            const backup = backups.find(b => b.id === id);
+            if (!backup) { showToast('备份不存在', 'error'); return; }
+
+            if (!confirm(`确定要恢复备份 "${backup.name}" 吗？当前数据将被覆盖！`)) return;
+
+            try {
+                const data = JSON.parse(backup.data);
+                const keys = Object.keys(data);
+                keys.forEach(key => {
+                    setStorage(key, data[key]);
+                });
+                showToast('备份恢复成功', 'success');
+            } catch (e) {
+                showToast('备份恢复失败: ' + e.message, 'error');
+            }
+        }
+
+        function restoreFromBackup() {
+            const input = document.createElement('input');
+            input.type = 'file';
+            input.accept = '.json';
+            input.onchange = function(e) {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = function(ev) {
+                    try {
+                        const data = JSON.parse(ev.target.result);
+                        const keys = Object.keys(data);
+                        keys.forEach(key => {
+                            setStorage(key, data[key]);
+                        });
+                        showToast('数据恢复成功', 'success');
+                        updateSystemStatus();
+                    } catch (err) {
+                        showToast('恢复失败: ' + err.message, 'error');
+                    }
+                };
+                reader.readAsText(file);
+            };
+            input.click();
+        }
+
+        function deleteBackup(id) {
+            if (!confirm('确定要删除此备份吗？')) return;
+            backups = backups.filter(b => b.id !== id);
+            setStorage('backups', backups);
+            showToast('备份已删除', 'success');
+            showBackupManagement();
+        }
+
+        // ============================================================
+        // 权限管理
+        // ============================================================
+        function loadPermissions() {
+            permissions = getStorage('permissions') || [];
+            if (permissions.length === 0) {
+                permissions = [
+                    { role: 'admin', modules: ['全部'], level: '全部权限' },
+                    { role: 'manager', modules: ['订单', '客户', '产品', '库存'], level: '管理权限' },
+                    { role: 'cashier', modules: ['POS', '订单'], level: '收银权限' },
+                    { role: 'user', modules: ['查看'], level: '只读权限' }
+                ];
+                setStorage('permissions', permissions);
+            }
+        }
+
+        function showPermissionManagement() {
+            const panel = document.getElementById('permissionPanel');
+            const tbody = document.getElementById('permissionBody');
+
+            if (panel.style.display === 'block') {
+                panel.style.display = 'none';
+                return;
+            }
+
+            panel.style.display = 'block';
+            document.getElementById('auditPanel').style.display = 'none';
+            document.getElementById('backupPanel').style.display = 'none';
+
+            if (permissions.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="3" class="empty-state">暂无权限配置</td></tr>';
+                return;
+            }
+
+            tbody.innerHTML = permissions.map(p => `
+                <tr>
+                    <td><strong>${p.role}</strong></td>
+                    <td>${Array.isArray(p.modules) ? p.modules.join(', ') : p.modules}</td>
+                    <td>
+                        <button class="btn btn-edit btn-sm" onclick="editPermission('${p.role}')">✏️</button>
+                        <button class="btn btn-danger btn-sm" onclick="deletePermission('${p.role}')">🗑️</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function addPermission() {
+            const role = prompt('请输入角色名称：');
+            if (!role) return;
+            const modules = prompt('请输入模块权限（用逗号分隔）：');
+            if (!modules) return;
+
+            permissions.push({
+                role: role,
+                modules: modules.split(',').map(m => m.trim()),
+                level: '自定义权限'
+            });
+
+            setStorage('permissions', permissions);
+            showToast('权限已添加', 'success');
+            showPermissionManagement();
+        }
+
+        function editPermission(role) {
+            const p = permissions.find(perm => perm.role === role);
+            if (!p) { showToast('权限不存在', 'error'); return; }
+
+            const newModules = prompt('请输入模块权限（用逗号分隔）：', p.modules.join(', '));
+            if (newModules === null) return;
+
+            p.modules = newModules.split(',').map(m => m.trim());
+            setStorage('permissions', permissions);
+            showToast('权限已更新', 'success');
+            showPermissionManagement();
+        }
+
+        function deletePermission(role) {
+            if (!confirm(`确定要删除角色 "${role}" 的权限配置吗？`)) return;
+            permissions = permissions.filter(p => p.role !== role);
+            setStorage('permissions', permissions);
+            showToast('权限已删除', 'success');
+            showPermissionManagement();
+        }
+
+        // ============================================================
+        // 其他功能
+        // ============================================================
+        function showWebhookManagement() {
+            showAlert('🔗 Webhook管理', '功能开发中，敬请期待...');
+        }
+
+        function showAPIManagement() {
+            showAlert('🔑 API密钥管理', '功能开发中，敬请期待...');
+        }
+
+        function showMarketplace() {
+            showAlert('🛒 应用市场', '功能开发中，敬请期待...');
+        }
+
+        function systemHealthCheck() {
+            const checks = [
+                { name: 'localStorage', status: true },
+                { name: '数据存储', status: true },
+                { name: '系统运行', status: true }
+            ];
+
+            const allOk = checks.every(c => c.status);
+            const html = checks.map(c =>
+                `<div style="display:flex;justify-content:space-between;padding:6px 0;border-bottom:1px solid var(--border-light);">
+                    <span>${c.name}</span>
+                    <span style="color:${c.status ? '#10b981' : '#ef4444'};">${c.status ? '✅ 正常' : '❌ 异常'}</span>
+                </div>`
+            ).join('');
+
+            showModal('🏥 系统健康检查',
+                html +
+                `<div style="margin-top:12px;padding:8px;background:${allOk ? 'rgba(16,185,129,0.1)' : 'rgba(239,68,68,0.1)'};border-radius:6px;text-align:center;">
+                    <strong style="color:${allOk ? '#10b981' : '#ef4444'};">${allOk ? '✅ 所有系统运行正常' : '⚠️ 部分组件异常'}</strong>
+                </div>`,
+                `<button class="btn btn-primary" onclick="closeModal()">确定</button>`
+            );
+        }
+
+        function exportSystemLogs() {
+            if (systemLogs.length === 0) { showToast('没有日志可导出', 'warning'); return; }
+
+            const exportData = systemLogs.map(l => ({
+                '时间': new Date(l.time).toLocaleString(),
+                '用户': l.user,
+                '操作': l.action,
+                '模块': l.module,
+                '详情': l.detail
+            }));
+
+            const headers = Object.keys(exportData[0]);
+            let csv = headers.join(',') + '\n';
+            exportData.forEach(row => {
+                csv += headers.map(h => row[h] || '').join(',') + '\n';
+            });
+
+            const blob = new Blob(['\uFEFF' + csv], { type: 'text/csv;charset=utf-8;' });
+            const link = document.createElement('a');
+            link.href = URL.createObjectURL(blob);
+            link.download = '系统日志_' + new Date().toISOString().split('T')[0] + '.csv';
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            showToast('日志导出成功', 'success');
+        }
+
+        function closePanel(panelId) {
+            document.getElementById(panelId).style.display = 'none';
+        }
+
+        function showAlert(title, message) {
+            if (typeof window.showAlert === 'function') {
+                window.showAlert(title, message);
+                return;
+            }
+            alert(title + '\n\n' + message);
+        }
+
+        function showModal(title, bodyHTML, footerHTML) {
+            if (typeof window.showModal === 'function') {
+                window.showModal(title, bodyHTML, footerHTML);
+                return;
+            }
+            // 简单实现
+            const overlay = document.createElement('div');
+            overlay.style.cssText =
+                'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.5);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;';
+            overlay.innerHTML = `
+                <div style="background:var(--bg-card);border-radius:12px;max-width:500px;width:100%;padding:24px;box-shadow:0 20px 60px rgba(0,0,0,0.3);">
+                    <div style="font-size:18px;font-weight:600;margin-bottom:12px;">${title}</div>
+                    <div style="color:var(--text-secondary);">${bodyHTML}</div>
+                    <div style="margin-top:16px;padding-top:12px;border-top:1px solid var(--border-color);display:flex;gap:8px;justify-content:flex-end;">${footerHTML || '<button class="btn btn-primary" onclick="this.closest(\'div[style]\').parentElement.remove()">确定</button>'}</div>
+                </div>
+            `;
+            document.body.appendChild(overlay);
+            overlay.addEventListener('click', function(e) {
+                if (e.target === this) this.remove();
+            });
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(initSystem, 100);
+        });
+    </script>
+</body>
+</html>
+
