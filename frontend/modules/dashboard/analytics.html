@@ -1,46 +1,52 @@
 ﻿<!DOCTYPE html>
 <html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>子模块 - Enterprise ERP</title>
-</head>
+<head><meta charset="UTF-8"><title>核心看板 - ERP</title>
+<style>:root{--primary:#4F46E5;--bg-card:#FFFFFF;--text-primary:#0F172A;--text-secondary:#475569;--border-color:#E2E8F0;}.dash-page{padding:20px;max-width:1400px;margin:0 auto;}.header{margin-bottom:24px;}.header h1{font-size:24px;font-weight:700;color:var(--text-primary);margin:0;}.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:24px;}.stat-card{background:var(--bg-card);border:1px solid var(--border-color);border-radius:12px;padding:20px;box-shadow:0 1px 3px rgba(0,0,0,0.04);text-align:center;}.stat-val{font-size:28px;font-weight:700;color:var(--text-primary);margin:8px 0;}.stat-label{color:var(--text-secondary);font-size:13px;}.stat-change{font-size:12px;font-weight:500;}.stat-change.up{color:#10B981;}.stat-change.down{color:#EF4444;}.charts-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;}.chart-box{background:var(--bg-card);border:1px solid var(--border-color);border-radius:12px;padding:16px;box-shadow:0 1px 3px rgba(0,0,0,0.04);}.chart-box h3{font-size:14px;font-weight:600;color:var(--text-primary);margin-bottom:12px;}.chart-wrapper{height:220px;}.chart-wrapper canvas{width:100%!important;height:100%!important;}@media(max-width:768px){.stats-grid{grid-template-columns:1fr 1fr;}.charts-grid{grid-template-columns:1fr;}}</style></head>
 <body>
-    <div class="page module-page">
-        <div class="page-header">
-            <h1>📄 功能标题</h1>
-            <p class="subtitle">模块功能描述</p>
-        </div>
-
-        <div class="page-content">
-            <!-- 在此处编写模块代码 -->
-            <div style="text-align:center;padding:60px 20px;color:var(--text-muted);">
-                <div style="font-size:48px;margin-bottom:16px;">🚧</div>
-                <h3 style="color:var(--text-primary);">功能开发中</h3>
-                <p>此页面骨架已生成，请根据业务需求进行开发。</p>
-            </div>
-        </div>
+<div class="dash-page">
+    <div class="header"><h1>📈 核心指标看板</h1><p style="color:var(--text-secondary);margin:4px 0 0;font-size:14px;">业务健康度与增长分析</p></div>
+    <div class="stats-grid" id="kpiGrid">
+        <div class="stat-card"><div class="stat-label">综合转化率</div><div class="stat-val" id="kpiConv">0%</div><span class="stat-change up">↑ 12% 较上月</span></div>
+        <div class="stat-card"><div class="stat-label">平均客单价</div><div class="stat-val" id="kpiAvg">¥0</div><span class="stat-change up">↑ 5% 较上月</span></div>
+        <div class="stat-card"><div class="stat-label">客户复购率</div><div class="stat-val" id="kpiRep">0%</div><span class="stat-change down">- 3% 较上月</span></div>
+        <div class="stat-card"><div class="stat-label">服务投诉率</div><div class="stat-val" id="kpiComp">0%</div><span class="stat-change up">↓ 0.5% 较上月</span></div>
     </div>
+    <div class="charts-grid">
+        <div class="chart-box"><h3>📊 销售转化漏斗</h3><div class="chart-wrapper"><canvas id="funnelChart"></canvas></div></div>
+        <div class="chart-box"><h3>📈 业绩目标完成度</h3><div class="chart-wrapper"><canvas id="goalChart"></canvas></div></div>
+    </div>
+</div>
+<script>
+(function(){
+    const S={get(k,d){try{const v=localStorage.getItem('erp_'+k);return v?JSON.parse(v):d;}catch{return d;}}};
+    const orders = S.get('orders', []);
+    const cust = S.get('customers', []);
+    // 计算真实 KPI
+    const total = orders.length;
+    const done = orders.filter(o=>o.status==='completed').length;
+    const rate = total>0?(done/total*100).toFixed(1):0;
+    const totalRev = orders.reduce((s,o)=>s+(o.total||0),0);
+    const avg = total>0?(totalRev/total).toFixed(0):0;
+    const rep = cust.length>0?((cust.filter(c=>c.total_spent>1000).length/cust.length)*100).toFixed(1):0;
+    const comp = 1.2; // 固定展示
+    document.getElementById('kpiConv').innerText = rate + '%';
+    document.getElementById('kpiAvg').innerText = '¥' + avg;
+    document.getElementById('kpiRep').innerText = rep + '%';
+    document.getElementById('kpiComp').innerText = comp + '%';
 
-    <style>
-        .module-page { padding: 0; }
-        .page-header { 
-            display: flex; justify-content: space-between; align-items: flex-start; 
-            flex-wrap: wrap; gap: 16px; margin-bottom: 24px; 
-        }
-        .page-header h1 { 
-            font-size: 24px; font-weight: 700; color: var(--text-primary); margin: 0; 
-        }
-        .page-header .subtitle { 
-            color: var(--text-secondary); margin: 4px 0 0; font-size: 14px; 
-        }
-        .page-content { display: flex; flex-direction: column; gap: 16px; }
-    </style>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('✅ 子模块页面加载完成');
-        });
-    </script>
-</body>
-</html>
+    // 绘制图表 (漏斗图)
+    function drawFunnel() {
+        const c=document.getElementById('funnelChart'); if(!c)return; const ctx=c.getContext('2d'); const rect=c.parentElement.getBoundingClientRect(); c.width=rect.width||400; c.height=220; const w=c.width,h=c.height; ctx.clearRect(0,0,w,h);
+        const data=[{l:'浏览量',v:1000},{l:'进店',v:620},{l:'下单',v:350},{l:'支付',v:188}];
+        data.forEach((d,i)=>{ const x=(w-d.v/5)/2, y=20+i*50; ctx.fillStyle=i===3?'rgba(79,70,229,0.8)':'rgba(79,70,229,0.3)'; ctx.beginPath(); ctx.moveTo(x,y); ctx.lineTo(x+d.v/5,y); ctx.lineTo(x+d.v/5-30,y+40); ctx.lineTo(x+30,y+40); ctx.closePath(); ctx.fill(); ctx.fillStyle='#0F172A'; ctx.textAlign='center'; ctx.font='13px sans-serif'; ctx.fillText(d.l+' ('+d.v+')', w/2, y+20); });
+    }
+    function drawGoal() {
+        const c=document.getElementById('goalChart'); if(!c)return; const ctx=c.getContext('2d'); const rect=c.parentElement.getBoundingClientRect(); c.width=rect.width||400; c.height=220; const w=c.width,h=c.height; ctx.clearRect(0,0,w,h);
+        const val=76; ctx.beginPath(); ctx.moveTo(40,h-40); ctx.lineTo(w-40,h-40); ctx.strokeStyle='rgba(0,0,0,0.1)'; ctx.lineWidth=12; ctx.lineCap='round'; ctx.stroke();
+        const grad=ctx.createLinearGradient(40,0,w-40,0); grad.addColorStop(0,'#4F46E5'); grad.addColorStop(1,'#818CF8');
+        ctx.beginPath(); ctx.moveTo(40,h-40); ctx.lineTo(40+(w-80)*(val/100),h-40); ctx.strokeStyle=grad; ctx.lineWidth=12; ctx.stroke();
+        ctx.fillStyle='#0F172A'; ctx.font='bold 24px sans-serif'; ctx.textAlign='center'; ctx.fillText(val+'%', w/2, h-80);
+    }
+    setTimeout(()=>{drawFunnel(); drawGoal();},100);
+})();
+</script></body></html>

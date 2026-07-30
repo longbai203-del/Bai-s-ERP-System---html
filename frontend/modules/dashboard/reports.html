@@ -1,46 +1,16 @@
 ﻿<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>子模块 - Enterprise ERP</title>
-</head>
+<html lang="zh-CN"><head><meta charset="UTF-8"><title>快捷报表</title>
+<style>.container{padding:20px;max-width:1200px;margin:0 auto;}.tbl{width:100%;border-collapse:collapse;}.tbl th,.tbl td{padding:14px;text-align:left;border-bottom:1px solid #E2E8F0;}.tbl th{background:#F8FAFC;font-weight:500;color:#475569;}</style></head>
 <body>
-    <div class="page module-page">
-        <div class="page-header">
-            <h1>📄 功能标题</h1>
-            <p class="subtitle">模块功能描述</p>
-        </div>
-
-        <div class="page-content">
-            <!-- 在此处编写模块代码 -->
-            <div style="text-align:center;padding:60px 20px;color:var(--text-muted);">
-                <div style="font-size:48px;margin-bottom:16px;">🚧</div>
-                <h3 style="color:var(--text-primary);">功能开发中</h3>
-                <p>此页面骨架已生成，请根据业务需求进行开发。</p>
-            </div>
-        </div>
-    </div>
-
-    <style>
-        .module-page { padding: 0; }
-        .page-header { 
-            display: flex; justify-content: space-between; align-items: flex-start; 
-            flex-wrap: wrap; gap: 16px; margin-bottom: 24px; 
-        }
-        .page-header h1 { 
-            font-size: 24px; font-weight: 700; color: var(--text-primary); margin: 0; 
-        }
-        .page-header .subtitle { 
-            color: var(--text-secondary); margin: 4px 0 0; font-size: 14px; 
-        }
-        .page-content { display: flex; flex-direction: column; gap: 16px; }
-    </style>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('✅ 子模块页面加载完成');
-        });
-    </script>
-</body>
-</html>
+<div class="container"><h1 style="margin-bottom:24px;color:#0F172A;">📋 近7日数据快报</h1>
+<div style="background:#fff;border:1px solid #E2E8F0;border-radius:12px;overflow:hidden;">
+<table class="tbl"><thead><tr><th>日期</th><th>订单数</th><th>总营收</th><th>客单价</th></tr></thead><tbody id="reportBody"></tbody></table>
+</div></div>
+<script>
+(function(){
+    const S={get(k,d){try{const v=localStorage.getItem('erp_'+k);return v?JSON.parse(v):d;}catch{return d;}}};
+    const o=S.get('orders',[]); let h='';
+    for(let i=6;i>=0;i--){ const d=new Date(); d.setDate(d.getDate()-i); const ds=d.toISOString().split('T')[0]; const daily=o.filter(od=>od.created_at&&od.created_at.startsWith(ds)); const c=daily.length; const t=daily.reduce((s,od)=>s+(od.total||0),0); const avg=c>0?(t/c).toFixed(0):0; h+=`<tr><td>${ds}</td><td>${c}</td><td>¥${t.toFixed(0)}</td><td>¥${avg}</td></tr>`; }
+    document.getElementById('reportBody').innerHTML = h||'<tr><td colspan="4" style="text-align:center;color:#94A3B8;padding:20px;">暂无数据</td></tr>';
+})();
+</script></body></html>

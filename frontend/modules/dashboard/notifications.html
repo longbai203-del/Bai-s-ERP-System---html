@@ -1,46 +1,9 @@
 ﻿<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>子模块 - Enterprise ERP</title>
-</head>
+<html lang="zh-CN"><head><meta charset="UTF-8"><title>通知中心</title>
+<style>.container{padding:24px;max-width:800px;margin:0 auto;}.notif{display:flex;justify-content:space-between;align-items:center;padding:16px;background:#fff;border:1px solid #E2E8F0;border-radius:12px;margin-bottom:12px;border-left:4px solid #4F46E5;}.title{font-weight:500;color:#0F172A;}.time{font-size:12px;color:#94A3B8;}</style></head>
 <body>
-    <div class="page module-page">
-        <div class="page-header">
-            <h1>📄 功能标题</h1>
-            <p class="subtitle">模块功能描述</p>
-        </div>
-
-        <div class="page-content">
-            <!-- 在此处编写模块代码 -->
-            <div style="text-align:center;padding:60px 20px;color:var(--text-muted);">
-                <div style="font-size:48px;margin-bottom:16px;">🚧</div>
-                <h3 style="color:var(--text-primary);">功能开发中</h3>
-                <p>此页面骨架已生成，请根据业务需求进行开发。</p>
-            </div>
-        </div>
-    </div>
-
-    <style>
-        .module-page { padding: 0; }
-        .page-header { 
-            display: flex; justify-content: space-between; align-items: flex-start; 
-            flex-wrap: wrap; gap: 16px; margin-bottom: 24px; 
-        }
-        .page-header h1 { 
-            font-size: 24px; font-weight: 700; color: var(--text-primary); margin: 0; 
-        }
-        .page-header .subtitle { 
-            color: var(--text-secondary); margin: 4px 0 0; font-size: 14px; 
-        }
-        .page-content { display: flex; flex-direction: column; gap: 16px; }
-    </style>
-
-    <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('✅ 子模块页面加载完成');
-        });
-    </script>
-</body>
-</html>
+<div class="container"><h1 style="color:#0F172A;margin-bottom:24px;">🔔 通知中心</h1>
+<div class="notif"><div><div class="title">系统维护提醒</div><div style="font-size:13px;color:#475569;">系统将于 2026-08-01 02:00 进行例行维护，预计耗时 2 小时。</div></div><div class="time">3小时前</div></div>
+<div class="notif" style="border-left-color:#10B981;"><div><div class="title">新数据报表已生成</div><div style="font-size:13px;color:#475569;">7月份的营收数据报表已自动生成，请及时查收。</div></div><div class="time">昨天</div></div>
+<div class="notif" style="border-left-color:#EF4444;"><div><div class="title">库存预警通知</div><div style="font-size:13px;color:#475569;">检测到 3 种商品库存已低于安全阈值，请及时补货。</div></div><div class="time">昨天</div></div>
+</div></body></html>
