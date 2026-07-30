@@ -2,26 +2,26 @@
     "name": "Enterprise ERP System",
     "short_name": "Enterprise ERP",
     "description": "企业资源计划管理系统",
-    "start_url": "/",
+    "start_url": "/frontend/index.html",
     "display": "standalone",
     "orientation": "portrait-primary",
     "background_color": "#1a2332",
     "theme_color": "#1a2332",
     "icons": [
         {
-            "src": "/assets/icons/icon-72x72.png",
+            "src": "/frontend/assets/icons/icon-72x72.png",
             "sizes": "72x72",
             "type": "image/png",
             "purpose": "any maskable"
         },
         {
-            "src": "/assets/icons/icon-192x192.png",
+            "src": "/frontend/assets/icons/icon-192x192.png",
             "sizes": "192x192",
             "type": "image/png",
             "purpose": "any maskable"
         },
         {
-            "src": "/assets/icons/icon-512x512.png",
+            "src": "/frontend/assets/icons/icon-512x512.png",
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "any maskable"
