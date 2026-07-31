@@ -1,25 +1,6 @@
 {
   "version": 2,
   "cleanUrls": true,
-  "trailingSlash": false,
-  "builds": [
-    {
-      "src": "**/*.html",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "**/*.json",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "**/*.ico",
-      "use": "@vercel/static"
-    },
-    {
-      "src": "**/*.png",
-      "use": "@vercel/static"
-    }
-  ],
   "routes": [
     {
       "src": "/",
@@ -31,27 +12,19 @@
     },
     {
       "src": "/modules/([^/]+)/([^/]+)",
-      "dest": "/frontend/modules/$1/$2"
+      "dest": "/modules/$1/$2"
     },
     {
       "src": "/modules/([^/]+)",
-      "dest": "/frontend/modules/$1/$1.html"
+      "dest": "/modules/$1/$1.html"
     },
     {
       "src": "/layouts/([^/]+)",
-      "dest": "/frontend/layouts/$1"
+      "dest": "/layouts/$1"
     },
     {
       "src": "/locales/([^/]+)",
-      "dest": "/frontend/locales/$1"
-    },
-    {
-      "src": "/favicon.ico",
-      "dest": "/favicon.ico"
-    },
-    {
-      "src": "/manifest.json",
-      "dest": "/manifest.json"
+      "dest": "/locales/$1"
     },
     {
       "src": "/(.*)",

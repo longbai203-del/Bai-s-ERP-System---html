@@ -1,68 +1,25 @@
 ﻿{
     "name": "Bai's ERP System",
-    "short_name": "ERP System",
-    "description": "企业资源计划管理系统 - 纯前端模块化架构",
+    "short_name": "ERP",
     "start_url": "/index.html",
     "display": "standalone",
-    "orientation": "portrait-primary",
     "background_color": "#0f172a",
     "theme_color": "#0f172a",
     "icons": [
       {
-        "src": "/frontend/assets/icons/icon-72x72.png",
+        "src": "/assets/icons/icon-72x72.png",
         "sizes": "72x72",
-        "type": "image/png",
-        "purpose": "any maskable"
+        "type": "image/png"
       },
       {
-        "src": "/frontend/assets/icons/icon-192x192.png",
+        "src": "/assets/icons/icon-192x192.png",
         "sizes": "192x192",
-        "type": "image/png",
-        "purpose": "any maskable"
+        "type": "image/png"
       },
       {
-        "src": "/frontend/assets/icons/icon-512x512.png",
+        "src": "/assets/icons/icon-512x512.png",
         "sizes": "512x512",
-        "type": "image/png",
-        "purpose": "any maskable"
-      }
-    ],
-    "shortcuts": [
-      {
-        "name": "仪表盘",
-        "short_name": "首页",
-        "description": "查看系统概览",
-        "url": "/modules/dashboard",
-        "icons": [
-          {
-            "src": "/frontend/assets/icons/icon-72x72.png",
-            "sizes": "72x72"
-          }
-        ]
-      },
-      {
-        "name": "产品管理",
-        "short_name": "产品",
-        "description": "管理产品信息",
-        "url": "/modules/products",
-        "icons": [
-          {
-            "src": "/frontend/assets/icons/icon-72x72.png",
-            "sizes": "72x72"
-          }
-        ]
-      },
-      {
-        "name": "订单管理",
-        "short_name": "订单",
-        "description": "查看所有订单",
-        "url": "/modules/orders",
-        "icons": [
-          {
-            "src": "/frontend/assets/icons/icon-72x72.png",
-            "sizes": "72x72"
-          }
-        ]
+        "type": "image/png"
       }
     ]
   }
