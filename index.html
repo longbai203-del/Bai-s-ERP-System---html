@@ -10,9 +10,9 @@
     <title>Enterprise ERP</title>
 
     <!-- PWA -->
-    <link rel="manifest" href="manifest.json">
-    <link rel="icon" href="favicon.ico">
-    <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
+    <link rel="manifest" href="/manifest.json">
+    <link rel="icon" href="/favicon.ico">
+    <link rel="apple-touch-icon" href="/assets/icons/apple-touch-icon.png">
 
     <!-- 核心 CSS 样式 -->
     <style>
@@ -50,14 +50,12 @@
             transition: background 0.3s, color 0.3s;
         }
 
-        /* 滚动条 */
         ::-webkit-scrollbar { width: 6px; height: 6px; }
         ::-webkit-scrollbar-track { background: var(--bg-secondary); }
         ::-webkit-scrollbar-thumb { background: #818CF8; border-radius: 3px; }
 
         #app { display: flex; min-height: 100vh; }
 
-        /* 侧边栏 */
         .sidebar {
             position: fixed; top: 0; left: 0; bottom: 0;
             width: var(--sidebar-width); background: var(--bg-card);
@@ -87,9 +85,9 @@
         .brand .icon { font-size: 28px; }
         .brand .brand-text {
             background: linear-gradient(135deg, #4f46e5, #818cf8);
-            background-clip: text; -webkit-background-clip: text;
-            background-clip: text;
+            -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
+            background-clip: text;
         }
 
         .sidebar-toggle-btn {
@@ -104,7 +102,6 @@
 
         .nav-list { list-style: none; padding: 0; margin: 0; }
 
-        /* 基础菜单项 */
         .nav-item { margin: 1px 8px; border-radius: 8px; overflow: hidden; }
         .nav-link {
             display: flex; align-items: center; gap: 12px; padding: 10px 14px;
@@ -117,13 +114,11 @@
         .nav-icon { font-size: 18px; width: 24px; text-align: center; flex-shrink: 0; }
         .nav-text { flex: 1; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 
-        /* 折叠菜单特有样式 */
         .parent-link.active { font-weight: 600; color: var(--text-primary); }
         .sub-menu { list-style: none; padding-left: 20px; overflow: hidden; }
         .sub-item .nav-link { padding: 8px 14px; font-size: 13px; font-weight: 400; }
         .sub-item .nav-link.active { background: rgba(79, 70, 229, 0.05); color: #4f46e5; }
 
-        /* 主内容 */
         .main-wrapper {
             flex: 1; margin-left: var(--sidebar-width);
             display: flex; flex-direction: column; min-height: 100vh; transition: margin-left 0.3s;
@@ -145,7 +140,6 @@
             min-height: 400px; box-shadow: 0 1px 3px rgba(0,0,0,0.06);
         }
 
-        /* 加载屏幕 */
         .loading-screen {
             position: fixed; top: 0; left: 0; right: 0; bottom: 0;
             display: flex; align-items: center; justify-content: center;
@@ -161,7 +155,9 @@
             .sidebar { transform: translateX(-100%); width: 280px; }
             .sidebar.open { transform: translateX(0); }
             .main-wrapper { margin-left: 0 !important; }
+            .navbar-toggle { display: block !important; }
         }
+        .navbar-toggle { display: none; }
     </style>
 </head>
 <body>
@@ -180,11 +176,11 @@
         <!-- 侧边栏 -->
         <aside class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <a href="#" class="brand" onclick="loadModule('dashboard');return false;">
+                <a href="#" class="brand" onclick="window.loadModule('dashboard-main');return false;">
                     <span class="icon">🏢</span>
                     <span class="brand-text">Enterprise ERP</span>
                 </a>
-                <button class="sidebar-toggle-btn" onclick="toggleSidebarCollapse()">☰</button>
+                <button class="sidebar-toggle-btn" onclick="window.toggleSidebarCollapse()">☰</button>
             </div>
             <nav class="sidebar-nav" id="sidebarNav">
                 <ul class="nav-list" id="menuList"></ul>
@@ -195,7 +191,7 @@
         <div class="main-wrapper">
             <nav class="navbar">
                 <div class="navbar-left" style="display:flex;align-items:center;gap:12px;">
-                    <button class="navbar-toggle" onclick="toggleSidebar()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-secondary);display:none;">☰</button>
+                    <button class="navbar-toggle" onclick="window.toggleSidebar()" style="background:none;border:none;font-size:20px;cursor:pointer;color:var(--text-secondary);">☰</button>
                     <span style="font-size:14px;color:var(--text-secondary);"><span class="current" id="breadcrumb" style="color:var(--text-primary);font-weight:600;">仪表盘</span></span>
                 </div>
             </nav>
@@ -210,219 +206,9 @@
         </div>
     </div>
 
-    <!-- 核心运行时 - 多级树形结构映射 -->
     <script>
         // ============================================================
-        // 1. 完美树形映射：直接对应您的物理目录结构
-        // ============================================================
-        const SIDEBAR_CONFIG = [{
-            id: 'dashboard', 
-            icon: '📊', 
-            name: '仪表盘', 
-            roles: ['admin','manager','cashier','employee'],
-            children: [
-                { id: 'dashboard-main', name: '🏠 工作台总览', path: '/modules/dashboard/dashboard.html' },
-                { id: 'analytics', name: '📈 核心看板', path: '/modules/dashboard/analytics.html' },
-                { id: 'reports', name: '📋 快捷报表', path: '/modules/dashboard/reports.html' },
-                { id: 'tasks', name: '✅ 待办任务', path: '/modules/dashboard/tasks.html' },
-                { id: 'timeline', name: '📰 动态消息', path: '/modules/dashboard/timeline.html' },
-                { id: 'quick-actions', name: '⚡ 快捷入口', path: '/modules/dashboard/quick-actions.html' },
-                { id: 'notifications', name: '🔔 通知中心', path: '/modules/dashboard/notifications.html' }
-            ]
-        }, {
-            id: 'analytics', icon: '📈', name: '数据分析', roles: ['admin','manager'],
-            children: [
-                { id: 'analytics-main', name: '📊 数据总览', path: '/modules/analytics/analytics.html' },
-                { id: 'reports', name: '📋 数据报表', path: '/modules/analytics/reports.html' },
-                { id: 'business-health', name: '❤️ 业务健康度', path: '/modules/analytics/business-health.html' },
-                { id: 'forecast', name: '🔮 预测分析', path: '/modules/analytics/forecast.html' },
-                { id: 'recommendations', name: '🤖 智能推荐', path: '/modules/analytics/recommendations.html' },
-                { id: 'visualizations', name: '🎨 数据可视化', path: '/modules/analytics/visualizations.html' },
-                { id: 'custom-reports', name: '✍️ 自定义报表', path: '/modules/analytics/custom-reports.html' }
-            ]
-        }, {
-            id: 'orders', icon: '📋', name: '订单管理', roles: ['admin','manager','cashier'],
-            children: [
-                { id: 'orders-main', name: '📄 订单列表', path: '/modules/orders/orders.html' },
-                { id: 'list', name: '📋 订单列表', path: '/modules/orders/list.html' },
-                { id: 'detail', name: '🔍 订单详情', path: '/modules/orders/detail.html' },
-                { id: 'returns', name: '↩️ 退货管理', path: '/modules/orders/returns.html' },
-                { id: 'refunds', name: '💸 退款管理', path: '/modules/orders/refunds.html' }
-            ]
-        }, {
-            id: 'pos', icon: '🛒', name: '销售点', roles: ['admin','manager','cashier'],
-            children: [
-                { id: 'pos-main', name: '💳 收银台', path: '/modules/pos/pos.html' },
-                { id: 'quick-sale', name: '⚡ 快速开单', path: '/modules/pos/quick-sale.html' },
-                { id: 'cash-register', name: '💰 钱箱管理', path: '/modules/pos/cash-register.html' },
-                { id: 'receipt', name: '🧾 小票设计', path: '/modules/pos/receipt.html' },
-                { id: 'touch-pos', name: '📱 触屏模式', path: '/modules/pos/touch-pos.html' }
-            ]
-        }, {
-            id: 'customers', icon: '👥', name: '客户管理', roles: ['admin','manager'],
-            children: [
-                { id: 'customers-main', name: '👤 客户列表', path: '/modules/customers/customers.html' },
-                { id: 'membership', name: '👑 会员管理', path: '/modules/customers/membership.html' },
-                { id: 'coupons', name: '🎫 优惠券管理', path: '/modules/customers/coupons.html' },
-                { id: 'gift-cards', name: '🎁 礼品卡管理', path: '/modules/customers/gift-cards.html' },
-                { id: 'vehicles', name: '🚗 车辆管理', path: '/modules/customers/vehicles.html' },
-                { id: 'wallet', name: '💳 电子钱包', path: '/modules/customers/wallet.html' },
-                { id: 'feedback', name: '💬 客户反馈', path: '/modules/customers/feedback.html' }
-            ]
-        }, {
-            id: 'products', icon: '📦', name: '产品管理', roles: ['admin','manager'],
-            children: [
-                { id: 'products-main', name: '📦 产品列表', path: '/modules/products/products.html' },
-                { id: 'categories', name: '🏷️ 分类管理', path: '/modules/products/categories.html' },
-                { id: 'brands', name: '🏢 品牌管理', path: '/modules/products/brands.html' },
-                { id: 'variants', name: '🔀 规格变体', path: '/modules/products/variants.html' },
-                { id: 'barcodes', name: '📌 条码管理', path: '/modules/products/barcodes.html' },
-                { id: 'price-lists', name: '💰 价格列表', path: '/modules/products/price-lists.html' }
-            ]
-        }, {
-            id: 'inventory', icon: '📊', name: '库存管理', roles: ['admin','manager'],
-            children: [
-                { id: 'inventory-main', name: '📊 库存总览', path: '/modules/inventory/inventory.html' },
-                { id: 'stock', name: '📦 库存管理', path: '/modules/inventory/stock.html' },
-                { id: 'warehouses', name: '🏗️ 仓库管理', path: '/modules/inventory/warehouses.html' },
-                { id: 'history', name: '📜 库存历史', path: '/modules/inventory/history.html' },
-                { id: 'low-stock', name: '⛔ 库存预警', path: '/modules/inventory/low-stock.html' },
-                { id: 'transfers', name: '🔄 库存调拨', path: '/modules/inventory/transfers.html' },
-                { id: 'cycle-counts', name: '🔄 盘点管理', path: '/modules/inventory/cycle-counts.html' },
-                { id: 'expiry', name: '⏰ 保质期管理', path: '/modules/inventory/expiry.html' }
-            ]
-        }, {
-            id: 'purchase', icon: '🛍️', name: '采购管理', roles: ['admin','manager'],
-            children: [
-                { id: 'purchase-main', name: '📑 采购订单', path: '/modules/purchase/purchase.html' },
-                { id: 'suppliers', name: '🤝 供应商管理', path: '/modules/purchase/suppliers.html' },
-                { id: 'quotations', name: '📊 询价报价', path: '/modules/purchase/quotations.html' },
-                { id: 'receiving', name: '📦 收货入库', path: '/modules/purchase/receiving.html' },
-                { id: 'import', name: '📥 批量导入', path: '/modules/purchase/import.html' }
-            ]
-        }, {
-            id: 'finance', icon: '💰', name: '财务管理', roles: ['admin','manager'],
-            children: [
-                { id: 'finance-main', name: '💰 财务总览', path: '/modules/finance/finance.html' },
-                { id: 'income', name: '📈 收入管理', path: '/modules/finance/income.html' },
-                { id: 'expenses', name: '📉 费用管理', path: '/modules/finance/expenses.html' },
-                { id: 'profit-loss', name: '📊 损益表', path: '/modules/finance/profit-loss.html' },
-                { id: 'cash-flow', name: '💧 现金流量', path: '/modules/finance/cash-flow.html' },
-                { id: 'invoices', name: '🧾 发票管理', path: '/modules/finance/invoices.html' },
-                { id: 'bank', name: '🏦 银行账户', path: '/modules/finance/bank.html' },
-                { id: 'taxes', name: '🏛️ 税务管理', path: '/modules/finance/taxes.html' },
-                { id: 'vat', name: '📑 增值税', path: '/modules/finance/vat.html' },
-                { id: 'payments', name: '💳 付款管理', path: '/modules/finance/payments.html' },
-                { id: 'settlements', name: '🤝 结算管理', path: '/modules/finance/settlements.html' },
-                { id: 'journal', name: '📖 日记账', path: '/modules/finance/journal.html' },
-                { id: 'trial-balance', name: '⚖️ 试算平衡', path: '/modules/finance/trial-balance.html' }
-            ]
-        }, {
-            id: 'hr', icon: '👔', name: '人力资源', roles: ['admin','manager'],
-            children: [
-                { id: 'hr-main', name: '👤 员工管理', path: '/modules/hr/hr.html' },
-                { id: 'employees', name: '👤 员工档案', path: '/modules/hr/employees.html' },
-                { id: 'attendance', name: '⏰ 考勤管理', path: '/modules/hr/attendance.html' },
-                { id: 'leaves', name: '🌴 请假管理', path: '/modules/hr/leaves.html' },
-                { id: 'shifts', name: '🔄 排班管理', path: '/modules/hr/shifts.html' },
-                { id: 'payroll', name: '💰 薪酬管理', path: '/modules/hr/payroll.html' },
-                { id: 'performance', name: '📈 绩效考核', path: '/modules/hr/performance.html' },
-                { id: 'commissions', name: '🏆 佣金管理', path: '/modules/hr/commissions.html' },
-                { id: 'bonuses', name: '🎁 奖金管理', path: '/modules/hr/bonuses.html' },
-                { id: 'penalties', name: '⚠️ 违规处罚', path: '/modules/hr/penalties.html' },
-                { id: 'tasks', name: '📋 任务管理', path: '/modules/hr/tasks.html' },
-                { id: 'schedules', name: '📅 日程管理', path: '/modules/hr/schedules.html' },
-                { id: 'permissions', name: '🔐 权限管理', path: '/modules/hr/permissions.html' }
-            ]
-        }, {
-            id: 'fleet', icon: '🚗', name: '车辆监控', roles: ['admin','manager'],
-            children: [
-                { id: 'fleet-main', name: '🚗 车辆总览', path: '/modules/fleet/fleet.html' },
-                { id: 'tracking', name: '📍 轨迹追踪', path: '/modules/fleet/tracking.html' },
-                { id: 'history', name: '📜 行驶历史', path: '/modules/fleet/history.html' },
-                { id: 'alerts', name: '🚨 报警管理', path: '/modules/fleet/alerts.html' },
-                { id: 'maintenance', name: '🔧 维保计划', path: '/modules/fleet/maintenance.html' }
-            ]
-        }, {
-            id: 'employee', icon: '👤', name: '车辆录入', roles: ['employee','cashier'],
-            children: [
-                { id: 'employee-main', name: '📷 车辆录入', path: '/modules/employee/employee.html' },
-                { id: 'records', name: '📋 录入记录', path: '/modules/employee/records.html' },
-                { id: 'stats', name: '📊 业绩统计', path: '/modules/employee/stats.html' },
-                { id: 'queue', name: '⏳ 排队管理', path: '/modules/employee/queue.html' },
-                { id: 'approvals', name: '✅ 审核派单', path: '/modules/employee/approvals.html' }
-            ]
-        }, {
-            id: 'marketing', icon: '📢', name: '营销管理', roles: ['admin','manager'],
-            children: [
-                { id: 'marketing-main', name: '📊 营销管理', path: '/modules/marketing/marketing.html' },
-                { id: 'campaigns', name: '🎯 活动管理', path: '/modules/marketing/campaigns.html' },
-                { id: 'promotions', name: '🏷️ 促销管理', path: '/modules/marketing/promotions.html' },
-                { id: 'loyalty', name: '❤️ 忠诚度计划', path: '/modules/marketing/loyalty.html' },
-                { id: 'referrals', name: '🤝 推荐管理', path: '/modules/marketing/referrals.html' }
-            ]
-        }, {
-            id: 'saas', icon: '☁️', name: 'SaaS管理', roles: ['admin'],
-            children: [
-                { id: 'saas-main', name: '☁️ SaaS 总览', path: '/modules/saas/saas.html' },
-                { id: 'tenants', name: '🏢 租户管理', path: '/modules/saas/tenants.html' },
-                { id: 'packages', name: '📦 套餐管理', path: '/modules/saas/packages.html' },
-                { id: 'plans', name: '💳 订阅计划', path: '/modules/saas/plans.html' },
-                { id: 'subscriptions', name: '🔄 订阅管理', path: '/modules/saas/subscriptions.html' },
-                { id: 'billing', name: '🧾 账单管理', path: '/modules/saas/billing.html' },
-                { id: 'usage', name: '📊 用量统计', path: '/modules/saas/usage.html' },
-                { id: 'storage', name: '💾 存储管理', path: '/modules/saas/storage.html' },
-                { id: 'feature-limits', name: '🔒 功能限制', path: '/modules/saas/feature-limits.html' }
-            ]
-        }, {
-            id: 'settings', icon: '⚙️', name: '系统设置', roles: ['admin','manager'],
-            children: [
-                { id: 'settings-main', name: '⚙️ 系统设置', path: '/modules/settings/settings.html' },
-                { id: 'general', name: '⚙️ 通用设置', path: '/modules/settings/general.html' },
-                { id: 'company', name: '🏢 公司信息', path: '/modules/settings/company.html' },
-                { id: 'branches', name: '🏬 分支机构', path: '/modules/settings/branches.html' },
-                { id: 'profile', name: '👤 个人中心', path: '/modules/settings/profile.html' },
-                { id: 'preferences', name: '🎨 偏好设置', path: '/modules/settings/preferences.html' }
-            ]
-        }, {
-            id: 'system', icon: '🔧', name: '系统管理', roles: ['admin'],
-            children: [
-                { id: 'system-main', name: '⚙️ 系统管理', path: '/modules/system/system.html' },
-                { id: 'roles', name: '👥 角色管理', path: '/modules/system/roles.html' },
-                { id: 'permission', name: '🔐 权限管理', path: '/modules/system/permission.html' },
-                { id: 'audit-logs', name: '📋 审计日志', path: '/modules/system/audit-logs.html' },
-                { id: 'backup', name: '💾 数据备份', path: '/modules/system/backup.html' },
-                { id: 'restore', name: '🔄 数据恢复', path: '/modules/system/restore.html' },
-                { id: 'import-export', name: '📥 导入导出', path: '/modules/system/import-export.html' },
-                { id: 'notifications', name: '🔔 通知管理', path: '/modules/system/notifications.html' },
-                { id: 'integrations', name: '🔗 集成管理', path: '/modules/system/integrations.html' },
-                { id: 'webhooks', name: '🌐 Webhooks', path: '/modules/system/webhooks.html' },
-                { id: 'marketplace', name: '🏪 应用市场', path: '/modules/system/marketplace.html' }
-            ]
-        }, {
-            id: 'ai', icon: '🤖', name: 'AI助手', roles: ['admin','manager'],
-            children: [
-                { id: 'ai-main', name: '🤖 AI 助手', path: '/modules/ai/ai.html' },
-                { id: 'chat', name: '💬 智能对话', path: '/modules/ai/chat.html' },
-                { id: 'crm', name: '👥 关系预测', path: '/modules/ai/crm.html' },
-                { id: 'report-gen', name: '📈 分析报告', path: '/modules/ai/report-gen.html' },
-                { id: 'auto-tasks', name: '⚙️ 自动流程', path: '/modules/ai/auto-tasks.html' }
-            ]
-        }, {
-            id: 'pos', icon: '🛒', name: '销售点', roles: ['admin','manager','cashier'],
-            children: [
-                { id: 'pos-main', name: '💳 收银台', path: '/modules/pos/pos.html' },
-                { id: 'quick-sale', name: '⚡ 快速开单', path: '/modules/pos/quick-sale.html' },
-                { id: 'cash-register', name: '💰 钱箱管理', path: '/modules/pos/cash-register.html' },
-                { id: 'receipt', name: '🧾 小票设计', path: '/modules/pos/receipt.html' },
-                { id: 'touch-pos', name: '📱 触屏模式', path: '/modules/pos/touch-pos.html' },
-                { id: 'statistics', name: '📊 销售报表', path: '/modules/pos/statistics.html' },
-                { id: 'discounts', name: '🏷️ 折扣管理', path: '/modules/pos/discounts.html' }
-            ]
-        }];
-
-        // ============================================================
-        // 2. 全局状态与存储
+        // 1. 存储工具
         // ============================================================
         const Storage = {
             get: function(key, defaultValue) {
@@ -442,13 +228,260 @@
         }
 
         // ============================================================
-        // 3. 渲染核心侧边栏 (折叠式多级菜单)
+        // 2. 菜单配置（所有路径使用绝对路径 / 开头）
+        // ============================================================
+        const SIDEBAR_CONFIG = [{
+            id: 'dashboard',
+            icon: '📊',
+            name: '仪表盘',
+            roles: ['admin', 'manager', 'cashier', 'employee'],
+            children: [
+                { id: 'dashboard-main', name: '🏠 工作台总览', path: '/modules/dashboard/dashboard.html' },
+                { id: 'analytics', name: '📈 核心看板', path: '/modules/dashboard/analytics.html' },
+                { id: 'reports', name: '📋 快捷报表', path: '/modules/dashboard/reports.html' },
+                { id: 'tasks', name: '✅ 待办任务', path: '/modules/dashboard/tasks.html' },
+                { id: 'timeline', name: '📰 动态消息', path: '/modules/dashboard/timeline.html' },
+                { id: 'quick-actions', name: '⚡ 快捷入口', path: '/modules/dashboard/quick-actions.html' },
+                { id: 'notifications', name: '🔔 通知中心', path: '/modules/dashboard/notifications.html' }
+            ]
+        }, {
+            id: 'analytics',
+            icon: '📈',
+            name: '数据分析',
+            roles: ['admin', 'manager'],
+            children: [
+                { id: 'analytics-main', name: '📊 数据总览', path: '/modules/analytics/analytics.html' },
+                { id: 'reports-analytics', name: '📋 数据报表', path: '/modules/analytics/reports.html' },
+                { id: 'business-health', name: '❤️ 业务健康度', path: '/modules/analytics/business-health.html' },
+                { id: 'forecast', name: '🔮 预测分析', path: '/modules/analytics/forecast.html' },
+                { id: 'recommendations', name: '🤖 智能推荐', path: '/modules/analytics/recommendations.html' },
+                { id: 'visualizations', name: '🎨 数据可视化', path: '/modules/analytics/visualizations.html' },
+                { id: 'custom-reports', name: '✍️ 自定义报表', path: '/modules/analytics/custom-reports.html' }
+            ]
+        }, {
+            id: 'orders',
+            icon: '📋',
+            name: '订单管理',
+            roles: ['admin', 'manager', 'cashier'],
+            children: [
+                { id: 'orders-main', name: '📄 订单列表', path: '/modules/orders/orders.html' },
+                { id: 'list-orders', name: '📋 订单列表', path: '/modules/orders/list.html' },
+                { id: 'detail-orders', name: '🔍 订单详情', path: '/modules/orders/detail.html' },
+                { id: 'returns', name: '↩️ 退货管理', path: '/modules/orders/returns.html' },
+                { id: 'refunds', name: '💸 退款管理', path: '/modules/orders/refunds.html' }
+            ]
+        }, {
+            id: 'pos',
+            icon: '🛒',
+            name: '销售点',
+            roles: ['admin', 'manager', 'cashier'],
+            children: [
+                { id: 'pos-main', name: '💳 收银台', path: '/modules/pos/pos.html' },
+                { id: 'quick-sale', name: '⚡ 快速开单', path: '/modules/pos/quick-sale.html' },
+                { id: 'cash-register', name: '💰 钱箱管理', path: '/modules/pos/cash-register.html' },
+                { id: 'receipt', name: '🧾 小票设计', path: '/modules/pos/receipt.html' },
+                { id: 'touch-pos', name: '📱 触屏模式', path: '/modules/pos/touch-pos.html' },
+                { id: 'statistics-pos', name: '📊 销售报表', path: '/modules/pos/statistics.html' },
+                { id: 'discounts', name: '🏷️ 折扣管理', path: '/modules/pos/discounts.html' }
+            ]
+        }, {
+            id: 'customers',
+            icon: '👥',
+            name: '客户管理',
+            roles: ['admin', 'manager'],
+            children: [
+                { id: 'customers-main', name: '👤 客户列表', path: '/modules/customers/customers.html' },
+                { id: 'membership', name: '👑 会员管理', path: '/modules/customers/membership.html' },
+                { id: 'coupons', name: '🎫 优惠券管理', path: '/modules/customers/coupons.html' },
+                { id: 'gift-cards', name: '🎁 礼品卡管理', path: '/modules/customers/gift-cards.html' },
+                { id: 'vehicles', name: '🚗 车辆管理', path: '/modules/customers/vehicles.html' },
+                { id: 'wallet', name: '💳 电子钱包', path: '/modules/customers/wallet.html' },
+                { id: 'feedback', name: '💬 客户反馈', path: '/modules/customers/feedback.html' }
+            ]
+        }, {
+            id: 'products',
+            icon: '📦',
+            name: '产品管理',
+            roles: ['admin', 'manager'],
+            children: [
+                { id: 'products-main', name: '📦 产品列表', path: '/modules/products/products.html' },
+                { id: 'categories', name: '🏷️ 分类管理', path: '/modules/products/categories.html' },
+                { id: 'brands', name: '🏢 品牌管理', path: '/modules/products/brands.html' },
+                { id: 'variants', name: '🔀 规格变体', path: '/modules/products/variants.html' },
+                { id: 'barcodes', name: '📌 条码管理', path: '/modules/products/barcodes.html' },
+                { id: 'price-lists', name: '💰 价格列表', path: '/modules/products/price-lists.html' }
+            ]
+        }, {
+            id: 'inventory',
+            icon: '📊',
+            name: '库存管理',
+            roles: ['admin', 'manager'],
+            children: [
+                { id: 'inventory-main', name: '📊 库存总览', path: '/modules/inventory/inventory.html' },
+                { id: 'stock', name: '📦 库存管理', path: '/modules/inventory/stock.html' },
+                { id: 'warehouses', name: '🏗️ 仓库管理', path: '/modules/inventory/warehouses.html' },
+                { id: 'history-inventory', name: '📜 库存历史', path: '/modules/inventory/history.html' },
+                { id: 'low-stock', name: '⛔ 库存预警', path: '/modules/inventory/low-stock.html' },
+                { id: 'transfers', name: '🔄 库存调拨', path: '/modules/inventory/transfers.html' },
+                { id: 'cycle-counts', name: '🔄 盘点管理', path: '/modules/inventory/cycle-counts.html' },
+                { id: 'expiry', name: '⏰ 保质期管理', path: '/modules/inventory/expiry.html' }
+            ]
+        }, {
+            id: 'purchase',
+            icon: '🛍️',
+            name: '采购管理',
+            roles: ['admin', 'manager'],
+            children: [
+                { id: 'purchase-main', name: '📑 采购订单', path: '/modules/purchase/purchase.html' },
+                { id: 'suppliers', name: '🤝 供应商管理', path: '/modules/purchase/suppliers.html' },
+                { id: 'quotations', name: '📊 询价报价', path: '/modules/purchase/quotations.html' },
+                { id: 'receiving', name: '📦 收货入库', path: '/modules/purchase/receiving.html' },
+                { id: 'import-purchase', name: '📥 批量导入', path: '/modules/purchase/import.html' }
+            ]
+        }, {
+            id: 'finance',
+            icon: '💰',
+            name: '财务管理',
+            roles: ['admin', 'manager'],
+            children: [
+                { id: 'finance-main', name: '💰 财务总览', path: '/modules/finance/finance.html' },
+                { id: 'income', name: '📈 收入管理', path: '/modules/finance/income.html' },
+                { id: 'expenses', name: '📉 费用管理', path: '/modules/finance/expenses.html' },
+                { id: 'profit-loss', name: '📊 损益表', path: '/modules/finance/profit-loss.html' },
+                { id: 'cash-flow', name: '💧 现金流量', path: '/modules/finance/cash-flow.html' },
+                { id: 'invoices', name: '🧾 发票管理', path: '/modules/finance/invoices.html' },
+                { id: 'bank', name: '🏦 银行账户', path: '/modules/finance/bank.html' },
+                { id: 'taxes', name: '🏛️ 税务管理', path: '/modules/finance/taxes.html' },
+                { id: 'vat', name: '📑 增值税', path: '/modules/finance/vat.html' },
+                { id: 'payments', name: '💳 付款管理', path: '/modules/finance/payments.html' },
+                { id: 'settlements', name: '🤝 结算管理', path: '/modules/finance/settlements.html' },
+                { id: 'journal', name: '📖 日记账', path: '/modules/finance/journal.html' },
+                { id: 'trial-balance', name: '⚖️ 试算平衡', path: '/modules/finance/trial-balance.html' }
+            ]
+        }, {
+            id: 'hr',
+            icon: '👔',
+            name: '人力资源',
+            roles: ['admin', 'manager'],
+            children: [
+                { id: 'hr-main', name: '👤 员工管理', path: '/modules/hr/hr.html' },
+                { id: 'employees', name: '👤 员工档案', path: '/modules/hr/employees.html' },
+                { id: 'attendance', name: '⏰ 考勤管理', path: '/modules/hr/attendance.html' },
+                { id: 'leaves', name: '🌴 请假管理', path: '/modules/hr/leaves.html' },
+                { id: 'shifts', name: '🔄 排班管理', path: '/modules/hr/shifts.html' },
+                { id: 'payroll', name: '💰 薪酬管理', path: '/modules/hr/payroll.html' },
+                { id: 'performance', name: '📈 绩效考核', path: '/modules/hr/performance.html' },
+                { id: 'commissions', name: '🏆 佣金管理', path: '/modules/hr/commissions.html' },
+                { id: 'bonuses', name: '🎁 奖金管理', path: '/modules/hr/bonuses.html' },
+                { id: 'penalties', name: '⚠️ 违规处罚', path: '/modules/hr/penalties.html' },
+                { id: 'tasks-hr', name: '📋 任务管理', path: '/modules/hr/tasks.html' },
+                { id: 'schedules', name: '📅 日程管理', path: '/modules/hr/schedules.html' },
+                { id: 'permissions', name: '🔐 权限管理', path: '/modules/hr/permissions.html' }
+            ]
+        }, {
+            id: 'fleet',
+            icon: '🚗',
+            name: '车辆监控',
+            roles: ['admin', 'manager'],
+            children: [
+                { id: 'fleet-main', name: '🚗 车辆总览', path: '/modules/fleet/fleet.html' },
+                { id: 'tracking', name: '📍 轨迹追踪', path: '/modules/fleet/tracking.html' },
+                { id: 'history-fleet', name: '📜 行驶历史', path: '/modules/fleet/history.html' },
+                { id: 'alerts', name: '🚨 报警管理', path: '/modules/fleet/alerts.html' },
+                { id: 'maintenance', name: '🔧 维保计划', path: '/modules/fleet/maintenance.html' }
+            ]
+        }, {
+            id: 'employee',
+            icon: '👤',
+            name: '车辆录入',
+            roles: ['employee', 'cashier'],
+            children: [
+                { id: 'employee-main', name: '📷 车辆录入', path: '/modules/employee/employee.html' },
+                { id: 'records', name: '📋 录入记录', path: '/modules/employee/records.html' },
+                { id: 'stats', name: '📊 业绩统计', path: '/modules/employee/stats.html' },
+                { id: 'queue', name: '⏳ 排队管理', path: '/modules/employee/queue.html' },
+                { id: 'approvals', name: '✅ 审核派单', path: '/modules/employee/approvals.html' }
+            ]
+        }, {
+            id: 'marketing',
+            icon: '📢',
+            name: '营销管理',
+            roles: ['admin', 'manager'],
+            children: [
+                { id: 'marketing-main', name: '📊 营销管理', path: '/modules/marketing/marketing.html' },
+                { id: 'campaigns', name: '🎯 活动管理', path: '/modules/marketing/campaigns.html' },
+                { id: 'promotions', name: '🏷️ 促销管理', path: '/modules/marketing/promotions.html' },
+                { id: 'loyalty', name: '❤️ 忠诚度计划', path: '/modules/marketing/loyalty.html' },
+                { id: 'referrals', name: '🤝 推荐管理', path: '/modules/marketing/referrals.html' }
+            ]
+        }, {
+            id: 'saas',
+            icon: '☁️',
+            name: 'SaaS管理',
+            roles: ['admin'],
+            children: [
+                { id: 'saas-main', name: '☁️ SaaS 总览', path: '/modules/saas/saas.html' },
+                { id: 'tenants', name: '🏢 租户管理', path: '/modules/saas/tenants.html' },
+                { id: 'packages', name: '📦 套餐管理', path: '/modules/saas/packages.html' },
+                { id: 'plans', name: '💳 订阅计划', path: '/modules/saas/plans.html' },
+                { id: 'subscriptions', name: '🔄 订阅管理', path: '/modules/saas/subscriptions.html' },
+                { id: 'billing', name: '🧾 账单管理', path: '/modules/saas/billing.html' },
+                { id: 'usage', name: '📊 用量统计', path: '/modules/saas/usage.html' },
+                { id: 'storage', name: '💾 存储管理', path: '/modules/saas/storage.html' },
+                { id: 'feature-limits', name: '🔒 功能限制', path: '/modules/saas/feature-limits.html' }
+            ]
+        }, {
+            id: 'settings',
+            icon: '⚙️',
+            name: '系统设置',
+            roles: ['admin', 'manager'],
+            children: [
+                { id: 'settings-main', name: '⚙️ 系统设置', path: '/modules/settings/settings.html' },
+                { id: 'general', name: '⚙️ 通用设置', path: '/modules/settings/general.html' },
+                { id: 'company', name: '🏢 公司信息', path: '/modules/settings/company.html' },
+                { id: 'branches', name: '🏬 分支机构', path: '/modules/settings/branches.html' },
+                { id: 'profile', name: '👤 个人中心', path: '/modules/settings/profile.html' },
+                { id: 'preferences', name: '🎨 偏好设置', path: '/modules/settings/preferences.html' }
+            ]
+        }, {
+            id: 'system',
+            icon: '🔧',
+            name: '系统管理',
+            roles: ['admin'],
+            children: [
+                { id: 'system-main', name: '⚙️ 系统管理', path: '/modules/system/system.html' },
+                { id: 'roles-system', name: '👥 角色管理', path: '/modules/system/roles.html' },
+                { id: 'permission-system', name: '🔐 权限管理', path: '/modules/system/permission.html' },
+                { id: 'audit-logs', name: '📋 审计日志', path: '/modules/system/audit-logs.html' },
+                { id: 'backup', name: '💾 数据备份', path: '/modules/system/backup.html' },
+                { id: 'restore', name: '🔄 数据恢复', path: '/modules/system/restore.html' },
+                { id: 'import-export', name: '📥 导入导出', path: '/modules/system/import-export.html' },
+                { id: 'notifications-system', name: '🔔 通知管理', path: '/modules/system/notifications.html' },
+                { id: 'integrations', name: '🔗 集成管理', path: '/modules/system/integrations.html' },
+                { id: 'webhooks', name: '🌐 Webhooks', path: '/modules/system/webhooks.html' },
+                { id: 'marketplace', name: '🏪 应用市场', path: '/modules/system/marketplace.html' }
+            ]
+        }, {
+            id: 'ai',
+            icon: '🤖',
+            name: 'AI助手',
+            roles: ['admin', 'manager'],
+            children: [
+                { id: 'ai-main', name: '🤖 AI 助手', path: '/modules/ai/ai.html' },
+                { id: 'chat', name: '💬 智能对话', path: '/modules/ai/chat.html' },
+                { id: 'crm-ai', name: '👥 关系预测', path: '/modules/ai/crm.html' },
+                { id: 'report-gen', name: '📈 分析报告', path: '/modules/ai/report-gen.html' },
+                { id: 'auto-tasks', name: '⚙️ 自动流程', path: '/modules/ai/auto-tasks.html' }
+            ]
+        }];
+
+        // ============================================================
+        // 3. 渲染菜单
         // ============================================================
         function renderMenu() {
             const menuList = document.getElementById('menuList');
             if (!menuList) return;
 
-            // 记上次展开的父级
             let expandedParent = Storage.get('expandedMenu', 'dashboard');
             const role = getUserRole();
             let html = '';
@@ -469,7 +502,7 @@
                         .filter(c => hasAccess(c))
                         .map(child => `
                             <li class="nav-item sub-item">
-                                <a class="nav-link sub-link" data-module="${child.id}" onclick="loadModule('${child.id}'); return false;">
+                                <a class="nav-link sub-link" data-module="${child.id}" onclick="window.loadModule('${child.id}'); return false;">
                                     <span class="nav-text">${child.name}</span>
                                 </a>
                             </li>
@@ -477,7 +510,7 @@
 
                     html += `
                         <li class="nav-item parent-item">
-                            <a class="nav-link parent-link ${isExpanded ? 'active' : ''}" onclick="toggleMenu('${item.id}')">
+                            <a class="nav-link parent-link ${isExpanded ? 'active' : ''}" onclick="window.toggleMenu('${item.id}')">
                                 <span class="nav-icon">${item.icon}</span>
                                 <span class="nav-text">${item.name}</span>
                                 <span class="nav-arrow" style="margin-left:auto;transition:transform 0.3s;${isExpanded ? 'transform:rotate(90deg);' : ''}">▶</span>
@@ -490,7 +523,7 @@
                 } else {
                     html += `
                         <li class="nav-item">
-                            <a class="nav-link" data-module="${item.id}" onclick="loadModule('${item.id}'); return false;">
+                            <a class="nav-link" data-module="${item.id}" onclick="window.loadModule('${item.id}'); return false;">
                                 <span class="nav-icon">${item.icon}</span>
                                 <span class="nav-text">${item.name}</span>
                             </a>
@@ -510,13 +543,11 @@
         }
 
         // ============================================================
-        // 4. 快速数据初始化器 (为所有“开发中”页面注入模拟数据)
+        // 4. 模拟数据
         // ============================================================
         function initMockData() {
-            // 如果已经有订单，不重复生成
             if (Storage.get('orders') && Storage.get('orders').length > 0) return;
 
-            // 模拟订单数据 (供 orders 和 finance 使用)
             const mockOrders = [];
             const names = ['张伟', '王芳', '李明', '刘洋', '陈静', '杨帆'];
             for (let i = 1; i <= 30; i++) {
@@ -532,60 +563,16 @@
             }
             Storage.set('orders', mockOrders);
 
-            // 模拟客户数据
             const customers = names.map((n, idx) => ({
-                id: idx + 1, name: n + '女士', phone: '1380000' + String(1000 + idx),
+                id: idx + 1,
+                name: n + '女士',
+                phone: '1380000' + String(1000 + idx),
                 level: ['普通', '银卡', '金卡', '钻石'][idx % 4],
                 points: Math.floor(Math.random() * 5000),
                 total_spent: Math.round((Math.random() * 10000 + 100) * 100) / 100
             }));
             Storage.set('customers', customers);
 
-            // 模拟车辆数据
-            const vehicles = [
-                { plate: '京A·88888', brand: '奔驰', model: 'S500', owner: '张伟', phone: '13800001111' },
-                { plate: '京B·66666', brand: '宝马', model: 'X5', owner: '李娜', phone: '13800002222' },
-                { plate: '京C·55555', brand: '奥迪', model: 'A6', owner: '王强', phone: '13800003333' },
-            ];
-            Storage.set('vehicles', vehicles);
-
-            // 模拟优惠券数据
-            const coupons = [
-                { id: 'CP-001', name: '新客优惠', code: 'WELCOME10', type: 'discount', value: 10, minOrder: 50, status: 'active' },
-                { id: 'CP-002', name: '洗车折扣', code: 'WASH15', type: 'percent', value: 15, minOrder: 0, status: 'active' },
-            ];
-            Storage.set('coupons', coupons);
-
-            // 模拟礼品卡
-            const giftCards = [
-                { id: 'GC-001', number: '8800 1234 5678 9012', holder: '张伟', balance: 500, status: 'active' },
-                { id: 'GC-002', number: '8800 2345 6789 0123', holder: '李娜', balance: 200, status: 'active' },
-            ];
-            Storage.set('giftCards', giftCards);
-
-            // 模拟反馈数据
-            const feedbacks = [
-                { id: 'FB-001', customer: '张伟', rating: 5, content: '服务非常好，洗得很干净！', date: new Date().toLocaleString() },
-                { id: 'FB-002', customer: '李娜', rating: 4, content: '整体不错，但等待时间有点长', date: new Date().toLocaleString() },
-            ];
-            Storage.set('feedbacks', feedbacks);
-
-            // 模拟财务交易数据
-            const finances = [];
-            for (let i = 1; i <= 20; i++) {
-                const type = i % 2 === 0 ? 'income' : 'expense';
-                finances.push({
-                    id: 'TXN-' + String(i).padStart(5, '0'),
-                    type: type,
-                    category: type === 'income' ? '销售收入' : '采购支出',
-                    amount: Math.round((Math.random() * 3000 + 100) * 100) / 100,
-                    description: type === 'income' ? '客户付款' : '供应商结算',
-                    date: new Date().toISOString().split('T')[0]
-                });
-            }
-            Storage.set('finance', finances);
-
-            // 模拟员工/考勤数据
             const employees = [
                 { id: 1, name: '李收银员', role: 'cashier', department: '前台' },
                 { id: 2, name: '张管理员', role: 'admin', department: '管理部' }
@@ -594,7 +581,7 @@
         }
 
         // ============================================================
-        // 5. 核心：模块与子模块加载器
+        // 5. 核心：模块加载器
         // ============================================================
         function findMenuItem(moduleId) {
             for (let item of SIDEBAR_CONFIG) {
@@ -615,16 +602,25 @@
             }
 
             const container = document.getElementById('moduleContainer');
+            if (!container) return;
+
             container.innerHTML = `
                 <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:300px;">
                     <div class="spinner"></div>
                     <p style="color:var(--text-secondary);margin-top:12px;">加载中...</p>
                 </div>
             `;
-            document.getElementById('breadcrumb').textContent = menuItem.name;
+
+            const breadcrumb = document.getElementById('breadcrumb');
+            if (breadcrumb) breadcrumb.textContent = menuItem.name;
 
             let fetchPath = menuItem.path;
             if (!fetchPath) return;
+
+            // 确保路径以 / 开头
+            if (!fetchPath.startsWith('/')) {
+                fetchPath = '/' + fetchPath;
+            }
 
             fetch(fetchPath)
                 .then(r => {
@@ -637,7 +633,6 @@
                     const pageContent = doc.querySelector('.page') || doc.body;
                     container.innerHTML = pageContent.innerHTML;
 
-                    // 自动执行子页面内部脚本
                     const scripts = doc.querySelectorAll('script');
                     scripts.forEach(script => {
                         if (script.textContent.trim()) {
@@ -657,19 +652,18 @@
                             <div style="font-size:48px;margin-bottom:16px;">🚧</div>
                             <h3 style="color:var(--text-primary);">功能开发中</h3>
                             <p style="color:var(--text-muted);">该功能正在紧锣密鼓地开发中...</p>
+                            <p style="color:var(--text-muted);font-size:12px;margin-top:8px;">${fetchPath}</p>
                         </div>
                     `;
                 });
         }
 
         // ============================================================
-        // 6. 系统启动入口
+        // 6. 系统启动
         // ============================================================
         function initSystem() {
-            // 注入模拟数据，确保所有页面一打开就有数据
             initMockData();
-            
-            // 登录保护
+
             const user = Storage.get('user');
             if (!user && window.location.pathname !== '/login.html') {
                 window.location.href = '/login.html';
@@ -678,25 +672,38 @@
 
             renderMenu();
 
-            const lastModule = Storage.get('lastModule', 'dashboard-main');
-            loadModule(lastModule);
+            // 延迟加载确保 DOM 完全渲染
+            setTimeout(function() {
+                const lastModule = Storage.get('lastModule', 'dashboard-main');
+                loadModule(lastModule);
+            }, 300);
 
             document.getElementById('app').style.display = 'flex';
             document.getElementById('loadingScreen').style.opacity = '0';
-            setTimeout(() => document.getElementById('loadingScreen').style.display = 'none', 500);
+            setTimeout(function() {
+                document.getElementById('loadingScreen').style.display = 'none';
+            }, 500);
         }
 
-        // 暴露全局
+        // ============================================================
+        // 7. 全局暴露（关键修复）
+        // ============================================================
         window.loadModule = loadModule;
         window.toggleMenu = toggleMenu;
+        window.renderMenu = renderMenu;
         window.toggleSidebar = function() {
             document.getElementById('sidebar').classList.toggle('open');
         };
         window.toggleSidebarCollapse = function() {
             document.getElementById('sidebar').classList.toggle('collapsed');
         };
+        window.SIDEBAR_CONFIG = SIDEBAR_CONFIG;
+        window.Storage = Storage;
 
-        document.addEventListener('DOMContentLoaded', () => {
+        // ============================================================
+        // 8. 启动
+        // ============================================================
+        document.addEventListener('DOMContentLoaded', function() {
             setTimeout(initSystem, 100);
         });
     </script>
