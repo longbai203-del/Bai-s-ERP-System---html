@@ -44,423 +44,399 @@
         </div>
     </aside>
     
+    <!-- ============================================================
+    脚本放在 </aside> 外面，确保每次加载都执行
+    ============================================================ -->
     <script>
-        // ============================================================
-        // 菜单数据结构（所有路径使用绝对路径 / 开头）
-        // ============================================================
-        var MENU_STRUCTURE = [
-            {
-                id: 'dashboard',
-                icon: '📊',
-                name: '仪表盘',
-                path: '/index.html',
-                children: []
-            },
-            {
-                id: 'pos',
-                icon: '🛒',
-                name: '销售点',
-                path: '/modules/pos/pos.html',
-                children: []
-            },
-            {
-                id: 'orders',
-                icon: '📋',
-                name: '订单管理',
-                path: '/modules/orders/orders.html',
-                children: [
-                    { id: 'orders-list', name: '📋 订单列表', path: '/modules/orders/list.html' },
-                    { id: 'orders-detail', name: '🔍 订单详情', path: '/modules/orders/detail.html' },
-                    { id: 'orders-refunds', name: '💸 退款管理', path: '/modules/orders/refunds.html' },
-                    { id: 'orders-returns', name: '↩️ 退货管理', path: '/modules/orders/returns.html' }
-                ]
-            },
-            {
-                id: 'customers',
-                icon: '👥',
-                name: '客户管理',
-                path: '/modules/customers/customers.html',
-                children: [
-                    { id: 'customers-list', name: '👤 客户列表', path: '/modules/customers/customers.html' },
-                    { id: 'customers-membership', name: '👑 会员管理', path: '/modules/customers/membership.html' },
-                    { id: 'customers-feedback', name: '💬 客户反馈', path: '/modules/customers/feedback.html' },
-                    { id: 'customers-vehicles', name: '🚗 车辆管理', path: '/modules/customers/vehicles.html' },
-                    { id: 'customers-wallet', name: '💳 钱包管理', path: '/modules/customers/wallet.html' },
-                    { id: 'customers-coupons', name: '🎫 优惠券管理', path: '/modules/customers/coupons.html' },
-                    { id: 'customers-gift-cards', name: '🎁 礼品卡管理', path: '/modules/customers/gift-cards.html' }
-                ]
-            },
-            {
-                id: 'products',
-                icon: '📦',
-                name: '产品管理',
-                path: '/modules/products/products.html',
-                children: [
-                    { id: 'products-list', name: '📦 产品列表', path: '/modules/products/products.html' },
-                    { id: 'products-categories', name: '🏷️ 分类管理', path: '/modules/products/categories.html' },
-                    { id: 'products-brands', name: '🏢 品牌管理', path: '/modules/products/brands.html' },
-                    { id: 'products-variants', name: '🔀 规格管理', path: '/modules/products/variants.html' },
-                    { id: 'products-price-lists', name: '💰 价格管理', path: '/modules/products/price-lists.html' },
-                    { id: 'products-barcodes', name: '📌 条码管理', path: '/modules/products/barcodes.html' },
-                    { id: 'products-combos', name: '📦 套餐管理', path: '/modules/products/combos.html' },
-                    { id: 'products-modifiers', name: '🔧 附加项管理', path: '/modules/products/modifiers.html' }
-                ]
-            },
-            {
-                id: 'inventory',
-                icon: '📊',
-                name: '库存管理',
-                path: '/modules/inventory/inventory.html',
-                children: [
-                    { id: 'inventory-list', name: '📊 库存总览', path: '/modules/inventory/inventory.html' },
-                    { id: 'inventory-stock', name: '📦 实时库存', path: '/modules/inventory/stock.html' },
-                    { id: 'inventory-transfers', name: '🔄 库存调拨', path: '/modules/inventory/transfers.html' },
-                    { id: 'inventory-adjustments', name: '📝 库存调整', path: '/modules/inventory/adjustments.html' },
-                    { id: 'inventory-cycle-count', name: '🔄 盘点管理', path: '/modules/inventory/cycle-counts.html' },
-                    { id: 'inventory-low-stock', name: '⚠️ 低库存预警', path: '/modules/inventory/low-stock.html' },
-                    { id: 'inventory-expiry', name: '⏰ 过期管理', path: '/modules/inventory/expiry.html' },
-                    { id: 'inventory-serial', name: '🔢 序列号管理', path: '/modules/inventory/serial-numbers.html' },
-                    { id: 'inventory-batches', name: '📦 批次管理', path: '/modules/inventory/batches.html' },
-                    { id: 'inventory-history', name: '📜 库存历史', path: '/modules/inventory/history.html' },
-                    { id: 'inventory-warehouses', name: '🏗️ 仓库管理', path: '/modules/inventory/warehouses.html' }
-                ]
-            },
-            {
-                id: 'purchase',
-                icon: '🛍️',
-                name: '采购管理',
-                path: '/modules/purchase/purchase.html',
-                children: [
-                    { id: 'purchase-list', name: '📑 采购订单', path: '/modules/purchase/purchase.html' },
-                    { id: 'purchase-quotations', name: '📊 询价管理', path: '/modules/purchase/quotations.html' },
-                    { id: 'purchase-receiving', name: '📦 收货管理', path: '/modules/purchase/receiving.html' },
-                    { id: 'purchase-import', name: '📥 导入采购', path: '/modules/purchase/import.html' },
-                    { id: 'purchase-suppliers', name: '🤝 供应商管理', path: '/modules/purchase/suppliers.html' },
-                    { id: 'purchase-supplier-payments', name: '💳 供应商付款', path: '/modules/purchase/supplier-payments.html' }
-                ]
-            },
-            {
-                id: 'finance',
-                icon: '💰',
-                name: '财务管理',
-                path: '/modules/finance/finance.html',
-                children: [
-                    { id: 'finance-overview', name: '💰 财务总览', path: '/modules/finance/finance.html' },
-                    { id: 'finance-income', name: '📈 收入管理', path: '/modules/finance/income.html' },
-                    { id: 'finance-expenses', name: '📉 支出管理', path: '/modules/finance/expenses.html' },
-                    { id: 'finance-invoices', name: '🧾 发票管理', path: '/modules/finance/invoices.html' },
-                    { id: 'finance-payments', name: '💳 收款管理', path: '/modules/finance/payments.html' },
-                    { id: 'finance-bank', name: '🏦 银行账户', path: '/modules/finance/bank.html' },
-                    { id: 'finance-cash-flow', name: '💧 现金流分析', path: '/modules/finance/cash-flow.html' },
-                    { id: 'finance-profit-loss', name: '📊 损益表', path: '/modules/finance/profit-loss.html' },
-                    { id: 'finance-trial-balance', name: '⚖️ 试算平衡', path: '/modules/finance/trial-balance.html' },
-                    { id: 'finance-journal', name: '📖 日记账', path: '/modules/finance/journal.html' },
-                    { id: 'finance-vat', name: '📑 增值税管理', path: '/modules/finance/vat.html' },
-                    { id: 'finance-taxes', name: '🏛️ 税务管理', path: '/modules/finance/taxes.html' },
-                    { id: 'finance-settlements', name: '🤝 结算管理', path: '/modules/finance/settlements.html' }
-                ]
-            },
-            {
-                id: 'hr',
-                icon: '👔',
-                name: '人力资源',
-                path: '/modules/hr/hr.html',
-                children: [
-                    { id: 'hr-employees', name: '👤 员工管理', path: '/modules/hr/employees.html' },
-                    { id: 'hr-attendance', name: '⏰ 考勤管理', path: '/modules/hr/attendance.html' },
-                    { id: 'hr-payroll', name: '💰 薪资管理', path: '/modules/hr/payroll.html' },
-                    { id: 'hr-leaves', name: '🌴 请假管理', path: '/modules/hr/leaves.html' },
-                    { id: 'hr-schedules', name: '📅 排班管理', path: '/modules/hr/schedules.html' },
-                    { id: 'hr-shifts', name: '🔄 班次管理', path: '/modules/hr/shifts.html' },
-                    { id: 'hr-performance', name: '📈 绩效管理', path: '/modules/hr/performance.html' },
-                    { id: 'hr-tasks', name: '📋 任务管理', path: '/modules/hr/tasks.html' },
-                    { id: 'hr-bonuses', name: '🎁 奖金管理', path: '/modules/hr/bonuses.html' },
-                    { id: 'hr-commissions', name: '🏆 佣金管理', path: '/modules/hr/commissions.html' },
-                    { id: 'hr-penalties', name: '⚠️ 处罚管理', path: '/modules/hr/penalties.html' },
-                    { id: 'hr-permissions', name: '🔐 权限管理', path: '/modules/hr/permissions.html' }
-                ]
-            },
-            {
-                id: 'analytics',
-                icon: '📈',
-                name: '数据分析',
-                path: '/modules/analytics/analytics.html',
-                children: [
-                    { id: 'analytics-dashboard', name: '📊 分析总览', path: '/modules/analytics/analytics.html' },
-                    { id: 'analytics-reports', name: '📋 报表中心', path: '/modules/analytics/reports.html' },
-                    { id: 'analytics-forecast', name: '🔮 销售预测', path: '/modules/analytics/forecast.html' },
-                    { id: 'analytics-visualization', name: '🎨 数据可视化', path: '/modules/analytics/visualizations.html' },
-                    { id: 'analytics-business-health', name: '❤️ 经营健康度', path: '/modules/analytics/business-health.html' },
-                    { id: 'analytics-custom-reports', name: '✍️ 自定义报表', path: '/modules/analytics/custom-reports.html' },
-                    { id: 'analytics-recommendations', name: '🤖 智能推荐', path: '/modules/analytics/recommendations.html' }
-                ]
-            },
-            {
-                id: 'settings',
-                icon: '⚙️',
-                name: '系统设置',
-                path: '/modules/settings/settings.html',
-                children: [
-                    { id: 'settings-general', name: '⚙️ 通用设置', path: '/modules/settings/general.html' },
-                    { id: 'settings-company', name: '🏢 公司信息', path: '/modules/settings/company.html' },
-                    { id: 'settings-branches', name: '🏬 分支管理', path: '/modules/settings/branches.html' },
-                    { id: 'settings-profile', name: '👤 个人资料', path: '/modules/settings/profile.html' },
-                    { id: 'settings-preferences', name: '🎨 偏好设置', path: '/modules/settings/preferences.html' }
-                ]
-            },
-            {
-                id: 'ai',
-                icon: '🤖',
-                name: 'AI助手',
-                path: '/modules/ai/ai.html',
-                children: [
-                    { id: 'ai-chat', name: '💬 智能对话', path: '/modules/ai/chat.html' },
-                    { id: 'ai-crm', name: '👥 智能CRM', path: '/modules/ai/crm.html' },
-                    { id: 'ai-report-gen', name: '📈 分析报告', path: '/modules/ai/report-gen.html' },
-                    { id: 'ai-auto-tasks', name: '⚙️ 自动流程', path: '/modules/ai/auto-tasks.html' }
-                ]
-            },
-            {
-                id: 'fleet',
-                icon: '🚗',
-                name: '车辆监控',
-                path: '/modules/fleet/fleet.html',
-                children: [
-                    { id: 'fleet-list', name: '🚗 车辆总览', path: '/modules/fleet/fleet.html' },
-                    { id: 'fleet-tracking', name: '📍 轨迹追踪', path: '/modules/fleet/tracking.html' },
-                    { id: 'fleet-history', name: '📜 行驶历史', path: '/modules/fleet/history.html' },
-                    { id: 'fleet-alerts', name: '🚨 报警管理', path: '/modules/fleet/alerts.html' },
-                    { id: 'fleet-maintenance', name: '🔧 维保计划', path: '/modules/fleet/maintenance.html' }
-                ]
-            },
-            {
-                id: 'employee',
-                icon: '👤',
-                name: '车辆录入',
-                path: '/modules/employee/employee.html',
-                children: [
-                    { id: 'employee-entry', name: '📷 车辆录入', path: '/modules/employee/employee.html' },
-                    { id: 'employee-records', name: '📋 录入记录', path: '/modules/employee/records.html' },
-                    { id: 'employee-stats', name: '📊 业绩统计', path: '/modules/employee/stats.html' },
-                    { id: 'employee-queue', name: '⏳ 排队管理', path: '/modules/employee/queue.html' },
-                    { id: 'employee-approvals', name: '✅ 审核派单', path: '/modules/employee/approvals.html' }
-                ]
-            },
-            {
-                id: 'marketing',
-                icon: '📢',
-                name: '营销管理',
-                path: '/modules/marketing/marketing.html',
-                children: [
-                    { id: 'marketing-list', name: '📊 营销管理', path: '/modules/marketing/marketing.html' },
-                    { id: 'marketing-campaigns', name: '🎯 活动管理', path: '/modules/marketing/campaigns.html' },
-                    { id: 'marketing-promotions', name: '🏷️ 促销管理', path: '/modules/marketing/promotions.html' },
-                    { id: 'marketing-loyalty', name: '❤️ 忠诚度计划', path: '/modules/marketing/loyalty.html' },
-                    { id: 'marketing-referrals', name: '🤝 推荐管理', path: '/modules/marketing/referrals.html' }
-                ]
-            },
-            {
-                id: 'saas',
-                icon: '☁️',
-                name: 'SaaS管理',
-                path: '/modules/saas/saas.html',
-                children: [
-                    { id: 'saas-overview', name: '☁️ SaaS总览', path: '/modules/saas/saas.html' },
-                    { id: 'saas-tenants', name: '🏢 租户管理', path: '/modules/saas/tenants.html' },
-                    { id: 'saas-packages', name: '📦 套餐管理', path: '/modules/saas/packages.html' },
-                    { id: 'saas-plans', name: '💳 订阅计划', path: '/modules/saas/plans.html' },
-                    { id: 'saas-subscriptions', name: '🔄 订阅管理', path: '/modules/saas/subscriptions.html' },
-                    { id: 'saas-billing', name: '🧾 账单管理', path: '/modules/saas/billing.html' },
-                    { id: 'saas-usage', name: '📊 用量统计', path: '/modules/saas/usage.html' },
-                    { id: 'saas-storage', name: '💾 存储管理', path: '/modules/saas/storage.html' },
-                    { id: 'saas-feature-limits', name: '🔒 功能限制', path: '/modules/saas/feature-limits.html' }
-                ]
-            },
-            {
-                id: 'system',
-                icon: '🔧',
-                name: '系统管理',
-                path: '/modules/system/system.html',
-                children: [
-                    { id: 'system-roles', name: '👥 角色管理', path: '/modules/system/roles.html' },
-                    { id: 'system-permission', name: '🔐 权限管理', path: '/modules/system/permission.html' },
-                    { id: 'system-audit-logs', name: '📋 审计日志', path: '/modules/system/audit-logs.html' },
-                    { id: 'system-backup', name: '💾 数据备份', path: '/modules/system/backup.html' },
-                    { id: 'system-restore', name: '🔄 数据恢复', path: '/modules/system/restore.html' },
-                    { id: 'system-import-export', name: '📥 导入导出', path: '/modules/system/import-export.html' },
-                    { id: 'system-notifications', name: '🔔 通知管理', path: '/modules/system/notifications.html' },
-                    { id: 'system-integrations', name: '🔗 集成管理', path: '/modules/system/integrations.html' },
-                    { id: 'system-webhooks', name: '🌐 Webhooks', path: '/modules/system/webhooks.html' },
-                    { id: 'system-marketplace', name: '🏪 应用市场', path: '/modules/system/marketplace.html' },
-                    { id: 'system-api-keys', name: '🔑 API密钥', path: '/modules/system/api-keys.html' },
-                    { id: 'system-system-logs', name: '📜 系统日志', path: '/modules/system/system-logs.html' }
-                ]
-            }
-        ];
+        (function() {
+            'use strict';
     
-        // ============================================================
-        // 渲染菜单
-        // ============================================================
-        function renderMenu() {
-            var container = document.getElementById('menuContainer');
-            if (!container) return;
-    
-            var currentPath = window.location.pathname;
-            var html = '';
-    
-            MENU_STRUCTURE.forEach(function(item) {
-                var hasChildren = item.children && item.children.length > 0;
-                var isActive = currentPath === item.path || 
-                               (hasChildren && item.children.some(function(c) { return currentPath === c.path; }));
-    
-                html += '<ul class="nav-list">';
-    
-                html += '<li class="nav-item">';
-                html += '<a class="nav-link ' + (isActive ? 'active' : '') + (hasChildren ? ' has-children' : '') + '"';
-                if (hasChildren) {
-                    html += ' onclick="window.toggleSubMenu(this)" data-target="sub_' + item.id + '"';
-                } else {
-                    html += ' href="' + item.path + '"';
+            // 菜单数据结构（所有路径使用绝对路径 / 开头）
+            var MENU_STRUCTURE = [
+                {
+                    id: 'dashboard',
+                    icon: '📊',
+                    name: '仪表盘',
+                    path: '/index.html',
+                    children: []
+                },
+                {
+                    id: 'pos',
+                    icon: '🛒',
+                    name: '销售点',
+                    path: '/modules/pos/pos.html',
+                    children: []
+                },
+                {
+                    id: 'orders',
+                    icon: '📋',
+                    name: '订单管理',
+                    path: '/modules/orders/orders.html',
+                    children: [
+                        { id: 'orders-list', name: '📋 订单列表', path: '/modules/orders/list.html' },
+                        { id: 'orders-detail', name: '🔍 订单详情', path: '/modules/orders/detail.html' },
+                        { id: 'orders-refunds', name: '💸 退款管理', path: '/modules/orders/refunds.html' },
+                        { id: 'orders-returns', name: '↩️ 退货管理', path: '/modules/orders/returns.html' }
+                    ]
+                },
+                {
+                    id: 'customers',
+                    icon: '👥',
+                    name: '客户管理',
+                    path: '/modules/customers/customers.html',
+                    children: [
+                        { id: 'customers-list', name: '👤 客户列表', path: '/modules/customers/customers.html' },
+                        { id: 'customers-membership', name: '👑 会员管理', path: '/modules/customers/membership.html' },
+                        { id: 'customers-feedback', name: '💬 客户反馈', path: '/modules/customers/feedback.html' },
+                        { id: 'customers-vehicles', name: '🚗 车辆管理', path: '/modules/customers/vehicles.html' },
+                        { id: 'customers-wallet', name: '💳 钱包管理', path: '/modules/customers/wallet.html' },
+                        { id: 'customers-coupons', name: '🎫 优惠券管理', path: '/modules/customers/coupons.html' },
+                        { id: 'customers-gift-cards', name: '🎁 礼品卡管理', path: '/modules/customers/gift-cards.html' }
+                    ]
+                },
+                {
+                    id: 'products',
+                    icon: '📦',
+                    name: '产品管理',
+                    path: '/modules/products/products.html',
+                    children: [
+                        { id: 'products-list', name: '📦 产品列表', path: '/modules/products/products.html' },
+                        { id: 'products-categories', name: '🏷️ 分类管理', path: '/modules/products/categories.html' },
+                        { id: 'products-brands', name: '🏢 品牌管理', path: '/modules/products/brands.html' },
+                        { id: 'products-variants', name: '🔀 规格管理', path: '/modules/products/variants.html' },
+                        { id: 'products-price-lists', name: '💰 价格管理', path: '/modules/products/price-lists.html' },
+                        { id: 'products-barcodes', name: '📌 条码管理', path: '/modules/products/barcodes.html' },
+                        { id: 'products-combos', name: '📦 套餐管理', path: '/modules/products/combos.html' },
+                        { id: 'products-modifiers', name: '🔧 附加项管理', path: '/modules/products/modifiers.html' }
+                    ]
+                },
+                {
+                    id: 'inventory',
+                    icon: '📊',
+                    name: '库存管理',
+                    path: '/modules/inventory/inventory.html',
+                    children: [
+                        { id: 'inventory-list', name: '📊 库存总览', path: '/modules/inventory/inventory.html' },
+                        { id: 'inventory-stock', name: '📦 实时库存', path: '/modules/inventory/stock.html' },
+                        { id: 'inventory-transfers', name: '🔄 库存调拨', path: '/modules/inventory/transfers.html' },
+                        { id: 'inventory-adjustments', name: '📝 库存调整', path: '/modules/inventory/adjustments.html' },
+                        { id: 'inventory-cycle-count', name: '🔄 盘点管理', path: '/modules/inventory/cycle-counts.html' },
+                        { id: 'inventory-low-stock', name: '⚠️ 低库存预警', path: '/modules/inventory/low-stock.html' },
+                        { id: 'inventory-expiry', name: '⏰ 过期管理', path: '/modules/inventory/expiry.html' },
+                        { id: 'inventory-serial', name: '🔢 序列号管理', path: '/modules/inventory/serial-numbers.html' },
+                        { id: 'inventory-batches', name: '📦 批次管理', path: '/modules/inventory/batches.html' },
+                        { id: 'inventory-history', name: '📜 库存历史', path: '/modules/inventory/history.html' },
+                        { id: 'inventory-warehouses', name: '🏗️ 仓库管理', path: '/modules/inventory/warehouses.html' }
+                    ]
+                },
+                {
+                    id: 'purchase',
+                    icon: '🛍️',
+                    name: '采购管理',
+                    path: '/modules/purchase/purchase.html',
+                    children: [
+                        { id: 'purchase-list', name: '📑 采购订单', path: '/modules/purchase/purchase.html' },
+                        { id: 'purchase-quotations', name: '📊 询价管理', path: '/modules/purchase/quotations.html' },
+                        { id: 'purchase-receiving', name: '📦 收货管理', path: '/modules/purchase/receiving.html' },
+                        { id: 'purchase-import', name: '📥 导入采购', path: '/modules/purchase/import.html' },
+                        { id: 'purchase-suppliers', name: '🤝 供应商管理', path: '/modules/purchase/suppliers.html' },
+                        { id: 'purchase-supplier-payments', name: '💳 供应商付款', path: '/modules/purchase/supplier-payments.html' }
+                    ]
+                },
+                {
+                    id: 'finance',
+                    icon: '💰',
+                    name: '财务管理',
+                    path: '/modules/finance/finance.html',
+                    children: [
+                        { id: 'finance-overview', name: '💰 财务总览', path: '/modules/finance/finance.html' },
+                        { id: 'finance-income', name: '📈 收入管理', path: '/modules/finance/income.html' },
+                        { id: 'finance-expenses', name: '📉 支出管理', path: '/modules/finance/expenses.html' },
+                        { id: 'finance-invoices', name: '🧾 发票管理', path: '/modules/finance/invoices.html' },
+                        { id: 'finance-payments', name: '💳 收款管理', path: '/modules/finance/payments.html' },
+                        { id: 'finance-bank', name: '🏦 银行账户', path: '/modules/finance/bank.html' },
+                        { id: 'finance-cash-flow', name: '💧 现金流分析', path: '/modules/finance/cash-flow.html' },
+                        { id: 'finance-profit-loss', name: '📊 损益表', path: '/modules/finance/profit-loss.html' },
+                        { id: 'finance-trial-balance', name: '⚖️ 试算平衡', path: '/modules/finance/trial-balance.html' },
+                        { id: 'finance-journal', name: '📖 日记账', path: '/modules/finance/journal.html' },
+                        { id: 'finance-vat', name: '📑 增值税管理', path: '/modules/finance/vat.html' },
+                        { id: 'finance-taxes', name: '🏛️ 税务管理', path: '/modules/finance/taxes.html' },
+                        { id: 'finance-settlements', name: '🤝 结算管理', path: '/modules/finance/settlements.html' }
+                    ]
+                },
+                {
+                    id: 'hr',
+                    icon: '👔',
+                    name: '人力资源',
+                    path: '/modules/hr/hr.html',
+                    children: [
+                        { id: 'hr-employees', name: '👤 员工管理', path: '/modules/hr/employees.html' },
+                        { id: 'hr-attendance', name: '⏰ 考勤管理', path: '/modules/hr/attendance.html' },
+                        { id: 'hr-payroll', name: '💰 薪资管理', path: '/modules/hr/payroll.html' },
+                        { id: 'hr-leaves', name: '🌴 请假管理', path: '/modules/hr/leaves.html' },
+                        { id: 'hr-schedules', name: '📅 排班管理', path: '/modules/hr/schedules.html' },
+                        { id: 'hr-shifts', name: '🔄 班次管理', path: '/modules/hr/shifts.html' },
+                        { id: 'hr-performance', name: '📈 绩效管理', path: '/modules/hr/performance.html' },
+                        { id: 'hr-tasks', name: '📋 任务管理', path: '/modules/hr/tasks.html' },
+                        { id: 'hr-bonuses', name: '🎁 奖金管理', path: '/modules/hr/bonuses.html' },
+                        { id: 'hr-commissions', name: '🏆 佣金管理', path: '/modules/hr/commissions.html' },
+                        { id: 'hr-penalties', name: '⚠️ 处罚管理', path: '/modules/hr/penalties.html' },
+                        { id: 'hr-permissions', name: '🔐 权限管理', path: '/modules/hr/permissions.html' }
+                    ]
+                },
+                {
+                    id: 'analytics',
+                    icon: '📈',
+                    name: '数据分析',
+                    path: '/modules/analytics/analytics.html',
+                    children: [
+                        { id: 'analytics-dashboard', name: '📊 分析总览', path: '/modules/analytics/analytics.html' },
+                        { id: 'analytics-reports', name: '📋 报表中心', path: '/modules/analytics/reports.html' },
+                        { id: 'analytics-forecast', name: '🔮 销售预测', path: '/modules/analytics/forecast.html' },
+                        { id: 'analytics-visualization', name: '🎨 数据可视化', path: '/modules/analytics/visualizations.html' },
+                        { id: 'analytics-business-health', name: '❤️ 经营健康度', path: '/modules/analytics/business-health.html' },
+                        { id: 'analytics-custom-reports', name: '✍️ 自定义报表', path: '/modules/analytics/custom-reports.html' },
+                        { id: 'analytics-recommendations', name: '🤖 智能推荐', path: '/modules/analytics/recommendations.html' }
+                    ]
+                },
+                {
+                    id: 'settings',
+                    icon: '⚙️',
+                    name: '系统设置',
+                    path: '/modules/settings/settings.html',
+                    children: [
+                        { id: 'settings-general', name: '⚙️ 通用设置', path: '/modules/settings/general.html' },
+                        { id: 'settings-company', name: '🏢 公司信息', path: '/modules/settings/company.html' },
+                        { id: 'settings-branches', name: '🏬 分支管理', path: '/modules/settings/branches.html' },
+                        { id: 'settings-profile', name: '👤 个人资料', path: '/modules/settings/profile.html' },
+                        { id: 'settings-preferences', name: '🎨 偏好设置', path: '/modules/settings/preferences.html' }
+                    ]
+                },
+                {
+                    id: 'ai',
+                    icon: '🤖',
+                    name: 'AI助手',
+                    path: '/modules/ai/ai.html',
+                    children: [
+                        { id: 'ai-chat', name: '💬 智能对话', path: '/modules/ai/chat.html' },
+                        { id: 'ai-crm', name: '👥 智能CRM', path: '/modules/ai/crm.html' },
+                        { id: 'ai-report-gen', name: '📈 分析报告', path: '/modules/ai/report-gen.html' },
+                        { id: 'ai-auto-tasks', name: '⚙️ 自动流程', path: '/modules/ai/auto-tasks.html' }
+                    ]
+                },
+                {
+                    id: 'fleet',
+                    icon: '🚗',
+                    name: '车辆监控',
+                    path: '/modules/fleet/fleet.html',
+                    children: [
+                        { id: 'fleet-list', name: '🚗 车辆总览', path: '/modules/fleet/fleet.html' },
+                        { id: 'fleet-tracking', name: '📍 轨迹追踪', path: '/modules/fleet/tracking.html' },
+                        { id: 'fleet-history', name: '📜 行驶历史', path: '/modules/fleet/history.html' },
+                        { id: 'fleet-alerts', name: '🚨 报警管理', path: '/modules/fleet/alerts.html' },
+                        { id: 'fleet-maintenance', name: '🔧 维保计划', path: '/modules/fleet/maintenance.html' }
+                    ]
+                },
+                {
+                    id: 'employee',
+                    icon: '👤',
+                    name: '车辆录入',
+                    path: '/modules/employee/employee.html',
+                    children: [
+                        { id: 'employee-entry', name: '📷 车辆录入', path: '/modules/employee/employee.html' },
+                        { id: 'employee-records', name: '📋 录入记录', path: '/modules/employee/records.html' },
+                        { id: 'employee-stats', name: '📊 业绩统计', path: '/modules/employee/stats.html' },
+                        { id: 'employee-queue', name: '⏳ 排队管理', path: '/modules/employee/queue.html' },
+                        { id: 'employee-approvals', name: '✅ 审核派单', path: '/modules/employee/approvals.html' }
+                    ]
+                },
+                {
+                    id: 'marketing',
+                    icon: '📢',
+                    name: '营销管理',
+                    path: '/modules/marketing/marketing.html',
+                    children: [
+                        { id: 'marketing-list', name: '📊 营销管理', path: '/modules/marketing/marketing.html' },
+                        { id: 'marketing-campaigns', name: '🎯 活动管理', path: '/modules/marketing/campaigns.html' },
+                        { id: 'marketing-promotions', name: '🏷️ 促销管理', path: '/modules/marketing/promotions.html' },
+                        { id: 'marketing-loyalty', name: '❤️ 忠诚度计划', path: '/modules/marketing/loyalty.html' },
+                        { id: 'marketing-referrals', name: '🤝 推荐管理', path: '/modules/marketing/referrals.html' }
+                    ]
+                },
+                {
+                    id: 'saas',
+                    icon: '☁️',
+                    name: 'SaaS管理',
+                    path: '/modules/saas/saas.html',
+                    children: [
+                        { id: 'saas-overview', name: '☁️ SaaS总览', path: '/modules/saas/saas.html' },
+                        { id: 'saas-tenants', name: '🏢 租户管理', path: '/modules/saas/tenants.html' },
+                        { id: 'saas-packages', name: '📦 套餐管理', path: '/modules/saas/packages.html' },
+                        { id: 'saas-plans', name: '💳 订阅计划', path: '/modules/saas/plans.html' },
+                        { id: 'saas-subscriptions', name: '🔄 订阅管理', path: '/modules/saas/subscriptions.html' },
+                        { id: 'saas-billing', name: '🧾 账单管理', path: '/modules/saas/billing.html' },
+                        { id: 'saas-usage', name: '📊 用量统计', path: '/modules/saas/usage.html' },
+                        { id: 'saas-storage', name: '💾 存储管理', path: '/modules/saas/storage.html' },
+                        { id: 'saas-feature-limits', name: '🔒 功能限制', path: '/modules/saas/feature-limits.html' }
+                    ]
+                },
+                {
+                    id: 'system',
+                    icon: '🔧',
+                    name: '系统管理',
+                    path: '/modules/system/system.html',
+                    children: [
+                        { id: 'system-roles', name: '👥 角色管理', path: '/modules/system/roles.html' },
+                        { id: 'system-permission', name: '🔐 权限管理', path: '/modules/system/permission.html' },
+                        { id: 'system-audit-logs', name: '📋 审计日志', path: '/modules/system/audit-logs.html' },
+                        { id: 'system-backup', name: '💾 数据备份', path: '/modules/system/backup.html' },
+                        { id: 'system-restore', name: '🔄 数据恢复', path: '/modules/system/restore.html' },
+                        { id: 'system-import-export', name: '📥 导入导出', path: '/modules/system/import-export.html' },
+                        { id: 'system-notifications', name: '🔔 通知管理', path: '/modules/system/notifications.html' },
+                        { id: 'system-integrations', name: '🔗 集成管理', path: '/modules/system/integrations.html' },
+                        { id: 'system-webhooks', name: '🌐 Webhooks', path: '/modules/system/webhooks.html' },
+                        { id: 'system-marketplace', name: '🏪 应用市场', path: '/modules/system/marketplace.html' },
+                        { id: 'system-api-keys', name: '🔑 API密钥', path: '/modules/system/api-keys.html' },
+                        { id: 'system-system-logs', name: '📜 系统日志', path: '/modules/system/system-logs.html' }
+                    ]
                 }
-                html += '>';
-                html += '<span class="nav-icon">' + item.icon + '</span>';
-                html += '<span class="nav-text">' + item.name + '</span>';
-                if (hasChildren) {
-                    html += '<span class="nav-arrow">▶</span>';
-                }
-                html += '</a>';
-                html += '</li>';
+            ];
     
-                if (hasChildren) {
-                    var isOpen = isActive || item.children.some(function(c) { return currentPath === c.path; });
-                    html += '<ul class="sub-menu ' + (isOpen ? 'open' : '') + '" id="sub_' + item.id + '">';
-                    item.children.forEach(function(child) {
-                        var isChildActive = currentPath === child.path;
-                        html += '<li class="nav-item">';
-                        html += '<a class="nav-link ' + (isChildActive ? 'active' : '') + '" href="' + child.path + '">';
-                        html += '<span class="nav-icon" style="font-size:14px;">•</span>';
-                        html += '<span class="nav-text">' + child.name + '</span>';
-                        html += '</a>';
-                        html += '</li>';
-                    });
+            // 渲染菜单
+            function renderMenu() {
+                var container = document.getElementById('menuContainer');
+                if (!container) return;
+    
+                var currentPath = window.location.pathname;
+                var html = '';
+    
+                MENU_STRUCTURE.forEach(function(item) {
+                    var hasChildren = item.children && item.children.length > 0;
+                    var isActive = currentPath === item.path || 
+                                   (hasChildren && item.children.some(function(c) { return currentPath === c.path; }));
+    
+                    html += '<ul class="nav-list">';
+                    html += '<li class="nav-item">';
+                    html += '<a class="nav-link ' + (isActive ? 'active' : '') + (hasChildren ? ' has-children' : '') + '"';
+                    if (hasChildren) {
+                        html += ' onclick="window.toggleSubMenu && window.toggleSubMenu(this)" data-target="sub_' + item.id + '"';
+                    } else {
+                        html += ' href="' + item.path + '"';
+                    }
+                    html += '>';
+                    html += '<span class="nav-icon">' + item.icon + '</span>';
+                    html += '<span class="nav-text">' + item.name + '</span>';
+                    if (hasChildren) {
+                        html += '<span class="nav-arrow">▶</span>';
+                    }
+                    html += '</a>';
+                    html += '</li>';
+    
+                    if (hasChildren) {
+                        var isOpen = isActive || item.children.some(function(c) { return currentPath === c.path; });
+                        html += '<ul class="sub-menu ' + (isOpen ? 'open' : '') + '" id="sub_' + item.id + '">';
+                        item.children.forEach(function(child) {
+                            var isChildActive = currentPath === child.path;
+                            html += '<li class="nav-item">';
+                            html += '<a class="nav-link ' + (isChildActive ? 'active' : '') + '" href="' + child.path + '">';
+                            html += '<span class="nav-icon" style="font-size:14px;">•</span>';
+                            html += '<span class="nav-text">' + child.name + '</span>';
+                            html += '</a>';
+                            html += '</li>';
+                        });
+                        html += '</ul>';
+                    }
                     html += '</ul>';
-                }
-    
-                html += '</ul>';
-            });
-    
-            container.innerHTML = html;
-        }
-    
-        // ============================================================
-        // 切换子菜单
-        // ============================================================
-        function toggleSubMenu(element) {
-            var targetId = element.dataset.target;
-            var subMenu = document.getElementById(targetId);
-            if (subMenu) {
-                subMenu.classList.toggle('open');
-                element.classList.toggle('expanded');
-            }
-        }
-    
-        // ============================================================
-        // 搜索菜单
-        // ============================================================
-        function filterMenu(query) {
-            query = query.toLowerCase().trim();
-            var items = document.querySelectorAll('.nav-item');
-    
-            items.forEach(function(item) {
-                var text = item.textContent.toLowerCase();
-                if (query === '' || text.indexOf(query) !== -1) {
-                    item.style.display = '';
-                } else {
-                    item.style.display = 'none';
-                }
-            });
-    
-            if (query !== '') {
-                document.querySelectorAll('.sub-menu').forEach(function(el) {
-                    el.classList.add('open');
                 });
+    
+                container.innerHTML = html;
             }
-        }
     
-        // ============================================================
-        // 侧边栏折叠
-        // ============================================================
-        function toggleSidebarCollapse() {
-            var sidebar = document.getElementById('sidebar');
-            if (!sidebar) return;
-            sidebar.classList.toggle('collapsed');
-            try {
-                localStorage.setItem('sidebar_collapsed', sidebar.classList.contains('collapsed'));
-            } catch(e) {}
-        }
+            // 切换子菜单
+            function toggleSubMenu(element) {
+                var targetId = element.dataset.target;
+                var subMenu = document.getElementById(targetId);
+                if (subMenu) {
+                    subMenu.classList.toggle('open');
+                    element.classList.toggle('expanded');
+                }
+            }
     
-        // ============================================================
-        // 移动端切换
-        // ============================================================
-        function toggleSidebar() {
-            var sidebar = document.getElementById('sidebar');
-            var overlay = document.getElementById('sidebarOverlay');
-            if (!sidebar) return;
-            sidebar.classList.toggle('open');
-            if (overlay) overlay.classList.toggle('open');
-            document.body.style.overflow = sidebar.classList.contains('open') ? 'hidden' : '';
-        }
+            // 搜索菜单
+            function filterMenu(query) {
+                query = query.toLowerCase().trim();
+                var items = document.querySelectorAll('.nav-item');
+                items.forEach(function(item) {
+                    var text = item.textContent.toLowerCase();
+                    if (query === '' || text.indexOf(query) !== -1) {
+                        item.style.display = '';
+                    } else {
+                        item.style.display = 'none';
+                    }
+                });
+                if (query !== '') {
+                    document.querySelectorAll('.sub-menu').forEach(function(el) {
+                        el.classList.add('open');
+                    });
+                }
+            }
     
-        // ============================================================
-        // 切换主题
-        // ============================================================
-        function toggleTheme() {
-            document.body.classList.toggle('theme-dark');
-            try {
-                localStorage.setItem('theme', document.body.classList.contains('theme-dark') ? 'dark' : 'light');
-            } catch(e) {}
-        }
-    
-        // ============================================================
-        // 退出登录
-        // ============================================================
-        function handleLogout() {
-            if (confirm('确定要退出登录吗？')) {
+            // 侧边栏折叠
+            function toggleSidebarCollapse() {
+                var sidebar = document.getElementById('sidebar');
+                if (!sidebar) return;
+                sidebar.classList.toggle('collapsed');
                 try {
-                    localStorage.removeItem('erp_user');
+                    localStorage.setItem('sidebar_collapsed', sidebar.classList.contains('collapsed'));
                 } catch(e) {}
-                window.location.href = '/login.html';
             }
-        }
     
-        // ============================================================
-        // 暴露到全局
-        // ============================================================
-        window.MENU_STRUCTURE = MENU_STRUCTURE;
-        window.renderMenu = renderMenu;
-        window.toggleSubMenu = toggleSubMenu;
-        window.filterMenu = filterMenu;
-        window.toggleSidebarCollapse = toggleSidebarCollapse;
-        window.toggleSidebar = toggleSidebar;
-        window.toggleTheme = toggleTheme;
-        window.handleLogout = handleLogout;
-    
-        // ============================================================
-        // 自动初始化
-        // ============================================================
-        (function init() {
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', function() {
-                    renderMenu();
-                    restoreState();
-                });
-            } else {
-                renderMenu();
-                restoreState();
+            // 移动端切换
+            function toggleSidebar() {
+                var sidebar = document.getElementById('sidebar');
+                var overlay = document.getElementById('sidebarOverlay');
+                if (!sidebar) return;
+                sidebar.classList.toggle('open');
+                if (overlay) overlay.classList.toggle('open');
+                document.body.style.overflow = sidebar.classList.contains('open') ? 'hidden' : '';
             }
-        })();
     
-        function restoreState() {
+            // 切换主题
+            function toggleTheme() {
+                document.body.classList.toggle('theme-dark');
+                try {
+                    localStorage.setItem('theme', document.body.classList.contains('theme-dark') ? 'dark' : 'light');
+                } catch(e) {}
+            }
+    
+            // 退出登录
+            function handleLogout() {
+                if (confirm('确定要退出登录吗？')) {
+                    try {
+                        localStorage.removeItem('erp_user');
+                    } catch(e) {}
+                    window.location.href = '/login.html';
+                }
+            }
+    
+            // ============================================================
+            // 暴露到全局
+            // ============================================================
+            window.MENU_STRUCTURE = MENU_STRUCTURE;
+            window.renderMenu = renderMenu;
+            window.toggleSubMenu = toggleSubMenu;
+            window.filterMenu = filterMenu;
+            window.toggleSidebarCollapse = toggleSidebarCollapse;
+            window.toggleSidebar = toggleSidebar;
+            window.toggleTheme = toggleTheme;
+            window.handleLogout = handleLogout;
+    
+            // ============================================================
+            // 自动初始化
+            // ============================================================
+            renderMenu();
+    
+            // 恢复折叠状态
             try {
                 var isCollapsed = localStorage.getItem('sidebar_collapsed') === 'true';
                 var sidebar = document.getElementById('sidebar');
@@ -469,10 +445,12 @@
                 }
             } catch(e) {}
     
+            // 恢复主题
             try {
                 if (localStorage.getItem('theme') === 'dark') {
                     document.body.classList.add('theme-dark');
                 }
             } catch(e) {}
-        }
+    
+        })();
     </script>
