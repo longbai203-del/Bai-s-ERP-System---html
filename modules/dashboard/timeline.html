@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -96,8 +96,8 @@
             .stream-time { min-width: auto; }
         }
     </style>
-</head>
-<body>
+    <link rel="stylesheet" href="/components/sidebar.css">`n</head>
+<body>`n    <div id="sidebar-container"></div>
     <div class="cyber-container">
         <div class="cyber-header">
             <h1>📡 全息数据流终端</h1>
@@ -258,5 +258,30 @@
             StreamModule.init();
         });
     </script>
-</body>
+    <script>
+        // 加载侧边栏组件
+        fetch("/components/sidebar.html")
+            .then(function(res) {
+                if (!res.ok) throw new Error("侧边栏加载失败: " + res.status);
+                return res.text();
+            })
+            .then(function(html) {
+                document.getElementById("sidebar-container").innerHTML = html;
+                if (window.renderMenu) window.renderMenu();
+                setTimeout(function() {
+                    var links = document.querySelectorAll("#sidebar-container .nav-link");
+                    var currentPath = window.location.pathname;
+                    links.forEach(function(link) {
+                        var href = link.getAttribute("href");
+                        if (href && (currentPath === href || currentPath === href + "/")) {
+                            link.classList.add("active");
+                        }
+                    });
+                }, 100);
+            })
+            .catch(function(err) {
+                console.error("侧边栏加载失败:", err);
+            });
+    </script>
+
 </html>

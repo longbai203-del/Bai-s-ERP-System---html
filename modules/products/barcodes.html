@@ -1,11 +1,11 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>条码管理 - Carwash Pro</title>
     <link rel="stylesheet" href="/assets/css/main.css">
-</head>
+    <link rel="stylesheet" href="/components/sidebar.css">`n</head>
 <body>
     <div id="app">
         <div id="navbar-container"></div>
@@ -19,7 +19,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>条码管理 - Carwash Pro</title>
     
-</head>
+    <link rel="stylesheet" href="/components/sidebar.css">`n</head>
 <body>
     <div id="app">
         <div id="navbar-container"></div>
@@ -351,7 +351,7 @@
             }
         }
     </style>
-</head>
+    <link rel="stylesheet" href="/components/sidebar.css">`n</head>
 <body>
     <div class="barcode-container">
         <!-- 页面头部 -->
@@ -712,13 +712,38 @@
                         .product { font-size: 16px; margin-top: 4px; color: #666; }
                         @media print { body { padding: 0; } }
                     </style>
-                    </head>
+                        <link rel="stylesheet" href="/components/sidebar.css">`n</head>
                     <body>
                         <div class="barcode">${this.generateBarcodeVisual(barcode.number)}</div>
                         <div class="number">${barcode.number}</div>
                         <div class="product">${barcode.product}</div>
                         <script>window.onload = function() { window.print(); window.close(); };<\/script>
-                    </body>
+                        <script>
+        // 加载侧边栏组件
+        fetch("/components/sidebar.html")
+            .then(function(res) {
+                if (!res.ok) throw new Error("侧边栏加载失败: " + res.status);
+                return res.text();
+            })
+            .then(function(html) {
+                document.getElementById("sidebar-container").innerHTML = html;
+                if (window.renderMenu) window.renderMenu();
+                setTimeout(function() {
+                    var links = document.querySelectorAll("#sidebar-container .nav-link");
+                    var currentPath = window.location.pathname;
+                    links.forEach(function(link) {
+                        var href = link.getAttribute("href");
+                        if (href && (currentPath === href || currentPath === href + "/")) {
+                            link.classList.add("active");
+                        }
+                    });
+                }, 100);
+            })
+            .catch(function(err) {
+                console.error("侧边栏加载失败:", err);
+            });
+    </script>
+
                     </html>
                 `);
                 printWindow.document.close();
@@ -748,7 +773,7 @@
                         .product { font-size: 12px; color: #666; }
                         @media print { .barcode-item { border: none; } }
                     </style>
-                    </head>
+                        <link rel="stylesheet" href="/components/sidebar.css">`n</head>
                     <body>
                         <div class="barcode-grid">
                 `;
@@ -766,7 +791,32 @@
                 html += `
                         </div>
                         <script>window.onload = function() { window.print(); window.close(); };<\/script>
-                    </body>
+                        <script>
+        // 加载侧边栏组件
+        fetch("/components/sidebar.html")
+            .then(function(res) {
+                if (!res.ok) throw new Error("侧边栏加载失败: " + res.status);
+                return res.text();
+            })
+            .then(function(html) {
+                document.getElementById("sidebar-container").innerHTML = html;
+                if (window.renderMenu) window.renderMenu();
+                setTimeout(function() {
+                    var links = document.querySelectorAll("#sidebar-container .nav-link");
+                    var currentPath = window.location.pathname;
+                    links.forEach(function(link) {
+                        var href = link.getAttribute("href");
+                        if (href && (currentPath === href || currentPath === href + "/")) {
+                            link.classList.add("active");
+                        }
+                    });
+                }, 100);
+            })
+            .catch(function(err) {
+                console.error("侧边栏加载失败:", err);
+            });
+    </script>
+
                     </html>
                 `;
                 
@@ -787,20 +837,95 @@
             console.log('📊 条码管理模块已初始化');
         });
     </script>
-</body>
+    <script>
+        // 加载侧边栏组件
+        fetch("/components/sidebar.html")
+            .then(function(res) {
+                if (!res.ok) throw new Error("侧边栏加载失败: " + res.status);
+                return res.text();
+            })
+            .then(function(html) {
+                document.getElementById("sidebar-container").innerHTML = html;
+                if (window.renderMenu) window.renderMenu();
+                setTimeout(function() {
+                    var links = document.querySelectorAll("#sidebar-container .nav-link");
+                    var currentPath = window.location.pathname;
+                    links.forEach(function(link) {
+                        var href = link.getAttribute("href");
+                        if (href && (currentPath === href || currentPath === href + "/")) {
+                            link.classList.add("active");
+                        }
+                    });
+                }, 100);
+            })
+            .catch(function(err) {
+                console.error("侧边栏加载失败:", err);
+            });
+    </script>
+
 </html>
             </main>
         </div>
     </div>
     
-</body>
+    <script>
+        // 加载侧边栏组件
+        fetch("/components/sidebar.html")
+            .then(function(res) {
+                if (!res.ok) throw new Error("侧边栏加载失败: " + res.status);
+                return res.text();
+            })
+            .then(function(html) {
+                document.getElementById("sidebar-container").innerHTML = html;
+                if (window.renderMenu) window.renderMenu();
+                setTimeout(function() {
+                    var links = document.querySelectorAll("#sidebar-container .nav-link");
+                    var currentPath = window.location.pathname;
+                    links.forEach(function(link) {
+                        var href = link.getAttribute("href");
+                        if (href && (currentPath === href || currentPath === href + "/")) {
+                            link.classList.add("active");
+                        }
+                    });
+                }, 100);
+            })
+            .catch(function(err) {
+                console.error("侧边栏加载失败:", err);
+            });
+    </script>
+
 </html>
 
             </main>
         </div>
     </div>
     <script type="module" src="/core/app.js"></script>
-</body>
+    <script>
+        // 加载侧边栏组件
+        fetch("/components/sidebar.html")
+            .then(function(res) {
+                if (!res.ok) throw new Error("侧边栏加载失败: " + res.status);
+                return res.text();
+            })
+            .then(function(html) {
+                document.getElementById("sidebar-container").innerHTML = html;
+                if (window.renderMenu) window.renderMenu();
+                setTimeout(function() {
+                    var links = document.querySelectorAll("#sidebar-container .nav-link");
+                    var currentPath = window.location.pathname;
+                    links.forEach(function(link) {
+                        var href = link.getAttribute("href");
+                        if (href && (currentPath === href || currentPath === href + "/")) {
+                            link.classList.add("active");
+                        }
+                    });
+                }, 100);
+            })
+            .catch(function(err) {
+                console.error("侧边栏加载失败:", err);
+            });
+    </script>
+
 </html>
 
 

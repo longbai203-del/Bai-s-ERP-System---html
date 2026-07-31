@@ -19,6 +19,10 @@
       "dest": "/modules/$1/$1.html"
     },
     {
+      "src": "/components/([^/]+)",
+      "dest": "/components/$1"
+    },
+    {
       "src": "/layouts/([^/]+)",
       "dest": "/layouts/$1"
     },
