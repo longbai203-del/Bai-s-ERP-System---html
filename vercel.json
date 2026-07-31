@@ -1,5 +1,7 @@
 {
   "version": 2,
+  "cleanUrls": true,
+  "trailingSlash": false,
   "builds": [
     {
       "src": "**/*.html",
@@ -11,6 +13,10 @@
     },
     {
       "src": "**/*.ico",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "**/*.png",
       "use": "@vercel/static"
     }
   ],
@@ -38,6 +44,14 @@
     {
       "src": "/locales/([^/]+)",
       "dest": "/frontend/locales/$1"
+    },
+    {
+      "src": "/favicon.ico",
+      "dest": "/favicon.ico"
+    },
+    {
+      "src": "/manifest.json",
+      "dest": "/manifest.json"
     },
     {
       "src": "/(.*)",
