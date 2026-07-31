@@ -1,8 +1,25 @@
 {
   "name": "bai-erp-system",
-  "version": "2.0.0",
-  "main": "frontend/index.html",
+  "version": "1.0.0",
+  "description": "Bai's ERP System - 纯前端模块化企业管理系统",
+  "main": "index.html",
   "scripts": {
-    "build": "echo 'No build needed'"
+    "start": "npx serve .",
+    "dev": "npx serve .",
+    "build": "echo 'No build step needed'",
+    "deploy": "vercel --prod"
+  },
+  "keywords": [
+    "ERP",
+    "企业管理系统",
+    "纯前端",
+    "HTML",
+    "JavaScript",
+    "模块化"
+  ],
+  "author": "Bai Zhanlong",
+  "license": "MIT",
+  "devDependencies": {
+    "serve": "^14.0.0"
   }
 }

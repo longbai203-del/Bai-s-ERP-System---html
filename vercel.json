@@ -1,13 +1,47 @@
 {
-  "outputDirectory": "frontend",
+  "version": 2,
+  "builds": [
+    {
+      "src": "**/*.html",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "**/*.json",
+      "use": "@vercel/static"
+    },
+    {
+      "src": "**/*.ico",
+      "use": "@vercel/static"
+    }
+  ],
   "routes": [
     {
       "src": "/",
-      "dest": "/frontend/index.html"
+      "dest": "/index.html"
+    },
+    {
+      "src": "/login",
+      "dest": "/login.html"
+    },
+    {
+      "src": "/modules/([^/]+)/([^/]+)",
+      "dest": "/frontend/modules/$1/$2"
+    },
+    {
+      "src": "/modules/([^/]+)",
+      "dest": "/frontend/modules/$1/$1.html"
+    },
+    {
+      "src": "/layouts/([^/]+)",
+      "dest": "/frontend/layouts/$1"
+    },
+    {
+      "src": "/locales/([^/]+)",
+      "dest": "/frontend/locales/$1"
     },
     {
       "src": "/(.*)",
-      "dest": "/frontend/"
+      "dest": "/$1"
     }
   ]
 }
