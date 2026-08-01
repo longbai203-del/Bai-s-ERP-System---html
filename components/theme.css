@@ -1,0 +1,271 @@
+/* ============================================================
+   Enterprise Dark Tech UI - Global component overrides
+   Applied to all pages through a shared stylesheet.
+   ============================================================ */
+
+:root {
+  --app-bg-1: #050814;
+  --app-bg-2: #0F172A;
+  --panel: rgba(15, 23, 42, 0.82);
+  --panel-strong: rgba(8, 14, 29, 0.95);
+  --border: rgba(255, 255, 255, 0.08);
+  --text-primary: #E6F7FF;
+  --text-secondary: #94A3B8;
+  --text-muted: #64748B;
+  --primary: #165DFF;
+  --accent: #00B8FF;
+  --success: #00E063;
+  --warning: #FFAB00;
+  --danger: #F53F3F;
+  --radius: 16px;
+  --shadow: 0 20px 50px rgba(2, 8, 23, 0.35);
+  --bg-primary: var(--app-bg-2);
+  --bg-card: var(--panel);
+  --bg-panel: var(--panel);
+  --bg-surface: var(--panel-strong);
+  --bg-input: rgba(255, 255, 255, 0.05);
+  --bg-hover: rgba(255, 255, 255, 0.08);
+  --bg-muted: rgba(255, 255, 255, 0.04);
+  --border-color: var(--border);
+  --border-light: rgba(255, 255, 255, 0.06);
+}
+
+body {
+  background: linear-gradient(135deg, var(--app-bg-1) 0%, var(--app-bg-2) 100%) !important;
+  color: var(--text-primary) !important;
+}
+
+body::before {
+  background-image: linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px) !important;
+  opacity: 0.18 !important;
+}
+
+body::after {
+  background: radial-gradient(circle, rgba(0, 184, 255, 0.16), transparent 70%) !important;
+}
+
+.page,
+.main-content,
+.module-page,
+.content-area,
+.page-content,
+.orders-page,
+.settings-page,
+.finance-page,
+.pos-page,
+.analytics-page {
+  background: transparent !important;
+  color: var(--text-primary) !important;
+}
+
+.page-title,
+.page h1,
+.module-page h1,
+.content-area h1,
+.orders-page h1 {
+  color: var(--text-primary) !important;
+  background: linear-gradient(135deg, #E6F7FF, var(--accent)) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+}
+
+.page-title small,
+.subtitle,
+.page-description,
+.section-subtitle {
+  color: var(--text-secondary) !important;
+}
+
+.stats-grid {
+  gap: 16px !important;
+}
+
+.stat-card,
+.info-card,
+.summary-card,
+.kpi-card {
+  background: var(--panel) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: var(--radius) !important;
+  box-shadow: var(--shadow) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  color: var(--text-primary) !important;
+}
+
+.stat-card .stat-icon,
+.stat-card .icon,
+.info-card .icon {
+  background: linear-gradient(135deg, rgba(22, 93, 255, 0.24), rgba(0, 184, 255, 0.18)) !important;
+  color: var(--accent) !important;
+  border-radius: 12px !important;
+}
+
+.toolbar,
+.filter-bar,
+.action-bar {
+  background: rgba(15, 23, 42, 0.78) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 16px !important;
+  box-shadow: 0 10px 28px rgba(2, 8, 23, 0.2) !important;
+  backdrop-filter: blur(14px) !important;
+  -webkit-backdrop-filter: blur(14px) !important;
+}
+
+.search-box,
+.filter-group,
+.input-group {
+  background: rgba(255,255,255,0.05) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 12px !important;
+}
+
+input,
+select,
+textarea,
+.form-control,
+.form-control-sm {
+  background: rgba(255,255,255,0.05) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 12px !important;
+  color: var(--text-primary) !important;
+}
+
+input:focus,
+select:focus,
+textarea:focus,
+.form-control:focus,
+.form-control-sm:focus {
+  border-color: var(--accent) !important;
+  box-shadow: 0 0 0 3px rgba(0, 184, 255, 0.18) !important;
+  background: rgba(255,255,255,0.07) !important;
+}
+
+button,
+.btn,
+.btn-primary,
+.btn-outline,
+.btn-secondary,
+.btn-danger {
+  border-radius: 999px !important;
+  transition: all 0.3s ease !important;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, var(--primary), var(--accent)) !important;
+  color: #fff !important;
+  box-shadow: 0 12px 28px rgba(22, 93, 255, 0.22) !important;
+}
+
+.btn-outline,
+.btn-secondary {
+  background: rgba(255,255,255,0.05) !important;
+  color: var(--text-primary) !important;
+  border-color: rgba(255,255,255,0.1) !important;
+}
+
+.btn-danger {
+  background: linear-gradient(135deg, var(--danger), #FF6B6B) !important;
+  color: #fff !important;
+}
+
+.table-container,
+.data-grid,
+.table-card {
+  background: rgba(15, 23, 42, 0.78) !important;
+  border: 1px solid var(--border) !important;
+  border-radius: 16px !important;
+  box-shadow: var(--shadow) !important;
+  overflow: hidden !important;
+}
+
+.table,
+table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  color: var(--text-primary) !important;
+}
+
+.table th,
+table th {
+  background: linear-gradient(90deg, rgba(22, 93, 255, 0.26), rgba(0, 184, 255, 0.14)) !important;
+  color: var(--text-primary) !important;
+  border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+}
+
+.table td,
+table td {
+  border-top: 1px solid rgba(255,255,255,0.05) !important;
+  color: var(--text-secondary) !important;
+}
+
+.table tr:hover td,
+table tr:hover td {
+  background: rgba(0, 184, 255, 0.07) !important;
+  color: var(--text-primary) !important;
+}
+
+.status-badge,
+.badge {
+  border-radius: 999px !important;
+  font-weight: 600 !important;
+}
+
+.status-badge.completed,
+.badge.success {
+  background: rgba(0, 224, 99, 0.16) !important;
+  color: var(--success) !important;
+}
+
+.status-badge.pending,
+.badge.warning {
+  background: rgba(255, 171, 0, 0.16) !important;
+  color: var(--warning) !important;
+}
+
+.status-badge.processing,
+.badge.info {
+  background: rgba(22, 93, 255, 0.16) !important;
+  color: var(--accent) !important;
+}
+
+.status-badge.cancelled,
+.badge.danger {
+  background: rgba(245, 63, 63, 0.16) !important;
+  color: var(--danger) !important;
+}
+
+.modal-overlay {
+  background: rgba(2, 8, 23, 0.72) !important;
+  backdrop-filter: blur(12px) !important;
+  -webkit-backdrop-filter: blur(12px) !important;
+}
+
+.modal-content {
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.96), rgba(8, 14, 29, 0.96)) !important;
+  border: 1px solid rgba(255,255,255,0.08) !important;
+  border-radius: 20px !important;
+  box-shadow: var(--shadow) !important;
+}
+
+.modal-title,
+.modal-header {
+  color: var(--text-primary) !important;
+}
+
+.empty-state,
+.no-data,
+.placeholder {
+  color: var(--text-secondary) !important;
+}
+
+::-webkit-scrollbar {
+  width: 6px !important;
+  height: 6px !important;
+}
+
+::-webkit-scrollbar-thumb {
+  background: linear-gradient(180deg, var(--accent), var(--primary)) !important;
+  border-radius: 999px !important;
+}

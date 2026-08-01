@@ -11,8 +11,8 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body, html {
             height: 100%;
-            font-family: 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif;
-            background: #0A192F; /* 深空背景底色 */
+            font-family: Inter, 'Segoe UI', 'Roboto', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #050814 0%, #0F172A 100%);
             overflow: hidden;
             display: flex;
             align-items: center;
@@ -40,11 +40,11 @@
             max-width: 1000px;
             padding: 20px;
             display: flex;
-            background: rgba(255, 255, 255, 0.05);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            background: rgba(15, 23, 42, 0.82);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
             border-radius: 32px;
-            box-shadow: 0 30px 80px rgba(0, 180, 255, 0.15), inset 0 1px 0 rgba(255,255,255,0.1);
+            box-shadow: 0 30px 80px rgba(2, 8, 23, 0.45), inset 0 1px 0 rgba(255,255,255,0.06);
             border: 1px solid rgba(255, 255, 255, 0.08);
             overflow: hidden;
         }
@@ -57,7 +57,7 @@
             flex-direction: column;
             justify-content: center;
             position: relative;
-            background: linear-gradient(145deg, rgba(0, 150, 255, 0.2), rgba(0, 200, 255, 0.05));
+            background: linear-gradient(145deg, rgba(22, 93, 255, 0.2), rgba(0, 184, 255, 0.06));
             border-right: 1px solid rgba(255,255,255,0.05);
         }
 
@@ -93,8 +93,8 @@
         }
         .feature-item {
             padding: 16px;
-            background: rgba(0, 180, 255, 0.1);
-            border: 1px solid rgba(0, 180, 255, 0.15);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 16px;
             color: #fff;
             text-align: center;
@@ -144,8 +144,8 @@
         .input-group input {
             width: 100%;
             padding: 14px 18px;
-            background: rgba(255, 255, 255, 0.06);
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.08);
             border-radius: 12px;
             color: #fff;
             font-size: 15px;
@@ -153,9 +153,9 @@
             transition: all 0.3s ease;
         }
         .input-group input:focus {
-            border-color: #64D8FF;
-            background: rgba(255, 255, 255, 0.1);
-            box-shadow: 0 0 20px rgba(0, 150, 255, 0.15);
+            border-color: #00B8FF;
+            background: rgba(255, 255, 255, 0.07);
+            box-shadow: 0 0 20px rgba(0, 184, 255, 0.16);
         }
         .input-group input::placeholder { color: rgba(255,255,255,0.3); }
 
@@ -185,7 +185,7 @@
         .login-btn {
             width: 100%;
             padding: 16px;
-            background: linear-gradient(90deg, #0090FF, #00C6FF);
+            background: linear-gradient(90deg, #165DFF, #00B8FF);
             border: none;
             border-radius: 14px;
             color: #fff;
@@ -193,10 +193,10 @@
             font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
-            letter-spacing: 2px;
+            letter-spacing: 1px;
             position: relative;
             overflow: hidden;
-            box-shadow: 0 0 20px rgba(0, 150, 255, 0.2);
+            box-shadow: 0 12px 28px rgba(22, 93, 255, 0.24);
         }
         .login-btn:hover {
             transform: translateY(-3px);

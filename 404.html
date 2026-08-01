@@ -11,18 +11,37 @@
             align-items: center;
             justify-content: center;
             min-height: 100vh;
-            background: #f8fafc;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background: linear-gradient(135deg, #050814 0%, #0F172A 100%);
+            font-family: Inter, 'Segoe UI', Roboto, sans-serif;
+            color: #E6F7FF;
+            overflow: hidden;
+            position: relative;
+        }
+        body::before {
+            content: '';
+            position: fixed;
+            inset: 0;
+            background-image: linear-gradient(rgba(255,255,255,0.035) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.035) 1px, transparent 1px);
+            background-size: 60px 60px;
+            opacity: 0.18;
+            pointer-events: none;
         }
         .error-container {
             text-align: center;
             padding: 60px 40px;
+            background: rgba(15, 23, 42, 0.82);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 24px;
+            box-shadow: 0 24px 60px rgba(2, 8, 23, 0.45);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
         }
         .error-code {
             font-size: 160px;
             font-weight: 800;
-            background: linear-gradient(135deg, #4F46E5, #818CF8);
-            background-clip: text; -webkit-background-clip: text;
+            background: linear-gradient(135deg, #00B8FF, #165DFF);
+            background-clip: text;
+            -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             line-height: 1;
             margin: 0;
@@ -35,31 +54,31 @@
         .error-text {
             font-size: 28px;
             font-weight: 600;
-            color: #1e293b;
+            color: #E6F7FF;
             margin: 16px 0 8px;
         }
         .error-desc {
-            color: #64748b;
+            color: #94A3B8;
             margin-bottom: 32px;
             font-size: 16px;
         }
         .btn-home {
             display: inline-block;
             padding: 14px 40px;
-            background: #4F46E5;
+            background: linear-gradient(135deg, #165DFF, #00B8FF);
             color: #fff;
             border: none;
-            border-radius: 8px;
+            border-radius: 999px;
             font-size: 16px;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
             text-decoration: none;
             transition: all 0.3s;
+            box-shadow: 0 12px 28px rgba(22, 93, 255, 0.24);
         }
         .btn-home:hover {
-            background: #4338CA;
             transform: translateY(-2px);
-            box-shadow: 0 8px 24px rgba(79, 70, 229, 0.3);
+            box-shadow: 0 16px 32px rgba(0, 184, 255, 0.2);
         }
         .error-links {
             margin-top: 24px;
@@ -68,11 +87,12 @@
             justify-content: center;
         }
         .error-links a {
-            color: #4F46E5;
+            color: #94A3B8;
             text-decoration: none;
             font-size: 14px;
         }
         .error-links a:hover {
+            color: #E6F7FF;
             text-decoration: underline;
         }
         @media (max-width: 480px) {

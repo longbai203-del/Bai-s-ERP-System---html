@@ -179,12 +179,12 @@
         .hr-header h1 {
             font-size: 24px;
             font-weight: 700;
-            color: var(--text-primary, #0f172a);
+            color: var(--text-primary, #e6f7ff);
             margin: 0;
         }
 
         .hr-header .subtitle {
-            color: var(--text-secondary, #475569);
+            color: var(--text-secondary, #94a3b8);
             margin: 4px 0 0;
             font-size: 14px;
         }
@@ -203,13 +203,16 @@
         }
 
         .stat-card {
-            background: var(--bg-card, #ffffff);
-            border: 1px solid var(--border-color, #e2e8f0);
-            border-radius: var(--radius, 12px);
+            background: rgba(15, 23, 42, 0.82);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
             padding: 14px 18px;
             display: flex;
             align-items: center;
             gap: 14px;
+            box-shadow: 0 18px 40px rgba(2, 8, 23, 0.2);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
         }
 
         .stat-card .stat-icon {
@@ -220,8 +223,9 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            background: var(--bg-input, #f1f5f9);
-            border-radius: var(--radius, 8px);
+            background: linear-gradient(135deg, rgba(22, 93, 255, 0.24), rgba(0, 184, 255, 0.18));
+            border-radius: 12px;
+            color: #00B8FF;
         }
 
         .stat-card .stat-info {
@@ -312,10 +316,13 @@
         }
 
         .table-container {
-            background: var(--bg-card, #ffffff);
-            border: 1px solid var(--border-color, #e2e8f0);
-            border-radius: var(--radius, 12px);
+            background: rgba(15, 23, 42, 0.78);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 16px;
             overflow: hidden;
+            box-shadow: 0 18px 40px rgba(2, 8, 23, 0.2);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
         }
 
         .table-container .table {
