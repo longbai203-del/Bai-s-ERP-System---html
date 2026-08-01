@@ -12,7 +12,7 @@
     },
     {
       "src": "/modules/([^/]+)/([^/]+)",
-      "dest": "/modules/$1/$2"
+      "dest": "/modules/$1/$2.html"
     },
     {
       "src": "/modules/([^/]+)",

@@ -669,13 +669,95 @@
         ];
 
         // ============================================================
+        // 路由与导航
+        // ============================================================
+        function normalizePath(path) {
+            if (!path) return '/index.html';
+            var trimmed = String(path).trim();
+            if (!trimmed || trimmed === '/' || trimmed === '/index') return '/index.html';
+
+            if (/^(https?:)?\/\//i.test(trimmed)) {
+                try {
+                    return new URL(trimmed).pathname;
+                } catch (e) {
+                    return '/index.html';
+                }
+            }
+
+            if (trimmed.indexOf('?') !== -1) trimmed = trimmed.split('?')[0];
+            if (trimmed.indexOf('#') !== -1) trimmed = trimmed.split('#')[0];
+            if (trimmed === '/login') return '/login.html';
+            if (trimmed === '/index') return '/index.html';
+            if (trimmed.indexOf('/modules/') === 0 && trimmed.indexOf('.') === -1) {
+                return trimmed + '.html';
+            }
+            if (trimmed.indexOf('.') === -1) {
+                return trimmed + '.html';
+            }
+            return trimmed;
+        }
+
+        function navigateToPath(path, updateHistory) {
+            var target = normalizePath(path);
+            if (updateHistory !== false) {
+                try {
+                    if (window.location.pathname !== target) {
+                        history.pushState({ path: target }, '', target);
+                    }
+                } catch (e) {}
+            }
+            window.location.assign(target);
+        }
+
+        function handleSidebarNavClick(event) {
+            var link = event.currentTarget || event.target;
+            if (!link || !link.tagName || link.tagName.toLowerCase() !== 'a') {
+                return true;
+            }
+            var href = link.getAttribute('href');
+            if (!href || href.indexOf('#') === 0 || href.indexOf('javascript:') === 0 || /^mailto:|^tel:/i.test(href)) {
+                return true;
+            }
+            var target = link.getAttribute('target');
+            if (target && target.toLowerCase() === '_blank') {
+                return true;
+            }
+            var sameOrigin = false;
+            try {
+                sameOrigin = new URL(href, window.location.href).origin === window.location.origin;
+            } catch (e) {
+                sameOrigin = false;
+            }
+            if (!sameOrigin) {
+                return true;
+            }
+            event.preventDefault();
+            navigateToPath(href, true);
+            return false;
+        }
+
+        function bindGlobalNavLinks() {
+            document.addEventListener('click', function(event) {
+                var target = event.target;
+                if (!target || !target.closest) return;
+                var link = target.closest('a');
+                if (!link) return;
+                if (link.getAttribute('data-router-bound') === 'true') return;
+                link.setAttribute('data-router-bound', 'true');
+                if (handleSidebarNavClick(event)) {
+                    return;
+                }
+            });
+        }
+
+        // ============================================================
         // 渲染菜单
         // ============================================================
         function renderMenu() {
             var container = document.getElementById('menuContainer');
             if (!container) return;
 
-            var currentPath = window.location.pathname;
+            var currentPath = normalizePath(window.location.pathname);
             var html = '';
 
             MENU_STRUCTURE.forEach(function(item) {
@@ -690,7 +772,7 @@
                 if (hasChildren) {
                     html += ' onclick="window.toggleSubMenu(this)" data-target="sub_' + item.id + '"';
                 } else {
-                    html += ' href="' + item.path + '"';
+                    html += ' href="' + item.path + '" onclick="window.handleSidebarNavClick(event)"';
                 }
                 html += '>';
                 html += '<span class="nav-icon">' + item.icon + '</span>';
@@ -707,7 +789,7 @@
                     item.children.forEach(function(child) {
                         var isChildActive = currentPath === child.path;
                         html += '<li class="nav-item">';
-                        html += '<a class="nav-link ' + (isChildActive ? 'active' : '') + '" href="' + child.path + '">';
+                        html += '<a class="nav-link ' + (isChildActive ? 'active' : '') + '" href="' + child.path + '" onclick="window.handleSidebarNavClick(event)">';
                         html += '<span class="nav-icon" style="font-size:14px;">•</span>';
                         html += '<span class="nav-text">' + child.name + '</span>';
                         html += '</a>';
@@ -799,7 +881,7 @@
                 try {
                     localStorage.removeItem('erp_user');
                 } catch(e) {}
-                window.location.href = '/login.html';
+                window.navigateToPath('/login.html', false);
             }
         }
 
@@ -814,11 +896,19 @@
         window.toggleSidebar = toggleSidebar;
         window.toggleTheme = toggleTheme;
         window.handleLogout = handleLogout;
+        window.normalizePath = normalizePath;
+        window.navigateToPath = navigateToPath;
+        window.handleSidebarNavClick = handleSidebarNavClick;
+
+        window.addEventListener('popstate', function() {
+            window.location.assign(normalizePath(window.location.pathname));
+        });
 
         // ============================================================
         // 自动初始化
         // ============================================================
         (function init() {
+            bindGlobalNavLinks();
             renderMenu();
             
             // 恢复折叠状态

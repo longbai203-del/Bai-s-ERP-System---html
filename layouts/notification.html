@@ -122,7 +122,8 @@ const Notification = {
         const id = 'notif_' + Date.now() + '_' + Math.random().toString(36).substr(2, 4);
         
         const item = document.createElement('div');
-        item.className = `notification-item ${type}`;
+        item.className = 
+otification-item ${type}`;
         item.id = id;
         item.innerHTML = `
             <span class="notification-icon">${icons[type] || 'ℹ️'}</span>
