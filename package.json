@@ -1,24 +1,15 @@
 {
-  "name": "bai-erp-system",
+  "name": "bais-carwash-erp",
   "version": "1.0.0",
-  "description": "Bai's ERP System - 纯前端模块化企业管理系统",
-  "main": "index.html",
+  "description": "沙特洗车店管理系统 - 纯静态 HTML/CSS/JS 企业级应用",
+  "keywords": ["ERP", "Car Wash", "Saudi Arabia", "VAT", "POS", "Pure Frontend"],
+  "author": "Bai's System",
+  "license": "MIT",
+  "private": true,
   "scripts": {
-    "start": "npx serve .",
-    "dev": "npx serve .",
-    "build": "echo 'No build step needed'",
+    "preview": "npx serve frontend -p 3000",
     "deploy": "vercel --prod"
   },
-  "keywords": [
-    "ERP",
-    "企业管理系统",
-    "纯前端",
-    "HTML",
-    "JavaScript",
-    "模块化"
-  ],
-  "author": "Bai Zhanlong",
-  "license": "MIT",
   "devDependencies": {
     "serve": "^14.0.0"
   }

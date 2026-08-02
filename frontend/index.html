@@ -1,0 +1,58 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>仪表盘 - Enterprise ERP</title>
+    <link rel="stylesheet" href="css/common.css">
+</head>
+<body>
+
+    <!-- 动态侧边栏容器 -->
+    <div id="sidebar-container"></div>
+
+    <!-- 右侧主内容区 -->
+    <main class="main-content">
+        <div class="page-title">
+            <h1>全息决策中心</h1>
+            <small>数字孪生 · 实时洞察</small>
+        </div>
+
+        <!-- 统计卡片 -->
+        <div class="stats-grid">
+            <div class="stat-card"><div class="label">📦 今日订单流</div><div class="value">0</div><div class="sub">较昨日 ↑ 12%</div></div>
+            <div class="stat-card"><div class="label">💰 营收引擎</div><div class="value">¥0</div><div class="sub">本月累计 ¥0</div></div>
+            <div class="stat-card"><div class="label">🌐 活跃节点</div><div class="value">156</div><div class="sub">在线率 98.7%</div></div>
+            <div class="stat-card"><div class="label">⚠️ 风险预警</div><div class="value">3</div><div class="sub">2 条待处理</div></div>
+        </div>
+
+        <div class="two-col">
+            <div class="holo-panel">
+                <h3>📈 近7日收入趋势</h3>
+                <div style="height:120px;background:linear-gradient(180deg,rgba(0,229,255,0.15),rgba(0,229,255,0.02));border-radius:8px;"></div>
+            </div>
+            <div class="holo-panel">
+                <h3>🏷️ 产品分类占比</h3>
+                <div style="margin-bottom:10px;">洗车 35%</div>
+                <div style="margin-bottom:10px;">维修 28%</div>
+                <div>保养 22%</div>
+            </div>
+        </div>
+
+        <!-- 执行记录 -->
+        <div class="holo-panel">
+            <h3>📋 执行记录</h3>
+            <table>
+                <thead><tr><th>订单号</th><th>客户</th><th>状态</th><th>金额</th></tr></thead>
+                <tbody>
+                    <tr><td>CYB-0001</td><td>张伟</td><td><span class="status-badge completed">已完成</span></td><td>¥128.00</td></tr>
+                    <tr><td>CYB-0002</td><td>王芳</td><td><span class="status-badge completed">已完成</span></td><td>¥256.00</td></tr>
+                    <tr><td>CYB-0003</td><td>李明</td><td><span class="status-badge processing">处理中</span></td><td>¥89.00</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </main>
+
+    <script src="js/common.js"></script>
+</body>
+</html>

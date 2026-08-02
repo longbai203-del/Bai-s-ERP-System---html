@@ -1,0 +1,7 @@
+﻿{
+    "id": "finance",
+    "version": "1.0.0",
+    "description": "finance 模块",
+    "name": "finance",
+    "children": []
+}

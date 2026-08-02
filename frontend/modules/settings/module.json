@@ -1,0 +1,7 @@
+﻿{
+    "id": "settings",
+    "version": "1.0.0",
+    "description": "settings 模块",
+    "name": "settings",
+    "children": []
+}

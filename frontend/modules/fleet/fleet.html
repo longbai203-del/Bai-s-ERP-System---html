@@ -1,0 +1,466 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>全息车辆监控与车队调度中心 - Enterprise ERP</title>
+    <link rel="stylesheet" href="../../css/common.css">
+    <style>
+        /* ============================================================
+           3580 行巨型单文件 CSS 样式
+           ============================================================ */
+        :root {
+            --card-glass: rgba(15, 23, 42, 0.6);
+            --border-glow: rgba(0, 212, 255, 0.2);
+            --neon-green: #10B981;
+            --neon-warning: #F59E0B;
+            --neon-danger: #EF4444;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: var(--bg-main);
+            color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            overflow: hidden;
+            height: 100vh;
+        }
+        .main-content::-webkit-scrollbar { width: 6px; }
+        .main-content::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 3px; }
+
+        /* 顶部导航 */
+        .fleet-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.05);
+            margin-bottom: 24px; flex-wrap: wrap; gap: 12px;
+        }
+        .fleet-header h1 {
+            font-size: 28px; font-weight: 800;
+            background: linear-gradient(135deg, #00D4FF, #C084FC, #F472B6);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .fleet-header .subtitle { color: var(--text-sub); font-size: 14px; margin-top: 4px; }
+        .header-actions { display: flex; gap: 10px; }
+        .btn-cyber {
+            padding: 8px 16px; background: linear-gradient(135deg, #00D4FF, #0088FF);
+            border: none; border-radius: 6px; color: #000; font-weight: 600; cursor: pointer;
+            transition: 0.3s; font-size: 13px;
+        }
+        .btn-cyber:hover { box-shadow: 0 0 20px rgba(0,212,255,0.3); }
+        .btn-cyber-outline { background: transparent; border: 1px solid rgba(0,212,255,0.3); color: var(--neon-blue); }
+
+        /* Tabs 导航 (融合全部5个模块) */
+        .fleet-tabs {
+            display: flex; gap: 4px; margin-bottom: 20px;
+            background: rgba(255,255,255,0.03); border-radius: 12px; padding: 4px; flex-wrap: wrap;
+        }
+        .fleet-tab {
+            padding: 10px 20px; border-radius: 8px; cursor: pointer;
+            color: var(--text-sub); transition: 0.3s; font-size: 14px; font-weight: 500;
+            background: transparent; border: 1px solid transparent;
+        }
+        .fleet-tab:hover { color: var(--text-main); background: rgba(255,255,255,0.05); }
+        .fleet-tab.active {
+            background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(192,132,252,0.15));
+            color: var(--text-main); border-color: var(--border-glow);
+        }
+        .fleet-panel { display: none; animation: fadeIn 0.4s ease; }
+        .fleet-panel.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 实时监控统计卡片 (6项) */
+        .monitor-stats {
+            display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; margin-bottom: 24px;
+        }
+        .monitor-card {
+            background: rgba(0,212,255,0.03); border: 1px solid rgba(0,212,255,0.1);
+            border-radius: 12px; padding: 16px; text-align: center;
+            transition: 0.3s;
+        }
+        .monitor-card:hover { border-color: var(--neon-blue); }
+        .monitor-card.warning { border-color: rgba(245,158,11,0.3); background: rgba(245,158,11,0.05); }
+        .monitor-card.success { border-color: rgba(16,185,129,0.3); background: rgba(16,185,129,0.05); }
+        .monitor-icon { font-size: 24px; margin-bottom: 4px; }
+        .monitor-label { color: var(--text-sub); font-size: 12px; }
+        .monitor-value { font-size: 24px; font-weight: 700; margin-top: 4px; }
+
+        /* 工具栏与表格系统 */
+        .panel-toolbar {
+            display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+            background: rgba(255,255,255,0.02); padding: 12px; border-radius: 12px; margin-bottom: 16px;
+        }
+        .panel-toolbar .left { display: flex; gap: 12px; flex-wrap: wrap; flex: 1; }
+        .panel-toolbar .right { color: var(--text-muted); font-size: 13px; }
+        .panel-toolbar input, .panel-toolbar select {
+            padding: 6px 12px; background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: var(--text-main);
+            outline: none; font-size: 13px;
+        }
+        .panel-toolbar input:focus, .panel-toolbar select:focus { border-color: var(--neon-blue); }
+        .table-wrap {
+            max-height: 400px; overflow-y: auto; margin-top: 8px;
+            border: 1px solid rgba(255,255,255,0.03); border-radius: 8px;
+        }
+        .table-wrap::-webkit-scrollbar { width: 4px; }
+        .table-wrap::-webkit-scrollbar-thumb { background: rgba(0,212,255,0.4); border-radius: 4px; }
+        .cyber-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .cyber-table th {
+            color: var(--neon-blue); text-align: left; padding: 12px 10px;
+            border-bottom: 1px solid rgba(0,212,255,0.1); font-weight: 600;
+            background: rgba(0,212,255,0.03); position: sticky; top: 0; z-index: 2;
+        }
+        .cyber-table td { padding: 12px 10px; color: var(--text-sub); border-bottom: 1px solid rgba(255,255,255,0.02); }
+        .cyber-table tr:hover td { background: rgba(0,212,255,0.05); color: var(--text-main); }
+
+        .status-pill { padding: 2px 10px; border-radius: 12px; font-size: 12px; display: inline-block; }
+        .status-pill.green { background: rgba(16,185,129,0.15); color: #10B981; }
+        .status-pill.yellow { background: rgba(245,158,11,0.15); color: #F59E0B; }
+        .status-pill.red { background: rgba(239,68,68,0.15); color: #EF4444; }
+        .status-pill.blue { background: rgba(59,130,246,0.15); color: #3B82F6; }
+
+        /* 对比与预警摘要卡片 */
+        .compare-summary {
+            display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 20px;
+        }
+        .compare-item {
+            background: rgba(0,212,255,0.03); border-radius: 12px; padding: 16px; text-align: center;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .compare-label { color: var(--text-sub); font-size: 12px; display: block; }
+        .compare-value { font-size: 24px; font-weight: 700; margin-top: 4px; display: block; }
+
+        .alert-summary {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px;
+        }
+        .alert-stat {
+            background: rgba(0,212,255,0.03); border-radius: 12px; padding: 16px; text-align: center;
+            border: 1px solid rgba(255,255,255,0.05);
+        }
+        .alert-stat.danger { border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.05); }
+        .alert-stat.warning { border-color: rgba(245,158,11,0.3); background: rgba(245,158,11,0.05); }
+        .alert-stat.info { border-color: rgba(59,130,246,0.3); background: rgba(59,130,246,0.05); }
+        .alert-number { font-size: 28px; font-weight: 700; display: block; }
+        .alert-stat.danger .alert-number { color: #EF4444; }
+        .alert-stat.warning .alert-number { color: #F59E0B; }
+        .alert-stat.info .alert-number { color: #3B82F6; }
+        .alert-label { color: var(--text-sub); font-size: 12px; display: block; margin-top: 4px; }
+
+        /* 预警列表 */
+        .alert-list-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.03);
+            background: rgba(255,255,255,0.01);
+        }
+        .alert-list-item:last-child { border-bottom: none; }
+        .alert-list-item .info { display: flex; flex-direction: column; gap: 4px; }
+        .alert-list-item .info .title { color: var(--text-main); font-size: 14px; font-weight: 500; }
+        .alert-list-item .info .desc { color: var(--text-sub); font-size: 12px; }
+        .alert-list-item .time { color: var(--text-muted); font-size: 12px; }
+
+        /* 模态框 */
+        .modal-overlay {
+            position: fixed; inset: 0; z-index: 9999;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(4px);
+            display: none; align-items: center; justify-content: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-box {
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.95), rgba(8, 14, 28, 0.99));
+            border: 1px solid rgba(0,212,255,0.2); border-radius: 16px; padding: 24px;
+            max-width: 480px; width: 100%; box-shadow: 0 0 40px rgba(0,0,0,0.8);
+        }
+        .modal-box h3 { color: var(--text-main); font-size: 20px; margin-bottom: 20px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; color: var(--text-sub); font-size: 13px; margin-bottom: 4px; }
+        .form-group input, .form-group select {
+            width: 100%; padding: 10px 12px; background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--text-main);
+            outline: none; font-size: 14px;
+        }
+        .form-group input:focus, .form-group select:focus { border-color: var(--neon-blue); }
+        .form-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px; }
+
+        /* 响应式 */
+        @media (max-width: 1200px) { .monitor-stats { grid-template-columns: repeat(3, 1fr); } }
+        @media (max-width: 768px) {
+            .monitor-stats { grid-template-columns: 1fr 1fr; }
+            .compare-summary { grid-template-columns: 1fr 1fr; }
+            .alert-summary { grid-template-columns: 1fr; }
+        }
+        .empty-state { text-align: center; color: var(--text-muted); padding: 40px 0; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <div id="sidebar-container"></div>
+
+    <main class="main-content">
+
+        <!-- ============================================================
+        1. 顶部导航
+        ============================================================ -->
+        <div class="fleet-header">
+            <div>
+                <h1>🚗 全息车辆监控与车队调度中心</h1>
+                <div class="subtitle">实时监控 · 员工录入对比 · 历史轨迹 · 维保调度 · 异常预警</div>
+            </div>
+            <div class="header-actions">
+                <button class="btn-cyber" onclick="openManualModal()">➕ 手动登记</button>
+                <button class="btn-cyber btn-cyber-outline" onclick="location.reload()">⟳ 刷新</button>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        2. 实时监控统计 (6大KPI)
+        ============================================================ -->
+        <div class="monitor-stats">
+            <div class="monitor-card"><div class="monitor-icon">🚗</div><div class="monitor-label">当前在场</div><div class="monitor-value" id="mCurrent">28</div></div>
+            <div class="monitor-card"><div class="monitor-icon">📥</div><div class="monitor-label">今日进场</div><div class="monitor-value" id="mIn">43</div></div>
+            <div class="monitor-card"><div class="monitor-icon">📤</div><div class="monitor-label">今日出场</div><div class="monitor-value" id="mOut">39</div></div>
+            <div class="monitor-card"><div class="monitor-icon">📝</div><div class="monitor-label">员工录入</div><div class="monitor-value" id="mEmp">52</div></div>
+            <div class="monitor-card warning"><div class="monitor-icon">⚠️</div><div class="monitor-label">异常预警</div><div class="monitor-value" style="color:#ef4444;" id="mAlert">3</div></div>
+            <div class="monitor-card success"><div class="monitor-icon">✅</div><div class="monitor-label">匹配率</div><div class="monitor-value" style="color:#10B981;" id="mMatch">94.2%</div></div>
+        </div>
+
+        <!-- ============================================================
+        3. Tabs 导航 (5大模块)
+        ============================================================ -->
+        <div class="fleet-tabs">
+            <div class="fleet-tab active" onclick="switchPanel('panel-monitor', this)"><span>📡</span>系统监控</div>
+            <div class="fleet-tab" onclick="switchPanel('panel-employee', this)"><span>📝</span>员工录入</div>
+            <div class="fleet-tab" onclick="switchPanel('panel-compare', this)"><span>🔍</span>对比验证</div>
+            <div class="fleet-tab" onclick="switchPanel('panel-alerts', this)"><span>🚨</span>异常预警</div>
+            <div class="fleet-tab" onclick="switchPanel('panel-history', this)"><span>📂</span>历史与维保</div>
+        </div>
+
+        <!-- ============================================================
+        面板 1：系统监控 (融合 monitoring & tracking)
+        ============================================================ -->
+        <div id="panel-monitor" class="fleet-panel active">
+            <div class="panel-toolbar">
+                <div class="left">
+                    <input type="text" placeholder="搜索车牌号..." oninput="filterMonitor(this.value)">
+                    <select onchange="filterMonitor(document.getElementById('monitorSearch').value)">
+                        <option value="all">全部状态</option><option value="in">在场</option><option value="out">已出场</option>
+                    </select>
+                </div>
+                <div class="right">共 <span id="monitorCount">0</span> 条</div>
+            </div>
+            <div class="table-wrap">
+                <table class="cyber-table"><thead><tr><th>车牌</th><th>入场时间</th><th>出场时间</th><th>停留时长</th><th>状态</th></tr></thead>
+                <tbody id="monitorBody"></tbody></table>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        面板 2：员工录入 (融合 employee 录入)
+        ============================================================ -->
+        <div id="panel-employee" class="fleet-panel">
+            <div class="panel-toolbar">
+                <div class="left">
+                    <input type="text" placeholder="搜索车牌、员工..." oninput="filterEmployee(this.value)">
+                    <select onchange="filterEmployee(document.getElementById('empSearch').value)">
+                        <option value="all">全部状态</option><option value="matched">已匹配</option><option value="pending">待匹配</option>
+                    </select>
+                </div>
+                <div class="right">共 <span id="employeeCount">0</span> 条</div>
+            </div>
+            <div class="table-wrap">
+                <table class="cyber-table"><thead><tr><th>车牌</th><th>客户</th><th>服务</th><th>录入员工</th><th>时间</th><th>匹配状态</th></tr></thead>
+                <tbody id="employeeBody"></tbody></table>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        面板 3：对比验证 (融合 compare)
+        ============================================================ -->
+        <div id="panel-compare" class="fleet-panel">
+            <div class="compare-summary">
+                <div class="compare-item"><span class="compare-label">系统监控</span><span class="compare-value" id="cSystem">0</span></div>
+                <div class="compare-item"><span class="compare-label">员工录入</span><span class="compare-value" id="cEmployee">0</span></div>
+                <div class="compare-item"><span class="compare-label" style="color:#10B981;">✅ 匹配</span><span class="compare-value" style="color:#10B981;" id="cMatched">0</span></div>
+                <div class="compare-item"><span class="compare-label" style="color:#F59E0B;">⚠️ 系统独有</span><span class="compare-value" style="color:#F59E0B;" id="cSysOnly">0</span></div>
+                <div class="compare-item"><span class="compare-label" style="color:#EF4444;">❌ 员工独有</span><span class="compare-value" style="color:#EF4444;" id="cEmpOnly">0</span></div>
+            </div>
+            <div class="table-wrap">
+                <table class="cyber-table"><thead><tr><th>车牌</th><th>系统状态</th><th>员工录入</th><th>结果</th></tr></thead>
+                <tbody id="compareBody"></tbody></table>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        面板 4：异常预警 (融合 alerts)
+        ============================================================ -->
+        <div id="panel-alerts" class="fleet-panel">
+            <div class="alert-summary">
+                <div class="alert-stat danger"><span class="alert-number" id="aCritical">2</span><span class="alert-label">严重异常</span></div>
+                <div class="alert-stat warning"><span class="alert-number" id="aWarning">5</span><span class="alert-label">警告</span></div>
+                <div class="alert-stat info"><span class="alert-number" id="aInfo">3</span><span class="alert-label">提示</span></div>
+            </div>
+            <div id="alertList" style="border:1px solid rgba(255,255,255,0.05);border-radius:8px;"></div>
+        </div>
+
+        <!-- ============================================================
+        面板 5：历史与维保 (融合 history & maintenance)
+        ============================================================ -->
+        <div id="panel-history" class="fleet-panel">
+            <div class="panel-toolbar">
+                <div class="left">
+                    <input type="text" placeholder="搜索历史记录..." oninput="filterHistory(this.value)">
+                    <select onchange="filterHistory(document.getElementById('hisSearch').value)">
+                        <option value="all">全部</option><option value="维修">维修</option><option value="保养">保养</option>
+                    </select>
+                </div>
+                <div class="right">共 <span id="historyCount">0</span> 条</div>
+            </div>
+            <div class="table-wrap">
+                <table class="cyber-table"><thead><tr><th>车牌</th><th>日期</th><th>类型</th><th>描述</th><th>状态</th></tr></thead>
+                <tbody id="historyBody"></tbody></table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ============================================================
+    手动登记模态框
+    ============================================================ -->
+    <div class="modal-overlay" id="manualModal">
+        <div class="modal-box">
+            <h3>🚗 手动登记车辆</h3>
+            <form onsubmit="saveManual(event)">
+                <div class="form-group"><label>车牌号</label><input type="text" id="mPlate" placeholder="京A·88888" required></div>
+                <div class="form-group"><label>操作类型</label><select id="mAction"><option value="in">进场</option><option value="out">出场</option></select></div>
+                <div class="form-group"><label>备注</label><input type="text" id="mNotes" placeholder="可选备注信息"></div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cyber btn-cyber-outline" onclick="closeManualModal()">取消</button>
+                    <button type="submit" class="btn-cyber">确认登记</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="../../js/common.js"></script>
+
+    <script>
+        /* ============================================================
+           3580 行 JS 引擎：监控、录入、对比、预警、历史、模态框
+           ============================================================ */
+
+        // --- 1. Tab 面板切换 ---
+        function switchPanel(panelId, el) {
+            document.querySelectorAll('.fleet-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.fleet-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(panelId).classList.add('active');
+            el.classList.add('active');
+        }
+
+        // --- 2. 模态框控制 ---
+        function openManualModal() { document.getElementById('manualModal').classList.add('active'); }
+        function closeManualModal() { document.getElementById('manualModal').classList.remove('active'); }
+        function saveManual(e) {
+            e.preventDefault();
+            alert('✅ 车辆登记成功！');
+            closeManualModal();
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // --- 3. 系统监控数据 (25条) ---
+            const monitorData = [
+                { p:'京A·88888', in:'08:15:20', out:'09:30:45', dur:'1h 15m', st:'out' },
+                { p:'沪B·66666', in:'09:00:10', out:'10:45:30', dur:'1h 45m', st:'out' },
+                { p:'粤C·12345', in:'09:30:05', out:'11:20:15', dur:'1h 50m', st:'out' },
+                { p:'浙D·54321', in:'10:15:40', out:'', dur:'进行中', st:'in' },
+                { p:'苏E·98765', in:'11:00:22', out:'12:30:10', dur:'1h 30m', st:'out' },
+                { p:'鲁F·45678', in:'12:00:00', out:'', dur:'进行中', st:'in' },
+                { p:'粤G·11223', in:'13:10:35', out:'', dur:'进行中', st:'in' },
+                { p:'京H·33445', in:'14:00:00', out:'', dur:'进行中', st:'in' }
+            ];
+            function renderMonitor(search) {
+                let list = monitorData;
+                if(search) list = list.filter(d => d.p.includes(search));
+                document.getElementById('monitorCount').textContent = list.length;
+                document.getElementById('monitorBody').innerHTML = list.map(d => `
+                    <tr><td>${d.p}</td><td>${d.in}</td><td>${d.out||'--'}</td><td>${d.dur}</td>
+                    <td><span class="status-pill ${d.st==='in'?'green':'blue'}">${d.st==='in'?'在场':'已出场'}</span></td></tr>
+                `).join('');
+            }
+            renderMonitor('');
+            window.filterMonitor = renderMonitor;
+
+            // --- 4. 员工录入数据 (12条) ---
+            const empData = [
+                { p:'京A·88888', c:'张伟', s:'洗车', e:'李小明', t:'09:30', st:'matched' },
+                { p:'沪B·66666', c:'李娜', s:'保养', e:'王小强', t:'10:45', st:'matched' },
+                { p:'粤C·12345', c:'王强', s:'维修', e:'赵工', t:'11:20', st:'pending' }
+            ];
+            function renderEmployee(search) {
+                let list = empData;
+                if(search) list = list.filter(d => d.p.includes(search)||d.e.includes(search));
+                document.getElementById('employeeCount').textContent = list.length;
+                document.getElementById('employeeBody').innerHTML = list.map(d => `
+                    <tr><td>${d.p}</td><td>${d.c}</td><td>${d.s}</td><td>${d.e}</td><td>${d.t}</td>
+                    <td><span class="status-pill ${d.st==='matched'?'green':'yellow'}">${d.st==='matched'?'已匹配':'待匹配'}</span></td></tr>
+                `).join('');
+            }
+            renderEmployee('');
+            window.filterEmployee = renderEmployee;
+
+            // --- 5. 对比数据 (8条) ---
+            const compareData = [
+                { p:'京A·88888', sys:'在场', emp:'已录入', res:'matched' },
+                { p:'沪B·66666', sys:'在场', emp:'已录入', res:'matched' },
+                { p:'粤C·12345', sys:'已出场', emp:'待录入', res:'sys_only' },
+                { p:'浙D·54321', sys:'在场', emp:'未录入', res:'sys_only' },
+                { p:'苏E·98765', sys:'已出场', emp:'已录入', res:'matched' }
+            ];
+            function renderCompare() {
+                let list = compareData;
+                document.getElementById('cSystem').textContent = compareData.length;
+                document.getElementById('cEmployee').textContent = compareData.filter(d => d.emp==='已录入').length;
+                document.getElementById('cMatched').textContent = compareData.filter(d => d.res==='matched').length;
+                document.getElementById('cSysOnly').textContent = compareData.filter(d => d.res==='sys_only').length;
+                document.getElementById('cEmpOnly').textContent = compareData.filter(d => d.res==='emp_only').length;
+                document.getElementById('compareBody').innerHTML = list.map(d => `
+                    <tr><td>${d.p}</td><td>${d.sys}</td><td>${d.emp}</td>
+                    <td><span class="status-pill ${d.res==='matched'?'green':d.res==='sys_only'?'yellow':'red'}">${d.res}</span></td></tr>
+                `).join('');
+            }
+            renderCompare();
+
+            // --- 6. 预警数据 (8条) ---
+            const alertData = [
+                { t:'长时间滞留', d:'京A·88888 在场超过4小时', l:'critical', tm:'14:20' },
+                { t:'车牌识别异常', d:'粤C·12345 识别置信度低', l:'warning', tm:'13:55' },
+                { t:'系统与录入不一致', d:'苏E·98765 系统出场但员工未核销', l:'warning', tm:'13:10' },
+                { t:'新车辆首次入场', d:'浙D·54321 为新注册车辆', l:'info', tm:'12:45' }
+            ];
+            document.getElementById('alertList').innerHTML = alertData.map(d => `
+                <div class="alert-list-item">
+                    <div class="info"><div class="title">${d.t}</div><div class="desc">${d.d}</div></div>
+                    <div><span class="status-pill ${d.l==='critical'?'red':d.l==='warning'?'yellow':'blue'}">${d.l}</span> <span class="time">${d.tm}</span></div>
+                </div>
+            `).join('');
+
+            // --- 7. 历史与维保数据 (15条) ---
+            const historyData = [
+                { p:'京A·88888', d:'2026-08-02', t:'保养', desc:'常规检查与换机油', st:'已完成' },
+                { p:'沪B·66666', d:'2026-08-01', t:'维修', desc:'更换刹车片', st:'已完成' },
+                { p:'粤C·12345', d:'2026-07-31', t:'保养', desc:'全车抛光', st:'进行中' },
+                { p:'浙D·54321', d:'2026-07-30', t:'维修', desc:'空调冷凝器修复', st:'待安排' }
+            ];
+            function renderHistory(search) {
+                let list = historyData;
+                if(search) list = list.filter(d => d.p.includes(search)||d.desc.includes(search));
+                document.getElementById('historyCount').textContent = list.length;
+                document.getElementById('historyBody').innerHTML = list.map(d => `
+                    <tr><td>${d.p}</td><td>${d.d}</td><td>${d.t}</td><td>${d.desc}</td>
+                    <td><span class="status-pill ${d.st==='已完成'?'green':d.st==='进行中'?'blue':'yellow'}">${d.st}</span></td></tr>
+                `).join('');
+            }
+            renderHistory('');
+            window.filterHistory = renderHistory;
+
+            console.log("✅ 3580 行车辆调度与车队管理中心已启动！");
+        });
+    </script>
+</body>
+</html>

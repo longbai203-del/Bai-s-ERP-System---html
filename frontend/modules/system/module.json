@@ -1,0 +1,7 @@
+﻿{
+    "id": "system",
+    "version": "1.0.0",
+    "description": "system 模块",
+    "name": "system",
+    "children": []
+}

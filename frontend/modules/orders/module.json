@@ -1,0 +1,7 @@
+﻿{
+    "id": "orders",
+    "version": "1.0.0",
+    "description": "orders 模块",
+    "name": "orders",
+    "children": []
+}

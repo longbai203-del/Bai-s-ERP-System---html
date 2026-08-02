@@ -1,0 +1,17 @@
+﻿<div class="modal-container" id="modalContainer" style="display:none;">
+    <div class="modal-overlay" onclick="Modal.close()">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <div class="modal-header">
+                <h3 class="modal-title" id="modalTitle">标题</h3>
+                <button class="modal-close" onclick="Modal.close()">✕</button>
+            </div>
+            <div class="modal-body" id="modalBody">
+                内容区域
+            </div>
+            <div class="modal-footer" id="modalFooter">
+                <button class="btn btn-secondary" onclick="Modal.close()">取消</button>
+                <button class="btn btn-primary" onclick="Modal.confirm()">确认</button>
+            </div>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,7 @@
+﻿{
+    "id": "dashboard",
+    "version": "1.0.0",
+    "description": "dashboard 模块",
+    "name": "dashboard",
+    "children": []
+}

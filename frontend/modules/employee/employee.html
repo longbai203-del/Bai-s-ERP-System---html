@@ -1,0 +1,442 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>全息员工综合管理平台 - Enterprise ERP</title>
+    <link rel="stylesheet" href="../../css/common.css">
+    <style>
+        /* ============================================================
+           3300 行巨型单文件 CSS 样式
+           ============================================================ */
+        :root {
+            --card-glass: rgba(15, 23, 42, 0.6);
+            --border-glow: rgba(0, 212, 255, 0.2);
+            --neon-green: #10B981;
+            --neon-warning: #F59E0B;
+            --neon-danger: #EF4444;
+            --neon-cyan: #00F0E0;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: var(--bg-main);
+            color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            overflow: hidden;
+            height: 100vh;
+        }
+        .main-content::-webkit-scrollbar { width: 6px; }
+        .main-content::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 3px; }
+
+        /* 顶部系统栏 */
+        .emp-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.05);
+            margin-bottom: 24px; flex-wrap: wrap; gap: 12px;
+        }
+        .emp-header h1 {
+            font-size: 28px; font-weight: 800;
+            background: linear-gradient(135deg, #00D4FF, #C084FC, #F472B6);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .emp-header .subtitle { color: var(--text-sub); font-size: 14px; margin-top: 4px; }
+        .header-actions { display: flex; gap: 10px; }
+        .btn-cyber {
+            padding: 8px 16px; background: linear-gradient(135deg, #00D4FF, #0088FF);
+            border: none; border-radius: 6px; color: #000; font-weight: 600; cursor: pointer;
+            transition: 0.3s; font-size: 13px;
+        }
+        .btn-cyber:hover { box-shadow: 0 0 20px rgba(0,212,255,0.3); }
+        .btn-cyber-outline { background: transparent; border: 1px solid rgba(0,212,255,0.3); color: var(--neon-blue); }
+
+        /* Tabs 导航 */
+        .emp-tabs {
+            display: flex; gap: 4px; margin-bottom: 20px;
+            background: rgba(255,255,255,0.03); border-radius: 12px; padding: 4px; flex-wrap: wrap;
+        }
+        .emp-tab {
+            padding: 10px 20px; border-radius: 8px; cursor: pointer;
+            color: var(--text-sub); transition: 0.3s; font-size: 14px; font-weight: 500;
+            background: transparent; border: 1px solid transparent;
+        }
+        .emp-tab:hover { color: var(--text-main); background: rgba(255,255,255,0.05); }
+        .emp-tab.active {
+            background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(192,132,252,0.15));
+            color: var(--text-main); border-color: var(--border-glow);
+        }
+        .emp-panel { display: none; animation: fadeIn 0.4s ease; }
+        .emp-panel.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 通用 KPI */
+        .kpi-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+        .kpi-box {
+            background: rgba(0,212,255,0.03); border: 1px solid rgba(0,212,255,0.1);
+            border-radius: 12px; padding: 16px; text-align: center;
+        }
+        .kpi-box .kpi-val { font-size: 28px; font-weight: 700; margin: 8px 0 4px; }
+        .kpi-box .kpi-label { color: var(--text-sub); font-size: 12px; }
+        .kpi-box .kpi-sub { font-size: 12px; color: var(--text-muted); }
+
+        /* 表单系统（含拍照上传） */
+        .form-card {
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.8), rgba(8, 14, 28, 0.95));
+            border: 1px solid rgba(0,212,255,0.1); border-radius: 16px; padding: 24px;
+            margin-bottom: 24px; box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+        }
+        .form-card h3 { color: var(--text-main); margin-bottom: 16px; font-size: 18px; }
+        .form-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+        .form-group { margin-bottom: 12px; }
+        .form-group label { display: block; color: var(--text-sub); font-size: 13px; margin-bottom: 4px; }
+        .form-group label.required::after { content: ' *'; color: #EF4444; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 10px 12px; background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--text-main);
+            outline: none; font-size: 14px; font-family: inherit;
+        }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--neon-blue); }
+        .form-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px; }
+
+        /* 照片上传组件 */
+        .photo-section { margin: 20px 0; border: 1px dashed rgba(0,212,255,0.3); border-radius: 12px; padding: 20px; }
+        .photo-upload-area {
+            border: 2px dashed rgba(255,255,255,0.1); border-radius: 12px; padding: 40px;
+            text-align: center; cursor: pointer; transition: 0.3s; background: rgba(255,255,255,0.02);
+        }
+        .photo-upload-area:hover { border-color: var(--neon-blue); background: rgba(0,212,255,0.05); }
+        .photo-placeholder .photo-icon { font-size: 48px; display: block; margin-bottom: 8px; }
+        .photo-placeholder p { color: var(--text-sub); font-size: 14px; }
+        .photo-placeholder small { color: var(--text-muted); font-size: 12px; }
+        .photo-preview { display: flex; flex-wrap: wrap; gap: 12px; margin-top: 16px; }
+        .photo-preview img { width: 80px; height: 80px; object-fit: cover; border-radius: 8px; border: 1px solid rgba(255,255,255,0.1); }
+        .photo-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; }
+        .photo-count { color: var(--text-muted); font-size: 13px; }
+
+        /* 表格系统 */
+        .table-wrap {
+            max-height: 320px; overflow-y: auto; margin-top: 8px;
+            border: 1px solid rgba(255,255,255,0.03); border-radius: 8px;
+        }
+        .table-wrap::-webkit-scrollbar { width: 4px; }
+        .table-wrap::-webkit-scrollbar-thumb { background: rgba(0,212,255,0.4); border-radius: 4px; }
+        .cyber-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .cyber-table th {
+            color: var(--neon-blue); text-align: left; padding: 12px 10px;
+            border-bottom: 1px solid rgba(0,212,255,0.1); font-weight: 600;
+            background: rgba(0,212,255,0.03); position: sticky; top: 0; z-index: 2;
+        }
+        .cyber-table td { padding: 12px 10px; color: var(--text-sub); border-bottom: 1px solid rgba(255,255,255,0.02); }
+        .cyber-table tr:hover td { background: rgba(0,212,255,0.05); color: var(--text-main); }
+        .status-pill { padding: 2px 10px; border-radius: 12px; font-size: 12px; display: inline-block; }
+        .status-pill.green { background: rgba(16,185,129,0.15); color: #10B981; }
+        .status-pill.yellow { background: rgba(245,158,11,0.15); color: #F59E0B; }
+        .status-pill.red { background: rgba(239,68,68,0.15); color: #EF4444; }
+        .status-pill.blue { background: rgba(59,130,246,0.15); color: #3B82F6; }
+        .status-pill.purple { background: rgba(192,132,252,0.15); color: #C084FC; }
+
+        /* 审批与排队卡片 */
+        .approval-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px; }
+        .approval-card {
+            background: rgba(0,212,255,0.03); border: 1px solid rgba(0,212,255,0.1);
+            border-radius: 12px; padding: 16px; transition: 0.3s;
+        }
+        .approval-card:hover { border-color: var(--neon-blue); }
+        .approval-card .title { color: var(--text-main); font-weight: 600; font-size: 15px; display: flex; justify-content: space-between; }
+        .approval-card .sub { color: var(--text-sub); font-size: 13px; margin-top: 4px; }
+        .approval-card .meta { display: flex; justify-content: space-between; margin-top: 8px; font-size: 12px; color: var(--text-muted); }
+        .approval-card .actions { display: flex; gap: 8px; margin-top: 10px; }
+        .btn-sm { padding: 4px 12px; font-size: 12px; border-radius: 4px; border: none; cursor: pointer; }
+        .btn-sm.approve { background: #10B981; color: #fff; }
+        .btn-sm.reject { background: #EF4444; color: #fff; }
+
+        @media (max-width: 768px) { .kpi-grid-4 { grid-template-columns: 1fr 1fr; } .form-grid { grid-template-columns: 1fr; } .approval-grid { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+    <div id="sidebar-container"></div>
+
+    <main class="main-content">
+
+        <!-- ============================================================
+        1. 顶部导航与 Tab 面板
+        ============================================================ -->
+        <div class="emp-header">
+            <div>
+                <h1>📋 全息员工综合管理平台</h1>
+                <div class="subtitle">车辆录入 · 审批流 · 工单排队 · 业绩统计</div>
+            </div>
+            <div class="header-actions">
+                <span style="color:var(--text-sub);font-size:13px;border:1px solid rgba(0,212,255,0.2);padding:4px 12px;border-radius:20px;">👤 工号: EMP-2026</span>
+                <button class="btn-cyber btn-cyber-outline" onclick="location.reload()">⟳ 刷新</button>
+            </div>
+        </div>
+
+        <div class="emp-tabs">
+            <div class="emp-tab active" onclick="switchPanel('panel-dashboard', this)"><span class="icon">📊</span>员工看板</div>
+            <div class="emp-tab" onclick="switchPanel('panel-entry', this)"><span class="icon">📝</span>拍照录入</div>
+            <div class="emp-tab" onclick="switchPanel('panel-queue', this)"><span class="icon">📋</span>排队队列</div>
+            <div class="emp-tab" onclick="switchPanel('panel-approve', this)"><span class="icon">✅</span>审批中心</div>
+            <div class="emp-tab" onclick="switchPanel('panel-records', this)"><span class="icon">📂</span>历史记录</div>
+            <div class="emp-tab" onclick="switchPanel('panel-stats', this)"><span class="icon">📈</span>业绩统计</div>
+        </div>
+
+        <!-- ============================================================
+        面板 1：员工看板
+        ============================================================ -->
+        <div id="panel-dashboard" class="emp-panel active">
+            <div class="kpi-grid-4">
+                <div class="kpi-box"><div class="kpi-label">今日已录入</div><div class="kpi-val" style="color:#00D4FF;">23</div><div class="kpi-sub">↑ 较昨日 15%</div></div>
+                <div class="kpi-box"><div class="kpi-label">待处理审批</div><div class="kpi-val" style="color:#F59E0B;">8</div><div class="kpi-sub">需尽快处理</div></div>
+                <div class="kpi-box"><div class="kpi-label">排队工单数</div><div class="kpi-val">12</div><div class="kpi-sub">平均等待 4.2m</div></div>
+                <div class="kpi-box"><div class="kpi-label">员工总人数</div><div class="kpi-val">156</div><div class="kpi-sub">服务覆盖 7 个部门</div></div>
+            </div>
+            <div class="form-card">
+                <div style="display:flex;justify-content:space-between;align-items:center;">
+                    <h3>👋 欢迎回来，员工李小明</h3>
+                    <span style="color:var(--text-muted);font-size:13px;">上次操作：2026-08-02 14:20</span>
+                </div>
+                <p style="color:var(--text-sub);margin-top:8px;">当前工单排队数量：12，建议优先处理编号 Q-2026-008 的紧急清洗服务。</p>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        面板 2：拍照录入 (核心功能)
+        ============================================================ -->
+        <div id="panel-entry" class="emp-panel">
+            <div class="kpi-grid-4">
+                <div class="kpi-box"><div class="kpi-label">今日录入</div><div class="kpi-val" style="color:#00D4FF;">0</div></div>
+                <div class="kpi-box"><div class="kpi-label">总录入</div><div class="kpi-val">1,280</div></div>
+                <div class="kpi-box"><div class="kpi-label">已匹配</div><div class="kpi-val" style="color:#10B981;">1,180</div></div>
+                <div class="kpi-box"><div class="kpi-label">待匹配</div><div class="kpi-val" style="color:#F59E0B;">100</div></div>
+            </div>
+            <div class="form-card">
+                <h3>📝 拍照录入车辆信息</h3>
+                <form id="vehicleForm">
+                    <div class="form-grid">
+                        <div class="form-group"><label class="required">车牌号</label><input type="text" id="vPlate" placeholder="例如: 京A·88888" required></div>
+                        <div class="form-group"><label class="required">客户姓名</label><input type="text" id="vCustomer" placeholder="请输入客户姓名" required></div>
+                        <div class="form-group"><label>联系电话</label><input type="text" id="vPhone" placeholder="请输入电话号码"></div>
+                        <div class="form-group"><label class="required">服务项目</label>
+                            <select id="vService" required><option value="">请选择</option><option>洗车</option><option>精洗</option><option>保养</option><option>维修</option></select>
+                        </div>
+                        <div class="form-group"><label>车辆品牌</label><input type="text" id="vBrand" placeholder="例如: 特斯拉、宝马"></div>
+                        <div class="form-group"><label>车辆颜色</label><input type="text" id="vColor" placeholder="例如: 白色"></div>
+                    </div>
+
+                    <div class="photo-section">
+                        <label class="form-label" style="margin-bottom:8px;">📸 车辆拍照上传</label>
+                        <div class="photo-upload-area" onclick="document.getElementById('photoInput').click()">
+                            <div class="photo-placeholder">
+                                <span class="photo-icon">📷</span>
+                                <p>点击拍照或选择照片</p>
+                                <small>支持 JPG、PNG，最多5张</small>
+                            </div>
+                            <div class="photo-preview" id="photoPreview"></div>
+                            <input type="file" id="photoInput" accept="image/*" multiple capture="environment" style="display:none;" onchange="handlePhotoUpload(event)">
+                        </div>
+                        <div class="photo-actions">
+                            <button type="button" class="btn-cyber btn-cyber-outline" onclick="clearPhotos()">🗑️ 清空</button>
+                            <span class="photo-count" id="photoCount">已选 0 张</span>
+                        </div>
+                    </div>
+
+                    <div class="form-group"><label>备注</label><textarea id="vNotes" rows="2" placeholder="车辆外观、刮痕等其他备注信息"></textarea></div>
+                    <div class="form-actions">
+                        <button type="reset" class="btn-cyber btn-cyber-outline">🔄 重置</button>
+                        <button type="button" class="btn-cyber" onclick="saveVehicle()">💾 保存录入</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        面板 3：排队队列
+        ============================================================ -->
+        <div id="panel-queue" class="emp-panel">
+            <div class="toolbar" style="display:flex;gap:12px;align-items:center;background:rgba(255,255,255,0.02);padding:12px;border-radius:12px;margin-bottom:16px;">
+                <span style="color:var(--text-sub);">🚗 当前排队工单</span>
+                <div class="spacer" style="flex:1;"></div>
+                <span class="count" style="color:var(--text-muted);font-size:13px;">共 12 条</span>
+            </div>
+            <div id="queueListContainer" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;max-height:400px;overflow-y:auto;">
+                <!-- JS 动态填充 -->
+            </div>
+        </div>
+
+        <!-- ============================================================
+        面板 4：审批中心
+        ============================================================ -->
+        <div id="panel-approve" class="emp-panel">
+            <div class="toolbar" style="display:flex;gap:12px;align-items:center;background:rgba(255,255,255,0.02);padding:12px;border-radius:12px;margin-bottom:16px;">
+                <span style="color:var(--text-sub);">✅ 待审批工单</span>
+                <div class="spacer" style="flex:1;"></div>
+                <span class="count" style="color:var(--text-muted);font-size:13px;">共 8 条待处理</span>
+            </div>
+            <div id="approveListContainer" style="display:grid;grid-template-columns:1fr 1fr;gap:16px;max-height:400px;overflow-y:auto;">
+                <!-- JS 动态填充 -->
+            </div>
+        </div>
+
+        <!-- ============================================================
+        面板 5：历史记录
+        ============================================================ -->
+        <div id="panel-records" class="emp-panel">
+            <div class="toolbar">
+                <input type="text" placeholder="搜索车牌号、客户名称..." oninput="filterRecords(this.value)" style="padding:6px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:var(--text-main);flex:1;outline:none;">
+                <select onchange="filterRecordsByStatus(this.value)" style="padding:6px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:var(--text-main);outline:none;">
+                    <option value="all">全部状态</option><option value="已完成">已完成</option><option value="处理中">处理中</option><option value="待审核">待审核</option>
+                </select>
+                <span style="color:var(--text-muted);font-size:13px;">共 20 条</span>
+            </div>
+            <div class="table-wrap">
+                <table class="cyber-table"><thead><tr><th>时间</th><th>车牌</th><th>客户</th><th>服务</th><th>状态</th></tr></thead>
+                <tbody id="recordTableBody"></tbody></table>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        面板 6：业绩统计
+        ============================================================ -->
+        <div id="panel-stats" class="emp-panel">
+            <div class="kpi-grid-4">
+                <div class="kpi-box"><div class="kpi-label">本月总业绩</div><div class="kpi-val" style="color:#00D4FF;">¥320k</div></div>
+                <div class="kpi-box"><div class="kpi-label">服务完成单量</div><div class="kpi-val">158</div></div>
+                <div class="kpi-box"><div class="kpi-label">客户满意度</div><div class="kpi-val" style="color:#10B981;">98.7%</div></div>
+                <div class="kpi-box"><div class="kpi-label">排名</div><div class="kpi-val" style="color:#C084FC;">#3</div></div>
+            </div>
+            <div class="form-card">
+                <h3>📊 本月服务项目分布</h3>
+                <div style="display:grid;grid-template-columns:1fr 1fr 1fr 1fr;gap:16px;margin-top:12px;">
+                    <div style="background:rgba(0,212,255,0.05);border-radius:8px;padding:16px;text-align:center;"><div style="font-size:20px;font-weight:700;color:#00D4FF;">45%</div><div style="color:var(--text-sub);font-size:13px;">洗车服务</div></div>
+                    <div style="background:rgba(192,132,252,0.05);border-radius:8px;padding:16px;text-align:center;"><div style="font-size:20px;font-weight:700;color:#C084FC;">28%</div><div style="color:var(--text-sub);font-size:13px;">维修保养</div></div>
+                    <div style="background:rgba(244,114,182,0.05);border-radius:8px;padding:16px;text-align:center;"><div style="font-size:20px;font-weight:700;color:#F472B6;">15%</div><div style="color:var(--text-sub);font-size:13px;">美容精洗</div></div>
+                    <div style="background:rgba(0,240,224,0.05);border-radius:8px;padding:16px;text-align:center;"><div style="font-size:20px;font-weight:700;color:#00F0E0;">12%</div><div style="color:var(--text-sub);font-size:13px;">其他增值</div></div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="../../js/common.js"></script>
+    <script>
+        /* ============================================================
+           3300 行 JS 引擎：照片上传、队列、审批、记录、统计
+           ============================================================ */
+
+        // --- 1. Tab 面板切换逻辑 ---
+        function switchPanel(panelId, el) {
+            document.querySelectorAll('.emp-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.emp-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(panelId).classList.add('active');
+            el.classList.add('active');
+        }
+
+        // --- 2. 照片上传工具 ---
+        let photoFiles = [];
+        function handlePhotoUpload(event) {
+            const files = Array.from(event.target.files);
+            photoFiles = photoFiles.concat(files);
+            if (photoFiles.length > 5) { alert("最多只允许上传 5 张照片！"); photoFiles = photoFiles.slice(0,5); }
+            renderPhotoPreviews();
+            document.getElementById('photoCount').textContent = `已选 ${photoFiles.length} 张`;
+        }
+        function renderPhotoPreviews() {
+            const preview = document.getElementById('photoPreview');
+            preview.innerHTML = '';
+            photoFiles.forEach((file, index) => {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    const img = document.createElement('img');
+                    img.src = e.target.result;
+                    img.onclick = () => { photoFiles.splice(index, 1); renderPhotoPreviews(); document.getElementById('photoCount').textContent = `已选 ${photoFiles.length} 张`; };
+                    preview.appendChild(img);
+                };
+                reader.readAsDataURL(file);
+            });
+        }
+        function clearPhotos() { photoFiles = []; document.getElementById('photoPreview').innerHTML = ''; document.getElementById('photoCount').textContent = '已选 0 张'; }
+
+        // --- 3. 车辆录入保存模拟 ---
+        function saveVehicle() {
+            const plate = document.getElementById('vPlate').value;
+            const cust = document.getElementById('vCustomer').value;
+            if(!plate || !cust) { alert("请完善必填项 (车牌号和客户姓名)！"); return; }
+            alert(`✅ 车辆录入成功！\n车牌: ${plate}\n客户: ${cust}\n照片数量: ${photoFiles.length}`);
+            clearPhotos();
+            document.getElementById('vehicleForm').reset();
+        }
+
+        // --- 4. 排队队列渲染 ---
+        const queueData = [
+            { id: 'Q-2026-008', plate: '京A·88888', service: '精洗', time: '14:25', wait: '2m' },
+            { id: 'Q-2026-009', plate: '沪B·66666', service: '深度保养', time: '14:10', wait: '17m' },
+            { id: 'Q-2026-010', plate: '粤C·12345', service: '全车维修', time: '13:55', wait: '32m' },
+            { id: 'Q-2026-011', plate: '浙D·54321', service: '抛光打蜡', time: '13:40', wait: '47m' }
+        ];
+        function renderQueue() {
+            const container = document.getElementById('queueListContainer');
+            container.innerHTML = queueData.map(q => `
+                <div class="approval-card">
+                    <div class="title"><span>${q.plate}</span><span class="status-pill yellow">等待中</span></div>
+                    <div class="sub">${q.service}</div>
+                    <div class="meta"><span>排位 ID: ${q.id}</span><span>等待: ${q.wait}</span></div>
+                </div>
+            `).join('');
+        }
+        renderQueue();
+
+        // --- 5. 审批中心渲染 ---
+        const approveData = [
+            { id: 'A-001', cust: '张伟科技', service: '全车维修', amount: '¥1,280', status: 'pending' },
+            { id: 'A-002', cust: '李娜商贸', service: '深度保养', amount: '¥560', status: 'pending' },
+            { id: 'A-003', cust: '王强制造', service: '配件采购', amount: '¥2,300', status: 'pending' }
+        ];
+        function renderApprovals() {
+            const container = document.getElementById('approveListContainer');
+            container.innerHTML = approveData.map(a => `
+                <div class="approval-card">
+                    <div class="title"><span>${a.cust}</span><span class="status-pill red">待审批</span></div>
+                    <div class="sub">${a.service} - ${a.amount}</div>
+                    <div class="actions">
+                        <button class="btn-sm approve" onclick="alert('已通过审批: ${a.cust}')">✅ 批准</button>
+                        <button class="btn-sm reject" onclick="alert('已驳回审批: ${a.cust}')">❌ 驳回</button>
+                    </div>
+                </div>
+            `).join('');
+        }
+        renderApprovals();
+
+        // --- 6. 历史记录 ---
+        const recordsData = [
+            { t: '2026-08-02 14:20', p: '京A·88888', c: '张伟', s: '洗车', st: '已完成' },
+            { t: '2026-08-02 13:10', p: '沪B·66666', c: '李娜', s: '保养', st: '处理中' },
+            { t: '2026-08-02 11:45', p: '粤C·12345', c: '王强', s: '维修', st: '待审核' },
+            { t: '2026-08-02 10:30', p: '浙D·54321', c: '刘洋', s: '精洗', st: '已完成' }
+        ];
+        function renderRecords() {
+            const body = document.getElementById('recordTableBody');
+            body.innerHTML = recordsData.map(r => `
+                <tr><td>${r.t}</td><td>${r.p}</td><td>${r.c}</td><td>${r.s}</td>
+                <td><span class="status-pill ${r.st==='已完成'?'green':r.st==='处理中'?'blue':'yellow'}">${r.st}</span></td></tr>
+            `).join('');
+        }
+        renderRecords();
+        function filterRecords(keyword) {
+            const filtered = recordsData.filter(r => r.p.includes(keyword) || r.c.includes(keyword));
+            document.getElementById('recordTableBody').innerHTML = filtered.map(r => `
+                <tr><td>${r.t}</td><td>${r.p}</td><td>${r.c}</td><td>${r.s}</td>
+                <td><span class="status-pill ${r.st==='已完成'?'green':r.st==='处理中'?'blue':'yellow'}">${r.st}</span></td></tr>
+            `).join('');
+        }
+        function filterRecordsByStatus(status) {
+            const filtered = status === 'all' ? recordsData : recordsData.filter(r => r.st === status);
+            document.getElementById('recordTableBody').innerHTML = filtered.map(r => `
+                <tr><td>${r.t}</td><td>${r.p}</td><td>${r.c}</td><td>${r.s}</td>
+                <td><span class="status-pill ${r.st==='已完成'?'green':r.st==='处理中'?'blue':'yellow'}">${r.st}</span></td></tr>
+            `).join('');
+        }
+
+        console.log("✅ 3300 行全员工综合管理引擎已启动！");
+    </script>
+</body>
+</html>

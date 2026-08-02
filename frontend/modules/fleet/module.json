@@ -1,0 +1,7 @@
+﻿{
+    "id": "fleet",
+    "version": "1.0.0",
+    "description": "fleet 模块",
+    "name": "fleet",
+    "children": []
+}

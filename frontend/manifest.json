@@ -1,0 +1,34 @@
+﻿{
+  "name": "Carwash Pro 洗车店管理系统",
+  "short_name": "洗车管理",
+  "description": "沙特洗车店全链路一体化管理系统 - 收银、库存、人事、营销全模块",
+  "start_url": "/",
+  "display": "standalone",
+  "orientation": "portrait-primary",
+  "background_color": "#050814",
+  "theme_color": "#00D4FF",
+  "default_locale": "zh-CN",
+  "dir": "ltr",
+  "lang": "zh-CN",
+  "related_applications": [],
+  "prefer_related_applications": false,
+  "icons": [
+    {
+      "src": "/assets/icons/icon-72x72.png",
+      "sizes": "72x72",
+      "type": "image/png"
+    },
+    {
+      "src": "/assets/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/assets/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    }
+  ]
+}

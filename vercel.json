@@ -1,38 +1,30 @@
 {
   "version": 2,
   "cleanUrls": true,
+  "trailingSlash": false,
   "routes": [
-    {
-      "src": "/",
-      "dest": "/index.html"
+    { "src": "/", "dest": "/frontend/index.html" },
+    { "src": "/login", "dest": "/frontend/login.html" },
+    { "src": "/404", "dest": "/frontend/404.html" },
+    { 
+      "src": "/frontend/(.*)", 
+      "dest": "/frontend/$1"
     },
-    {
-      "src": "/login",
-      "dest": "/login.html"
+    { 
+      "src": "/(.*)\\.html", 
+      "dest": "/frontend/$1.html" 
     },
+    { 
+      "src": "/(.*)", 
+      "dest": "/frontend/$1" 
+    }
+  ],
+  "headers": [
     {
-      "src": "/modules/([^/]+)/([^/]+)",
-      "dest": "/modules/$1/$2.html"
-    },
-    {
-      "src": "/modules/([^/]+)",
-      "dest": "/modules/$1/$1.html"
-    },
-    {
-      "src": "/components/([^/]+)",
-      "dest": "/components/$1"
-    },
-    {
-      "src": "/layouts/([^/]+)",
-      "dest": "/layouts/$1"
-    },
-    {
-      "src": "/locales/([^/]+)",
-      "dest": "/locales/$1"
-    },
-    {
-      "src": "/(.*)",
-      "dest": "/$1"
+      "source": "/(.*)\\.(json|ico|png|jpg|jpeg|svg|webp|ttf|woff|woff2)",
+      "headers": [
+        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
+      ]
     }
   ]
 }

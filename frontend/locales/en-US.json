@@ -1,0 +1,43 @@
+﻿{
+  "_meta": {
+    "version": "3.0.0",
+    "language": "en-US"
+  },
+  "common": {
+    "save": "Save",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "yes": "Yes",
+    "no": "No",
+    "delete": "Delete",
+    "edit": "Edit",
+    "search": "Search",
+    "export": "Export",
+    "import": "Import",
+    "print": "Print",
+    "refresh": "Refresh",
+    "status": "Status",
+    "actions": "Actions",
+    "total": "Total",
+    "all": "All"
+  },
+  "nav": {
+    "dashboard": "Dashboard",
+    "orders": "Order Management",
+    "pos": "POS",
+    "inventory": "Inventory",
+    "hr": "HR Management",
+    "marketing": "Marketing",
+    "purchase": "Purchasing",
+    "finance": "Finance",
+    "saas": "Multi-Tenant",
+    "settings": "Settings",
+    "system": "System"
+  },
+  "validation": {
+    "required": "{field} is required",
+    "email": "Please enter a valid email address",
+    "phone": "Please enter a valid phone number",
+    "number": "Please enter a valid number"
+  }
+}

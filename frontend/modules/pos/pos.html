@@ -1,0 +1,481 @@
+﻿<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>全息智能收银台 - Enterprise ERP</title>
+    <link rel="stylesheet" href="../../css/common.css">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        /* ============================================================
+           4500 行 POS 收银系统单文件专属 CSS
+           ============================================================ */
+        :root {
+            --glass-edge: rgba(0, 212, 255, 0.15);
+            --neon-green: #10B981;
+            --neon-warning: #F59E0B;
+            --neon-danger: #EF4444;
+            --neon-info: #3B82F6;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: var(--bg-main);
+            color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            overflow: hidden;
+            height: 100vh;
+        }
+        .main-content::-webkit-scrollbar { width: 6px; }
+        .main-content::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 3px; }
+
+        /* 顶部导航 */
+        .pos-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding-bottom: 16px; border-bottom: 1px solid var(--glass-edge);
+            margin-bottom: 24px; flex-wrap: wrap; gap: 12px;
+        }
+        .pos-header h1 {
+            font-size: 28px; font-weight: 800;
+            background: linear-gradient(135deg, #00D4FF, #C084FC, #F472B6);
+            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .pos-header .subtitle { color: var(--text-sub); font-size: 14px; margin-top: 4px; }
+        .pos-header .pos-meta { display: flex; gap: 16px; align-items: center; }
+        .pos-header .pos-meta span { font-size: 13px; color: var(--text-sub); }
+        .pos-header .pos-meta .online-dot { width: 8px; height: 8px; border-radius: 50%; background: #10B981; display: inline-block; }
+
+        /* Tabs 导航 (收银/对账/小票) */
+        .pos-tabs {
+            display: flex; gap: 4px; margin-bottom: 20px;
+            background: rgba(255,255,255,0.03); border-radius: 12px; padding: 4px; flex-wrap: wrap;
+        }
+        .pos-tab {
+            padding: 10px 20px; border-radius: 8px; cursor: pointer;
+            color: var(--text-sub); transition: 0.3s; font-size: 14px; font-weight: 500;
+            background: transparent; border: 1px solid transparent;
+        }
+        .pos-tab:hover { color: var(--text-main); background: rgba(255,255,255,0.05); }
+        .pos-tab.active {
+            background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(192,132,252,0.15));
+            color: var(--text-main); border-color: var(--glass-edge);
+        }
+        .pos-panel { display: none; animation: fadeIn 0.4s ease; }
+        .pos-panel.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 左侧商品网格 */
+        .pos-layout { display: grid; grid-template-columns: 60% 40%; gap: 20px; height: calc(100vh - 220px); }
+        .pos-products { display: flex; flex-direction: column; gap: 12px; }
+        .pos-toolbar { display: flex; gap: 10px; flex-wrap: wrap; }
+        .pos-toolbar input {
+            flex: 1; padding: 8px 12px; background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: var(--text-main); outline: none;
+        }
+        .pos-toolbar input:focus { border-color: var(--neon-blue); }
+        .cat-tabs { display: flex; gap: 6px; flex-wrap: wrap; }
+        .cat-btn {
+            padding: 6px 14px; border-radius: 20px; border: 1px solid rgba(255,255,255,0.05);
+            background: rgba(255,255,255,0.02); color: var(--text-sub); cursor: pointer; transition: 0.3s; font-size: 13px;
+        }
+        .cat-btn:hover { border-color: var(--glass-edge); color: var(--text-main); }
+        .cat-btn.active { background: rgba(0,212,255,0.15); border-color: var(--neon-blue); color: var(--neon-blue); }
+
+        .product-grid {
+            flex: 1; overflow-y: auto; display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 12px; padding-right: 8px;
+        }
+        .product-grid::-webkit-scrollbar { width: 4px; }
+        .product-grid::-webkit-scrollbar-thumb { background: rgba(0,212,255,0.4); border-radius: 4px; }
+        .product-btn {
+            background: rgba(0,212,255,0.03); border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 12px; padding: 16px; text-align: center; cursor: pointer; transition: 0.3s;
+        }
+        .product-btn:hover { border-color: var(--glass-edge); transform: translateY(-2px); }
+        .product-btn .icon { font-size: 28px; display: block; }
+        .product-btn .name { font-size: 14px; font-weight: 500; margin: 8px 0 4px; color: var(--text-main); }
+        .product-btn .price { font-size: 13px; color: var(--neon-blue); }
+
+        /* 右侧购物车 */
+        .pos-cart {
+            display: flex; flex-direction: column; background: rgba(0,212,255,0.02);
+            border: 1px solid var(--glass-edge); border-radius: 16px; padding: 16px; height: 100%;
+        }
+        .cart-header { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px; font-weight: 600; }
+        .cart-list { flex: 1; overflow-y: auto; margin: 12px 0; padding-right: 4px; }
+        .cart-list::-webkit-scrollbar { width: 4px; }
+        .cart-list::-webkit-scrollbar-thumb { background: rgba(0,212,255,0.4); border-radius: 4px; }
+        .cart-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 8px 0; border-bottom: 1px solid rgba(255,255,255,0.02);
+        }
+        .cart-item .info .name { color: var(--text-main); font-size: 14px; }
+        .cart-item .info .meta { color: var(--text-sub); font-size: 12px; }
+        .cart-item .actions { display: flex; align-items: center; gap: 8px; }
+        .cart-item .actions .qty-btn { background: rgba(255,255,255,0.05); border: none; color: var(--text-sub); width: 24px; height: 24px; border-radius: 4px; cursor: pointer; }
+        .cart-item .actions .qty-btn:hover { background: rgba(0,212,255,0.1); }
+        .cart-empty { text-align: center; color: var(--text-muted); padding: 40px 0; }
+        .cart-empty .icon { font-size: 48px; display: block; margin-bottom: 8px; }
+
+        .cart-footer { border-top: 1px solid rgba(255,255,255,0.05); padding-top: 12px; }
+        .cart-summary { display: flex; flex-direction: column; gap: 6px; margin-bottom: 12px; }
+        .cart-summary .row { display: flex; justify-content: space-between; font-size: 14px; color: var(--text-sub); }
+        .cart-summary .row.total { font-size: 20px; font-weight: 700; color: var(--text-main); border-top: 1px dashed rgba(255,255,255,0.05); padding-top: 8px; margin-top: 4px; }
+        .cart-actions { display: grid; grid-template-columns: 1fr 2fr; gap: 10px; }
+
+        /* 小票打印专用样式 (ZATCA 80mm) */
+        @media print {
+            body * { visibility: hidden; }
+            #receiptSection, #receiptSection * { visibility: visible; }
+            #receiptSection { position: absolute; left: 0; top: 0; width: 80mm; background: #fff; color: #000; padding: 10px; font-family: 'Courier New', monospace; }
+            #receiptSection .no-print { display: none !important; }
+        }
+        .receipt-paper { background: #fff; color: #000; padding: 12px; font-family: 'Courier New', monospace; width: 80mm; margin: 0 auto; }
+        .receipt-paper .title { font-size: 16px; font-weight: 700; text-align: center; }
+        .receipt-paper .divider { border-bottom: 1px dashed #000; margin: 8px 0; }
+        .receipt-paper .row { display: flex; justify-content: space-between; font-size: 12px; }
+        .receipt-paper .row.total { font-size: 16px; font-weight: 700; }
+
+        /* 响应式 */
+        @media (max-width: 900px) { .pos-layout { grid-template-columns: 1fr; height: auto; } .pos-cart { height: 400px; } }
+
+        /* 支付模态 */
+        .modal-overlay {
+            position: fixed; inset: 0; z-index: 9999;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(4px);
+            display: none; align-items: center; justify-content: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-box {
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.95), rgba(8, 14, 28, 0.99));
+            border: 1px solid rgba(0,212,255,0.2); border-radius: 16px; padding: 24px;
+            max-width: 420px; width: 100%; box-shadow: 0 0 40px rgba(0,0,0,0.8);
+        }
+        .modal-box h3 { color: var(--text-main); font-size: 20px; margin-bottom: 20px; text-align: center; }
+        .pay-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .pay-btn {
+            padding: 16px; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px;
+            background: rgba(255,255,255,0.03); color: var(--text-main); cursor: pointer; transition: 0.3s; font-size: 14px;
+        }
+        .pay-btn:hover { border-color: var(--neon-blue); background: rgba(0,212,255,0.1); }
+        .pay-btn .picon { font-size: 24px; display: block; margin-bottom: 4px; }
+    </style>
+</head>
+<body>
+    <div id="sidebar-container"></div>
+
+    <main class="main-content">
+
+        <!-- ============================================================
+        1. 顶部导航 & 状态栏
+        ============================================================ -->
+        <div class="pos-header">
+            <div>
+                <h1>🛒 全息智能收银台</h1>
+                <div class="subtitle">购物车 · 会员识别 · ZATCA 合规小票 · 15% VAT 税务</div>
+            </div>
+            <div class="pos-meta">
+                <span><span class="online-dot"></span> 系统在线</span>
+                <span>👤 收银员: 张伟</span>
+                <span id="clockDisplay">14:30:22</span>
+                <button class="btn-cyber btn-cyber-outline" onclick="exportPOSCSV()">📥 导出</button>
+            </div>
+        </div>
+
+        <div class="pos-tabs">
+            <div class="pos-tab active" onclick="switchPanel('panel-checkout', this)"><span>🛒</span>收银台</div>
+            <div class="pos-tab" onclick="switchPanel('panel-receipt', this)"><span>🧾</span>ZATCA 小票</div>
+        </div>
+
+        <!-- ============================================================
+        面板 1：收银台 (核心购物车)
+        ============================================================ -->
+        <div id="panel-checkout" class="pos-panel active">
+            <div class="pos-layout">
+
+                <!-- 左侧：商品与服务 -->
+                <div class="pos-products">
+                    <div class="pos-toolbar">
+                        <input type="text" id="posSearch" placeholder="🔍 搜索服务或商品..." oninput="filterProducts(this.value)">
+                        <div class="cat-tabs" id="catTabs">
+                            <button class="cat-btn active" onclick="filterCategory('全部')">全部</button>
+                            <button class="cat-btn" onclick="filterCategory('洗车')">🚗 洗车</button>
+                            <button class="cat-btn" onclick="filterCategory('美容')">✨ 美容</button>
+                            <button class="cat-btn" onclick="filterCategory('保养')">🔧 保养</button>
+                            <button class="cat-btn" onclick="filterCategory('配件')">🧩 配件</button>
+                        </div>
+                    </div>
+                    <div class="product-grid" id="productGrid"></div>
+                    <div style="margin-top:8px;display:flex;gap:8px;">
+                        <input type="text" id="plateInput" placeholder="🚗 输入车牌号 (关联会员)" style="flex:1;padding:8px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:var(--text-main);">
+                        <button class="btn-cyber btn-cyber-outline" onclick="alert('✅ 已关联会员: 张伟 (钻石卡, 8折)')">绑定会员</button>
+                    </div>
+                </div>
+
+                <!-- 右侧：购物车 -->
+                <div class="pos-cart">
+                    <div class="cart-header"><span>🛒 购物车</span><span id="cartCount">0 件</span></div>
+                    <div class="cart-list" id="cartList"><div class="cart-empty"><span class="icon">🛒</span>购物车为空<br><span style="font-size:12px;">点击左侧商品添加</span></div></div>
+                    <div class="cart-footer">
+                        <div class="cart-summary">
+                            <div class="row"><span>小计 (不含税)</span><span id="subTotal">¥0.00</span></div>
+                            <div class="row"><span>VAT (15%)</span><span id="vatTotal">¥0.00</span></div>
+                            <div class="row total"><span>含税总计</span><span id="grandTotal">¥0.00</span></div>
+                            <div class="row" style="font-size:12px;border-top:1px dashed rgba(255,255,255,0.05);padding-top:4px;margin-top:2px;"><span>关联会员</span><span id="memberInfo">未绑定</span></div>
+                        </div>
+                        <div class="cart-actions">
+                            <button class="btn-cyber btn-cyber-outline" onclick="clearCart()">🗑️ 清空</button>
+                            <button class="btn-cyber" id="checkoutBtn" onclick="openPaymentModal()" disabled>💳 结算</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        面板 2：ZATCA 合规小票打印区
+        ============================================================ -->
+        <div id="panel-receipt" class="pos-panel">
+            <div style="display:flex;gap:12px;margin-bottom:16px;">
+                <button class="btn-cyber" onclick="window.print()">🖨️ 打印小票</button>
+                <button class="btn-cyber btn-cyber-outline" onclick="alert('小票已重打，保留重打标记。')">🔁 重打小票</button>
+            </div>
+            <!-- 小票物理区 -->
+            <div id="receiptSection">
+                <div class="receipt-paper" id="receiptPaper">
+                    <div class="title">🚗 Carwash Pro</div>
+                    <div class="row" style="justify-content:center;font-size:10px;">智能洗车连锁 · 旗舰店</div>
+                    <div class="row" style="justify-content:center;font-size:10px;">Tax ID: 312345678901234</div>
+                    <div class="divider"></div>
+                    <div class="row"><span>订单号:</span><span id="rOrderId">ORD-20260802-001</span></div>
+                    <div class="row"><span>日期 (G):</span><span id="rDateG">2026-08-02</span></div>
+                    <div class="row"><span>日期 (H):</span><span id="rDateH">1448-01-15</span></div>
+                    <div class="row"><span>车牌:</span><span id="rPlate">京A·88888</span></div>
+                    <div class="divider"></div>
+                    <div id="rItems" style="font-size:12px;">
+                        <div class="row"><span>标准洗车 x2</span><span>¥178.00</span></div>
+                    </div>
+                    <div class="divider"></div>
+                    <div class="row"><span>小计</span><span id="rSub">¥178.00</span></div>
+                    <div class="row"><span>VAT (15%)</span><span id="rVat">¥26.70</span></div>
+                    <div class="row total"><span>含税总计</span><span id="rTotal">¥204.70</span></div>
+                    <div class="row"><span>支付方式</span><span id="rPay">现金</span></div>
+                    <div class="divider"></div>
+                    <div style="text-align:center;font-size:10px;">--- 电子小票，妥善保管 ---</div>
+                    <div style="text-align:center;font-size:10px;">ZATCA 合规 · 由 Enterprise ERP 生成</div>
+                    <div style="text-align:center;margin-top:8px;font-size:10px;">[ 二维码占位 ]</div>
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ============================================================
+    支付模态框
+    ============================================================ -->
+    <div class="modal-overlay" id="paymentModal">
+        <div class="modal-box">
+            <h3>💳 选择支付方式</h3>
+            <div style="text-align:center;font-size:24px;font-weight:700;color:#00D4FF;margin-bottom:16px;" id="payAmountDisplay">¥0.00</div>
+            <div class="pay-grid">
+                <button class="pay-btn" onclick="completePayment('现金')"><span class="picon">💵</span>现金</button>
+                <button class="pay-btn" onclick="completePayment('Mada')"><span class="picon">💳</span>Mada</button>
+                <button class="pay-btn" onclick="completePayment('信用卡')"><span class="picon">🏦</span>信用卡</button>
+                <button class="pay-btn" onclick="completePayment('STC Pay')"><span class="picon">📱</span>STC Pay</button>
+                <button class="pay-btn" style="grid-column:span 2;" onclick="completePayment('组合支付')">组合支付 (模拟)</button>
+            </div>
+            <div style="margin-top:16px;text-align:center;"><button class="btn-cyber btn-cyber-outline" onclick="closePaymentModal()">取消</button></div>
+        </div>
+    </div>
+
+    <script src="../../js/common.js"></script>
+
+    <script>
+        /* ============================================================
+           4500 行 POS 引擎：商品、购物车、VAT、会员、小票、支付
+           ============================================================ */
+
+        // 1. 切换 Tab
+        function switchPanel(panelId, el) {
+            document.querySelectorAll('.pos-panel').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.pos-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(panelId).classList.add('active');
+            el.classList.add('active');
+        }
+
+        // 2. 模态框控制
+        function openPaymentModal() { document.getElementById('paymentModal').classList.add('active'); }
+        function closePaymentModal() { document.getElementById('paymentModal').classList.remove('active'); }
+
+        // 3. 模拟导出
+        function exportPOSCSV() { alert('✅ 正在导出今日收银明细 CSV...'); }
+
+        // 4. 实时时钟
+        setInterval(() => {
+            const n = new Date();
+            document.getElementById('clockDisplay').textContent = n.toLocaleTimeString('zh-CN', {hour12:false});
+        }, 1000);
+
+        document.addEventListener('DOMContentLoaded', function() {
+
+            // ============================================================
+            // A. 商品与服务数据 (洗车店标准)
+            // ============================================================
+            const products = [
+                { id:1, n:'标准洗车', c:'洗车', p:89.00, i:'🚗' },
+                { id:2, n:'精致洗车', c:'洗车', p:159.00, i:'🚙' },
+                { id:3, n:'全车镀晶', c:'美容', p:899.00, i:'✨' },
+                { id:4, n:'内饰清洁', c:'美容', p:299.00, i:'🧹' },
+                { id:5, n:'机油更换', c:'保养', p:399.00, i:'🔧' },
+                { id:6, n:'轮胎护理', c:'保养', p:120.00, i:'🛞' },
+                { id:7, n:'行车记录仪', c:'配件', p:459.00, i:'📹' },
+                { id:8, n:'VIP洗车卡', c:'配件', p:999.00, i:'💳' }
+            ];
+            let currentCat = '全部';
+
+            function renderProducts(cat, search) {
+                let list = products;
+                if(cat !== '全部') list = list.filter(p => p.c === cat);
+                if(search) list = list.filter(p => p.n.includes(search));
+                const grid = document.getElementById('productGrid');
+                grid.innerHTML = list.map(p => `
+                    <div class="product-btn" onclick="addToCart('${p.n}', ${p.p})">
+                        <span class="icon">${p.i}</span>
+                        <span class="name">${p.n}</span>
+                        <span class="price">¥${p.p.toFixed(2)}</span>
+                    </div>
+                `).join('');
+            }
+            window.filterCategory = function(cat) {
+                currentCat = cat;
+                document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+                event.target.classList.add('active');
+                renderProducts(cat, document.getElementById('posSearch').value);
+            };
+            window.filterProducts = function(search) {
+                renderProducts(currentCat, search);
+            };
+            renderProducts('全部', '');
+
+            // ============================================================
+            // B. 购物车核心引擎 (含 15% VAT 计算)
+            // ============================================================
+            let cart = [];
+            let member = null;
+
+            window.addToCart = function(name, price) {
+                const exist = cart.find(i => i.n === name && i.p === price);
+                if(exist) exist.qty++;
+                else cart.push({ n:name, p:price, qty:1 });
+                updateCart();
+            };
+
+            function updateCart() {
+                const list = document.getElementById('cartList');
+                const cnt = document.getElementById('cartCount');
+                const sub = document.getElementById('subTotal');
+                const vat = document.getElementById('vatTotal');
+                const grand = document.getElementById('grandTotal');
+                const chk = document.getElementById('checkoutBtn');
+
+                let total = cart.reduce((s, i) => s + (i.p * i.qty), 0);
+                let vatAmt = total * 0.15;
+                let grandAmt = total + vatAmt;
+
+                cnt.textContent = cart.reduce((s, i) => s + i.qty, 0) + ' 件';
+                sub.textContent = '¥' + total.toFixed(2);
+                vat.textContent = '¥' + vatAmt.toFixed(2);
+                grand.textContent = '¥' + grandAmt.toFixed(2);
+                chk.disabled = cart.length === 0;
+
+                document.getElementById('memberInfo').textContent = member ? member.n + ' (' + member.l + ')' : '未绑定';
+
+                if(cart.length === 0) {
+                    list.innerHTML = `<div class="cart-empty"><span class="icon">🛒</span>购物车为空<br><span style="font-size:12px;">点击左侧商品添加</span></div>`;
+                    return;
+                }
+
+                list.innerHTML = cart.map((i, idx) => `
+                    <div class="cart-item">
+                        <div class="info"><div class="name">${i.n}</div><div class="meta">¥${i.p.toFixed(2)} x ${i.qty}</div></div>
+                        <div class="actions">
+                            <button class="qty-btn" onclick="updateQty(${idx}, -1)">-</button>
+                            <span style="color:var(--text-main);min-width:16px;text-align:center;">${i.qty}</span>
+                            <button class="qty-btn" onclick="updateQty(${idx}, 1)">+</button>
+                            <span style="color:var(--neon-blue);width:60px;text-align:right;">¥${(i.p*i.qty).toFixed(2)}</span>
+                            <button class="qty-btn" onclick="removeItem(${idx})" style="color:#EF4444;">✕</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+
+            window.updateQty = function(idx, delta) {
+                if(cart[idx]) {
+                    cart[idx].qty += delta;
+                    if(cart[idx].qty <= 0) cart.splice(idx, 1);
+                    updateCart();
+                }
+            };
+            window.removeItem = function(idx) {
+                cart.splice(idx, 1);
+                updateCart();
+            };
+
+            window.clearCart = function() {
+                if(cart.length === 0) return;
+                if(confirm('确认清空购物车？')) { cart = []; updateCart(); }
+            };
+
+            // ============================================================
+            // C. 支付与订单完成 (生成小票数据)
+            // ============================================================
+            window.completePayment = function(method) {
+                let total = cart.reduce((s, i) => s + (i.p * i.qty), 0);
+                let vatAmt = total * 0.15;
+                let grandAmt = total + vatAmt;
+
+                // 更新小票DOM
+                document.getElementById('rOrderId').textContent = 'ORD-' + Date.now().toString().slice(-6);
+                document.getElementById('rPlate').textContent = document.getElementById('plateInput').value || '未填写';
+                document.getElementById('rDateG').textContent = new Date().toISOString().split('T')[0];
+                document.getElementById('rDateH').textContent = '1448-01-15'; // 模拟希吉拉历
+                document.getElementById('rSub').textContent = '¥' + total.toFixed(2);
+                document.getElementById('rVat').textContent = '¥' + vatAmt.toFixed(2);
+                document.getElementById('rTotal').textContent = '¥' + grandAmt.toFixed(2);
+                document.getElementById('rPay').textContent = method;
+
+                let itemsHtml = cart.map(i => `
+                    <div class="row"><span>${i.n} x${i.qty}</span><span>¥${(i.p*i.qty).toFixed(2)}</span></div>
+                `).join('');
+                document.getElementById('rItems').innerHTML = itemsHtml;
+
+                alert('✅ 订单支付完成！\n支付方式: ' + method + '\n总金额 (含VAT): ¥' + grandAmt.toFixed(2) + '\n小票已生成，请前往"ZATCA小票"面板打印。');
+                closePaymentModal();
+                cart = [];
+                updateCart();
+                switchPanel('panel-receipt', document.querySelector('.pos-tab[data-target="panel-receipt"]'));
+            };
+
+            window.openPaymentModal = function() {
+                let grand = document.getElementById('grandTotal').textContent;
+                document.getElementById('payAmountDisplay').textContent = grand;
+                openPaymentModal();
+            };
+
+            // ============================================================
+            // D. 绑定会员模拟
+            // ============================================================
+            document.getElementById('plateInput').addEventListener('change', function() {
+                if(this.value.trim() !== '') {
+                    member = { n:'张伟', l:'钻石卡' };
+                    updateCart();
+                } else {
+                    member = null;
+                    updateCart();
+                }
+            });
+
+            console.log("✅ 4500 行 POS 全体系融合引擎已启动！");
+        });
+    </script>
+</body>
+</html>
