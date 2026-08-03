@@ -315,11 +315,7 @@
                 <div class="table-wrap">
                     <table class="cyber-table"><thead><tr><th>税务周期</th><th>销项税</th><th>进项税</th><th>应纳税额</th><th>申报状态</th></tr></thead>
                     <tbody id="taxBody"></tbody></table>
-                </div>
-            </div>
-        </div>
-
-    </main>
+                </main>
 
     <script src="../../js/common.js"></script>
 
@@ -380,9 +376,9 @@
                 { n:'专用户', b:'工商银行', a:'6012 8213 9012 2345', bal:'81,200', s:'active' },
                 { n:'备用金', b:'农业银行', a:'6012 8213 9012 6789', bal:'80,000', s:'active' }
             ];
-            document.getElementById('bankTableBody').innerHTML = bankData.map(d => `
+            document.getElementById('bankTableBody').innerHTML = bankData.map(d => 
                 <tr><td>${d.n}</td><td>${d.b}</td><td>${d.a}</td><td style="color:#00D4FF;">¥${d.bal}</td><td><span class="status-pill green">正常</span></td></tr>
-            `).join('');
+            ).join('');
 
             // ============================================================
             // 4. 现金流数据 (cash-flow.html)
@@ -392,9 +388,9 @@
                 { d:'2026-08-01', in:'¥28,000', out:'¥19,500', net:'¥8,500' },
                 { d:'2026-07-31', in:'¥30,200', out:'¥22,800', net:'¥7,400' }
             ];
-            document.getElementById('cashflowBody').innerHTML = cfData.map(d => `
+            document.getElementById('cashflowBody').innerHTML = cfData.map(d => 
                 <tr><td>${d.d}</td><td style="color:#10B981;">${d.in}</td><td style="color:#EF4444;">${d.out}</td><td style="color:#00D4FF;">${d.net}</td></tr>
-            `).join('');
+            ).join('');
 
             // ============================================================
             // 5. 收支明细数据 (finance.html)
@@ -403,11 +399,11 @@
                 { id:'TXN-001', d:'2026-08-02', t:'收入', c:'服务收入', a:'+¥1,280', s:'已完成' },
                 { id:'TXN-002', d:'2026-08-01', t:'支出', c:'采购支出', a:'-¥560', s:'已完成' }
             ];
-            document.getElementById('incomeBody').innerHTML = incData.map(d => `
+            document.getElementById('incomeBody').innerHTML = incData.map(d => 
                 <tr><td>${d.id}</td><td>${d.d}</td><td>${d.t}</td><td>${d.c}</td>
                 <td style="color:${d.t==='收入'?'#10B981':'#EF4444'};">${d.a}</td>
                 <td><span class="status-pill green">${d.s}</span></td></tr>
-            `).join('');
+            ).join('');
 
             // ============================================================
             // 6. 发票数据 (invoices.html)
@@ -416,10 +412,10 @@
                 { id:'INV-2026-001', c:'张伟科技', a:'¥1,280', s:'已开票', d:'2026-08-01' },
                 { id:'INV-2026-002', c:'李娜商贸', a:'¥560', s:'已收款', d:'2026-08-01' }
             ];
-            document.getElementById('invoiceBody').innerHTML = invData.map(d => `
+            document.getElementById('invoiceBody').innerHTML = invData.map(d => 
                 <tr><td>${d.id}</td><td>${d.c}</td><td>${d.a}</td>
                 <td><span class="status-pill ${d.s==='已开票'?'blue':'green'}">${d.s}</span></td><td>${d.d}</td></tr>
-            `).join('');
+            ).join('');
 
             // ============================================================
             // 7. 日记账数据 (journal.html)
@@ -428,9 +424,9 @@
                 { id:'JRN-001', s:'销售商品收入', deb:'¥1,280', cred:'¥0', d:'2026-08-02' },
                 { id:'JRN-002', s:'支付供应商货款', deb:'¥0', cred:'¥560', d:'2026-08-01' }
             ];
-            document.getElementById('journalBody').innerHTML = jrnData.map(d => `
+            document.getElementById('journalBody').innerHTML = jrnData.map(d => 
                 <tr><td>${d.id}</td><td>${d.s}</td><td style="color:#00D4FF;">${d.deb}</td><td style="color:#F472B6;">${d.cred}</td><td>${d.d}</td></tr>
-            `).join('');
+            ).join('');
 
             // ============================================================
             // 8. 付款数据 (payments.html)
@@ -439,10 +435,10 @@
                 { id:'PAY-001', s:'张伟科技', a:'¥1,280', s:'已付款' },
                 { id:'PAY-002', s:'李娜商贸', a:'¥560', s:'待付款' }
             ];
-            document.getElementById('paymentBody').innerHTML = payData.map(d => `
+            document.getElementById('paymentBody').innerHTML = payData.map(d => 
                 <tr><td>${d.id}</td><td>${d.s}</td><td>${d.a}</td>
                 <td><span class="status-pill ${d.s==='已付款'?'green':'yellow'}">${d.s}</span></td></tr>
-            `).join('');
+            ).join('');
 
             // ============================================================
             // 9. 税务数据 (taxes/vat.html)
@@ -451,10 +447,10 @@
                 { p:'2026 Q2', out:'¥24.2k', in:'¥15.6k', due:'¥8.6k', s:'已申报' },
                 { p:'2026 Q3', out:'¥28.4k', in:'¥18.2k', due:'¥10.2k', s:'待申报' }
             ];
-            document.getElementById('taxBody').innerHTML = taxData.map(d => `
+            document.getElementById('taxBody').innerHTML = taxData.map(d => 
                 <tr><td>${d.p}</td><td>${d.out}</td><td>${d.in}</td><td style="color:#EF4444;">${d.due}</td>
                 <td><span class="status-pill ${d.s==='已申报'?'green':'yellow'}">${d.s}</span></td></tr>
-            `).join('');
+            ).join('');
             
             console.log("✅ 3580 行全财务融合引擎已启动！");
         });

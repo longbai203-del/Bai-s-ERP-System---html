@@ -314,12 +314,7 @@
                         <div style="font-size: 48px; margin-bottom: 10px; text-shadow: 0 0 30px rgba(0,212,255,0.5);">📡</div>
                         <p>正在进行高维数据场的实时渲染...</p>
                         <p style="font-size: 12px; margin-top: 12px; opacity: 0.6;">实时映射 230 个业务节点的动态拓扑</p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-    </main>
+                    </main>
 
     <script src="../../js/common.js"></script>
     <script>
@@ -394,7 +389,7 @@
                 var st = r.s === 'done' ? '<span class="status-pill done">已完成</span>' :
                          r.s === 'pend' ? '<span class="status-pill pend">待处理</span>' :
                          '<span class="status-pill cancel">已取消</span>';
-                return `<tr><td>${r.o}</td><td>${r.c}</td><td>${r.a}</td><td>${st}</td><td>${r.d}</td></tr>`;
+                return <tr><td>${r.o}</td><td>${r.c}</td><td>${r.a}</td><td>${st}</td><td>${r.d}</td></tr>;
             }).join('');
 
             // =====================================================================
@@ -449,12 +444,12 @@
                 { t: '⚠️ 异常成本预警', d: '近两周汽车配件采购成本上涨 8%，建议重新与 3 家供应商展开价格谈判。' }
             ];
             var recList = document.getElementById('recommendList');
-            recList.innerHTML = recs.map(r => `
+            recList.innerHTML = recs.map(r => 
                 <div class="rec-card">
                     <div class="rec-title">${r.t}</div>
                     <div class="rec-desc">${r.d}</div>
                 </div>
-            `).join('');
+            ).join('');
 
             // =====================================================================
             // F. 全局自适应机制

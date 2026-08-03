@@ -259,10 +259,7 @@
             <div class="table-wrap">
                 <table class="cyber-table"><thead><tr><th>退货单</th><th>原订单</th><th>商品</th><th>状态</th></tr></thead>
                 <tbody id="retBody"></tbody></table>
-            </div>
-        </div>
-
-    </main>
+            </main>
 
     <!-- ============================================================
     5 个通用模态框 (新建/详情/编辑/取消/退款)
@@ -365,7 +362,7 @@
                 if(keyword) list = list.filter(d => d.plate.includes(keyword)||d.id.includes(keyword));
                 if(status && status!=='all') list = list.filter(d => d.st===status);
                 document.getElementById('ordCount').textContent = '共 ' + list.length + ' 条';
-                document.getElementById('ordBody').innerHTML = list.map(d => `
+                document.getElementById('ordBody').innerHTML = list.map(d => 
                     <tr>
                         <td style="color:var(--neon-blue);font-weight:600;">${d.id}</td>
                         <td>${d.plate}</td><td>${d.svc}</td>
@@ -373,11 +370,11 @@
                         <td><span class="status-pill ${d.st==='待服务'?'yellow':d.st==='服务中'?'blue':d.st==='已完成'?'green':d.st==='已取消'?'red':'purple'}">${d.st}</span></td>
                         <td>
                             <span style="color:var(--neon-blue);cursor:pointer;" onclick="showDetail('${d.id}')">详情</span>
-                            ${d.st==='待服务'?` | <span style="color:var(--neon-warning);cursor:pointer;" onclick="openModal('cancelModal')">取消</span>`:''}
-                            ${d.st==='已完成'?` | <span style="color:var(--neon-pink);cursor:pointer;" onclick="openModal('refundModal')">退款</span>`:''}
+                            ${d.st==='待服务'? | <span style="color:var(--neon-warning);cursor:pointer;" onclick="openModal('cancelModal')">取消</span>:''}
+                            ${d.st==='已完成'? | <span style="color:var(--neon-pink);cursor:pointer;" onclick="openModal('refundModal')">退款</span>:''}
                         </td>
                     </tr>
-                `).join('');
+                ).join('');
             }
             filterOrders('', 'all');
             window.filterOrders = filterOrders;
@@ -390,10 +387,10 @@
                 { id:'REF-002', oid:'ORD-0826-105', amt:'¥517.50', reason:'车辆已售出', st:'已退款' },
                 { id:'REF-003', oid:'ORD-0826-103', amt:'¥102.35', reason:'错误订单', st:'已拒绝' }
             ];
-            document.getElementById('refBody').innerHTML = refundData.map(d => `
+            document.getElementById('refBody').innerHTML = refundData.map(d => 
                 <tr><td>${d.id}</td><td>${d.oid}</td><td>${d.amt}</td><td>${d.reason}</td>
                 <td><span class="status-pill ${d.st==='待处理'?'yellow':d.st==='已退款'?'green':'red'}">${d.st}</span></td></tr>
-            `).join('');
+            ).join('');
 
             // ============================================================
             // C. 退货数据
@@ -403,10 +400,10 @@
                 { id:'RET-002', oid:'ORD-0826-104', item:'洗车液', st:'审核通过' },
                 { id:'RET-003', oid:'ORD-0826-101', item:'更换刹车片', st:'已完成' }
             ];
-            document.getElementById('retBody').innerHTML = returnData.map(d => `
+            document.getElementById('retBody').innerHTML = returnData.map(d => 
                 <tr><td>${d.id}</td><td>${d.oid}</td><td>${d.item}</td>
                 <td><span class="status-pill ${d.st==='待审核'?'yellow':d.st==='审核通过'?'blue':'green'}">${d.st}</span></td></tr>
-            `).join('');
+            ).join('');
 
             // ============================================================
             // D. ECharts 图表渲染 (面板2)

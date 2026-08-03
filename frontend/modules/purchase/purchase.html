@@ -274,7 +274,7 @@
             <div class="chart-box" id="purTrendChart"></div>
         </div>
 
-    </main>
+    </div></main>
 
     <!-- ============================================================
     4 个通用模态框 (供应商/采购订单/收货/付款)
@@ -360,10 +360,10 @@
                 let list = supData;
                 if(search) list = list.filter(d => d.n.includes(search)||d.c.includes(search));
                 document.getElementById('supCount').textContent = '共 ' + list.length + ' 条';
-                document.getElementById('supBody').innerHTML = list.map(d => `
+                document.getElementById('supBody').innerHTML = list.map(d => 
                     <tr><td>${d.n}</td><td>${d.c}</td><td>${d.p}</td><td>${d.t}</td>
                     <td><span class="status-pill ${d.s==='active'?'green':'red'}">${d.s==='active'?'活跃':'已禁用'}</span></td></tr>
-                `).join('');
+                ).join('');
             }
             filterSuppliers('');
             window.filterSuppliers = filterSuppliers;
@@ -380,12 +380,12 @@
                 let list = poData;
                 if(search) list = list.filter(d => d.id.includes(search)||d.s.includes(search));
                 document.getElementById('poCount').textContent = '共 ' + list.length + ' 条';
-                document.getElementById('poBody').innerHTML = list.map(d => `
+                document.getElementById('poBody').innerHTML = list.map(d => 
                     <tr><td style="color:var(--neon-blue);font-weight:600;">${d.id}</td><td>${d.s}</td>
                     <td>¥${d.total.toFixed(2)} <span style="font-size:10px;color:var(--text-muted);">(含VAT)</span></td>
                     <td><span class="status-pill ${d.st==='待确认'?'yellow':d.st==='已发货'?'blue':d.st==='已完成'?'green':'red'}">${d.st}</span></td>
                     <td><span style="color:var(--neon-blue);cursor:pointer;">查看</span></td></tr>
-                `).join('');
+                ).join('');
             }
             filterPOs('');
             window.filterPOs = filterPOs;
@@ -401,11 +401,11 @@
                 let list = recData;
                 if(search) list = list.filter(d => d.id.includes(search));
                 document.getElementById('recCount').textContent = '共 ' + list.length + ' 条';
-                document.getElementById('recBody').innerHTML = list.map(d => `
+                document.getElementById('recBody').innerHTML = list.map(d => 
                     <tr><td>${d.id}</td><td>${d.s}</td><td>${d.r}</td>
                     <td style="color:${d.d===0?'#10B981':'#EF4444'};">${d.d}</td>
                     <td><span class="status-pill ${d.st==='已收'?'green':'yellow'}">${d.st}</span></td></tr>
-                `).join('');
+                ).join('');
             }
             filterReceiving('');
             window.filterReceiving = filterReceiving;
@@ -418,11 +418,11 @@
                 { s:'李娜洗车液供应', total:6440.00, paid:4000.00, unpaid:2440.00, st:'未对账' },
                 { s:'王强轮胎贸易', total:26450.00, paid:26450.00, unpaid:0.00, st:'已对账' }
             ];
-            document.getElementById('payBody').innerHTML = payData.map(d => `
+            document.getElementById('payBody').innerHTML = payData.map(d => 
                 <tr><td>${d.s}</td><td>¥${d.total.toFixed(2)}</td><td>¥${d.paid.toFixed(2)}</td>
                 <td style="color:${d.unpaid>0?'#F59E0B':'#10B981'};">¥${d.unpaid.toFixed(2)}</td>
                 <td><span class="status-pill ${d.st==='已对账'?'green':'yellow'}">${d.st}</span></td></tr>
-            `).join('');
+            ).join('');
 
             // ============================================================
             // E. ECharts 报表图表
@@ -454,3 +454,5 @@
     </script>
 </body>
 </html>
+
+

@@ -310,12 +310,7 @@
                     <div style="background:rgba(0,212,255,0.05);border-radius:8px;padding:16px;text-align:center;"><div style="font-size:20px;font-weight:700;color:#00D4FF;">45%</div><div style="color:var(--text-sub);font-size:13px;">洗车服务</div></div>
                     <div style="background:rgba(192,132,252,0.05);border-radius:8px;padding:16px;text-align:center;"><div style="font-size:20px;font-weight:700;color:#C084FC;">28%</div><div style="color:var(--text-sub);font-size:13px;">维修保养</div></div>
                     <div style="background:rgba(244,114,182,0.05);border-radius:8px;padding:16px;text-align:center;"><div style="font-size:20px;font-weight:700;color:#F472B6;">15%</div><div style="color:var(--text-sub);font-size:13px;">美容精洗</div></div>
-                    <div style="background:rgba(0,240,224,0.05);border-radius:8px;padding:16px;text-align:center;"><div style="font-size:20px;font-weight:700;color:#00F0E0;">12%</div><div style="color:var(--text-sub);font-size:13px;">其他增值</div></div>
-                </div>
-            </div>
-        </div>
-
-    </main>
+                    <div style="background:rgba(0,240,224,0.05);border-radius:8px;padding:16px;text-align:center;"><div style="font-size:20px;font-weight:700;color:#00F0E0;">12%</div><div style="color:var(--text-sub);font-size:13px;">其他增值</main>
 
     <script src="../../js/common.js"></script>
     <script>
@@ -338,7 +333,7 @@
             photoFiles = photoFiles.concat(files);
             if (photoFiles.length > 5) { alert("最多只允许上传 5 张照片！"); photoFiles = photoFiles.slice(0,5); }
             renderPhotoPreviews();
-            document.getElementById('photoCount').textContent = `已选 ${photoFiles.length} 张`;
+            document.getElementById('photoCount').textContent = 已选 ${photoFiles.length} 张;
         }
         function renderPhotoPreviews() {
             const preview = document.getElementById('photoPreview');
@@ -348,7 +343,7 @@
                 reader.onload = (e) => {
                     const img = document.createElement('img');
                     img.src = e.target.result;
-                    img.onclick = () => { photoFiles.splice(index, 1); renderPhotoPreviews(); document.getElementById('photoCount').textContent = `已选 ${photoFiles.length} 张`; };
+                    img.onclick = () => { photoFiles.splice(index, 1); renderPhotoPreviews(); document.getElementById('photoCount').textContent = 已选 ${photoFiles.length} 张; };
                     preview.appendChild(img);
                 };
                 reader.readAsDataURL(file);
@@ -361,7 +356,7 @@
             const plate = document.getElementById('vPlate').value;
             const cust = document.getElementById('vCustomer').value;
             if(!plate || !cust) { alert("请完善必填项 (车牌号和客户姓名)！"); return; }
-            alert(`✅ 车辆录入成功！\n车牌: ${plate}\n客户: ${cust}\n照片数量: ${photoFiles.length}`);
+            alert(✅ 车辆录入成功！\n车牌: ${plate}\n客户: ${cust}\n照片数量: ${photoFiles.length});
             clearPhotos();
             document.getElementById('vehicleForm').reset();
         }
@@ -375,13 +370,13 @@
         ];
         function renderQueue() {
             const container = document.getElementById('queueListContainer');
-            container.innerHTML = queueData.map(q => `
+            container.innerHTML = queueData.map(q => 
                 <div class="approval-card">
                     <div class="title"><span>${q.plate}</span><span class="status-pill yellow">等待中</span></div>
                     <div class="sub">${q.service}</div>
                     <div class="meta"><span>排位 ID: ${q.id}</span><span>等待: ${q.wait}</span></div>
                 </div>
-            `).join('');
+            ).join('');
         }
         renderQueue();
 
@@ -393,7 +388,7 @@
         ];
         function renderApprovals() {
             const container = document.getElementById('approveListContainer');
-            container.innerHTML = approveData.map(a => `
+            container.innerHTML = approveData.map(a => 
                 <div class="approval-card">
                     <div class="title"><span>${a.cust}</span><span class="status-pill red">待审批</span></div>
                     <div class="sub">${a.service} - ${a.amount}</div>
@@ -402,7 +397,7 @@
                         <button class="btn-sm reject" onclick="alert('已驳回审批: ${a.cust}')">❌ 驳回</button>
                     </div>
                 </div>
-            `).join('');
+            ).join('');
         }
         renderApprovals();
 
@@ -415,25 +410,25 @@
         ];
         function renderRecords() {
             const body = document.getElementById('recordTableBody');
-            body.innerHTML = recordsData.map(r => `
+            body.innerHTML = recordsData.map(r => 
                 <tr><td>${r.t}</td><td>${r.p}</td><td>${r.c}</td><td>${r.s}</td>
                 <td><span class="status-pill ${r.st==='已完成'?'green':r.st==='处理中'?'blue':'yellow'}">${r.st}</span></td></tr>
-            `).join('');
+            ).join('');
         }
         renderRecords();
         function filterRecords(keyword) {
             const filtered = recordsData.filter(r => r.p.includes(keyword) || r.c.includes(keyword));
-            document.getElementById('recordTableBody').innerHTML = filtered.map(r => `
+            document.getElementById('recordTableBody').innerHTML = filtered.map(r => 
                 <tr><td>${r.t}</td><td>${r.p}</td><td>${r.c}</td><td>${r.s}</td>
                 <td><span class="status-pill ${r.st==='已完成'?'green':r.st==='处理中'?'blue':'yellow'}">${r.st}</span></td></tr>
-            `).join('');
+            ).join('');
         }
         function filterRecordsByStatus(status) {
             const filtered = status === 'all' ? recordsData : recordsData.filter(r => r.st === status);
-            document.getElementById('recordTableBody').innerHTML = filtered.map(r => `
+            document.getElementById('recordTableBody').innerHTML = filtered.map(r => 
                 <tr><td>${r.t}</td><td>${r.p}</td><td>${r.c}</td><td>${r.s}</td>
                 <td><span class="status-pill ${r.st==='已完成'?'green':r.st==='处理中'?'blue':'yellow'}">${r.st}</span></td></tr>
-            `).join('');
+            ).join('');
         }
 
         console.log("✅ 3300 行全员工综合管理引擎已启动！");

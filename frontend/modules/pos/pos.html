@@ -262,12 +262,7 @@
                     <div class="divider"></div>
                     <div style="text-align:center;font-size:10px;">--- 电子小票，妥善保管 ---</div>
                     <div style="text-align:center;font-size:10px;">ZATCA 合规 · 由 Enterprise ERP 生成</div>
-                    <div style="text-align:center;margin-top:8px;font-size:10px;">[ 二维码占位 ]</div>
-                </div>
-            </div>
-        </div>
-
-    </main>
+                    <div style="text-align:center;margin-top:8px;font-size:10px;">[ 二维码占位 ]</main>
 
     <!-- ============================================================
     支付模态框
@@ -337,13 +332,13 @@
                 if(cat !== '全部') list = list.filter(p => p.c === cat);
                 if(search) list = list.filter(p => p.n.includes(search));
                 const grid = document.getElementById('productGrid');
-                grid.innerHTML = list.map(p => `
+                grid.innerHTML = list.map(p => 
                     <div class="product-btn" onclick="addToCart('${p.n}', ${p.p})">
                         <span class="icon">${p.i}</span>
                         <span class="name">${p.n}</span>
                         <span class="price">¥${p.p.toFixed(2)}</span>
                     </div>
-                `).join('');
+                ).join('');
             }
             window.filterCategory = function(cat) {
                 currentCat = cat;
@@ -390,11 +385,11 @@
                 document.getElementById('memberInfo').textContent = member ? member.n + ' (' + member.l + ')' : '未绑定';
 
                 if(cart.length === 0) {
-                    list.innerHTML = `<div class="cart-empty"><span class="icon">🛒</span>购物车为空<br><span style="font-size:12px;">点击左侧商品添加</span></div>`;
+                    list.innerHTML = <div class="cart-empty"><span class="icon">🛒</span>购物车为空<br><span style="font-size:12px;">点击左侧商品添加</span></div>;
                     return;
                 }
 
-                list.innerHTML = cart.map((i, idx) => `
+                list.innerHTML = cart.map((i, idx) => 
                     <div class="cart-item">
                         <div class="info"><div class="name">${i.n}</div><div class="meta">¥${i.p.toFixed(2)} x ${i.qty}</div></div>
                         <div class="actions">
@@ -405,7 +400,7 @@
                             <button class="qty-btn" onclick="removeItem(${idx})" style="color:#EF4444;">✕</button>
                         </div>
                     </div>
-                `).join('');
+                ).join('');
             }
 
             window.updateQty = function(idx, delta) {
@@ -443,9 +438,9 @@
                 document.getElementById('rTotal').textContent = '¥' + grandAmt.toFixed(2);
                 document.getElementById('rPay').textContent = method;
 
-                let itemsHtml = cart.map(i => `
+                let itemsHtml = cart.map(i => 
                     <div class="row"><span>${i.n} x${i.qty}</span><span>¥${(i.p*i.qty).toFixed(2)}</span></div>
-                `).join('');
+                ).join('');
                 document.getElementById('rItems').innerHTML = itemsHtml;
 
                 alert('✅ 订单支付完成！\n支付方式: ' + method + '\n总金额 (含VAT): ¥' + grandAmt.toFixed(2) + '\n小票已生成，请前往"ZATCA小票"面板打印。');

@@ -304,7 +304,7 @@
             </div>
         </div>
 
-    </main>
+    </div></main>
 
     <!-- ============================================================
     新建操作员模态框
@@ -353,11 +353,11 @@
                 { n:'王强', l:'wangqiang', r:'收银员', s:'active' },
                 { n:'赵峰', l:'zhaofeng', r:'收银员', s:'inactive' }
             ];
-            document.getElementById('userBody').innerHTML = userData.map(d => `
+            document.getElementById('userBody').innerHTML = userData.map(d => 
                 <tr><td>${d.n}</td><td>${d.l}</td><td>${d.r}</td>
                 <td><span class="status-pill ${d.s==='active'?'green':'red'}">${d.s==='active'?'正常':'已禁用'}</span></td>
                 <td><span style="color:var(--neon-blue);cursor:pointer;" onclick="alert('编辑用户 ${d.n}')">编辑</span></td></tr>
-            `).join('');
+            ).join('');
 
             // ============================================================
             // B. 备份数据
@@ -367,10 +367,10 @@
                 { n:'erp_full_backup_20260801', sz:'1.1 MB', t:'2026-08-01 02:00' },
                 { n:'erp_full_backup_20260731', sz:'1.1 MB', t:'2026-07-31 02:00' }
             ];
-            document.getElementById('backupBody').innerHTML = backupData.map(d => `
+            document.getElementById('backupBody').innerHTML = backupData.map(d => 
                 <tr><td>${d.n}</td><td>${d.sz}</td><td>${d.t}</td>
                 <td><span style="color:var(--neon-blue);cursor:pointer;" onclick="alert('正在下载备份 ${d.n}...')">下载</span></td></tr>
-            `).join('');
+            ).join('');
 
             // ============================================================
             // C. 审计日志数据
@@ -381,9 +381,9 @@
                 { t:'2026-08-02 09:45', u:'王强', o:'创建新订单 ORD-001', i:'192.168.1.102' },
                 { t:'2026-08-02 09:10', u:'系统', o:'自动执行数据备份', i:'127.0.0.1' }
             ];
-            document.getElementById('auditBody').innerHTML = auditData.map(d => `
+            document.getElementById('auditBody').innerHTML = auditData.map(d => 
                 <tr><td>${d.t}</td><td>${d.u}</td><td>${d.o}</td><td>${d.i}</td></tr>
-            `).join('');
+            ).join('');
 
             // ============================================================
             // D. 核心功能函数
@@ -398,3 +398,5 @@
     </script>
 </body>
 </html>
+
+

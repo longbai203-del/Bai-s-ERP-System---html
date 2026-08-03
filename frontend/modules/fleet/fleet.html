@@ -314,10 +314,7 @@
             <div class="table-wrap">
                 <table class="cyber-table"><thead><tr><th>车牌</th><th>日期</th><th>类型</th><th>描述</th><th>状态</th></tr></thead>
                 <tbody id="historyBody"></tbody></table>
-            </div>
-        </div>
-
-    </main>
+            </main>
 
     <!-- ============================================================
     手动登记模态框
@@ -378,10 +375,10 @@
                 let list = monitorData;
                 if(search) list = list.filter(d => d.p.includes(search));
                 document.getElementById('monitorCount').textContent = list.length;
-                document.getElementById('monitorBody').innerHTML = list.map(d => `
+                document.getElementById('monitorBody').innerHTML = list.map(d => 
                     <tr><td>${d.p}</td><td>${d.in}</td><td>${d.out||'--'}</td><td>${d.dur}</td>
                     <td><span class="status-pill ${d.st==='in'?'green':'blue'}">${d.st==='in'?'在场':'已出场'}</span></td></tr>
-                `).join('');
+                ).join('');
             }
             renderMonitor('');
             window.filterMonitor = renderMonitor;
@@ -396,10 +393,10 @@
                 let list = empData;
                 if(search) list = list.filter(d => d.p.includes(search)||d.e.includes(search));
                 document.getElementById('employeeCount').textContent = list.length;
-                document.getElementById('employeeBody').innerHTML = list.map(d => `
+                document.getElementById('employeeBody').innerHTML = list.map(d => 
                     <tr><td>${d.p}</td><td>${d.c}</td><td>${d.s}</td><td>${d.e}</td><td>${d.t}</td>
                     <td><span class="status-pill ${d.st==='matched'?'green':'yellow'}">${d.st==='matched'?'已匹配':'待匹配'}</span></td></tr>
-                `).join('');
+                ).join('');
             }
             renderEmployee('');
             window.filterEmployee = renderEmployee;
@@ -419,10 +416,10 @@
                 document.getElementById('cMatched').textContent = compareData.filter(d => d.res==='matched').length;
                 document.getElementById('cSysOnly').textContent = compareData.filter(d => d.res==='sys_only').length;
                 document.getElementById('cEmpOnly').textContent = compareData.filter(d => d.res==='emp_only').length;
-                document.getElementById('compareBody').innerHTML = list.map(d => `
+                document.getElementById('compareBody').innerHTML = list.map(d => 
                     <tr><td>${d.p}</td><td>${d.sys}</td><td>${d.emp}</td>
                     <td><span class="status-pill ${d.res==='matched'?'green':d.res==='sys_only'?'yellow':'red'}">${d.res}</span></td></tr>
-                `).join('');
+                ).join('');
             }
             renderCompare();
 
@@ -433,12 +430,12 @@
                 { t:'系统与录入不一致', d:'苏E·98765 系统出场但员工未核销', l:'warning', tm:'13:10' },
                 { t:'新车辆首次入场', d:'浙D·54321 为新注册车辆', l:'info', tm:'12:45' }
             ];
-            document.getElementById('alertList').innerHTML = alertData.map(d => `
+            document.getElementById('alertList').innerHTML = alertData.map(d => 
                 <div class="alert-list-item">
                     <div class="info"><div class="title">${d.t}</div><div class="desc">${d.d}</div></div>
                     <div><span class="status-pill ${d.l==='critical'?'red':d.l==='warning'?'yellow':'blue'}">${d.l}</span> <span class="time">${d.tm}</span></div>
                 </div>
-            `).join('');
+            ).join('');
 
             // --- 7. 历史与维保数据 (15条) ---
             const historyData = [
@@ -451,10 +448,10 @@
                 let list = historyData;
                 if(search) list = list.filter(d => d.p.includes(search)||d.desc.includes(search));
                 document.getElementById('historyCount').textContent = list.length;
-                document.getElementById('historyBody').innerHTML = list.map(d => `
+                document.getElementById('historyBody').innerHTML = list.map(d => 
                     <tr><td>${d.p}</td><td>${d.d}</td><td>${d.t}</td><td>${d.desc}</td>
                     <td><span class="status-pill ${d.st==='已完成'?'green':d.st==='进行中'?'blue':'yellow'}">${d.st}</span></td></tr>
-                `).join('');
+                ).join('');
             }
             renderHistory('');
             window.filterHistory = renderHistory;

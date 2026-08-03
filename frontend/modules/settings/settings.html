@@ -287,7 +287,7 @@
             </div>
         </div>
 
-    </main>
+    </div></main>
 
     <!-- ============================================================
     全局操作提示 Toast
@@ -328,7 +328,7 @@
         function renderServices() {
             var list = document.getElementById('serviceList');
             list.innerHTML = serviceData.map(function(s, idx) {
-                return `
+                return 
                     <div class="service-item">
                         <div class="info">
                             <span class="name">${s.name}</span>
@@ -340,7 +340,7 @@
                             <button class="del" onclick="deleteService(${idx})">🗑️</button>
                         </div>
                     </div>
-                `;
+                ;
             }).join('');
         }
 
@@ -471,3 +471,5 @@
     </script>
 </body>
 </html>
+
+

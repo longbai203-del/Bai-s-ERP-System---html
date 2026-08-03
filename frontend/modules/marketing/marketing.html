@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
@@ -288,10 +288,7 @@
             <div class="table-wrap">
                 <table class="cyber-table"><thead><tr><th>渠道</th><th>触达数</th><th>转化数</th><th>转化率</th><th>营收贡献</th></tr></thead>
                 <tbody id="statBody"></tbody></table>
-            </div>
-        </div>
-
-    </main>
+            </main>
 
     <!-- ============================================================
     3 个通用模态框 (活动、规则、券码)
@@ -365,10 +362,10 @@
                 let list = campData;
                 if(search) list = list.filter(d => d.n.includes(search));
                 document.getElementById('campCount').textContent = '共 ' + list.length + ' 条';
-                document.getElementById('campBody').innerHTML = list.map(d => `
+                document.getElementById('campBody').innerHTML = list.map(d => 
                     <tr><td>${d.n}</td><td>${d.t}</td><td>${d.b}</td><td>${d.p}</td>
                     <td><span class="status-pill ${d.s==='启用'?'green':d.s==='暂停'?'yellow':'red'}">${d.s}</span></td></tr>
-                `).join('');
+                ).join('');
             }
             filterCampaigns('');
             window.filterCampaigns = filterCampaigns;
@@ -382,12 +379,12 @@
                 { l:'金卡', n:80, d:'10%', r:'免排队', p:'2,000' },
                 { l:'钻石', n:60, d:'15%', r:'专属管家', p:'5,000' }
             ];
-            document.getElementById('loyBody').innerHTML = loyData.map(d => `
+            document.getElementById('loyBody').innerHTML = loyData.map(d => 
                 <tr>
                     <td><span class="status-pill ${d.l==='钻石'?'purple':d.l==='金卡'?'yellow':'blue'}">${d.l}</span></td>
                     <td>${d.n}</td><td>${d.r}</td><td>${d.r}</td><td>${d.p}</td>
                 </tr>
-            `).join('');
+            ).join('');
 
             // ============================================================
             // C. 券码数据
@@ -402,7 +399,7 @@
                 let list = vouData;
                 if(search) list = list.filter(d => d.c.includes(search));
                 document.getElementById('vouCount').textContent = '共 ' + list.length + ' 条';
-                document.getElementById('vouGrid').innerHTML = list.map(d => `
+                document.getElementById('vouGrid').innerHTML = list.map(d => 
                     <div class="voucher-card">
                         <div class="title">${d.c}</div>
                         <div class="sub">${d.t} · 价值 ${d.v}</div>
@@ -410,7 +407,7 @@
                             <span class="status-pill ${d.s==='未使用'?'green':d.s==='已使用'?'yellow':'red'}">${d.s}</span>
                         </div>
                     </div>
-                `).join('');
+                ).join('');
             }
             filterVouchers('');
             window.filterVouchers = filterVouchers;
@@ -428,10 +425,10 @@
                 let list = refData;
                 if(search) list = list.filter(d => d.r.includes(search)||d.rr.includes(search));
                 document.getElementById('refCount').textContent = '共 ' + list.length + ' 条';
-                document.getElementById('refBody').innerHTML = list.map(d => `
+                document.getElementById('refBody').innerHTML = list.map(d => 
                     <tr><td>${d.r}</td><td>${d.rr}</td><td>${d.t}</td>
                     <td><span class="status-pill ${d.s==='已转化'?'green':d.s==='待处理'?'yellow':'red'}">${d.s}</span></td></tr>
-                `).join('');
+                ).join('');
             }
             filterReferrals('');
             window.filterReferrals = filterReferrals;
@@ -445,9 +442,9 @@
                 { c:'推荐裂变', r:180, t:85, p:'47.2%', v:'¥10.2k' },
                 { c:'线上官网', r:560, t:130, p:'23.2%', v:'¥3.0k' }
             ];
-            document.getElementById('statBody').innerHTML = statData.map(d => `
+            document.getElementById('statBody').innerHTML = statData.map(d => 
                 <tr><td>${d.c}</td><td>${d.r}</td><td>${d.t}</td><td>${d.p}</td><td style="color:#00D4FF;">${d.v}</td></tr>
-            `).join('');
+            ).join('');
 
             // ============================================================
             // F. 模拟表单保存

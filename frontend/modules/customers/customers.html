@@ -346,10 +346,7 @@
             <div class="table-wrap">
                 <table class="cyber-table"><thead><tr><th>时间</th><th>类型</th><th>金额</th><th>余额</th></tr></thead>
                 <tbody id="walletBody"></tbody></table>
-            </div>
-        </div>
-
-    </main>
+            </main>
 
     <!-- ============================================================
     全局模态框集合
@@ -499,71 +496,71 @@
             if(search) list = list.filter(d => d.n.includes(search));
             if(filter && filter!=='all') list = list.filter(d => d.l===filter);
             document.getElementById('custCount').textContent = '共 ' + list.length + ' 条';
-            document.getElementById('customerTableBody').innerHTML = list.map(d => `
+            document.getElementById('customerTableBody').innerHTML = list.map(d => 
                 <tr><td>${d.id}</td><td>${d.n}</td><td>${d.p}</td>
                 <td><span class="status-pill ${d.l==='钻石'?'purple':d.l==='金卡'?'yellow':'blue'}">${d.l}</span></td>
                 <td>${d.pts}</td><td>¥${d.spent}</td>
                 <td><span style="color:var(--neon-blue);cursor:pointer;">编辑</span></td></tr>
-            `).join('');
+            ).join('');
         }
 
         function renderCoupon(data, search) {
             let list = data; if(search) list = list.filter(d => d.n.includes(search));
             document.getElementById('couponCount').textContent = '共 ' + list.length + ' 条';
-            document.getElementById('couponGrid').innerHTML = list.map(d => `
+            document.getElementById('couponGrid').innerHTML = list.map(d => 
                 <div class="data-card"><div class="title">${d.n}</div>
                 <div class="meta"><span>折扣: ${d.d}%</span>
                 <span class="status-pill ${d.s==='active'?'green':d.s==='used'?'yellow':'red'}">${d.s}</span></div></div>
-            `).join('');
+            ).join('');
         }
 
         function renderFeedback(data, search) {
             let list = data; if(search) list = list.filter(d => d.c.includes(search) || d.t.includes(search));
             document.getElementById('fbCount').textContent = '共 ' + list.length + ' 条';
-            document.getElementById('feedbackBody').innerHTML = list.map(d => `
+            document.getElementById('feedbackBody').innerHTML = list.map(d => 
                 <tr><td>${d.c}</td><td><span class="status-pill ${d.r>=4?'green':d.r>=3?'yellow':'red'}">${'⭐'.repeat(d.r)}</span></td>
                 <td>${d.t}</td><td>${d.d}</td></tr>
-            `).join('');
+            ).join('');
         }
 
         function renderGift(data, search) {
             let list = data; if(search) list = list.filter(d => d.code.includes(search));
             document.getElementById('giftCount').textContent = '共 ' + list.length + ' 条';
-            document.getElementById('giftGrid').innerHTML = list.map(d => `
+            document.getElementById('giftGrid').innerHTML = list.map(d => 
                 <div class="data-card"><div class="title">${d.code}</div>
                 <div class="meta"><span>¥${d.val}</span>
                 <span class="status-pill ${d.s==='active'?'green':d.s==='used'?'yellow':'red'}">${d.s}</span></div></div>
-            `).join('');
+            ).join('');
         }
 
         function renderLevel(data, search, filter) {
             let list = data; if(search) list = list.filter(d => d.n.includes(search)); if(filter && filter!=='all') list = list.filter(d => d.l===filter);
             document.getElementById('levelCount').textContent = '共 ' + list.length + ' 条';
-            document.getElementById('levelBody').innerHTML = list.map(d => `
+            document.getElementById('levelBody').innerHTML = list.map(d => 
                 <tr><td>${d.n}</td>
                 <td><span class="status-pill ${d.l==='钻石'?'purple':d.l==='金卡'?'yellow':'blue'}">${d.l}</span></td>
                 <td>${d.pts}</td><td>¥${d.spent}</td>
                 <td><span style="color:var(--neon-blue);cursor:pointer;">编辑</span></td></tr>
-            `).join('');
+            ).join('');
         }
 
         function renderVehicle(data, search, filter) {
             let list = data; if(search) list = list.filter(d => d.plate.includes(search)||d.brand.includes(search)); if(filter && filter!=='all') list = list.filter(d => d.brand===filter);
             document.getElementById('vehCount').textContent = '共 ' + list.length + ' 条';
-            document.getElementById('vehicleGrid').innerHTML = list.map(d => `
+            document.getElementById('vehicleGrid').innerHTML = list.map(d => 
                 <div class="data-card"><div class="title">${d.plate}</div><div class="sub">${d.brand}</div>
                 <div class="meta"><span>${d.owner}</span>
                 <span class="status-pill ${d.status==='已绑定'?'green':'yellow'}">${d.status}</span></div></div>
-            `).join('');
+            ).join('');
         }
 
         function renderWallet(data, search) {
             let list = data; if(search) list = list.filter(d => d.t.includes(search)||d.type.includes(search));
             document.getElementById('walCount').textContent = '共 ' + list.length + ' 条';
-            document.getElementById('walletBody').innerHTML = list.map(d => `
+            document.getElementById('walletBody').innerHTML = list.map(d => 
                 <tr><td>${d.t}</td><td>${d.type}</td>
                 <td style="color:${d.amt.includes('+')?'#10B981':'#EF4444'}">${d.amt}</td><td>${d.bal}</td></tr>
-            `).join('');
+            ).join('');
         }
 
         // === 初版渲染 + 过滤绑定 ===

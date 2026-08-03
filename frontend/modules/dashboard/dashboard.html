@@ -412,10 +412,7 @@
                         <!-- JS 渲染超10行详细数据 -->
                     </tbody>
                 </table>
-            </div>
-        </div>
-
-    </main>
+            </main>
 
     <script src="../../js/common.js"></script>
 
@@ -546,7 +543,7 @@
                          t.s === 'run' ? '<span class="status-pill run">处理中</span>' :
                          t.s === 'wait' ? '<span class="status-pill wait">待办</span>' :
                          '<span class="status-pill stop">挂起</span>';
-                return `<tr><td>${t.n}</td><td>${t.u}</td><td>${st}</td></tr>`;
+                return <tr><td>${t.n}</td><td>${t.u}</td><td>${st}</td></tr>;
             }).join('');
 
             // 实时数据流 (14条)
@@ -567,13 +564,13 @@
             ];
 
             var streamContainer = document.getElementById('streamContainer');
-            streamContainer.innerHTML = streamData.map(d => `
+            streamContainer.innerHTML = streamData.map(d => 
                 <div class="tl-item">
                     <div class="dot" style="background:${d.t.includes('警戒')||d.t.includes('安全')?'#F59E0B':'#00D4FF'};"></div>
                     <div class="time">${d.t}</div>
                     <div class="content">${d.m}</div>
                 </div>
-            `).join('');
+            ).join('');
 
             // 主订单矩阵 (15条超详细数据)
             var mainOrders = [
@@ -599,7 +596,7 @@
                 var st = o.s === 'done' ? '<span class="status-pill done">已完成</span>' :
                          o.s === 'run' ? '<span class="status-pill run">处理中</span>' :
                          '<span class="status-pill wait">待处理</span>';
-                return `<tr><td>${o.o}</td><td>${o.c}</td><td>${o.t}</td><td>${o.a}</td><td>${o.p}</td><td>${o.d}</td><td>${st}</td></tr>`;
+                return <tr><td>${o.o}</td><td>${o.c}</td><td>${o.t}</td><td>${o.a}</td><td>${o.p}</td><td>${o.d}</td><td>${st}</td></tr>;
             }).join('');
         });
     </script>

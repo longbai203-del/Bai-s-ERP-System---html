@@ -261,11 +261,7 @@
                 </div>
                 <div id="taskListContainer">
                     <!-- JS 注入 -->
-                </div>
-            </div>
-        </div>
-
-    </main>
+                </main>
 
     <script src="../../js/common.js"></script>
 
@@ -361,7 +357,7 @@
                 var st = c.t.includes('流失') ? '<span class="status-pill high">高危</span>' :
                          c.t.includes('潜力') || c.t.includes('培育') ? '<span class="status-pill medium">待激活</span>' :
                          '<span class="status-pill low">稳健</span>';
-                return `<tr><td>${c.n}</td><td>${lv}</td><td>${c.a}</td><td style="color:var(--text-sub);font-size:12px;">${c.t}</td><td>${st}</td></tr>`;
+                return <tr><td>${c.n}</td><td>${lv}</td><td>${c.a}</td><td style="color:var(--text-sub);font-size:12px;">${c.t}</td><td>${st}</td></tr>;
             }).join('');
 
             // 4. 自动化任务列表注入 (真实调度数据)
@@ -380,7 +376,7 @@
                 var st = t.s === '运行中' ? '<span style="color:#3B82F6;">● 运行中</span>' :
                          t.s === '已完成' ? '<span style="color:#10B981;">✓ 已完成</span>' :
                          '<span style="color:#F59E0B;">⏳ 等待中</span>';
-                return `<div class="task-list-item"><div class="task-name"><span>${t.n}</span></div><div><span class="task-status">${st}</span> <span class="task-act" onclick="alert('正在强制触发任务...')">▸ 执行</span></div></div>`;
+                return <div class="task-list-item"><div class="task-name"><span>${t.n}</span></div><div><span class="task-status">${st}</span> <span class="task-act" onclick="alert('正在强制触发任务...')">▸ 执行</span></div></div>;
             }).join('');
         });
     </script>
