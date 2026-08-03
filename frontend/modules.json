@@ -23,8 +23,8 @@
     {
       "id": "dashboard",
       "version": "1.0.0",
-      "description": "全息决策中心模块",
-      "name": "全息决策中心",
+      "description": "智能决策中心模块",
+      "name": "智能决策中心",
       "children": []
     },
     {
