@@ -3,20 +3,16 @@
   "cleanUrls": true,
   "trailingSlash": false,
   "routes": [
-    { "src": "/", "dest": "/frontend/index.html" },
-    { "src": "/login", "dest": "/frontend/login.html" },
-    { "src": "/404", "dest": "/frontend/404.html" },
-    { 
-      "src": "/frontend/(.*)", 
-      "dest": "/frontend/$1"
-    },
+    { "src": "/", "dest": "/index.html" },
+    { "src": "/login", "dest": "/login.html" },
+    { "src": "/404", "dest": "/404.html" },
     { 
       "src": "/(.*)\\.html", 
-      "dest": "/frontend/$1.html" 
+      "dest": "/$1.html" 
     },
     { 
       "src": "/(.*)", 
-      "dest": "/frontend/$1" 
+      "dest": "/$1" 
     }
   ],
   "headers": [
