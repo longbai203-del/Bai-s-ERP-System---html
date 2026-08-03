@@ -1,12 +1,79 @@
 ﻿/**
- * ERP 侧边栏引擎 + 3 套主题无限切换系统
- * 不改动任何原有的菜单结构和渲染逻辑
+ * ERP 全局公共驱动引擎 (完整增强版)
+ * 功能：侧边栏渲染 + 3套主题 + 全局存储 + VAT计算 + Tab/模态框统一控制
  */
 (function() {
     'use strict';
 
     // ==========================
-    // 1. 主题切换核心逻辑
+    // 1. 全局数据存储模块 (替代各页面内未定义的 DB)
+    // ==========================
+    window.ERPStorage = {
+        get: (key, def) => {
+            try { const d = localStorage.getItem('erp_' + key); return d ? JSON.parse(d) : def; }
+            catch { return def; }
+        },
+        set: (key, val) => {
+            try { localStorage.setItem('erp_' + key, JSON.stringify(val)); }
+            catch {}
+        },
+        remove: key => localStorage.removeItem('erp_' + key)
+    };
+
+    // ==========================
+    // 2. 全球 VAT 计算 (15% 沙特合规)
+    // ==========================
+    window.ERPTax = {
+        rate: 0.15,
+        withVat: (price) => +(price * (1 + 0.15)).toFixed(2),
+        withoutVat: (price) => +(price / (1 + 0.15)).toFixed(2),
+        vatOnly: (price) => +(price * 0.15).toFixed(2)
+    };
+
+    // 方便业务页面直接调用的别名
+    window.calcTax = window.ERPTax;
+    window.DB = window.ERPStorage; // 兼容原有写法
+
+    // ==========================
+    // 3. 统一 Tab 切换引擎
+    // ==========================
+    window.switchPanel = (panelId, el) => {
+        // 智能识别当前页面的前缀（例如 ord-panel / pos-panel / fin-panel）
+        const panelClass = el.closest('.ord-panel, .pos-panel, .fin-panel, .hr-panel, .pur-panel, .inv-panel, .mkt-panel, .fleet-panel, .cust-panel, .saas-panel, .sys-panel, .set-panel, .ai-grid-2col, .pd-panel')?.className?.split(' ')[0];
+        if(!panelClass) {
+            // 如果没找到通用类，尝试通用.panel-container (适用于 analytics)
+            document.querySelectorAll('.panel-container').forEach(p => p.classList.remove('active'));
+            document.querySelectorAll('.analytics-tab').forEach(t => t.classList.remove('active'));
+            document.getElementById(panelId).classList.add('active');
+            el.classList.add('active');
+            return;
+        }
+        const prefix = panelClass.split('-')[0];
+        document.querySelectorAll(`.${panelClass}`).forEach(p => p.classList.remove('active'));
+        document.querySelectorAll(`.${prefix}-tab`).forEach(t => t.classList.remove('active'));
+        document.getElementById(panelId).classList.add('active');
+        el.classList.add('active');
+    };
+
+    // ==========================
+    // 4. 统一模态框控制引擎
+    // ==========================
+    window.openModal = (id) => { document.getElementById(id).classList.add('active'); };
+    window.closeModal = (id) => { document.getElementById(id).classList.remove('active'); };
+
+    // 兼容部分历史旧页面引用的方法
+    window.openPaymentModal = () => { document.getElementById('paymentModal').classList.add('active'); };
+    window.closePaymentModal = () => { document.getElementById('paymentModal').classList.remove('active'); };
+    window.openManualModal = () => { document.getElementById('manualModal').classList.add('active'); };
+    window.closeManualModal = () => { document.getElementById('manualModal').classList.remove('active'); };
+
+    // ==========================
+    // 5. 通用提示与导出功能
+    // ==========================
+    window.exportCSV = (name) => { alert(`✅ 正在导出 ${name || '当前'} 数据报表 CSV...`); };
+
+    // ==========================
+    // 6. 主题切换核心逻辑
     // ==========================
     const THEMES = {
         dark: 'theme-dark',   // 默认深色赛博
@@ -30,13 +97,12 @@
         console.log('✅ 主题已切换为:', themeKey);
     }
 
-    // 暴露到全局，让侧边栏底部的按钮能调用
     window.switchTheme = function(themeKey) {
         applyTheme(themeKey);
     };
 
     // ==========================
-    // 2. 侧边栏渲染引擎 (原封不动保留你之前正确逻辑)
+    // 7. 侧边栏渲染引擎 (原封不动保留)
     // ==========================
     const MENU_CONFIG = [
         { id: 'dashboard', icon: '📈', name: '智能决策中心', children: [] },
@@ -62,7 +128,6 @@
         const container = document.getElementById('sidebar-container');
         if (!container) return;
 
-        // 在侧边栏底部添加了三个独立主题切换图标，完全不影响原来的菜单渲染
         container.innerHTML = `
         <div class="sidebar">
             <div class="sidebar-header"><div class="logo"><span>📊</span> Enterprise ERP</div></div>

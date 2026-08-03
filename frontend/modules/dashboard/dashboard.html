@@ -26,13 +26,6 @@
             overflow: hidden;
             height: 100vh;
         }
-
-        /* 主框架 */
-        .app-container {
-            display: flex;
-            height: 100vh;
-            width: 100vw;
-        }
         .main-content {
             flex: 1;
             height: 100vh;
@@ -43,7 +36,6 @@
         .main-content::-webkit-scrollbar { width: 6px; }
         .main-content::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 3px; }
 
-        /* 1. 顶部导航栏 */
         .top-nav {
             display: flex;
             justify-content: space-between;
@@ -60,7 +52,7 @@
             font-weight: 800;
             background: linear-gradient(135deg, #00D4FF 0%, #C084FC 50%, #F472B6 100%);
             -webkit-background-clip: text;
-background-clip: text;
+            background-clip: text;
             -webkit-text-fill-color: transparent;
             text-shadow: 0 0 40px rgba(0, 212, 255, 0.2);
             letter-spacing: 1px;
@@ -87,7 +79,6 @@ background-clip: text;
         }
         .nav-btn:hover { background: rgba(0, 212, 255, 0.1); border-color: var(--neon-blue); }
 
-        /* 2. 顶层 KPI 指标库 */
         .kpi-panel {
             display: grid;
             grid-template-columns: repeat(6, 1fr);
@@ -106,10 +97,7 @@ background-clip: text;
         .kpi-item::after {
             content: '';
             position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 2px;
+            top: 0; left: 0; right: 0; height: 2px;
             background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple));
             opacity: 0.6;
         }
@@ -122,15 +110,12 @@ background-clip: text;
         .trend-flat { color: #F59E0B; }
         .kpi-icon { font-size: 24px; margin-bottom: 4px; }
 
-        /* 3. 核心主网格 (3列布局) */
         .grid-main {
             display: grid;
             grid-template-columns: 28% 44% 28%;
             gap: 20px;
             margin-bottom: 24px;
         }
-
-        /* 通用赛博卡片 */
         .cyber-card {
             background: linear-gradient(145deg, rgba(15, 23, 42, 0.7), rgba(8, 14, 28, 0.9));
             border: 1px solid var(--glass-edge);
@@ -157,17 +142,11 @@ background-clip: text;
         .chart-box.tall { height: 240px; }
         .chart-box.short { height: 120px; }
 
-        /* 左侧面板 */
         .left-panel { display: flex; flex-direction: column; gap: 20px; }
-
-        /* 右侧面板 */
         .right-panel { display: flex; flex-direction: column; gap: 20px; }
-
-        /* 中部面板 */
         .center-panel { display: flex; flex-direction: column; gap: 20px; }
         .grid-2-col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
 
-        /* 4. 数据表格系统 */
         .table-wrapper {
             max-height: 280px;
             overflow-y: auto;
@@ -208,7 +187,6 @@ background-clip: text;
         .status-pill.wait { background: rgba(245, 158, 11, 0.15); color: #F59E0B; }
         .status-pill.stop { background: rgba(239, 68, 68, 0.15); color: #EF4444; }
 
-        /* 5. 时间轴系统 */
         .timeline-box {
             max-height: 320px;
             overflow-y: auto;
@@ -228,7 +206,6 @@ background-clip: text;
         .tl-item .time { color: var(--text-muted); font-size: 12px; min-width: 60px; }
         .tl-item .content { color: var(--text-sub); font-size: 13px; }
 
-        /* 6. 快捷操作网格 */
         .action-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
@@ -248,13 +225,11 @@ background-clip: text;
         .action-btn:hover { background: rgba(0, 212, 255, 0.1); border-color: var(--neon-blue); color: var(--text-main); transform: translateY(-2px); }
         .action-btn .icon { font-size: 24px; display: block; margin-bottom: 4px; }
 
-        /* 7. 进度条组件 */
         .progress-track { margin-top: 8px; }
         .progress-track .p-label { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-sub); margin-bottom: 4px; }
         .progress-track .p-bar { height: 4px; background: rgba(255,255,255,0.05); border-radius: 2px; overflow: hidden; }
         .progress-track .p-fill { height: 100%; border-radius: 2px; background: linear-gradient(90deg, var(--neon-blue), var(--neon-purple)); }
 
-        /* 8. 响应式断点 */
         @media (max-width: 1400px) { .kpi-panel { grid-template-columns: repeat(3, 1fr); } }
         @media (max-width: 1200px) { .grid-main { grid-template-columns: 1fr 1fr; } .center-panel { grid-column: span 2; } }
         @media (max-width: 900px) {
@@ -262,8 +237,6 @@ background-clip: text;
             .kpi-panel { grid-template-columns: 1fr 1fr; } .grid-2-col { grid-template-columns: 1fr; }
         }
         @media (max-width: 600px) { .main-content { padding: 16px; } .kpi-panel { grid-template-columns: 1fr; } }
-
-        /* 辅助类 */
         .text-glow { text-shadow: 0 0 20px rgba(0, 212, 255, 0.2); }
         .flex-center { display: flex; align-items: center; justify-content: center; }
         .gap-8 { gap: 8px; }
@@ -273,14 +246,10 @@ background-clip: text;
     </style>
 </head>
 <body>
-    <!-- 注入侧边栏 -->
     <div id="sidebar-container"></div>
 
     <main class="main-content">
 
-        <!-- ============================================================
-        1. 顶部导航
-        ============================================================ -->
         <div class="top-nav">
             <div class="nav-left">
                 <h1>🌐 智能超融合决策中枢</h1>
@@ -293,9 +262,6 @@ background-clip: text;
             </div>
         </div>
 
-        <!-- ============================================================
-        2. 顶部 KPI 核心指标 (6项)
-        ============================================================ -->
         <div class="kpi-panel">
             <div class="kpi-item"><div class="kpi-icon">📦</div><div class="label">今日订单量</div><div class="value">1,280</div><div class="trend trend-up">↑ 12.5%</div></div>
             <div class="kpi-item"><div class="kpi-icon">💰</div><div class="label">实时总营收</div><div class="value">¥84.2k</div><div class="trend trend-up">↑ 8.3%</div></div>
@@ -305,12 +271,8 @@ background-clip: text;
             <div class="kpi-item"><div class="kpi-icon">⚠️</div><div class="label" style="color:#EF4444;">活跃预警</div><div class="value" style="color:#EF4444;">3</div><div class="trend trend-down">需立即介入</div></div>
         </div>
 
-        <!-- ============================================================
-        3. 核心 3 栏主网格
-        ============================================================ -->
         <div class="grid-main">
 
-            <!-- 3.1 左侧面板：分析与明细 -->
             <div class="left-panel">
                 <div class="cyber-card">
                     <div class="card-title">📊 部门效能排名 <span>本月数据</span></div>
@@ -338,7 +300,6 @@ background-clip: text;
                 </div>
             </div>
 
-            <!-- 3.2 中部面板：关键视觉中心 -->
             <div class="center-panel">
                 <div class="grid-2-col">
                     <div class="cyber-card">
@@ -359,7 +320,6 @@ background-clip: text;
                 </div>
             </div>
 
-            <!-- 3.3 右侧面板：操作与深度报表 -->
             <div class="right-panel">
                 <div class="cyber-card">
                     <div class="card-title">⚡ 高频快捷操作台</div>
@@ -399,9 +359,6 @@ background-clip: text;
             </div>
         </div>
 
-        <!-- ============================================================
-        4. 底部全宽核心数据表 (全量订单追踪)
-        ============================================================ -->
         <div class="cyber-card" style="margin-top: 20px;">
             <div class="card-title">📋 全维度业务执行追踪矩阵 <span>实时更新 · 最近 15 条</span></div>
             <div class="table-wrapper" style="max-height: 320px;">
@@ -413,7 +370,10 @@ background-clip: text;
                         <!-- JS 渲染超10行详细数据 -->
                     </tbody>
                 </table>
-            </main>
+            </div>
+        </div>
+
+    </main>
 
     <script src="../../js/common.js"></script>
 
@@ -422,16 +382,13 @@ background-clip: text;
            巨量 JS 引擎：数据生成、图表渲染、时间轴驱动、动态列表
            ========================================================================= */
 
-        // 1. 实时时钟驱动
         setInterval(() => {
             const now = new Date();
             document.getElementById('liveClock').textContent = now.toLocaleString('zh-CN', { hour12: false });
         }, 1000);
 
-        // 2. ECharts 全局初始化
         document.addEventListener('DOMContentLoaded', function () {
 
-            // (1) 部门效能横向柱状图
             var deptChart = echarts.init(document.getElementById('chartDeptBar'));
             deptChart.setOption({
                 grid: { left: '3%', right: '4%', bottom: '3%', top: '5%', containLabel: true },
@@ -451,7 +408,6 @@ background-clip: text;
                 }]
             });
 
-            // (2) 14日双趋势折线图
             var trendChart = echarts.init(document.getElementById('chartTrendDual'));
             var xData = [];
             for (var i = 1; i <= 14; i++) { xData.push('D' + i); }
@@ -473,7 +429,6 @@ background-clip: text;
                 }]
             });
 
-            // (3) 业务占比环形图
             var pieChart = echarts.init(document.getElementById('chartPieRing'));
             pieChart.setOption({
                 tooltip: { trigger: 'item' },
@@ -492,14 +447,12 @@ background-clip: text;
                 }]
             });
 
-            // 窗口自适应
             window.addEventListener('resize', function () {
                 deptChart.resize();
                 trendChart.resize();
                 pieChart.resize();
             });
 
-            // 3. 纯 CSS 进度仪表盘 (用 Canvas 绘制圆弧)
             var canvas = document.getElementById('gaugeCanvas');
             var ctx = canvas.getContext('2d');
             var pct = 0.80;
@@ -518,11 +471,6 @@ background-clip: text;
             ctx.arc(cw/2, ch/2, 70, 0.75 * Math.PI, 0.75 * Math.PI + pct * 1.5 * Math.PI);
             ctx.stroke();
 
-            // =========================================================================
-            // 4. 核心数据生成与驱动引擎 (渲染巨大数据表格)
-            // =========================================================================
-
-            // 任务列表 (10条)
             var tasks = [
                 { n: '审核高端车维修单', u: '张工', s: 'done' },
                 { n: '更新 2026 供应商协议', u: '李经理', s: 'run' },
@@ -544,10 +492,9 @@ background-clip: text;
                          t.s === 'run' ? '<span class="status-pill run">处理中</span>' :
                          t.s === 'wait' ? '<span class="status-pill wait">待办</span>' :
                          '<span class="status-pill stop">挂起</span>';
-                return <tr><td>${t.n}</td><td>${t.u}</td><td>${st}</td></tr>;
+                return `<tr><td>${t.n}</td><td>${t.u}</td><td>${st}</td></tr>`;
             }).join('');
 
-            // 实时数据流 (14条)
             var streamData = [
                 { t: '14:28:12', m: '客户 [张伟科技] 完成全车维修支付，金额 ¥1,280' },
                 { t: '14:25:04', m: '系统监测到新入库 120 件配件 SKU' },
@@ -565,15 +512,14 @@ background-clip: text;
             ];
 
             var streamContainer = document.getElementById('streamContainer');
-            streamContainer.innerHTML = streamData.map(d => 
+            streamContainer.innerHTML = streamData.map(d => `
                 <div class="tl-item">
                     <div class="dot" style="background:${d.t.includes('警戒')||d.t.includes('安全')?'#F59E0B':'#00D4FF'};"></div>
                     <div class="time">${d.t}</div>
                     <div class="content">${d.m}</div>
                 </div>
-            ).join('');
+            `).join('');
 
-            // 主订单矩阵 (15条超详细数据)
             var mainOrders = [
                 { o: 'ORD-0826-101', c: '张伟科技有限公司', t: '全车维修', a: '¥1,280.00', p: '张工', d: '2026-08-02', s: 'done' },
                 { o: 'ORD-0826-102', c: '李娜商贸有限公司', t: '深度保养', a: '¥560.00', p: '李技师', d: '2026-08-02', s: 'done' },
@@ -597,7 +543,7 @@ background-clip: text;
                 var st = o.s === 'done' ? '<span class="status-pill done">已完成</span>' :
                          o.s === 'run' ? '<span class="status-pill run">处理中</span>' :
                          '<span class="status-pill wait">待处理</span>';
-                return <tr><td>${o.o}</td><td>${o.c}</td><td>${o.t}</td><td>${o.a}</td><td>${o.p}</td><td>${o.d}</td><td>${st}</td></tr>;
+                return `<tr><td>${o.o}</td><td>${o.c}</td><td>${o.t}</td><td>${o.a}</td><td>${o.p}</td><td>${o.d}</td><td>${st}</td></tr>`;
             }).join('');
         });
     </script>

@@ -28,7 +28,6 @@
         .main-content::-webkit-scrollbar { width: 6px; }
         .main-content::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 3px; }
 
-        /* 顶部导航 */
         .pd-header {
             display: flex; justify-content: space-between; align-items: center;
             padding-bottom: 16px; border-bottom: 1px solid var(--glass-edge);
@@ -38,7 +37,8 @@
             font-size: 28px; font-weight: 800;
             background: linear-gradient(135deg, #00D4FF, #C084FC, #F472B6);
             -webkit-background-clip: text;
-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         .pd-header .subtitle { color: var(--text-sub); font-size: 14px; margin-top: 4px; }
         .header-actions { display: flex; gap: 10px; }
@@ -50,7 +50,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
         .btn-cyber:hover { box-shadow: 0 0 20px rgba(0,212,255,0.3); }
         .btn-cyber-outline { background: transparent; border: 1px solid rgba(0,212,255,0.3); color: var(--neon-blue); }
 
-        /* Tabs 导航 (6大核心模块) */
         .pd-tabs {
             display: flex; gap: 4px; margin-bottom: 20px;
             background: rgba(255,255,255,0.03); border-radius: 12px; padding: 4px; flex-wrap: wrap;
@@ -69,7 +68,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
         .pd-panel.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 通用 KPI */
         .kpi-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
         .kpi-box {
             background: rgba(0,212,255,0.03); border: 1px solid rgba(0,212,255,0.1);
@@ -78,7 +76,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
         .kpi-box .kpi-val { font-size: 28px; font-weight: 700; margin: 8px 0 4px; }
         .kpi-box .kpi-label { color: var(--text-sub); font-size: 12px; }
 
-        /* 工具栏 */
         .toolbar {
             display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
             background: rgba(255,255,255,0.02); padding: 12px; border-radius: 12px; margin-bottom: 16px;
@@ -92,7 +89,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
         .toolbar .spacer { flex: 1; }
         .toolbar .count { color: var(--text-muted); font-size: 13px; }
 
-        /* 表格系统 */
         .table-wrap {
             max-height: 400px; overflow-y: auto; margin-top: 8px;
             border: 1px solid rgba(255,255,255,0.03); border-radius: 8px;
@@ -113,7 +109,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
         .status-pill.yellow { background: rgba(245,158,11,0.15); color: #F59E0B; }
         .status-pill.red { background: rgba(239,68,68,0.15); color: #EF4444; }
 
-        /* 模态框 (新增产品、批量操作、改价等) */
         .modal-overlay {
             position: fixed; inset: 0; z-index: 9999;
             background: rgba(0,0,0,0.8); backdrop-filter: blur(4px);
@@ -137,7 +132,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
         .form-control:focus { border-color: var(--neon-blue); box-shadow: 0 0 15px rgba(0,212,255,0.1); }
         .form-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px; }
 
-        /* 响应式 */
         @media (max-width: 768px) {
             .kpi-grid-4 { grid-template-columns: 1fr 1fr; }
             .header-actions { width: 100%; justify-content: flex-start; }
@@ -292,10 +286,10 @@ background-clip: text; -webkit-text-fill-color: transparent;
             </div>
         </div>
 
-    </main>
+    </main> <!-- ✅ 修复：main 正确闭合，而不是过早关闭 -->
 
     <!-- ============================================================
-    4 个功能模态框
+    4 个功能模态框 (必须放在 main 标签外)
     ============================================================ -->
     <div class="modal-overlay" id="productModal">
         <div class="modal-box"><h3>📦 新建产品档案</h3>

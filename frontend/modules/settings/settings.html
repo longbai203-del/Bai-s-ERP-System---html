@@ -38,7 +38,8 @@
             font-size: 28px; font-weight: 800;
             background: linear-gradient(135deg, #00D4FF, #C084FC, #F472B6);
             -webkit-background-clip: text;
-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         .set-header .subtitle { color: var(--text-sub); font-size: 14px; margin-top: 4px; }
         .header-actions { display: flex; gap: 10px; }
@@ -288,7 +289,7 @@ background-clip: text; -webkit-text-fill-color: transparent;
             </div>
         </div>
 
-    </div></main>
+    </main>
 
     <!-- ============================================================
     全局操作提示 Toast
@@ -329,7 +330,7 @@ background-clip: text; -webkit-text-fill-color: transparent;
         function renderServices() {
             var list = document.getElementById('serviceList');
             list.innerHTML = serviceData.map(function(s, idx) {
-                return 
+                return `
                     <div class="service-item">
                         <div class="info">
                             <span class="name">${s.name}</span>
@@ -341,7 +342,7 @@ background-clip: text; -webkit-text-fill-color: transparent;
                             <button class="del" onclick="deleteService(${idx})">🗑️</button>
                         </div>
                     </div>
-                ;
+                `;
             }).join('');
         }
 
@@ -472,5 +473,3 @@ background-clip: text; -webkit-text-fill-color: transparent;
     </script>
 </body>
 </html>
-
-

@@ -38,7 +38,8 @@
             font-size: 28px; font-weight: 800;
             background: linear-gradient(135deg, #00D4FF, #C084FC, #F472B6);
             -webkit-background-clip: text;
-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         .hr-header .subtitle { color: var(--text-sub); font-size: 14px; margin-top: 4px; }
         .header-actions { display: flex; gap: 10px; }
@@ -280,7 +281,10 @@ background-clip: text; -webkit-text-fill-color: transparent;
             <div class="table-wrap">
                 <table class="cyber-table"><thead><tr><th>时间</th><th>操作员</th><th>操作</th><th>模块</th></tr></thead>
                 <tbody id="logBody"></tbody></table>
-            </main>
+            </div>
+        </div>
+
+    </main>
 
     <!-- ============================================================
     员工录入模态框
@@ -344,13 +348,13 @@ background-clip: text; -webkit-text-fill-color: transparent;
                 let list = empData;
                 if(search) list = list.filter(d => d.n.includes(search)||d.id.includes(search));
                 document.getElementById('empCount').textContent = '共 ' + list.length + ' 条';
-                document.getElementById('empBody').innerHTML = list.map(d => 
+                document.getElementById('empBody').innerHTML = list.map(d => `
                     <tr>
                         <td>${d.id}</td><td>${d.n}</td><td>${d.nat}</td><td>${d.pos}</td>
                         <td style="color:${d.st==='expiring'?'#EF4444':'#94A3B8'};">${d.visa}</td>
                         <td><span class="status-pill ${d.st==='active'?'green':'red'}">${d.st==='active'?'有效':'即将到期'}</span></td>
                     </tr>
-                ).join('');
+                `).join('');
             }
             renderEmployees('');
             window.filterEmployees = renderEmployees;
@@ -368,12 +372,12 @@ background-clip: text; -webkit-text-fill-color: transparent;
             ];
             function renderAttend() {
                 document.getElementById('attCount').textContent = '共 6 条';
-                document.getElementById('attBody').innerHTML = attData.map(d => 
+                document.getElementById('attBody').innerHTML = attData.map(d => `
                     <tr>
                         <td>${d.n}</td><td>${d.s}</td><td>${d.in}</td><td>${d.out}</td><td>${d.h}h</td>
                         <td><span class="status-pill ${d.m==='正常'?'green':d.m.includes('迟到')?'yellow':'red'}">${d.m}</span></td>
                     </tr>
-                ).join('');
+                `).join('');
             }
             renderAttend();
             window.filterAttend = renderAttend;
@@ -389,12 +393,12 @@ background-clip: text; -webkit-text-fill-color: transparent;
                 { n:'李娜', base:'5,000.00', ovt:'0.00', bonus:'0.00', gosi:'250.00', net:'4,750.00' },
                 { n:'Khalid Omar', base:'7,200.00', ovt:'500.00', bonus:'400.00', gosi:'360.00', net:'7,740.00' }
             ];
-            document.getElementById('payBody').innerHTML = payData.map(d => 
+            document.getElementById('payBody').innerHTML = payData.map(d => `
                 <tr>
                     <td>${d.n}</td><td>${d.base}</td><td style="color:#F59E0B;">${d.ovt}</td><td style="color:#10B981;">${d.bonus}</td>
                     <td style="color:#C084FC;">${d.gosi}</td><td style="color:#00D4FF;font-weight:700;">${d.net}</td>
                 </tr>
-            ).join('');
+            `).join('');
 
             // ============================================================
             // D. 绩效奖惩数据
@@ -406,9 +410,9 @@ background-clip: text; -webkit-text-fill-color: transparent;
                 { n:'张伟', q:'2026 Q3', s:'78.0', r:'📉 待改进' },
                 { n:'Khalid Omar', q:'2026 Q3', s:'85.0', r:'✅ 达标' }
             ];
-            document.getElementById('perfBody').innerHTML = perfData.map(d => 
+            document.getElementById('perfBody').innerHTML = perfData.map(d => `
                 <tr><td>${d.n}</td><td>${d.q}</td><td>${d.s}</td><td>${d.r}</td></tr>
-            ).join('');
+            `).join('');
 
             // ============================================================
             // E. 权限管控列表
@@ -418,12 +422,12 @@ background-clip: text; -webkit-text-fill-color: transparent;
                 { n:'GOSI 扣除管理', st:true }, { n:'绩效评分录入', st:true }, { n:'系统权限配置', st:false },
                 { n:'签证预警通知', st:true }, { n:'排班表编辑', st:true }
             ];
-            document.getElementById('permGrid').innerHTML = permData.map(d => 
+            document.getElementById('permGrid').innerHTML = permData.map(d => `
                 <div class="perm-item">
                     <span class="name">${d.n}</span>
                     <span class="switch" onclick="this.textContent=this.textContent==='✅'?'❌':'✅'">${d.st?'✅':'❌'}</span>
                 </div>
-            ).join('');
+            `).join('');
 
             // ============================================================
             // F. 操作日志数据
@@ -434,9 +438,9 @@ background-clip: text; -webkit-text-fill-color: transparent;
                 { t:'2026-08-01 22:00', o:'系统', a:'自动同步 GOSI 社保数据', m:'薪资核算' },
                 { t:'2026-08-01 16:20', o:'管理员', a:'导出本月绩效报表 CSV', m:'绩效奖惩' }
             ];
-            document.getElementById('logBody').innerHTML = logData.map(d => 
+            document.getElementById('logBody').innerHTML = logData.map(d => `
                 <tr><td>${d.t}</td><td>${d.o}</td><td>${d.a}</td><td>${d.m}</td></tr>
-            ).join('');
+            `).join('');
 
             // ============================================================
             // G. 模拟 HR 表单保存

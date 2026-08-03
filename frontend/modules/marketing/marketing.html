@@ -6,9 +6,6 @@
     <title>智能营销运营中心 - Enterprise ERP</title>
     <link rel="stylesheet" href="../../css/common.css">
     <style>
-        /* ============================================================
-           4500 行营销管理系统专属 CSS
-           ============================================================ */
         :root {
             --glass-edge: rgba(0, 212, 255, 0.15);
             --neon-green: #10B981;
@@ -27,7 +24,6 @@
         .main-content::-webkit-scrollbar { width: 6px; }
         .main-content::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 3px; }
 
-        /* 顶部导航 */
         .mkt-header {
             display: flex; justify-content: space-between; align-items: center;
             padding-bottom: 16px; border-bottom: 1px solid var(--glass-edge);
@@ -37,7 +33,8 @@
             font-size: 28px; font-weight: 800;
             background: linear-gradient(135deg, #00D4FF, #C084FC, #F472B6);
             -webkit-background-clip: text;
-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         .mkt-header .subtitle { color: var(--text-sub); font-size: 14px; margin-top: 4px; }
         .header-actions { display: flex; gap: 10px; }
@@ -49,7 +46,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
         .btn-cyber:hover { box-shadow: 0 0 20px rgba(0,212,255,0.3); }
         .btn-cyber-outline { background: transparent; border: 1px solid rgba(0,212,255,0.3); color: var(--neon-blue); }
 
-        /* Tabs 导航 (融合全部模块) */
         .mkt-tabs {
             display: flex; gap: 4px; margin-bottom: 20px;
             background: rgba(255,255,255,0.03); border-radius: 12px; padding: 4px; flex-wrap: wrap;
@@ -68,7 +64,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
         .mkt-panel.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 通用 KPI */
         .kpi-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
         .kpi-box {
             background: rgba(0,212,255,0.03); border: 1px solid rgba(0,212,255,0.1);
@@ -77,7 +72,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
         .kpi-box .kpi-val { font-size: 28px; font-weight: 700; margin: 8px 0 4px; }
         .kpi-box .kpi-label { color: var(--text-sub); font-size: 12px; }
 
-        /* 工具栏 */
         .toolbar {
             display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
             background: rgba(255,255,255,0.02); padding: 12px; border-radius: 12px; margin-bottom: 16px;
@@ -91,7 +85,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
         .toolbar .spacer { flex: 1; }
         .toolbar .count { color: var(--text-muted); font-size: 13px; }
 
-        /* 表格系统 */
         .table-wrap {
             max-height: 380px; overflow-y: auto; margin-top: 8px;
             border: 1px solid rgba(255,255,255,0.03); border-radius: 8px;
@@ -114,7 +107,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
         .status-pill.purple { background: rgba(192,132,252,0.15); color: #C084FC; }
         .status-pill.pink { background: rgba(244,114,182,0.15); color: #F472B6; }
 
-        /* 券码与推荐卡片网格 */
         .card-grid {
             display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 16px; margin-top: 8px;
             max-height: 350px; overflow-y: auto; padding-right: 4px;
@@ -130,7 +122,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
         .voucher-card .sub { color: var(--text-sub); font-size: 13px; margin-top: 4px; }
         .voucher-card .meta { display: flex; justify-content: space-between; margin-top: 8px; font-size: 12px; color: var(--text-muted); }
 
-        /* 模态框 */
         .modal-overlay {
             position: fixed; inset: 0; z-index: 9999;
             background: rgba(0,0,0,0.8); backdrop-filter: blur(4px);
@@ -153,7 +144,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
         .form-group input:focus, .form-group select:focus { border-color: var(--neon-blue); }
         .form-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px; }
 
-        /* 响应式 */
         @media (max-width: 768px) {
             .kpi-grid-4 { grid-template-columns: 1fr 1fr; }
             .header-actions { width: 100%; justify-content: flex-start; }
@@ -166,9 +156,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
 
     <main class="main-content">
 
-        <!-- ============================================================
-        1. 顶部导航与 Tab 面板 (融合全部模块)
-        ============================================================ -->
         <div class="mkt-header">
             <div>
                 <h1>📢 智能营销运营总部</h1>
@@ -189,9 +176,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
             <div class="mkt-tab" onclick="switchPanel('panel-stats', this)"><span>📊</span>效果统计</div>
         </div>
 
-        <!-- ============================================================
-        面板 1：优惠活动管理
-        ============================================================ -->
         <div id="panel-campaign" class="mkt-panel active">
             <div class="kpi-grid-4">
                 <div class="kpi-box"><div class="kpi-label">总活动数</div><div class="kpi-val" style="color:#00D4FF;">12</div></div>
@@ -213,9 +197,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
             </div>
         </div>
 
-        <!-- ============================================================
-        面板 2：会员积分与等级
-        ============================================================ -->
         <div id="panel-loyalty" class="mkt-panel">
             <div class="kpi-grid-4">
                 <div class="kpi-box"><div class="kpi-label">总会员数</div><div class="kpi-val" style="color:#00D4FF;">1,280</div></div>
@@ -234,9 +215,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
             </div>
         </div>
 
-        <!-- ============================================================
-        面板 3：券码管理
-        ============================================================ -->
         <div id="panel-voucher" class="mkt-panel">
             <div class="kpi-grid-4">
                 <div class="kpi-box"><div class="kpi-label">总券码数</div><div class="kpi-val" style="color:#00D4FF;">348</div></div>
@@ -254,9 +232,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
             <div class="card-grid" id="vouGrid"></div>
         </div>
 
-        <!-- ============================================================
-        面板 4：推荐裂变管理
-        ============================================================ -->
         <div id="panel-referral" class="mkt-panel">
             <div class="kpi-grid-4">
                 <div class="kpi-box"><div class="kpi-label">总推荐数</div><div class="kpi-val" style="color:#00D4FF;">78</div></div>
@@ -276,9 +251,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
             </div>
         </div>
 
-        <!-- ============================================================
-        面板 5：营销效果统计
-        ============================================================ -->
         <div id="panel-stats" class="mkt-panel">
             <div class="kpi-grid-4">
                 <div class="kpi-box"><div class="kpi-label">总营收拉动</div><div class="kpi-val" style="color:#00D4FF;">¥68.4k</div></div>
@@ -289,11 +261,11 @@ background-clip: text; -webkit-text-fill-color: transparent;
             <div class="table-wrap">
                 <table class="cyber-table"><thead><tr><th>渠道</th><th>触达数</th><th>转化数</th><th>转化率</th><th>营收贡献</th></tr></thead>
                 <tbody id="statBody"></tbody></table>
-            </main>
+            </div>
+        </div>
 
-    <!-- ============================================================
-    3 个通用模态框 (活动、规则、券码)
-    ============================================================ -->
+    </main>
+
     <div class="modal-overlay" id="campaignModal">
         <div class="modal-box"><h3>➕ 创建优惠活动</h3>
             <form onsubmit="saveCampaign(event)">
@@ -329,11 +301,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
     <script src="../../js/common.js"></script>
 
     <script>
-        /* ============================================================
-           4500 行 JS 引擎：活动、积分、券码、推荐、统计完整联动
-           ============================================================ */
-
-        // 1. Tab 切换
         function switchPanel(panelId, el) {
             document.querySelectorAll('.mkt-panel').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.mkt-tab').forEach(t => t.classList.remove('active'));
@@ -341,18 +308,12 @@ background-clip: text; -webkit-text-fill-color: transparent;
             el.classList.add('active');
         }
 
-        // 2. 模态框
         function openModal(id) { document.getElementById(id).classList.add('active'); }
         function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-
-        // 3. 模拟导出
         function exportMarketingCSV() { alert('✅ 正在导出营销全量数据 CSV...'); }
 
         document.addEventListener('DOMContentLoaded', function() {
 
-            // ============================================================
-            // A. 优惠活动数据
-            // ============================================================
             const campData = [
                 { n:'夏日洗车半价周', t:'折扣', b:'¥5,000.00', p:120, s:'启用' },
                 { n:'第二件半价保养', t:'第二件半价', b:'¥3,200.00', p:85, s:'启用' },
@@ -363,33 +324,27 @@ background-clip: text; -webkit-text-fill-color: transparent;
                 let list = campData;
                 if(search) list = list.filter(d => d.n.includes(search));
                 document.getElementById('campCount').textContent = '共 ' + list.length + ' 条';
-                document.getElementById('campBody').innerHTML = list.map(d => 
+                document.getElementById('campBody').innerHTML = list.map(d => `
                     <tr><td>${d.n}</td><td>${d.t}</td><td>${d.b}</td><td>${d.p}</td>
                     <td><span class="status-pill ${d.s==='启用'?'green':d.s==='暂停'?'yellow':'red'}">${d.s}</span></td></tr>
-                ).join('');
+                `).join('');
             }
             filterCampaigns('');
             window.filterCampaigns = filterCampaigns;
 
-            // ============================================================
-            // B. 会员等级与积分
-            // ============================================================
             const loyData = [
                 { l:'普通', n:920, d:'0%', r:'无', p:'0' },
                 { l:'银卡', n:220, d:'5%', r:'生日8折', p:'500' },
                 { l:'金卡', n:80, d:'10%', r:'免排队', p:'2,000' },
                 { l:'钻石', n:60, d:'15%', r:'专属管家', p:'5,000' }
             ];
-            document.getElementById('loyBody').innerHTML = loyData.map(d => 
+            document.getElementById('loyBody').innerHTML = loyData.map(d => `
                 <tr>
                     <td><span class="status-pill ${d.l==='钻石'?'purple':d.l==='金卡'?'yellow':'blue'}">${d.l}</span></td>
                     <td>${d.n}</td><td>${d.r}</td><td>${d.r}</td><td>${d.p}</td>
                 </tr>
-            ).join('');
+            `).join('');
 
-            // ============================================================
-            // C. 券码数据
-            // ============================================================
             const vouData = [
                 { c:'VOU-2026-001', t:'洗车券', v:'¥25.00', s:'未使用' },
                 { c:'VOU-2026-002', t:'折扣券', v:'8折', s:'已使用' },
@@ -400,7 +355,7 @@ background-clip: text; -webkit-text-fill-color: transparent;
                 let list = vouData;
                 if(search) list = list.filter(d => d.c.includes(search));
                 document.getElementById('vouCount').textContent = '共 ' + list.length + ' 条';
-                document.getElementById('vouGrid').innerHTML = list.map(d => 
+                document.getElementById('vouGrid').innerHTML = list.map(d => `
                     <div class="voucher-card">
                         <div class="title">${d.c}</div>
                         <div class="sub">${d.t} · 价值 ${d.v}</div>
@@ -408,14 +363,11 @@ background-clip: text; -webkit-text-fill-color: transparent;
                             <span class="status-pill ${d.s==='未使用'?'green':d.s==='已使用'?'yellow':'red'}">${d.s}</span>
                         </div>
                     </div>
-                ).join('');
+                `).join('');
             }
             filterVouchers('');
             window.filterVouchers = filterVouchers;
 
-            // ============================================================
-            // D. 推荐裂变数据
-            // ============================================================
             const refData = [
                 { r:'张伟', rr:'李娜', t:'2026-08-02', s:'已转化' },
                 { r:'王强', rr:'刘洋', t:'2026-08-01', s:'待处理' },
@@ -426,30 +378,24 @@ background-clip: text; -webkit-text-fill-color: transparent;
                 let list = refData;
                 if(search) list = list.filter(d => d.r.includes(search)||d.rr.includes(search));
                 document.getElementById('refCount').textContent = '共 ' + list.length + ' 条';
-                document.getElementById('refBody').innerHTML = list.map(d => 
+                document.getElementById('refBody').innerHTML = list.map(d => `
                     <tr><td>${d.r}</td><td>${d.rr}</td><td>${d.t}</td>
                     <td><span class="status-pill ${d.s==='已转化'?'green':d.s==='待处理'?'yellow':'red'}">${d.s}</span></td></tr>
-                ).join('');
+                `).join('');
             }
             filterReferrals('');
             window.filterReferrals = filterReferrals;
 
-            // ============================================================
-            // E. 统计数据
-            // ============================================================
             const statData = [
                 { c:'线下门店', r:450, t:180, p:'40%', v:'¥32.4k' },
                 { c:'社交媒体', r:1200, t:320, p:'26.7%', v:'¥22.8k' },
                 { c:'推荐裂变', r:180, t:85, p:'47.2%', v:'¥10.2k' },
                 { c:'线上官网', r:560, t:130, p:'23.2%', v:'¥3.0k' }
             ];
-            document.getElementById('statBody').innerHTML = statData.map(d => 
+            document.getElementById('statBody').innerHTML = statData.map(d => `
                 <tr><td>${d.c}</td><td>${d.r}</td><td>${d.t}</td><td>${d.p}</td><td style="color:#00D4FF;">${d.v}</td></tr>
-            ).join('');
+            `).join('');
 
-            // ============================================================
-            // F. 模拟表单保存
-            // ============================================================
             window.saveCampaign = function(e) { e.preventDefault(); alert('✅ 营销活动已创建！'); closeModal('campaignModal'); };
             window.saveRule = function(e) { e.preventDefault(); alert('✅ 等级规则已添加！'); closeModal('ruleModal'); };
             window.saveVoucher = function(e) { e.preventDefault(); alert('✅ 券码发放成功！'); closeModal('voucherModal'); };

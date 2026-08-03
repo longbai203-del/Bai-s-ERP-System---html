@@ -6,9 +6,6 @@
     <title>智能员工综合管理平台 - Enterprise ERP</title>
     <link rel="stylesheet" href="../../css/common.css">
     <style>
-        /* ============================================================
-           3300 行巨型单文件 CSS 样式
-           ============================================================ */
         :root {
             --card-glass: rgba(15, 23, 42, 0.6);
             --border-glow: rgba(0, 212, 255, 0.2);
@@ -28,7 +25,6 @@
         .main-content::-webkit-scrollbar { width: 6px; }
         .main-content::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 3px; }
 
-        /* 顶部系统栏 */
         .emp-header {
             display: flex; justify-content: space-between; align-items: center;
             padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.05);
@@ -38,7 +34,8 @@
             font-size: 28px; font-weight: 800;
             background: linear-gradient(135deg, #00D4FF, #C084FC, #F472B6);
             -webkit-background-clip: text;
-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         .emp-header .subtitle { color: var(--text-sub); font-size: 14px; margin-top: 4px; }
         .header-actions { display: flex; gap: 10px; }
@@ -50,7 +47,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
         .btn-cyber:hover { box-shadow: 0 0 20px rgba(0,212,255,0.3); }
         .btn-cyber-outline { background: transparent; border: 1px solid rgba(0,212,255,0.3); color: var(--neon-blue); }
 
-        /* Tabs 导航 */
         .emp-tabs {
             display: flex; gap: 4px; margin-bottom: 20px;
             background: rgba(255,255,255,0.03); border-radius: 12px; padding: 4px; flex-wrap: wrap;
@@ -69,7 +65,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
         .emp-panel.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 通用 KPI */
         .kpi-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
         .kpi-box {
             background: rgba(0,212,255,0.03); border: 1px solid rgba(0,212,255,0.1);
@@ -79,7 +74,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
         .kpi-box .kpi-label { color: var(--text-sub); font-size: 12px; }
         .kpi-box .kpi-sub { font-size: 12px; color: var(--text-muted); }
 
-        /* 表单系统（含拍照上传） */
         .form-card {
             background: linear-gradient(145deg, rgba(15, 23, 42, 0.8), rgba(8, 14, 28, 0.95));
             border: 1px solid rgba(0,212,255,0.1); border-radius: 16px; padding: 24px;
@@ -98,7 +92,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--neon-blue); }
         .form-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px; }
 
-        /* 照片上传组件 */
         .photo-section { margin: 20px 0; border: 1px dashed rgba(0,212,255,0.3); border-radius: 12px; padding: 20px; }
         .photo-upload-area {
             border: 2px dashed rgba(255,255,255,0.1); border-radius: 12px; padding: 40px;
@@ -113,7 +106,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
         .photo-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 12px; }
         .photo-count { color: var(--text-muted); font-size: 13px; }
 
-        /* 表格系统 */
         .table-wrap {
             max-height: 320px; overflow-y: auto; margin-top: 8px;
             border: 1px solid rgba(255,255,255,0.03); border-radius: 8px;
@@ -135,7 +127,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
         .status-pill.blue { background: rgba(59,130,246,0.15); color: #3B82F6; }
         .status-pill.purple { background: rgba(192,132,252,0.15); color: #C084FC; }
 
-        /* 审批与排队卡片 */
         .approval-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 12px; }
         .approval-card {
             background: rgba(0,212,255,0.03); border: 1px solid rgba(0,212,255,0.1);
@@ -158,9 +149,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
 
     <main class="main-content">
 
-        <!-- ============================================================
-        1. 顶部导航与 Tab 面板
-        ============================================================ -->
         <div class="emp-header">
             <div>
                 <h1>📋 智能员工综合管理平台</h1>
@@ -181,9 +169,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
             <div class="emp-tab" onclick="switchPanel('panel-stats', this)"><span class="icon">📈</span>业绩统计</div>
         </div>
 
-        <!-- ============================================================
-        面板 1：员工看板
-        ============================================================ -->
         <div id="panel-dashboard" class="emp-panel active">
             <div class="kpi-grid-4">
                 <div class="kpi-box"><div class="kpi-label">今日已录入</div><div class="kpi-val" style="color:#00D4FF;">23</div><div class="kpi-sub">↑ 较昨日 15%</div></div>
@@ -200,9 +185,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
             </div>
         </div>
 
-        <!-- ============================================================
-        面板 2：拍照录入 (核心功能)
-        ============================================================ -->
         <div id="panel-entry" class="emp-panel">
             <div class="kpi-grid-4">
                 <div class="kpi-box"><div class="kpi-label">今日录入</div><div class="kpi-val" style="color:#00D4FF;">0</div></div>
@@ -250,9 +232,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
             </div>
         </div>
 
-        <!-- ============================================================
-        面板 3：排队队列
-        ============================================================ -->
         <div id="panel-queue" class="emp-panel">
             <div class="toolbar" style="display:flex;gap:12px;align-items:center;background:rgba(255,255,255,0.02);padding:12px;border-radius:12px;margin-bottom:16px;">
                 <span style="color:var(--text-sub);">🚗 当前排队工单</span>
@@ -264,9 +243,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
             </div>
         </div>
 
-        <!-- ============================================================
-        面板 4：审批中心
-        ============================================================ -->
         <div id="panel-approve" class="emp-panel">
             <div class="toolbar" style="display:flex;gap:12px;align-items:center;background:rgba(255,255,255,0.02);padding:12px;border-radius:12px;margin-bottom:16px;">
                 <span style="color:var(--text-sub);">✅ 待审批工单</span>
@@ -278,9 +254,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
             </div>
         </div>
 
-        <!-- ============================================================
-        面板 5：历史记录
-        ============================================================ -->
         <div id="panel-records" class="emp-panel">
             <div class="toolbar">
                 <input type="text" placeholder="搜索车牌号、客户名称..." oninput="filterRecords(this.value)" style="padding:6px 12px;background:rgba(255,255,255,0.05);border:1px solid rgba(255,255,255,0.1);border-radius:6px;color:var(--text-main);flex:1;outline:none;">
@@ -295,9 +268,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
             </div>
         </div>
 
-        <!-- ============================================================
-        面板 6：业绩统计
-        ============================================================ -->
         <div id="panel-stats" class="emp-panel">
             <div class="kpi-grid-4">
                 <div class="kpi-box"><div class="kpi-label">本月总业绩</div><div class="kpi-val" style="color:#00D4FF;">¥320k</div></div>
@@ -311,15 +281,15 @@ background-clip: text; -webkit-text-fill-color: transparent;
                     <div style="background:rgba(0,212,255,0.05);border-radius:8px;padding:16px;text-align:center;"><div style="font-size:20px;font-weight:700;color:#00D4FF;">45%</div><div style="color:var(--text-sub);font-size:13px;">洗车服务</div></div>
                     <div style="background:rgba(192,132,252,0.05);border-radius:8px;padding:16px;text-align:center;"><div style="font-size:20px;font-weight:700;color:#C084FC;">28%</div><div style="color:var(--text-sub);font-size:13px;">维修保养</div></div>
                     <div style="background:rgba(244,114,182,0.05);border-radius:8px;padding:16px;text-align:center;"><div style="font-size:20px;font-weight:700;color:#F472B6;">15%</div><div style="color:var(--text-sub);font-size:13px;">美容精洗</div></div>
-                    <div style="background:rgba(0,240,224,0.05);border-radius:8px;padding:16px;text-align:center;"><div style="font-size:20px;font-weight:700;color:#00F0E0;">12%</div><div style="color:var(--text-sub);font-size:13px;">其他增值</main>
+                    <div style="background:rgba(0,240,224,0.05);border-radius:8px;padding:16px;text-align:center;"><div style="font-size:20px;font-weight:700;color:#00F0E0;">12%</div><div style="color:var(--text-sub);font-size:13px;">其他增值</div></div>
+                </div>
+            </div>
+        </div>
+
+    </main>
 
     <script src="../../js/common.js"></script>
     <script>
-        /* ============================================================
-           3300 行 JS 引擎：照片上传、队列、审批、记录、统计
-           ============================================================ */
-
-        // --- 1. Tab 面板切换逻辑 ---
         function switchPanel(panelId, el) {
             document.querySelectorAll('.emp-panel').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.emp-tab').forEach(t => t.classList.remove('active'));
@@ -327,14 +297,13 @@ background-clip: text; -webkit-text-fill-color: transparent;
             el.classList.add('active');
         }
 
-        // --- 2. 照片上传工具 ---
         let photoFiles = [];
         function handlePhotoUpload(event) {
             const files = Array.from(event.target.files);
             photoFiles = photoFiles.concat(files);
             if (photoFiles.length > 5) { alert("最多只允许上传 5 张照片！"); photoFiles = photoFiles.slice(0,5); }
             renderPhotoPreviews();
-            document.getElementById('photoCount').textContent = 已选 ${photoFiles.length} 张;
+            document.getElementById('photoCount').textContent = `已选 ${photoFiles.length} 张`;
         }
         function renderPhotoPreviews() {
             const preview = document.getElementById('photoPreview');
@@ -344,7 +313,7 @@ background-clip: text; -webkit-text-fill-color: transparent;
                 reader.onload = (e) => {
                     const img = document.createElement('img');
                     img.src = e.target.result;
-                    img.onclick = () => { photoFiles.splice(index, 1); renderPhotoPreviews(); document.getElementById('photoCount').textContent = 已选 ${photoFiles.length} 张; };
+                    img.onclick = () => { photoFiles.splice(index, 1); renderPhotoPreviews(); document.getElementById('photoCount').textContent = `已选 ${photoFiles.length} 张`; };
                     preview.appendChild(img);
                 };
                 reader.readAsDataURL(file);
@@ -352,17 +321,15 @@ background-clip: text; -webkit-text-fill-color: transparent;
         }
         function clearPhotos() { photoFiles = []; document.getElementById('photoPreview').innerHTML = ''; document.getElementById('photoCount').textContent = '已选 0 张'; }
 
-        // --- 3. 车辆录入保存模拟 ---
         function saveVehicle() {
             const plate = document.getElementById('vPlate').value;
             const cust = document.getElementById('vCustomer').value;
             if(!plate || !cust) { alert("请完善必填项 (车牌号和客户姓名)！"); return; }
-            alert(✅ 车辆录入成功！\n车牌: ${plate}\n客户: ${cust}\n照片数量: ${photoFiles.length});
+            alert(`✅ 车辆录入成功！\n车牌: ${plate}\n客户: ${cust}\n照片数量: ${photoFiles.length}`);
             clearPhotos();
             document.getElementById('vehicleForm').reset();
         }
 
-        // --- 4. 排队队列渲染 ---
         const queueData = [
             { id: 'Q-2026-008', plate: '京A·88888', service: '精洗', time: '14:25', wait: '2m' },
             { id: 'Q-2026-009', plate: '沪B·66666', service: '深度保养', time: '14:10', wait: '17m' },
@@ -371,17 +338,16 @@ background-clip: text; -webkit-text-fill-color: transparent;
         ];
         function renderQueue() {
             const container = document.getElementById('queueListContainer');
-            container.innerHTML = queueData.map(q => 
+            container.innerHTML = queueData.map(q => `
                 <div class="approval-card">
                     <div class="title"><span>${q.plate}</span><span class="status-pill yellow">等待中</span></div>
                     <div class="sub">${q.service}</div>
                     <div class="meta"><span>排位 ID: ${q.id}</span><span>等待: ${q.wait}</span></div>
                 </div>
-            ).join('');
+            `).join('');
         }
         renderQueue();
 
-        // --- 5. 审批中心渲染 ---
         const approveData = [
             { id: 'A-001', cust: '张伟科技', service: '全车维修', amount: '¥1,280', status: 'pending' },
             { id: 'A-002', cust: '李娜商贸', service: '深度保养', amount: '¥560', status: 'pending' },
@@ -389,7 +355,7 @@ background-clip: text; -webkit-text-fill-color: transparent;
         ];
         function renderApprovals() {
             const container = document.getElementById('approveListContainer');
-            container.innerHTML = approveData.map(a => 
+            container.innerHTML = approveData.map(a => `
                 <div class="approval-card">
                     <div class="title"><span>${a.cust}</span><span class="status-pill red">待审批</span></div>
                     <div class="sub">${a.service} - ${a.amount}</div>
@@ -398,11 +364,10 @@ background-clip: text; -webkit-text-fill-color: transparent;
                         <button class="btn-sm reject" onclick="alert('已驳回审批: ${a.cust}')">❌ 驳回</button>
                     </div>
                 </div>
-            ).join('');
+            `).join('');
         }
         renderApprovals();
 
-        // --- 6. 历史记录 ---
         const recordsData = [
             { t: '2026-08-02 14:20', p: '京A·88888', c: '张伟', s: '洗车', st: '已完成' },
             { t: '2026-08-02 13:10', p: '沪B·66666', c: '李娜', s: '保养', st: '处理中' },
@@ -411,25 +376,25 @@ background-clip: text; -webkit-text-fill-color: transparent;
         ];
         function renderRecords() {
             const body = document.getElementById('recordTableBody');
-            body.innerHTML = recordsData.map(r => 
+            body.innerHTML = recordsData.map(r => `
                 <tr><td>${r.t}</td><td>${r.p}</td><td>${r.c}</td><td>${r.s}</td>
                 <td><span class="status-pill ${r.st==='已完成'?'green':r.st==='处理中'?'blue':'yellow'}">${r.st}</span></td></tr>
-            ).join('');
+            `).join('');
         }
         renderRecords();
         function filterRecords(keyword) {
             const filtered = recordsData.filter(r => r.p.includes(keyword) || r.c.includes(keyword));
-            document.getElementById('recordTableBody').innerHTML = filtered.map(r => 
+            document.getElementById('recordTableBody').innerHTML = filtered.map(r => `
                 <tr><td>${r.t}</td><td>${r.p}</td><td>${r.c}</td><td>${r.s}</td>
                 <td><span class="status-pill ${r.st==='已完成'?'green':r.st==='处理中'?'blue':'yellow'}">${r.st}</span></td></tr>
-            ).join('');
+            `).join('');
         }
         function filterRecordsByStatus(status) {
             const filtered = status === 'all' ? recordsData : recordsData.filter(r => r.st === status);
-            document.getElementById('recordTableBody').innerHTML = filtered.map(r => 
+            document.getElementById('recordTableBody').innerHTML = filtered.map(r => `
                 <tr><td>${r.t}</td><td>${r.p}</td><td>${r.c}</td><td>${r.s}</td>
                 <td><span class="status-pill ${r.st==='已完成'?'green':r.st==='处理中'?'blue':'yellow'}">${r.st}</span></td></tr>
-            ).join('');
+            `).join('');
         }
 
         console.log("✅ 3300 行全员工综合管理引擎已启动！");

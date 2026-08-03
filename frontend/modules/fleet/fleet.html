@@ -27,7 +27,6 @@
         .main-content::-webkit-scrollbar { width: 6px; }
         .main-content::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 3px; }
 
-        /* 顶部导航 */
         .fleet-header {
             display: flex; justify-content: space-between; align-items: center;
             padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.05);
@@ -36,8 +35,7 @@
         .fleet-header h1 {
             font-size: 28px; font-weight: 800;
             background: linear-gradient(135deg, #00D4FF, #C084FC, #F472B6);
-            -webkit-background-clip: text;
-background-clip: text; -webkit-text-fill-color: transparent;
+            -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
         }
         .fleet-header .subtitle { color: var(--text-sub); font-size: 14px; margin-top: 4px; }
         .header-actions { display: flex; gap: 10px; }
@@ -49,7 +47,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
         .btn-cyber:hover { box-shadow: 0 0 20px rgba(0,212,255,0.3); }
         .btn-cyber-outline { background: transparent; border: 1px solid rgba(0,212,255,0.3); color: var(--neon-blue); }
 
-        /* Tabs 导航 (融合全部5个模块) */
         .fleet-tabs {
             display: flex; gap: 4px; margin-bottom: 20px;
             background: rgba(255,255,255,0.03); border-radius: 12px; padding: 4px; flex-wrap: wrap;
@@ -68,7 +65,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
         .fleet-panel.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* 实时监控统计卡片 (6项) */
         .monitor-stats {
             display: grid; grid-template-columns: repeat(6, 1fr); gap: 16px; margin-bottom: 24px;
         }
@@ -84,13 +80,10 @@ background-clip: text; -webkit-text-fill-color: transparent;
         .monitor-label { color: var(--text-sub); font-size: 12px; }
         .monitor-value { font-size: 24px; font-weight: 700; margin-top: 4px; }
 
-        /* 工具栏与表格系统 */
         .panel-toolbar {
             display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
             background: rgba(255,255,255,0.02); padding: 12px; border-radius: 12px; margin-bottom: 16px;
         }
-        .panel-toolbar .left { display: flex; gap: 12px; flex-wrap: wrap; flex: 1; }
-        .panel-toolbar .right { color: var(--text-muted); font-size: 13px; }
         .panel-toolbar input, .panel-toolbar select {
             padding: 6px 12px; background: rgba(255,255,255,0.05);
             border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: var(--text-main);
@@ -118,46 +111,29 @@ background-clip: text; -webkit-text-fill-color: transparent;
         .status-pill.red { background: rgba(239,68,68,0.15); color: #EF4444; }
         .status-pill.blue { background: rgba(59,130,246,0.15); color: #3B82F6; }
 
-        /* 对比与预警摘要卡片 */
-        .compare-summary {
-            display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 20px;
-        }
-        .compare-item {
-            background: rgba(0,212,255,0.03); border-radius: 12px; padding: 16px; text-align: center;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
+        .compare-summary { display: grid; grid-template-columns: repeat(5, 1fr); gap: 16px; margin-bottom: 20px; }
+        .compare-item { background: rgba(0,212,255,0.03); border-radius: 12px; padding: 16px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
         .compare-label { color: var(--text-sub); font-size: 12px; display: block; }
         .compare-value { font-size: 24px; font-weight: 700; margin-top: 4px; display: block; }
 
-        .alert-summary {
-            display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px;
-        }
-        .alert-stat {
-            background: rgba(0,212,255,0.03); border-radius: 12px; padding: 16px; text-align: center;
-            border: 1px solid rgba(255,255,255,0.05);
-        }
+        .alert-summary { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 20px; }
+        .alert-stat { background: rgba(0,212,255,0.03); border-radius: 12px; padding: 16px; text-align: center; border: 1px solid rgba(255,255,255,0.05); }
         .alert-stat.danger { border-color: rgba(239,68,68,0.3); background: rgba(239,68,68,0.05); }
         .alert-stat.warning { border-color: rgba(245,158,11,0.3); background: rgba(245,158,11,0.05); }
         .alert-stat.info { border-color: rgba(59,130,246,0.3); background: rgba(59,130,246,0.05); }
         .alert-number { font-size: 28px; font-weight: 700; display: block; }
-        .alert-stat.danger .alert-number { color: #EF4444; }
-        .alert-stat.warning .alert-number { color: #F59E0B; }
-        .alert-stat.info .alert-number { color: #3B82F6; }
         .alert-label { color: var(--text-sub); font-size: 12px; display: block; margin-top: 4px; }
 
-        /* 预警列表 */
         .alert-list-item {
             display: flex; justify-content: space-between; align-items: center;
             padding: 12px 16px; border-bottom: 1px solid rgba(255,255,255,0.03);
             background: rgba(255,255,255,0.01);
         }
-        .alert-list-item:last-child { border-bottom: none; }
         .alert-list-item .info { display: flex; flex-direction: column; gap: 4px; }
         .alert-list-item .info .title { color: var(--text-main); font-size: 14px; font-weight: 500; }
         .alert-list-item .info .desc { color: var(--text-sub); font-size: 12px; }
         .alert-list-item .time { color: var(--text-muted); font-size: 12px; }
 
-        /* 模态框 */
         .modal-overlay {
             position: fixed; inset: 0; z-index: 9999;
             background: rgba(0,0,0,0.8); backdrop-filter: blur(4px);
@@ -172,15 +148,10 @@ background-clip: text; -webkit-text-fill-color: transparent;
         .modal-box h3 { color: var(--text-main); font-size: 20px; margin-bottom: 20px; }
         .form-group { margin-bottom: 16px; }
         .form-group label { display: block; color: var(--text-sub); font-size: 13px; margin-bottom: 4px; }
-        .form-group input, .form-group select {
-            width: 100%; padding: 10px 12px; background: rgba(255,255,255,0.05);
-            border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--text-main);
-            outline: none; font-size: 14px;
-        }
+        .form-group input, .form-group select { width: 100%; padding: 10px 12px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--text-main); outline: none; font-size: 14px; }
         .form-group input:focus, .form-group select:focus { border-color: var(--neon-blue); }
         .form-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px; }
 
-        /* 响应式 */
         @media (max-width: 1200px) { .monitor-stats { grid-template-columns: repeat(3, 1fr); } }
         @media (max-width: 768px) {
             .monitor-stats { grid-template-columns: 1fr 1fr; }
@@ -315,10 +286,13 @@ background-clip: text; -webkit-text-fill-color: transparent;
             <div class="table-wrap">
                 <table class="cyber-table"><thead><tr><th>车牌</th><th>日期</th><th>类型</th><th>描述</th><th>状态</th></tr></thead>
                 <tbody id="historyBody"></tbody></table>
-            </main>
+            </div>
+        </div>
+
+    </main> <!-- ✅ 修复 main 闭合位置 -->
 
     <!-- ============================================================
-    手动登记模态框
+    手动登记模态框 (必须在 main 之外)
     ============================================================ -->
     <div class="modal-overlay" id="manualModal">
         <div class="modal-box">
@@ -376,10 +350,10 @@ background-clip: text; -webkit-text-fill-color: transparent;
                 let list = monitorData;
                 if(search) list = list.filter(d => d.p.includes(search));
                 document.getElementById('monitorCount').textContent = list.length;
-                document.getElementById('monitorBody').innerHTML = list.map(d => 
+                document.getElementById('monitorBody').innerHTML = list.map(d => `
                     <tr><td>${d.p}</td><td>${d.in}</td><td>${d.out||'--'}</td><td>${d.dur}</td>
                     <td><span class="status-pill ${d.st==='in'?'green':'blue'}">${d.st==='in'?'在场':'已出场'}</span></td></tr>
-                ).join('');
+                `).join('');
             }
             renderMonitor('');
             window.filterMonitor = renderMonitor;
@@ -394,10 +368,10 @@ background-clip: text; -webkit-text-fill-color: transparent;
                 let list = empData;
                 if(search) list = list.filter(d => d.p.includes(search)||d.e.includes(search));
                 document.getElementById('employeeCount').textContent = list.length;
-                document.getElementById('employeeBody').innerHTML = list.map(d => 
+                document.getElementById('employeeBody').innerHTML = list.map(d => `
                     <tr><td>${d.p}</td><td>${d.c}</td><td>${d.s}</td><td>${d.e}</td><td>${d.t}</td>
                     <td><span class="status-pill ${d.st==='matched'?'green':'yellow'}">${d.st==='matched'?'已匹配':'待匹配'}</span></td></tr>
-                ).join('');
+                `).join('');
             }
             renderEmployee('');
             window.filterEmployee = renderEmployee;
@@ -417,10 +391,10 @@ background-clip: text; -webkit-text-fill-color: transparent;
                 document.getElementById('cMatched').textContent = compareData.filter(d => d.res==='matched').length;
                 document.getElementById('cSysOnly').textContent = compareData.filter(d => d.res==='sys_only').length;
                 document.getElementById('cEmpOnly').textContent = compareData.filter(d => d.res==='emp_only').length;
-                document.getElementById('compareBody').innerHTML = list.map(d => 
+                document.getElementById('compareBody').innerHTML = list.map(d => `
                     <tr><td>${d.p}</td><td>${d.sys}</td><td>${d.emp}</td>
                     <td><span class="status-pill ${d.res==='matched'?'green':d.res==='sys_only'?'yellow':'red'}">${d.res}</span></td></tr>
-                ).join('');
+                `).join('');
             }
             renderCompare();
 
@@ -431,28 +405,35 @@ background-clip: text; -webkit-text-fill-color: transparent;
                 { t:'系统与录入不一致', d:'苏E·98765 系统出场但员工未核销', l:'warning', tm:'13:10' },
                 { t:'新车辆首次入场', d:'浙D·54321 为新注册车辆', l:'info', tm:'12:45' }
             ];
-            document.getElementById('alertList').innerHTML = alertData.map(d => 
+            document.getElementById('alertList').innerHTML = alertData.map(d => `
                 <div class="alert-list-item">
                     <div class="info"><div class="title">${d.t}</div><div class="desc">${d.d}</div></div>
                     <div><span class="status-pill ${d.l==='critical'?'red':d.l==='warning'?'yellow':'blue'}">${d.l}</span> <span class="time">${d.tm}</span></div>
                 </div>
-            ).join('');
+            `).join('');
 
             // --- 7. 历史与维保数据 (15条) ---
             const historyData = [
                 { p:'京A·88888', d:'2026-08-02', t:'保养', desc:'常规检查与换机油', st:'已完成' },
                 { p:'沪B·66666', d:'2026-08-01', t:'维修', desc:'更换刹车片', st:'已完成' },
                 { p:'粤C·12345', d:'2026-07-31', t:'保养', desc:'全车抛光', st:'进行中' },
-                { p:'浙D·54321', d:'2026-07-30', t:'维修', desc:'空调冷凝器修复', st:'待安排' }
+                { p:'浙D·54321', d:'2026-07-30', t:'维修', desc:'空调冷凝器修复', st:'待安排' },
+                { p:'苏E·98765', d:'2026-07-29', t:'保养', desc:'常规检查', st:'已完成' },
+                { p:'鲁F·45678', d:'2026-07-29', t:'维修', desc:'轮胎更换', st:'已完成' },
+                { p:'粤G·11223', d:'2026-07-28', t:'保养', desc:'检查刹车', st:'已完成' },
+                { p:'京H·33445', d:'2026-07-28', t:'维修', desc:'发动机清理', st:'进行中' },
+                { p:'浙B·99887', d:'2026-07-27', t:'保养', desc:'换机油', st:'已完成' },
+                { p:'川A·55443', d:'2026-07-27', t:'维修', desc:'更换雨刮', st:'待安排' },
+                { p:'苏M·11223', d:'2026-07-26', t:'保养', desc:'抛光打蜡', st:'已完成' }
             ];
             function renderHistory(search) {
                 let list = historyData;
                 if(search) list = list.filter(d => d.p.includes(search)||d.desc.includes(search));
                 document.getElementById('historyCount').textContent = list.length;
-                document.getElementById('historyBody').innerHTML = list.map(d => 
+                document.getElementById('historyBody').innerHTML = list.map(d => `
                     <tr><td>${d.p}</td><td>${d.d}</td><td>${d.t}</td><td>${d.desc}</td>
                     <td><span class="status-pill ${d.st==='已完成'?'green':d.st==='进行中'?'blue':'yellow'}">${d.st}</span></td></tr>
-                ).join('');
+                `).join('');
             }
             renderHistory('');
             window.filterHistory = renderHistory;

@@ -38,7 +38,8 @@
             font-size: 28px; font-weight: 800;
             background: linear-gradient(135deg, #00D4FF, #C084FC, #F472B6);
             -webkit-background-clip: text;
-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         .fin-header .subtitle { color: var(--text-sub); font-size: 14px; margin-top: 4px; }
         .header-actions { display: flex; gap: 10px; }
@@ -148,9 +149,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
 
     <main class="main-content">
 
-        <!-- ============================================================
-        1. 顶部导航与 Tab 面板 (完整融合 9 个财务模块)
-        ============================================================ -->
         <div class="fin-header">
             <div>
                 <h1>💰 智能财务融合指挥中心</h1>
@@ -174,9 +172,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
             <div class="fin-tab" onclick="switchPanel('panel-tax', this)"><span class="icon">🧾</span>税务与 VAT</div>
         </div>
 
-        <!-- ============================================================
-        面板 1：财务总览 (高密度 KPI + ECharts)
-        ============================================================ -->
         <div id="panel-overview" class="fin-panel active">
             <div class="kpi-grid-4">
                 <div class="kpi-box"><div class="kpi-label">总营业收入</div><div class="kpi-val" style="color:#00D4FF;">¥483.2k</div></div>
@@ -190,9 +185,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
             </div>
         </div>
 
-        <!-- ============================================================
-        面板 2：银行账户管理 (融合 bank.html)
-        ============================================================ -->
         <div id="panel-bank" class="fin-panel">
             <div class="kpi-grid-4">
                 <div class="kpi-box"><div class="kpi-label">总账户数</div><div class="kpi-val">4</div></div>
@@ -206,9 +198,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
             </div>
         </div>
 
-        <!-- ============================================================
-        面板 3：现金流管理 (融合 cash-flow.html)
-        ============================================================ -->
         <div id="panel-cashflow" class="fin-panel">
             <div class="kpi-grid-4">
                 <div class="kpi-box"><div class="kpi-label">经营性流入</div><div class="kpi-val" style="color:#10B981;">¥230k</div></div>
@@ -222,9 +211,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
             </div>
         </div>
 
-        <!-- ============================================================
-        面板 4：收支明细 (融合 finance.html)
-        ============================================================ -->
         <div id="panel-income" class="fin-panel">
             <div class="kpi-grid-4">
                 <div class="kpi-box"><div class="kpi-label">总收入</div><div class="kpi-val" style="color:#00D4FF;">¥34.2k</div></div>
@@ -238,9 +224,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
             </div>
         </div>
 
-        <!-- ============================================================
-        面板 5：损益表 (融合 profit-loss.html)
-        ============================================================ -->
         <div id="panel-pl" class="fin-panel">
             <div class="kpi-grid-4">
                 <div class="kpi-box"><div class="kpi-label">营业收入</div><div class="kpi-val" style="color:#00D4FF;">¥483.2k</div></div>
@@ -258,9 +241,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
             </div>
         </div>
 
-        <!-- ============================================================
-        面板 6：发票管理 (融合 invoices.html)
-        ============================================================ -->
         <div id="panel-invoices" class="fin-panel">
             <div class="kpi-grid-4">
                 <div class="kpi-box"><div class="kpi-label">待开票</div><div class="kpi-val" style="color:#F59E0B;">12</div></div>
@@ -274,9 +254,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
             </div>
         </div>
 
-        <!-- ============================================================
-        面板 7：日记账 (融合 journal.html)
-        ============================================================ -->
         <div id="panel-journal" class="fin-panel">
             <div class="cyber-card"><div class="card-title">📓 实时日记账流水</div>
                 <div class="table-wrap">
@@ -286,9 +263,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
             </div>
         </div>
 
-        <!-- ============================================================
-        面板 8：付款管理 (融合 payments.html)
-        ============================================================ -->
         <div id="panel-payments" class="fin-panel">
             <div class="kpi-grid-4">
                 <div class="kpi-box"><div class="kpi-label">待处理付款</div><div class="kpi-val" style="color:#F59E0B;">5</div></div>
@@ -302,9 +276,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
             </div>
         </div>
 
-        <!-- ============================================================
-        面板 9：税务与 VAT (融合 taxes.html + vat.html)
-        ============================================================ -->
         <div id="panel-tax" class="fin-panel">
             <div class="kpi-grid-4">
                 <div class="kpi-box"><div class="kpi-label">本期销售额</div><div class="kpi-val">¥483.2k</div></div>
@@ -316,7 +287,11 @@ background-clip: text; -webkit-text-fill-color: transparent;
                 <div class="table-wrap">
                     <table class="cyber-table"><thead><tr><th>税务周期</th><th>销项税</th><th>进项税</th><th>应纳税额</th><th>申报状态</th></tr></thead>
                     <tbody id="taxBody"></tbody></table>
-                </main>
+                </div>
+            </div>
+        </div>
+
+    </main>
 
     <script src="../../js/common.js"></script>
 
@@ -325,7 +300,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
            3580 行完整 JS 引擎 (所有模块数据驱动)
            ============================================================ */
 
-        // 1. Tab 面板切换
         function switchPanel(panelId, el) {
             document.querySelectorAll('.fin-panel').forEach(p => p.classList.remove('active'));
             document.querySelectorAll('.fin-tab').forEach(t => t.classList.remove('active'));
@@ -335,9 +309,6 @@ background-clip: text; -webkit-text-fill-color: transparent;
 
         document.addEventListener('DOMContentLoaded', function() {
 
-            // ============================================================
-            // 2. ECharts 图表初始化 (面板 1)
-            // ============================================================
             var trend = echarts.init(document.getElementById('trendChart'));
             trend.setOption({
                 grid: { left: '3%', right: '4%', bottom: '15%', top: '10%' },
@@ -368,90 +339,69 @@ background-clip: text; -webkit-text-fill-color: transparent;
             });
             window.addEventListener('resize', function(){ trend.resize(); pie.resize(); });
 
-            // ============================================================
-            // 3. 银行账户数据 (bank.html)
-            // ============================================================
             const bankData = [
                 { n:'基本户', b:'中国银行', a:'6012 8213 9012 3456', bal:'623,450', s:'active' },
                 { n:'一般户', b:'建设银行', a:'6012 8213 9012 7890', bal:'192,800', s:'active' },
                 { n:'专用户', b:'工商银行', a:'6012 8213 9012 2345', bal:'81,200', s:'active' },
                 { n:'备用金', b:'农业银行', a:'6012 8213 9012 6789', bal:'80,000', s:'active' }
             ];
-            document.getElementById('bankTableBody').innerHTML = bankData.map(d => 
+            document.getElementById('bankTableBody').innerHTML = bankData.map(d => `
                 <tr><td>${d.n}</td><td>${d.b}</td><td>${d.a}</td><td style="color:#00D4FF;">¥${d.bal}</td><td><span class="status-pill green">正常</span></td></tr>
-            ).join('');
+            `).join('');
 
-            // ============================================================
-            // 4. 现金流数据 (cash-flow.html)
-            // ============================================================
             const cfData = [
                 { d:'2026-08-02', in:'¥32,500', out:'¥21,000', net:'¥11,500' },
                 { d:'2026-08-01', in:'¥28,000', out:'¥19,500', net:'¥8,500' },
                 { d:'2026-07-31', in:'¥30,200', out:'¥22,800', net:'¥7,400' }
             ];
-            document.getElementById('cashflowBody').innerHTML = cfData.map(d => 
+            document.getElementById('cashflowBody').innerHTML = cfData.map(d => `
                 <tr><td>${d.d}</td><td style="color:#10B981;">${d.in}</td><td style="color:#EF4444;">${d.out}</td><td style="color:#00D4FF;">${d.net}</td></tr>
-            ).join('');
+            `).join('');
 
-            // ============================================================
-            // 5. 收支明细数据 (finance.html)
-            // ============================================================
             const incData = [
                 { id:'TXN-001', d:'2026-08-02', t:'收入', c:'服务收入', a:'+¥1,280', s:'已完成' },
                 { id:'TXN-002', d:'2026-08-01', t:'支出', c:'采购支出', a:'-¥560', s:'已完成' }
             ];
-            document.getElementById('incomeBody').innerHTML = incData.map(d => 
+            document.getElementById('incomeBody').innerHTML = incData.map(d => `
                 <tr><td>${d.id}</td><td>${d.d}</td><td>${d.t}</td><td>${d.c}</td>
                 <td style="color:${d.t==='收入'?'#10B981':'#EF4444'};">${d.a}</td>
                 <td><span class="status-pill green">${d.s}</span></td></tr>
-            ).join('');
+            `).join('');
 
-            // ============================================================
-            // 6. 发票数据 (invoices.html)
-            // ============================================================
             const invData = [
                 { id:'INV-2026-001', c:'张伟科技', a:'¥1,280', s:'已开票', d:'2026-08-01' },
                 { id:'INV-2026-002', c:'李娜商贸', a:'¥560', s:'已收款', d:'2026-08-01' }
             ];
-            document.getElementById('invoiceBody').innerHTML = invData.map(d => 
+            document.getElementById('invoiceBody').innerHTML = invData.map(d => `
                 <tr><td>${d.id}</td><td>${d.c}</td><td>${d.a}</td>
                 <td><span class="status-pill ${d.s==='已开票'?'blue':'green'}">${d.s}</span></td><td>${d.d}</td></tr>
-            ).join('');
+            `).join('');
 
-            // ============================================================
-            // 7. 日记账数据 (journal.html)
-            // ============================================================
             const jrnData = [
                 { id:'JRN-001', s:'销售商品收入', deb:'¥1,280', cred:'¥0', d:'2026-08-02' },
                 { id:'JRN-002', s:'支付供应商货款', deb:'¥0', cred:'¥560', d:'2026-08-01' }
             ];
-            document.getElementById('journalBody').innerHTML = jrnData.map(d => 
+            document.getElementById('journalBody').innerHTML = jrnData.map(d => `
                 <tr><td>${d.id}</td><td>${d.s}</td><td style="color:#00D4FF;">${d.deb}</td><td style="color:#F472B6;">${d.cred}</td><td>${d.d}</td></tr>
-            ).join('');
+            `).join('');
 
-            // ============================================================
-            // 8. 付款数据 (payments.html)
-            // ============================================================
             const payData = [
                 { id:'PAY-001', s:'张伟科技', a:'¥1,280', s:'已付款' },
                 { id:'PAY-002', s:'李娜商贸', a:'¥560', s:'待付款' }
             ];
-            document.getElementById('paymentBody').innerHTML = payData.map(d => 
+            document.getElementById('paymentBody').innerHTML = payData.map(d => `
                 <tr><td>${d.id}</td><td>${d.s}</td><td>${d.a}</td>
                 <td><span class="status-pill ${d.s==='已付款'?'green':'yellow'}">${d.s}</span></td></tr>
-            ).join('');
+            `).join('');
 
-            // ============================================================
-            // 9. 税务数据 (taxes/vat.html)
-            // ============================================================
             const taxData = [
                 { p:'2026 Q2', out:'¥24.2k', in:'¥15.6k', due:'¥8.6k', s:'已申报' },
                 { p:'2026 Q3', out:'¥28.4k', in:'¥18.2k', due:'¥10.2k', s:'待申报' }
             ];
-            document.getElementById('taxBody').innerHTML = taxData.map(d => 
+            document.getElementById('taxBody').innerHTML = taxData.map(d => `
                 <tr><td>${d.p}</td><td>${d.out}</td><td>${d.in}</td><td style="color:#EF4444;">${d.due}</td>
                 <td><span class="status-pill ${d.s==='已申报'?'green':'yellow'}">${d.s}</span></td></tr>
-            ).join('');
+            `).join('');
             
             console.log("✅ 3580 行全财务融合引擎已启动！");
         });

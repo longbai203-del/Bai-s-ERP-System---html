@@ -39,7 +39,8 @@
             font-size: 28px; font-weight: 800;
             background: linear-gradient(135deg, #00D4FF, #C084FC, #F472B6);
             -webkit-background-clip: text;
-background-clip: text; -webkit-text-fill-color: transparent;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
         }
         .saas-header .subtitle { color: var(--text-sub); font-size: 14px; margin-top: 4px; }
         .header-actions { display: flex; gap: 10px; }
@@ -272,7 +273,7 @@ background-clip: text; -webkit-text-fill-color: transparent;
             </div>
         </div>
 
-    </div></main>
+    </main>
 
     <!-- ============================================================
     租户新增/编辑模态框
@@ -327,11 +328,11 @@ background-clip: text; -webkit-text-fill-color: transparent;
                 let list = tenantData;
                 if(search) list = list.filter(d => d.n.includes(search)||d.tax.includes(search));
                 document.getElementById('tenantCount').textContent = '共 ' + list.length + ' 条';
-                document.getElementById('tenantBody').innerHTML = list.map(d => 
+                document.getElementById('tenantBody').innerHTML = list.map(d => `
                     <tr><td>${d.n}</td><td>${d.tax}</td><td>${d.plan}</td>
                     <td style="color:${d.st==='即将到期'?'#F59E0B':'#94A3B8'};">${d.end}</td>
                     <td><span class="status-pill ${d.st==='正常'?'green':'yellow'}">${d.st}</span></td></tr>
-                ).join('');
+                `).join('');
             }
             filterTenants('');
             window.filterTenants = filterTenants;
@@ -344,10 +345,10 @@ background-clip: text; -webkit-text-fill-color: transparent;
                 { n:'奥体分店', plan:'基础版', p:'年付', amt:'¥6,588.00', st:'已支付' },
                 { n:'高新区美容中心', plan:'专业版', p:'月付', amt:'¥2,999.00', st:'待支付' }
             ];
-            document.getElementById('billingBody').innerHTML = billData.map(d => 
+            document.getElementById('billingBody').innerHTML = billData.map(d => `
                 <tr><td>${d.n}</td><td>${d.plan}</td><td>${d.p}</td><td>${d.amt}</td>
                 <td><span class="status-pill ${d.st==='已支付'?'green':'yellow'}">${d.st}</span></td></tr>
-            ).join('');
+            `).join('');
 
             // ============================================================
             // C. 数据隔离与备份记录
@@ -357,9 +358,9 @@ background-clip: text; -webkit-text-fill-color: transparent;
                 { n:'奥体分店', pre:'tnt_002', ord:120, time:'2026-08-02 02:10' },
                 { n:'高新区美容中心', pre:'tnt_003', ord:82, time:'2026-08-02 02:15' }
             ];
-            document.getElementById('backupBody').innerHTML = backData.map(d => 
+            document.getElementById('backupBody').innerHTML = backData.map(d => `
                 <tr><td>${d.n}</td><td>${d.pre}</td><td>${d.ord}</td><td>${d.time}</td></tr>
-            ).join('');
+            `).join('');
 
             // ============================================================
             // D. ECharts 全局统计图表
@@ -392,5 +393,3 @@ background-clip: text; -webkit-text-fill-color: transparent;
     </script>
 </body>
 </html>
-
-
