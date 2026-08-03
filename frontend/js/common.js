@@ -7,23 +7,23 @@
 
     // 完整 17 模块菜单数据映射 (与你本地 modules 文件夹结构 1:1 对齐)
     const MENU_CONFIG = [
-        { id: 'ai', icon: '🤖', name: 'AI 智能中枢', children: ['ai', 'auto-tasks', 'chat', 'crm', 'report-gen'] },
-        { id: 'analytics', icon: '📊', name: '数据分析', children: ['analytics', 'business-health', 'custom-reports', 'forecast', 'recommendations', 'reports', 'visualizations'] },
-        { id: 'customers', icon: '👥', name: '客户管理', children: ['coupons', 'customers', 'feedback', 'gift-cards', 'membership', 'vehicles', 'wallet'] },
-        { id: 'dashboard', icon: '📈', name: '全息决策中心', children: ['analytics', 'dashboard', 'notifications', 'quick-actions', 'reports', 'tasks', 'timeline'] },
-        { id: 'employee', icon: '👨‍💻', name: '员工管理', children: ['approvals', 'employee', 'queue', 'records', 'stats'] },
-        { id: 'finance', icon: '💰', name: '财务管理', children: ['bank', 'cash-flow', 'expenses', 'finance', 'income', 'invoices', 'journal', 'payments', 'profit-loss', 'settlements', 'taxes', 'trial-balance', 'vat'] },
-        { id: 'fleet', icon: '🚚', name: '车队管理', children: ['alerts', 'fleet', 'history', 'maintenance', 'tracking'] },
-        { id: 'hr', icon: '🧑‍💼', name: '人力资源', children: ['attendance', 'bonuses', 'commissions', 'employees', 'hr', 'leaves', 'payroll', 'penalties', 'performance', 'permissions', 'schedules', 'shifts', 'tasks'] },
-        { id: 'inventory', icon: '🏷️', name: '库存管理', children: ['adjustments', 'batches', 'cycle-counts', 'expiry', 'history', 'inventory', 'low-stock', 'serial-numbers', 'stock', 'transfers', 'warehouses'] },
-        { id: 'marketing', icon: '📣', name: '营销管理', children: ['campaigns', 'loyalty', 'marketing', 'promotions', 'referrals'] },
-        { id: 'orders', icon: '📦', name: '订单管理', children: ['detail', 'list', 'orders', 'refunds', 'returns', 'submodules'] },
-        { id: 'pos', icon: '🧾', name: 'POS 收银', children: ['cash-register', 'cashier', 'customer-display', 'discounts', 'exchange', 'kitchen-display', 'offline-pos', 'pos', 'quick-sale', 'receipt', 'statistics', 'touch-pos'] },
-        { id: 'products', icon: '📦', name: '产品中心', children: ['barcodes', 'brands', 'categories', 'combos', 'modifiers', 'price-lists', 'products', 'variants'] },
-        { id: 'purchase', icon: '🛒', name: '采购管理', children: ['import', 'purchase', 'quotations', 'receiving', 'supplier-payments', 'suppliers'] },
-        { id: 'saas', icon: '☁️', name: 'SaaS 服务', children: ['billing', 'feature-limits', 'packages', 'plans', 'saas', 'storage', 'subscriptions', 'tenants', 'usage'] },
-        { id: 'settings', icon: '⚙️', name: '系统设置', children: ['branches', 'company', 'general', 'preferences', 'profile', 'settings'] },
-        { id: 'system', icon: '🔒', name: '系统管理', children: ['api-keys', 'audit-logs', 'audit', 'backup', 'import-export', 'integrations', 'marketplace', 'notifications', 'permission', 'restore', 'roles', 'settings', 'system-logs', 'system', 'webhooks'] }
+        { id: 'ai', icon: '🤖', name: 'AI 智能中枢', children: [] },
+        { id: 'analytics', icon: '📊', name: '数据分析', children: [] },
+        { id: 'customers', icon: '👥', name: '客户管理', children: [] },
+        { id: 'dashboard', icon: '📈', name: '全息决策中心', children: [] },
+        { id: 'employee', icon: '👨‍💻', name: '员工管理', children: [] },
+        { id: 'finance', icon: '💰', name: '财务管理', children: [] },
+        { id: 'fleet', icon: '🚚', name: '车队管理', children: [] },
+        { id: 'hr', icon: '🧑‍💼', name: '人力资源', children: [] },
+        { id: 'inventory', icon: '🏷️', name: '库存管理', children: [] },
+        { id: 'marketing', icon: '📣', name: '营销管理', children: [] },
+        { id: 'orders', icon: '📦', name: '订单管理', children: [] },
+        { id: 'pos', icon: '🧾', name: 'POS 收银', children: [] },
+        { id: 'products', icon: '📦', name: '产品中心', children: [] },
+        { id: 'purchase', icon: '🛒', name: '采购管理', children: [] },
+        { id: 'saas', icon: '☁️', name: 'SaaS 服务', children: [] },
+        { id: 'settings', icon: '⚙️', name: '系统设置', children: [] },
+        { id: 'system', icon: '🔒', name: '系统管理', children: [] }
     ];
 
     // 渲染主逻辑
