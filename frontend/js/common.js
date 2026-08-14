@@ -206,3 +206,34 @@
         }
     }
 })();
+
+
+// ==========================
+// 认证状态检查 (Supabase)
+// ==========================
+(function() {
+    // 保存原有的 DOMContentLoaded 回调
+    var originalCallback = null;
+    
+    // 在 DOM 加载完成后执行
+    function checkAuth() {
+        // 如果 authManager 存在且未登录，跳转
+        if (typeof authManager !== 'undefined' && 
+            !window.location.pathname.includes('login.html') && 
+            !authManager.isAuthenticated()) {
+            window.location.href = '/login.html';
+            return;
+        }
+        // 渲染侧边栏
+        if (typeof window.renderDynamicSidebar === 'function') {
+            window.renderDynamicSidebar();
+        }
+    }
+    
+    // 如果页面已加载完成，立即执行
+    if (document.readyState === 'complete') {
+        setTimeout(checkAuth, 100);
+    } else {
+        document.addEventListener('DOMContentLoaded', checkAuth);
+    }
+})();

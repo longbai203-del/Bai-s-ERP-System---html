@@ -4,16 +4,180 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>登录 - Enterprise ERP 智云</title>
-    <link rel="stylesheet" href="css/common.css">
+    <link rel="stylesheet" href="/css/common.css">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            background: #0a0e1a;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .login-wrapper {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            max-width: 1000px;
+            width: 100%;
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.95), rgba(8, 14, 28, 0.98));
+            border: 1px solid rgba(0, 212, 255, 0.15);
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 0 60px rgba(0, 212, 255, 0.08);
+            margin: 20px;
+        }
+        .brand-section {
+            padding: 48px 40px;
+            background: radial-gradient(circle at 70% 30%, rgba(0, 212, 255, 0.05) 0%, transparent 60%);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .brand-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        .brand-logo .icon { font-size: 40px; }
+        .brand-logo h1 {
+            font-size: 28px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #00D4FF, #C084FC);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .brand-logo h1 span { color: #00D4FF; -webkit-text-fill-color: #00D4FF; }
+        .brand-tagline {
+            color: #94A3B8;
+            font-size: 16px;
+            line-height: 1.8;
+            margin-bottom: 30px;
+        }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+        .feature-item {
+            background: rgba(255,255,255,0.03);
+            border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 12px;
+            padding: 16px;
+            text-align: center;
+        }
+        .feature-item span { font-size: 28px; display: block; margin-bottom: 6px; }
+        .feature-item p { color: #94A3B8; font-size: 13px; }
+        .form-section {
+            padding: 48px 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .form-header h2 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #F0F9FF;
+            margin-bottom: 6px;
+        }
+        .form-header p { color: #94A3B8; font-size: 14px; margin-bottom: 24px; }
+        .login-error {
+            background: rgba(239, 68, 68, 0.15);
+            border: 1px solid rgba(239, 68, 68, 0.2);
+            color: #EF4444;
+            padding: 12px 16px;
+            border-radius: 8px;
+            margin-bottom: 16px;
+            display: none;
+            font-size: 14px;
+        }
+        .login-error.show { display: block; }
+        .input-group {
+            margin-bottom: 16px;
+        }
+        .input-group label {
+            display: block;
+            color: #94A3B8;
+            font-size: 13px;
+            font-weight: 500;
+            margin-bottom: 6px;
+        }
+        .input-group input {
+            width: 100%;
+            padding: 12px 16px;
+            background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.08);
+            border-radius: 8px;
+            color: #F0F9FF;
+            font-size: 14px;
+            outline: none;
+            transition: 0.3s;
+        }
+        .input-group input:focus {
+            border-color: #00D4FF;
+            box-shadow: 0 0 20px rgba(0, 212, 255, 0.08);
+        }
+        .input-group input::placeholder { color: #495670; }
+        .form-actions {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 20px 0;
+        }
+        .form-actions label {
+            color: #94A3B8;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            cursor: pointer;
+        }
+        .form-actions a {
+            color: #00D4FF;
+            text-decoration: none;
+            font-size: 13px;
+        }
+        .form-actions a:hover { text-decoration: underline; }
+        .login-btn {
+            width: 100%;
+            padding: 14px;
+            background: linear-gradient(135deg, #00D4FF, #0088FF);
+            border: none;
+            border-radius: 8px;
+            color: #000;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+        .login-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 212, 255, 0.25);
+        }
+        .login-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+            transform: none;
+        }
+        .login-footer {
+            text-align: center;
+            color: #495670;
+            font-size: 13px;
+            margin-top: 20px;
+        }
+        .login-footer strong { color: #94A3B8; }
+        @media (max-width: 768px) {
+            .login-wrapper { grid-template-columns: 1fr; }
+            .brand-section { padding: 32px 24px; }
+            .form-section { padding: 32px 24px; }
+            .feature-grid { grid-template-columns: 1fr 1fr; }
+        }
+    </style>
 </head>
 <body>
-
-    <!-- 粒子动态背景 -->
-    <canvas id="particles-canvas"></canvas>
-
-    <!-- 登录主容器 -->
     <div class="login-wrapper">
-        <!-- 左侧品牌区 -->
         <div class="brand-section">
             <div class="brand-logo">
                 <span class="icon">☁️</span>
@@ -29,47 +193,33 @@
                 <div class="feature-item"><span>💎</span><p>至臻用户体验</p></div>
             </div>
         </div>
-
-        <!-- 右侧登录区 -->
         <div class="form-section">
             <div class="form-header">
                 <h2>欢迎回归</h2>
                 <p>登录您的智云 ERP 管理后台</p>
             </div>
-            
             <div class="login-error" id="loginError">用户名或密码错误，请重试</div>
-            
-            <form id="loginForm">
+            <form id="loginForm" onsubmit="return handleLogin(event)">
                 <div class="input-group">
-                    <label for="username">账号</label>
-                    <input type="text" id="username" placeholder="admin" value="admin" autofocus>
+                    <label for="email">邮箱地址</label>
+                    <input type="email" id="email" placeholder="请输入邮箱地址" value="1072360892@qq.com" required autofocus>
                 </div>
                 <div class="input-group">
                     <label for="password">密码</label>
-                    <input type="password" id="password" placeholder="••••••" value="123456">
+                    <input type="password" id="password" placeholder="请输入密码" required>
                 </div>
-                
                 <div class="form-actions">
-                    <label>
-                        <input type="checkbox" checked> 保持登录
-                    </label>
+                    <label><input type="checkbox" checked> 保持登录</label>
                     <a href="#">忘记密码？</a>
                 </div>
-                
-                <button type="submit" class="login-btn">进入管理中心</button>
+                <button type="submit" class="login-btn" id="loginBtn">进入管理中心</button>
             </form>
-            
             <div class="login-footer">
-                默认体验账号: <strong>admin</strong> / <strong>123456</strong>
+                默认体验账号: <strong>1072360892@qq.com</strong> / <strong>Admin@123456</strong>
             </div>
         </div>
     </div>
 
-    <!-- ============================================================
-    核心逻辑与粒子动画
-    ============================================================ -->
-    
-    <script src="js/common.js"></script>
     <!-- Supabase 支持 -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="/config.js"></script>
@@ -78,6 +228,46 @@
     <script src="/js/db.js"></script>
     <script src="/js/permissions.js"></script>
     <script src="/js/storage.js"></script>
+    <script src="/js/common.js"></script>
+
+    <script>
+    async function handleLogin(event) {
+        event.preventDefault();
+        
+        const email = document.getElementById('email').value.trim();
+        const password = document.getElementById('password').value;
+        const errorEl = document.getElementById('loginError');
+        const loginBtn = document.getElementById('loginBtn');
+        
+        // 隐藏之前的错误
+        errorEl.classList.remove('show');
+        loginBtn.disabled = true;
+        loginBtn.textContent = '登录中...';
+        
+        try {
+            // 使用 Supabase Auth 登录
+            const result = await window.authManager.login(email, password);
+            
+            if (result.success) {
+                // 登录成功，跳转到首页
+                window.location.href = '/index.html';
+            } else {
+                // 显示错误
+                errorEl.textContent = result.error || '登录失败，请检查邮箱和密码';
+                errorEl.classList.add('show');
+                loginBtn.disabled = false;
+                loginBtn.textContent = '进入管理中心';
+            }
+        } catch (error) {
+            errorEl.textContent = '网络错误，请稍后重试';
+            errorEl.classList.add('show');
+            loginBtn.disabled = false;
+            loginBtn.textContent = '进入管理中心';
+            console.error('登录错误:', error);
+        }
+        
+        return false;
+    }
+    </script>
 </body>
 </html>
-
