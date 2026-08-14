@@ -177,3 +177,32 @@
         window.renderDynamicSidebar();
     });
 })();
+
+// ==========================
+// 8. 认证状态检查 (Supabase) - 追加
+// ==========================
+(function() {
+    // 等待页面加载完成后检查认证
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            checkAuthAndRender();
+        });
+    } else {
+        checkAuthAndRender();
+    }
+    
+    function checkAuthAndRender() {
+        // 检查认证状态 (如果 authManager 存在)
+        if (typeof authManager !== 'undefined') {
+            // 如果不是登录页且未认证，跳转到登录页
+            if (!window.location.pathname.includes('login.html') && !authManager.isAuthenticated()) {
+                window.location.href = '/login.html';
+                return;
+            }
+        }
+        // 渲染侧边栏 (如果未渲染)
+        if (typeof window.renderDynamicSidebar === 'function') {
+            window.renderDynamicSidebar();
+        }
+    }
+})();
