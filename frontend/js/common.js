@@ -3,25 +3,25 @@
  * 功能：侧边栏渲染 + 3套主题 + 全局存储 + VAT计算 + Tab/模态框统一控制
  */
 (function() {
-    'use strict';
+    '"'"'use strict'"'"';
 
     // ==========================
-    // 1. 全局数据存储模块 (替代各页面内未定义的 DB)
+    // 1. 全局数据存储模块
     // ==========================
     window.ERPStorage = {
         get: (key, def) => {
-            try { const d = localStorage.getItem('erp_' + key); return d ? JSON.parse(d) : def; }
+            try { const d = localStorage.getItem('"'"'erp_'"'"' + key); return d ? JSON.parse(d) : def; }
             catch { return def; }
         },
         set: (key, val) => {
-            try { localStorage.setItem('erp_' + key, JSON.stringify(val)); }
+            try { localStorage.setItem('"'"'erp_'"'"' + key, JSON.stringify(val)); }
             catch {}
         },
-        remove: key => localStorage.removeItem('erp_' + key)
+        remove: key => localStorage.removeItem('"'"'erp_'"'"' + key)
     };
 
     // ==========================
-    // 2. 全球 VAT 计算 (15% 沙特合规)
+    // 2. VAT 计算 (15%)
     // ==========================
     window.ERPTax = {
         rate: 0.15,
@@ -29,72 +29,62 @@
         withoutVat: (price) => +(price / (1 + 0.15)).toFixed(2),
         vatOnly: (price) => +(price * 0.15).toFixed(2)
     };
-
-    // 方便业务页面直接调用的别名
     window.calcTax = window.ERPTax;
-    window.DB = window.ERPStorage; // 兼容原有写法
+    window.DB = window.ERPStorage;
 
     // ==========================
-    // 3. 统一 Tab 切换引擎
+    // 3. Tab 切换引擎
     // ==========================
     window.switchPanel = (panelId, el) => {
-        // 智能识别当前页面的前缀（例如 ord-panel / pos-panel / fin-panel）
-        const panelClass = el.closest('.ord-panel, .pos-panel, .fin-panel, .hr-panel, .pur-panel, .inv-panel, .mkt-panel, .fleet-panel, .cust-panel, .saas-panel, .sys-panel, .set-panel, .ai-grid-2col, .pd-panel')?.className?.split(' ')[0];
+        const panelClass = el.closest('"'"'.ord-panel, .pos-panel, .fin-panel, .hr-panel, .pur-panel, .inv-panel, .mkt-panel, .fleet-panel, .cust-panel, .saas-panel, .sys-panel, .set-panel, .ai-grid-2col, .pd-panel'"'"')?.['"'"'className'"'"']?.split('"'"' '"'"')[0];
         if(!panelClass) {
-            // 如果没找到通用类，尝试通用.panel-container (适用于 analytics)
-            document.querySelectorAll('.panel-container').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.analytics-tab').forEach(t => t.classList.remove('active'));
-            document.getElementById(panelId).classList.add('active');
-            el.classList.add('active');
+            document.querySelectorAll('"'"'.panel-container'"'"').forEach(p => p.classList.remove('"'"'active'"'"'));
+            document.querySelectorAll('"'"'.analytics-tab'"'"').forEach(t => t.classList.remove('"'"'active'"'"'));
+            document.getElementById(panelId).classList.add('"'"'active'"'"');
+            el.classList.add('"'"'active'"'"');
             return;
         }
-        const prefix = panelClass.split('-')[0];
-        document.querySelectorAll(`.${panelClass}`).forEach(p => p.classList.remove('active'));
-        document.querySelectorAll(`.${prefix}-tab`).forEach(t => t.classList.remove('active'));
-        document.getElementById(panelId).classList.add('active');
-        el.classList.add('active');
+        const prefix = panelClass.split('"'"'-'"'"')[0];
+        document.querySelectorAll('"'"'.'"'"' + panelClass).forEach(p => p.classList.remove('"'"'active'"'"'));
+        document.querySelectorAll('"'"'.'"'"' + prefix + '"'"'-tab'"'"').forEach(t => t.classList.remove('"'"'active'"'"'));
+        document.getElementById(panelId).classList.add('"'"'active'"'"');
+        el.classList.add('"'"'active'"'"');
     };
 
     // ==========================
-    // 4. 统一模态框控制引擎
+    // 4. 模态框控制
     // ==========================
-    window.openModal = (id) => { document.getElementById(id).classList.add('active'); };
-    window.closeModal = (id) => { document.getElementById(id).classList.remove('active'); };
-
-    // 兼容部分历史旧页面引用的方法
-    window.openPaymentModal = () => { document.getElementById('paymentModal').classList.add('active'); };
-    window.closePaymentModal = () => { document.getElementById('paymentModal').classList.remove('active'); };
-    window.openManualModal = () => { document.getElementById('manualModal').classList.add('active'); };
-    window.closeManualModal = () => { document.getElementById('manualModal').classList.remove('active'); };
+    window.openModal = (id) => { document.getElementById(id).classList.add('"'"'active'"'"'); };
+    window.closeModal = (id) => { document.getElementById(id).classList.remove('"'"'active'"'"'); };
+    window.openPaymentModal = () => { document.getElementById('"'"'paymentModal'"'"').classList.add('"'"'active'"'"'); };
+    window.closePaymentModal = () => { document.getElementById('"'"'paymentModal'"'"').classList.remove('"'"'active'"'"'); };
+    window.openManualModal = () => { document.getElementById('"'"'manualModal'"'"').classList.add('"'"'active'"'"'); };
+    window.closeManualModal = () => { document.getElementById('"'"'manualModal'"'"').classList.remove('"'"'active'"'"'); };
 
     // ==========================
-    // 5. 通用提示与导出功能
+    // 5. 导出功能
     // ==========================
-    window.exportCSV = (name) => { alert(`✅ 正在导出 ${name || '当前'} 数据报表 CSV...`); };
+    window.exportCSV = (name) => { alert('"'"'✅ 正在导出 '"'"' + (name || '"'"'当前'"'"') + '"'"' 数据报表 CSV...'"'"'); };
 
     // ==========================
-    // 6. 主题切换核心逻辑
+    // 6. 主题切换
     // ==========================
     const THEMES = {
-        dark: 'theme-dark',   // 默认深色赛博
-        azure: 'theme-azure', // 天蓝色
-        light: 'theme-light'  // 银白色
+        dark: '"'"'theme-dark'"'"',
+        azure: '"'"'theme-azure'"'"',
+        light: '"'"'theme-light'"'"'
     };
 
-    // 初始化时读取 localStorage 中的主题，如果没有则默认深色
-    let currentTheme = localStorage.getItem('erp_theme') || 'dark';
+    let currentTheme = localStorage.getItem('"'"'erp_theme'"'"') || '"'"'dark'"'"';
     applyTheme(currentTheme);
 
     function applyTheme(themeKey) {
         const body = document.body;
-        // 移除所有已有的主题 class
-        body.classList.remove('theme-dark', 'theme-azure', 'theme-light');
-        // 添加新的主题 class
+        body.classList.remove('"'"'theme-dark'"'"', '"'"'theme-azure'"'"', '"'"'theme-light'"'"');
         body.classList.add(THEMES[themeKey]);
-        // 保存到 localStorage 供下次访问继续生效
-        localStorage.setItem('erp_theme', themeKey);
+        localStorage.setItem('"'"'erp_theme'"'"', themeKey);
         currentTheme = themeKey;
-        console.log('✅ 主题已切换为:', themeKey);
+        console.log('"'"'✅ 主题已切换为:'"'"', themeKey);
     }
 
     window.switchTheme = function(themeKey) {
@@ -102,31 +92,34 @@
     };
 
     // ==========================
-    // 7. 侧边栏渲染引擎 (原封不动保留)
+    // 7. 侧边栏渲染引擎
     // ==========================
     const MENU_CONFIG = [
-        { id: 'dashboard', icon: '📈', name: '智能决策中心', children: [] },
-        { id: 'orders', icon: '📦', name: '订单管理', children: [] },
-        { id: 'pos', icon: '🧾', name: 'POS 收银', children: [] },
-        { id: 'customers', icon: '👥', name: '客户管理', children: [] },
-        { id: 'products', icon: '📦', name: '产品中心', children: [] },
-        { id: 'inventory', icon: '🏷️', name: '库存管理', children: [] },
-        { id: 'purchase', icon: '🛒', name: '采购管理', children: [] },
-        { id: 'finance', icon: '💰', name: '财务管理', children: [] },
-        { id: 'hr', icon: '🧑‍💼', name: '人力资源', children: [] },
-        { id: 'employee', icon: '👨‍💻', name: '员工管理', children: [] },
-        { id: 'fleet', icon: '🚚', name: '车队管理', children: [] },
-        { id: 'marketing', icon: '📣', name: '营销管理', children: [] },
-        { id: 'analytics', icon: '📊', name: '数据分析', children: [] },
-        { id: 'ai', icon: '🤖', name: 'AI 智能中枢', children: [] },
-        { id: 'saas', icon: '☁️', name: 'SaaS 服务', children: [] },
-        { id: 'settings', icon: '⚙️', name: '系统设置', children: [] },
-        { id: 'system', icon: '🔒', name: '系统管理', children: [] }
+        { id: '"'"'dashboard'"'"', icon: '"'"'📈'"'"', name: '"'"'智能决策中心'"'"' },
+        { id: '"'"'orders'"'"', icon: '"'"'📦'"'"', name: '"'"'订单管理'"'"' },
+        { id: '"'"'pos'"'"', icon: '"'"'🧾'"'"', name: '"'"'POS 收银'"'"' },
+        { id: '"'"'customers'"'"', icon: '"'"'👥'"'"', name: '"'"'客户管理'"'"' },
+        { id: '"'"'products'"'"', icon: '"'"'📦'"'"', name: '"'"'产品中心'"'"' },
+        { id: '"'"'inventory'"'"', icon: '"'"'🏷️'"'"', name: '"'"'库存管理'"'"' },
+        { id: '"'"'purchase'"'"', icon: '"'"'🛒'"'"', name: '"'"'采购管理'"'"' },
+        { id: '"'"'finance'"'"', icon: '"'"'💰'"'"', name: '"'"'财务管理'"'"' },
+        { id: '"'"'hr'"'"', icon: '"'"'🧑‍💼'"'"', name: '"'"'人力资源'"'"' },
+        { id: '"'"'employee'"'"', icon: '"'"'👨‍💻'"'"', name: '"'"'员工管理'"'"' },
+        { id: '"'"'fleet'"'"', icon: '"'"'🚚'"'"', name: '"'"'车队管理'"'"' },
+        { id: '"'"'marketing'"'"', icon: '"'"'📣'"'"', name: '"'"'营销管理'"'"' },
+        { id: '"'"'analytics'"'"', icon: '"'"'📊'"'"', name: '"'"'数据分析'"'"' },
+        { id: '"'"'ai'"'"', icon: '"'"'🤖'"'"', name: '"'"'AI 智能中枢'"'"' },
+        { id: '"'"'saas'"'"', icon: '"'"'☁️'"'"', name: '"'"'SaaS 服务'"'"' },
+        { id: '"'"'settings'"'"', icon: '"'"'⚙️'"'"', name: '"'"'系统设置'"'"' },
+        { id: '"'"'system'"'"', icon: '"'"'🔒'"'"', name: '"'"'系统管理'"'"' }
     ];
 
     window.renderDynamicSidebar = () => {
-        const container = document.getElementById('sidebar-container');
-        if (!container) return;
+        const container = document.getElementById('"'"'sidebar-container'"'"');
+        if (!container) {
+            console.warn('"'"'⚠️ sidebar-container 元素未找到'"'"');
+            return;
+        }
 
         container.innerHTML = `
         <div class="sidebar">
@@ -137,22 +130,24 @@
                 <div style="display:flex;align-items:center;gap:8px;">
                     <span style="font-size:13px;color:var(--text-sub);">👤 管理员</span>
                     <div style="display:flex;gap:4px;margin-left:4px;background:rgba(255,255,255,0.03);padding:2px;border-radius:6px;">
-                        <button onclick="switchTheme('dark')" style="background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:4px;font-size:14px;color:var(--text-sub);" title="深色主题">🌙</button>
-                        <button onclick="switchTheme('azure')" style="background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:4px;font-size:14px;color:var(--text-sub);" title="天蓝主题">💠</button>
-                        <button onclick="switchTheme('light')" style="background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:4px;font-size:14px;color:var(--text-sub);" title="银白主题">☀️</button>
+                        <button onclick="switchTheme('"'"'dark'"'"')" style="background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:4px;font-size:14px;color:var(--text-sub);" title="深色主题">🌙</button>
+                        <button onclick="switchTheme('"'"'azure'"'"')" style="background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:4px;font-size:14px;color:var(--text-sub);" title="天蓝主题">💠</button>
+                        <button onclick="switchTheme('"'"'light'"'"')" style="background:none;border:none;cursor:pointer;padding:4px 8px;border-radius:4px;font-size:14px;color:var(--text-sub);" title="银白主题">☀️</button>
                     </div>
                 </div>
                 <div>
-                    <button onclick="alert('注销模拟')" style="background:none;border:none;color:var(--text-sub);cursor:pointer;font-size:14px;">🚪</button>
+                    <button onclick="alert('"'"'注销模拟'"'"')" style="background:none;border:none;color:var(--text-sub);cursor:pointer;font-size:14px;">🚪</button>
                 </div>
             </div>
         </div>`;
 
-        const navList = document.querySelector('#sidebarNav .nav-list');
+        const navList = document.querySelector('"'"'#sidebarNav .nav-list'"'"');
+        if (!navList) return;
+        
         MENU_CONFIG.forEach(mod => {
-            const li = document.createElement('li');
-            li.className = 'nav-item';
-            const fullPath = '/modules/' + mod.id + '/' + mod.id + '.html';
+            const li = document.createElement('"'"'li'"'"');
+            li.className = '"'"'nav-item'"'"';
+            const fullPath = '"'"'/modules/'"'"' + mod.id + '"'"'/'"'"' + mod.id + '"'"'.html'"'"';
             li.innerHTML = `
                 <a href="${fullPath}" class="nav-link">
                     <span class="nav-icon">${mod.icon}</span>
@@ -161,79 +156,26 @@
             navList.appendChild(li);
         });
 
-        const searchInput = document.getElementById('menuSearch');
+        const searchInput = document.getElementById('"'"'menuSearch'"'"');
         if (searchInput) {
-            searchInput.addEventListener('input', function() {
+            searchInput.addEventListener('"'"'input'"'"', function() {
                 const keyword = this.value.toLowerCase();
-                document.querySelectorAll('.nav-item').forEach(item => {
-                    const text = item.querySelector('.nav-text').textContent.toLowerCase();
-                    item.style.display = text.includes(keyword) ? 'block' : 'none';
+                document.querySelectorAll('"'"'.nav-item'"'"').forEach(item => {
+                    const text = item.querySelector('"'"'.nav-text'"'"').textContent.toLowerCase();
+                    item.style.display = text.includes(keyword) ? '"'"'block'"'"' : '"'"'none'"'"';
                 });
             });
         }
+        
+        console.log('"'"'✅ 侧边栏渲染完成'"'"');
     };
 
-    document.addEventListener('DOMContentLoaded', () => {
+    // ==========================
+    // 8. 页面加载完成后渲染侧边栏
+    // ==========================
+    document.addEventListener('"'"'DOMContentLoaded'"'"', () => {
+        console.log('"'"'✅ DOM 加载完成，开始渲染侧边栏'"'"');
         window.renderDynamicSidebar();
     });
-})();
 
-// ==========================
-// 8. 认证状态检查 (Supabase) - 追加
-// ==========================
-(function() {
-    // 等待页面加载完成后检查认证
-    if (document.readyState === 'loading') {
-        document.addEventListener('DOMContentLoaded', function() {
-            checkAuthAndRender();
-        });
-    } else {
-        checkAuthAndRender();
-    }
-    
-    function checkAuthAndRender() {
-        // 检查认证状态 (如果 authManager 存在)
-        if (typeof authManager !== 'undefined') {
-            // 如果不是登录页且未认证，跳转到登录页
-            if (!window.location.pathname.includes('login.html') && !authManager.isAuthenticated()) {
-                window.location.href = '/login.html';
-                return;
-            }
-        }
-        // 渲染侧边栏 (如果未渲染)
-        if (typeof window.renderDynamicSidebar === 'function') {
-            window.renderDynamicSidebar();
-        }
-    }
-})();
-
-
-// ==========================
-// 认证状态检查 (Supabase)
-// ==========================
-(function() {
-    // 保存原有的 DOMContentLoaded 回调
-    var originalCallback = null;
-    
-    // 在 DOM 加载完成后执行
-    function checkAuth() {
-        // 如果 authManager 存在且未登录，跳转
-        if (typeof authManager !== 'undefined' && 
-            !window.location.pathname.includes('login.html') && 
-            !authManager.isAuthenticated()) {
-            window.location.href = '/login.html';
-            return;
-        }
-        // 渲染侧边栏
-        if (typeof window.renderDynamicSidebar === 'function') {
-            window.renderDynamicSidebar();
-        }
-    }
-    
-    // 如果页面已加载完成，立即执行
-    if (document.readyState === 'complete') {
-        setTimeout(checkAuth, 100);
-    } else {
-        document.addEventListener('DOMContentLoaded', checkAuth);
-    }
 })();
