@@ -1,4 +1,4 @@
-﻿// frontend/js/db.js
+// frontend/js/db.js
 // 统一数据库访问层
 
 class Database {

@@ -1,4 +1,4 @@
-﻿// frontend/config.js
+// frontend/config.js
 // Supabase 配置
 
 const SUPABASE_CONFIG = {

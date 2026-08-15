@@ -1,4 +1,4 @@
-﻿// frontend/js/permissions.js
+// frontend/js/permissions.js
 // 权限管理模块
 
 class PermissionManager {

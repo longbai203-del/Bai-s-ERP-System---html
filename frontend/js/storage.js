@@ -1,4 +1,4 @@
-﻿// frontend/js/storage.js
+// frontend/js/storage.js
 // 缓存与存储管理模块
 
 class StorageManager {

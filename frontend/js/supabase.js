@@ -1,4 +1,4 @@
-﻿// frontend/js/supabase.js
+// frontend/js/supabase.js
 // Supabase 客户端初始化
 
 const { createClient } = supabase;

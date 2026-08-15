@@ -2,18 +2,8 @@
   "version": 2,
   "cleanUrls": true,
   "trailingSlash": false,
-  "routes": [
-    { "src": "/", "dest": "/index.html" },
-    { "src": "/login", "dest": "/login.html" },
-    { "src": "/404", "dest": "/404.html" },
-    { 
-      "src": "/(.*)\\.html", 
-      "dest": "/$1.html" 
-    },
-    { 
-      "src": "/(.*)", 
-      "dest": "/$1" 
-    }
+  "rewrites": [
+    { "source": "/modules/(.*)", "destination": "/modules/$1" }
   ],
   "headers": [
     {

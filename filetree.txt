@@ -1,11 +1,13 @@
 ﻿Folder PATH listing for volume Data
-Volume serial number is 00000004 3412:018C
+Volume serial number is 00000012 3412:018C
 D:.
 |   .env
 |   .gitignore
 |   CHANGELOG.md
 |   filetree.txt
 |   package.json
+|   README.md
+|   vercel.json
 |   
 \---frontend
     |   404.html
@@ -13,12 +15,9 @@ D:.
     |   DEPLOY.md
     |   favicon.ico
     |   index.html
-    |   index.html.bak
     |   login.html
     |   manifest.json
     |   modules.json
-    |   README.md
-    |   vercel.json
     |   
     +---assets
     |   \---icons
@@ -32,6 +31,7 @@ D:.
     +---js
     |       auth.js
     |       common.js
+    |       common.js.bak
     |       db.js
     |       permissions.js
     |       storage.js
@@ -49,6 +49,8 @@ D:.
     |       zh-CN.json
     |       
     +---modules
+    |   |   index.html
+    |   |   
     |   +---ai
     |   |       ai.html
     |   |       

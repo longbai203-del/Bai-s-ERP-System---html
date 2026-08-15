@@ -1,4 +1,4 @@
-﻿// frontend/js/auth.js
+// frontend/js/auth.js
 // 认证管理模块
 
 class AuthManager {
