@@ -7,24 +7,35 @@
 </head>
 <body>
     <script>
-        // 优先加载 Supabase 核心库以读取 Session
-        // 注意：此处使用同步/阻塞方式确保检查后再跳转
-        async function checkSessionAndRoute() {
-            // 加载 Supabase Client (浏览器环境有全局 supabase)
-            const { createClient } = supabase;
-            const supabaseClient = createClient(
-                'https://qryllswlfryaywiajilr.supabase.co',
-                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFyeWxsc3dsZnJ5YXl3aWFqaWxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY3MzUxMjgsImV4cCI6MjEwMjMxMTEyOH0.g0i02OViDEINfXLMksp1oWNKoactxOBlylyTdDXr5qs'
-            );
-            const { data: { session } } = await supabaseClient.auth.getSession();
-            
-            if (session) {
-                window.location.href = '/modules/dashboard/dashboard.html';
-            } else {
+        /**
+         * 入口路由判断：
+         * 如果用户已登录 -> 跳转仪表盘
+         * 如果用户未登录 -> 跳转登录页
+         */
+        (async function() {
+            try {
+                // 1. 检查全局 supabaseClient 是否已加载
+                if (typeof supabaseClient === 'undefined') {
+                    console.warn("⚠️ Supabase 客户端未加载，强制跳转至登录页面。");
+                    window.location.href = '/login.html';
+                    return;
+                }
+
+                // 2. 读取当前 Session
+                const { data: { session } } = await supabaseClient.auth.getSession();
+                
+                // 3. 根据 Session 状态跳转
+                if (session) {
+                    window.location.href = '/modules/dashboard/dashboard.html';
+                } else {
+                    window.location.href = '/login.html';
+                }
+            } catch (error) {
+                // 4. 捕获异常，保底跳转登录页
+                console.error("入口路由检查异常:", error);
                 window.location.href = '/login.html';
             }
-        }
-        checkSessionAndRoute();
+        })();
     </script>
 </body>
 </html>
