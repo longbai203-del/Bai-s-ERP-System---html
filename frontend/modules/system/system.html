@@ -322,90 +322,12 @@
         </div>
     </div>
 
-    <script src="../../js/common.js"></script>
-
-    <script>
-        /* ============================================================
-           4500 行 JS 系统引擎：用户、数据、日志、信息、隔离
-           ============================================================ */
-
-        // 1. Tab 切换
-        function switchPanel(panelId, el) {
-            document.querySelectorAll('.sys-panel').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.sys-tab').forEach(t => t.classList.remove('active'));
-            document.getElementById(panelId).classList.add('active');
-            el.classList.add('active');
-        }
-
-        // 2. 模态框
-        function openModal(id) { document.getElementById(id).classList.add('active'); }
-        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-
-        // 3. 导出 CSV
-        function exportSystemCSV() { alert('✅ 正在导出系统审计日志 CSV...'); }
-
-        document.addEventListener('DOMContentLoaded', function() {
-
-            // ============================================================
-            // A. 操作员数据
-            // ============================================================
-            const userData = [
-                { n:'张伟', l:'zhangwei', r:'管理员', s:'active' },
-                { n:'李娜', l:'lina', r:'店长', s:'active' },
-                { n:'王强', l:'wangqiang', r:'收银员', s:'active' },
-                { n:'赵峰', l:'zhaofeng', r:'收银员', s:'inactive' }
-            ];
-            document.getElementById('userBody').innerHTML = userData.map(d => `
-                <tr><td>${d.n}</td><td>${d.l}</td><td>${d.r}</td>
-                <td><span class="status-pill ${d.s==='active'?'green':'red'}">${d.s==='active'?'正常':'已禁用'}</span></td>
-                <td><span style="color:var(--neon-blue);cursor:pointer;" onclick="alert('编辑用户 ${d.n}')">编辑</span></td></tr>
-            `).join('');
-
-            // ============================================================
-            // B. 备份数据
-            // ============================================================
-            const backupData = [
-                { n:'erp_full_backup_20260802', sz:'1.2 MB', t:'2026-08-02 02:00' },
-                { n:'erp_full_backup_20260801', sz:'1.1 MB', t:'2026-08-01 02:00' },
-                { n:'erp_full_backup_20260731', sz:'1.1 MB', t:'2026-07-31 02:00' }
-            ];
-            document.getElementById('backupBody').innerHTML = backupData.map(d => `
-                <tr><td>${d.n}</td><td>${d.sz}</td><td>${d.t}</td>
-                <td><span style="color:var(--neon-blue);cursor:pointer;" onclick="alert('正在下载备份 ${d.n}...')">下载</span></td></tr>
-            `).join('');
-
-            // ============================================================
-            // C. 审计日志数据
-            // ============================================================
-            const auditData = [
-                { t:'2026-08-02 10:30', u:'张伟', o:'登录系统', i:'192.168.1.100' },
-                { t:'2026-08-02 10:15', u:'李娜', o:'修改了商品价格', i:'192.168.1.101' },
-                { t:'2026-08-02 09:45', u:'王强', o:'创建新订单 ORD-001', i:'192.168.1.102' },
-                { t:'2026-08-02 09:10', u:'系统', o:'自动执行数据备份', i:'127.0.0.1' }
-            ];
-            document.getElementById('auditBody').innerHTML = auditData.map(d => `
-                <tr><td>${d.t}</td><td>${d.u}</td><td>${d.o}</td><td>${d.i}</td></tr>
-            `).join('');
-
-            // ============================================================
-            // D. 核心功能函数
-            // ============================================================
-            window.createBackup = function() { alert('✅ 正在执行全量数据备份，请勿关闭页面...'); };
-            window.restoreBackup = function() { if(confirm('确认从备份恢复数据？这将覆盖当前数据！')) alert('✅ 数据恢复完成。'); };
-            window.clearAllData = function() { if(confirm('⚠️ 确认清空全部业务数据？此操作不可逆！')) alert('✅ 已清空。'); };
-            window.saveUser = function(e) { e.preventDefault(); alert('✅ 操作员已创建。'); closeModal('userModal'); };
-
-            console.log("✅ 4500 行系统运维全体系引擎已启动！");
-        });
-    </script>
-    <!-- Supabase 支持 -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <script src="/config.js"></script>
-    <script src="/js/supabase.js"></script>
-    <script src="/js/auth.js"></script>
-    <script src="/js/db.js"></script>
-    <script src="/js/permissions.js"></script>
-    <script src="/js/storage.js"></script>
-    <script src="/js/common.js"></script>
-</body>
+<script src="/config.js"></script>
+<script src="/js/supabase.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/db.js"></script>
+<script src="/js/permissions.js"></script>
+<script src="/js/storage.js"></script>
+<script src="../../js/common.js"></script></body>
 </html>

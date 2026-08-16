@@ -59,7 +59,40 @@
             const result = await authManager.login(email, password);
 
             if (result.success) {
-                window.location.href = '/modules/dashboard/dashboard.html';
+    // 登录后立即获取用户配置文件
+    const profile = await authManager.loadUserProfile();
+    
+    // 如果发现 organization_id 为空，说明是新用户，自动创建默认组织、门店和角色
+    if (!profile || !profile.organization_id) {
+        // 1. 创建默认组织
+        const { data: org } = await db.insert('organizations', {
+            name: '默认企业',
+            tax_id: '000000000000000'
+        });
+        
+        if (org && org[0]) {
+            const orgId = org[0].id;
+            
+            // 2. 创建默认门店
+            await db.insert('branches', {
+                organization_id: orgId,
+                name: '总店',
+                code: 'HQ-001'
+            });
+            
+            // 3. 将当前用户的 profile 更新为这个组织
+            await db.update('profiles', {
+                organization_id: orgId,
+                role: 'super_admin'
+            }, { id: authManager.currentUser.id });
+            
+            // 4. 重新加载 profile 刷新页面
+            await authManager.loadUserProfile();
+        }
+    }
+    
+    // 完成初始化后跳转仪表盘
+    window.location.href = '/modules/dashboard/dashboard.html';
             } else {
                 errorEl.textContent = result.error || '登录失败，请检查邮箱和密码。';
                 errorEl.style.display = 'block';

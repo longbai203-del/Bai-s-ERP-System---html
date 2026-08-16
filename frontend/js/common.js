@@ -31,7 +31,7 @@
     };
 
     window.calcTax = window.ERPTax;
-    window.DB = window.ERPStorage;
+    // \
 
     // ==========================
     // 3. Tab 切换引擎 (保持你的逻辑原封不动)

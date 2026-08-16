@@ -298,119 +298,12 @@
         </div>
     </div>
 
-    <script src="../../js/common.js"></script>
-
-    <script>
-        function switchPanel(panelId, el) {
-            document.querySelectorAll('.mkt-panel').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.mkt-tab').forEach(t => t.classList.remove('active'));
-            document.getElementById(panelId).classList.add('active');
-            el.classList.add('active');
-        }
-
-        function openModal(id) { document.getElementById(id).classList.add('active'); }
-        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-        function exportMarketingCSV() { alert('✅ 正在导出营销全量数据 CSV...'); }
-
-        document.addEventListener('DOMContentLoaded', function() {
-
-            const campData = [
-                { n:'夏日洗车半价周', t:'折扣', b:'¥5,000.00', p:120, s:'启用' },
-                { n:'第二件半价保养', t:'第二件半价', b:'¥3,200.00', p:85, s:'启用' },
-                { n:'老客户专属 8 折', t:'折扣', b:'¥2,000.00', p:45, s:'暂停' },
-                { n:'节日充值送大礼', t:'满减', b:'¥8,000.00', p:210, s:'已结束' }
-            ];
-            function filterCampaigns(search) {
-                let list = campData;
-                if(search) list = list.filter(d => d.n.includes(search));
-                document.getElementById('campCount').textContent = '共 ' + list.length + ' 条';
-                document.getElementById('campBody').innerHTML = list.map(d => `
-                    <tr><td>${d.n}</td><td>${d.t}</td><td>${d.b}</td><td>${d.p}</td>
-                    <td><span class="status-pill ${d.s==='启用'?'green':d.s==='暂停'?'yellow':'red'}">${d.s}</span></td></tr>
-                `).join('');
-            }
-            filterCampaigns('');
-            window.filterCampaigns = filterCampaigns;
-
-            const loyData = [
-                { l:'普通', n:920, d:'0%', r:'无', p:'0' },
-                { l:'银卡', n:220, d:'5%', r:'生日8折', p:'500' },
-                { l:'金卡', n:80, d:'10%', r:'免排队', p:'2,000' },
-                { l:'钻石', n:60, d:'15%', r:'专属管家', p:'5,000' }
-            ];
-            document.getElementById('loyBody').innerHTML = loyData.map(d => `
-                <tr>
-                    <td><span class="status-pill ${d.l==='钻石'?'purple':d.l==='金卡'?'yellow':'blue'}">${d.l}</span></td>
-                    <td>${d.n}</td><td>${d.r}</td><td>${d.r}</td><td>${d.p}</td>
-                </tr>
-            `).join('');
-
-            const vouData = [
-                { c:'VOU-2026-001', t:'洗车券', v:'¥25.00', s:'未使用' },
-                { c:'VOU-2026-002', t:'折扣券', v:'8折', s:'已使用' },
-                { c:'VOU-2026-003', t:'项目券', v:'¥50.00', s:'未使用' },
-                { c:'VOU-2026-004', t:'洗车券', v:'¥25.00', s:'已过期' }
-            ];
-            function filterVouchers(search) {
-                let list = vouData;
-                if(search) list = list.filter(d => d.c.includes(search));
-                document.getElementById('vouCount').textContent = '共 ' + list.length + ' 条';
-                document.getElementById('vouGrid').innerHTML = list.map(d => `
-                    <div class="voucher-card">
-                        <div class="title">${d.c}</div>
-                        <div class="sub">${d.t} · 价值 ${d.v}</div>
-                        <div class="meta"><span>状态</span>
-                            <span class="status-pill ${d.s==='未使用'?'green':d.s==='已使用'?'yellow':'red'}">${d.s}</span>
-                        </div>
-                    </div>
-                `).join('');
-            }
-            filterVouchers('');
-            window.filterVouchers = filterVouchers;
-
-            const refData = [
-                { r:'张伟', rr:'李娜', t:'2026-08-02', s:'已转化' },
-                { r:'王强', rr:'刘洋', t:'2026-08-01', s:'待处理' },
-                { r:'陈静', rr:'赵峰', t:'2026-07-31', s:'已转化' },
-                { r:'吴亮', rr:'郑洁', t:'2026-07-30', s:'已失败' }
-            ];
-            function filterReferrals(search) {
-                let list = refData;
-                if(search) list = list.filter(d => d.r.includes(search)||d.rr.includes(search));
-                document.getElementById('refCount').textContent = '共 ' + list.length + ' 条';
-                document.getElementById('refBody').innerHTML = list.map(d => `
-                    <tr><td>${d.r}</td><td>${d.rr}</td><td>${d.t}</td>
-                    <td><span class="status-pill ${d.s==='已转化'?'green':d.s==='待处理'?'yellow':'red'}">${d.s}</span></td></tr>
-                `).join('');
-            }
-            filterReferrals('');
-            window.filterReferrals = filterReferrals;
-
-            const statData = [
-                { c:'线下门店', r:450, t:180, p:'40%', v:'¥32.4k' },
-                { c:'社交媒体', r:1200, t:320, p:'26.7%', v:'¥22.8k' },
-                { c:'推荐裂变', r:180, t:85, p:'47.2%', v:'¥10.2k' },
-                { c:'线上官网', r:560, t:130, p:'23.2%', v:'¥3.0k' }
-            ];
-            document.getElementById('statBody').innerHTML = statData.map(d => `
-                <tr><td>${d.c}</td><td>${d.r}</td><td>${d.t}</td><td>${d.p}</td><td style="color:#00D4FF;">${d.v}</td></tr>
-            `).join('');
-
-            window.saveCampaign = function(e) { e.preventDefault(); alert('✅ 营销活动已创建！'); closeModal('campaignModal'); };
-            window.saveRule = function(e) { e.preventDefault(); alert('✅ 等级规则已添加！'); closeModal('ruleModal'); };
-            window.saveVoucher = function(e) { e.preventDefault(); alert('✅ 券码发放成功！'); closeModal('voucherModal'); };
-
-            console.log("✅ 4500 行营销全体系融合引擎已启动！");
-        });
-    </script>
-    <!-- Supabase 支持 -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <script src="/config.js"></script>
-    <script src="/js/supabase.js"></script>
-    <script src="/js/auth.js"></script>
-    <script src="/js/db.js"></script>
-    <script src="/js/permissions.js"></script>
-    <script src="/js/storage.js"></script>
-    <script src="/js/common.js"></script>
-</body>
+<script src="/config.js"></script>
+<script src="/js/supabase.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/db.js"></script>
+<script src="/js/permissions.js"></script>
+<script src="/js/storage.js"></script>
+<script src="../../js/common.js"></script></body>
 </html>

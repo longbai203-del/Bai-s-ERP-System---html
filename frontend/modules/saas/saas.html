@@ -290,115 +290,12 @@
         </div>
     </div>
 
-    <script src="../../js/common.js"></script>
-
-    <script>
-        /* ============================================================
-           4500 行 JS 引擎：租户、套餐、计费、统计、隔离备份
-           ============================================================ */
-
-        // 1. Tab 切换
-        function switchPanel(panelId, el) {
-            document.querySelectorAll('.saas-panel').forEach(p => p.classList.remove('active'));
-            document.querySelectorAll('.saas-tab').forEach(t => t.classList.remove('active'));
-            document.getElementById(panelId).classList.add('active');
-            el.classList.add('active');
-            setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 100);
-        }
-
-        // 2. 模态框
-        function openModal(id) { document.getElementById(id).classList.add('active'); }
-        function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-
-        // 3. 导出 CSV
-        function exportSaaS() { alert('✅ 正在导出全量 SaaS 跨店统计数据 CSV...'); }
-
-        document.addEventListener('DOMContentLoaded', function() {
-
-            // ============================================================
-            // A. 租户/门店数据 (含税号与到期预警)
-            // ============================================================
-            const tenantData = [
-                { n:'龙城旗舰洗车店', tax:'312345678901234', plan:'标准版', end:'2026-09-15', st:'正常' },
-                { n:'奥体分店', tax:'312345678901235', plan:'基础版', end:'2026-08-30', st:'正常' },
-                { n:'高新区美容中心', tax:'312345678901236', plan:'专业版', end:'2026-12-01', st:'正常' },
-                { n:'南城连锁站', tax:'312345678901237', plan:'标准版', end:'2026-08-10', st:'即将到期' }
-            ];
-            function filterTenants(search) {
-                let list = tenantData;
-                if(search) list = list.filter(d => d.n.includes(search)||d.tax.includes(search));
-                document.getElementById('tenantCount').textContent = '共 ' + list.length + ' 条';
-                document.getElementById('tenantBody').innerHTML = list.map(d => `
-                    <tr><td>${d.n}</td><td>${d.tax}</td><td>${d.plan}</td>
-                    <td style="color:${d.st==='即将到期'?'#F59E0B':'#94A3B8'};">${d.end}</td>
-                    <td><span class="status-pill ${d.st==='正常'?'green':'yellow'}">${d.st}</span></td></tr>
-                `).join('');
-            }
-            filterTenants('');
-            window.filterTenants = filterTenants;
-
-            // ============================================================
-            // B. 计费与订阅记录
-            // ============================================================
-            const billData = [
-                { n:'龙城旗舰洗车店', plan:'标准版', p:'月付', amt:'¥1,299.00', st:'已支付' },
-                { n:'奥体分店', plan:'基础版', p:'年付', amt:'¥6,588.00', st:'已支付' },
-                { n:'高新区美容中心', plan:'专业版', p:'月付', amt:'¥2,999.00', st:'待支付' }
-            ];
-            document.getElementById('billingBody').innerHTML = billData.map(d => `
-                <tr><td>${d.n}</td><td>${d.plan}</td><td>${d.p}</td><td>${d.amt}</td>
-                <td><span class="status-pill ${d.st==='已支付'?'green':'yellow'}">${d.st}</span></td></tr>
-            `).join('');
-
-            // ============================================================
-            // C. 数据隔离与备份记录
-            // ============================================================
-            const backData = [
-                { n:'龙城旗舰洗车店', pre:'tnt_001', ord:345, time:'2026-08-02 02:00' },
-                { n:'奥体分店', pre:'tnt_002', ord:120, time:'2026-08-02 02:10' },
-                { n:'高新区美容中心', pre:'tnt_003', ord:82, time:'2026-08-02 02:15' }
-            ];
-            document.getElementById('backupBody').innerHTML = backData.map(d => `
-                <tr><td>${d.n}</td><td>${d.pre}</td><td>${d.ord}</td><td>${d.time}</td></tr>
-            `).join('');
-
-            // ============================================================
-            // D. ECharts 全局统计图表
-            // ============================================================
-            var chart = echarts.init(document.getElementById('saasTrendChart'));
-            chart.setOption({
-                grid: { left: '3%', right: '4%', bottom: '15%', top: '10%' },
-                xAxis: { type: 'category', data: ['1月', '2月', '3月', '4月', '5月', '6月'] },
-                yAxis: { type: 'value', splitLine: { lineStyle: { color: 'rgba(255,255,255,0.03)' } } },
-                series: [{
-                    data: [42, 55, 38, 60, 48, 75],
-                    type: 'bar',
-                    itemStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1, [{offset:0,color:'#00D4FF'},{offset:1,color:'#C084FC'}]) }
-                }]
-            });
-            window.addEventListener('resize', function(){ chart.resize(); });
-
-            // ============================================================
-            // E. 表单提交模拟
-            // ============================================================
-            window.saveTenant = function(e) {
-                e.preventDefault();
-                alert('✅ 租户信息已保存！(数据已自动按前缀隔离)');
-                closeModal('tenantModal');
-                filterTenants('');
-            };
-
-            console.log("✅ 4500 行 SaaS 多租户全体系融合引擎已启动！");
-        });
-    </script>
-    <!-- Supabase 支持 -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <script src="/config.js"></script>
-    <script src="/js/supabase.js"></script>
-    <script src="/js/auth.js"></script>
-    <script src="/js/db.js"></script>
-    <script src="/js/permissions.js"></script>
-    <script src="/js/storage.js"></script>
-    <script src="/js/common.js"></script>
-</body>
+<script src="/config.js"></script>
+<script src="/js/supabase.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/db.js"></script>
+<script src="/js/permissions.js"></script>
+<script src="/js/storage.js"></script>
+<script src="../../js/common.js"></script></body>
 </html>

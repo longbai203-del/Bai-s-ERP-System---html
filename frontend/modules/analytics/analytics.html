@@ -255,90 +255,12 @@
 
     </main>
 
-    <script src="../../js/common.js"></script>
-    <script>
-        function switchPanel(panelId, tabElement) {
-            document.querySelectorAll('.panel-container').forEach(el => el.classList.remove('active'));
-            document.querySelectorAll('.analytics-tab').forEach(el => el.classList.remove('active'));
-            document.getElementById(panelId).classList.add('active');
-            tabElement.classList.add('active');
-            setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 100);
-        }
-
-        document.addEventListener('DOMContentLoaded', function() {
-            // 面板1 - 趋势图
-            var trendChart = echarts.init(document.getElementById('trendChart'));
-            var trendData = [120, 132, 101, 134, 90, 150, 180, 160, 145, 175, 210, 195, 220, 240];
-            var trendDays = []; for(var i=1; i<=14; i++) trendDays.push('D'+i);
-            trendChart.setOption({
-                grid: { left: '5%', right: '5%', bottom: '15%', top: '10%' },
-                xAxis: { type: 'category', data: trendDays, axisLine: { lineStyle: { color: '#495670' } }, axisLabel: { color: '#94A3B8', fontSize: 10 } },
-                yAxis: { type: 'value', splitLine: { lineStyle: { color: 'rgba(255,255,255,0.03)' } }, axisLabel: { color: '#94A3B8' } },
-                series: [{ data: trendData, type: 'line', smooth: true, symbol: 'none', lineStyle: { color: '#00D4FF', width: 2 }, areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: 'rgba(0, 212, 255, 0.3)' }, { offset: 1, color: 'rgba(0, 212, 255, 0)' }]) } }]
-            });
-
-            var pieChart = echarts.init(document.getElementById('pieChart'));
-            pieChart.setOption({
-                tooltip: { trigger: 'item' }, legend: { orient: 'vertical', right: 10, top: 'center', textStyle: { color: '#94A3B8' } },
-                series: [{ type: 'pie', radius: ['50%', '70%'], data: [{ value: 45, name: '洗车服务', itemStyle: { color: '#00D4FF' } }, { value: 30, name: '维修保养', itemStyle: { color: '#C084FC' } }, { value: 15, name: '配件零售', itemStyle: { color: '#F472B6' } }, { value: 10, name: '美容精品', itemStyle: { color: '#00F0E0' } }] }]
-            });
-
-            // 面板2 - 报表表格注入
-            var reportData = [
-                { o: 'ORD-2026-0801', c: '张伟科技', a: '¥1,280.00', s: 'done', d: '2026-08-01' },
-                { o: 'ORD-2026-0802', c: '李娜商贸', a: '¥560.00', s: 'done', d: '2026-08-01' },
-                { o: 'ORD-2026-0803', c: '王强制造', a: '¥2,300.00', s: 'pend', d: '2026-08-01' },
-                { o: 'ORD-2026-0804', c: '刘洋物流', a: '¥450.00', s: 'pend', d: '2026-07-31' },
-                { o: 'ORD-2026-0805', c: '陈静美容', a: '¥890.00', s: 'done', d: '2026-07-31' },
-                { o: 'ORD-2026-0806', c: '周明健身', a: '¥120.00', s: 'cancel', d: '2026-07-31' },
-                { o: 'ORD-2026-0807', c: '赵峰个体', a: '¥320.00', s: 'pend', d: '2026-07-30' },
-                { o: 'ORD-2026-0808', c: '孙氏集团', a: '¥4,200.00', s: 'done', d: '2026-07-30' },
-                { o: 'ORD-2026-0809', c: '吴亮科技', a: '¥1,100.00', s: 'done', d: '2026-07-30' },
-                { o: 'ORD-2026-0810', c: '郑洁美容', a: '¥650.00', s: 'pend', d: '2026-07-29' },
-                { o: 'ORD-2026-0811', c: '冯氏物流', a: '¥880.00', s: 'done', d: '2026-07-29' },
-                { o: 'ORD-2026-0812', c: '陈氏车行', a: '¥420.00', s: 'done', d: '2026-07-29' },
-                { o: 'ORD-2026-0813', c: '周明科技', a: '¥1,500.00', s: 'done', d: '2026-07-29' },
-                { o: 'ORD-2026-0814', c: '刘华制造', a: '¥3,200.00', s: 'pend', d: '2026-07-29' },
-                { o: 'ORD-2026-0815', c: '陈氏集团', a: '¥5,600.00', s: 'done', d: '2026-07-29' }
-            ];
-            var rBody = document.getElementById('reportTableBody');
-            rBody.innerHTML = reportData.map(r => { var st = r.s === 'done' ? '<span class="status-pill done">已完成</span>' : r.s === 'pend' ? '<span class="status-pill pend">待处理</span>' : '<span class="status-pill cancel">已取消</span>'; return `<tr><td>${r.o}</td><td>${r.c}</td><td>${r.a}</td><td>${st}</td><td>${r.d}</td></tr>`; }).join('');
-
-            // 面板3 - 雷达图
-            var radarChart = echarts.init(document.getElementById('radarChart'));
-            radarChart.setOption({
-                radar: { indicator: [{ name: '营收健康', max: 100 }, { name: '客户留存', max: 100 }, { name: '转化效率', max: 100 }, { name: '增长潜力', max: 100 }, { name: '库存周转', max: 100 }, { name: '运营稳定', max: 100 }], axisName: { color: '#94A3B8' }, splitArea: { areaStyle: { color: ['rgba(0,212,255,0.01)', 'rgba(0,212,255,0.02)'] } } },
-                series: [{ type: 'radar', data: [ { value: [92, 85, 78, 68, 95, 88], name: '当前业务' } ], areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: 'rgba(0, 212, 255, 0.4)' }, { offset: 1, color: 'rgba(0, 212, 255, 0)' }]) }, lineStyle: { color: '#00D4FF', width: 2 } }]
-            });
-
-            // 面板4 - 预测图
-            var forecastChart = echarts.init(document.getElementById('forecastChart'));
-            forecastChart.setOption({
-                grid: { left: '5%', right: '5%', bottom: '15%', top: '10%' }, xAxis: { type: 'category', data: ['Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'], axisLine: { lineStyle: { color: '#495670' } } }, yAxis: { type: 'value', splitLine: { lineStyle: { color: 'rgba(255,255,255,0.03)' } } }, legend: { data: ['历史数据', '预测曲线'], textStyle: { color: '#94A3B8' }, bottom: 0 }, series: [{ name: '历史数据', type: 'line', data: [120, 132, 150, null, null, null, null], lineStyle: { color: '#00D4FF', type: 'dashed' } }, { name: '预测曲线', type: 'line', smooth: true, data: [null, null, 150, 165, 172, 185, 210], lineStyle: { color: '#F472B6', width: 3 }, areaStyle: { color: new echarts.graphic.LinearGradient(0, 0, 0, 1, [{ offset: 0, color: 'rgba(244, 114, 182, 0.3)' }, { offset: 1, color: 'rgba(244, 114, 182, 0)' }]) } }]
-            });
-
-            // 面板5 - 推荐卡片
-            var recs = [
-                { t: '📈 优化库存周转率', d: '基于历史销量预测，SKU-9982 建议补货至 200 件，可提升约 12% 的现货率。' },
-                { t: '🤝 客户唤醒计划', d: '检测到 15 位高价值客户 60 天未消费，建议推送专属 8 折优惠券以激活复购。' },
-                { t: '🔧 维修服务提价策略', d: '根据市场平均定价，建议将基础工时费从 ¥80 上调至 ¥100，预计月增收 ¥4,200。' },
-                { t: '📊 渠道预算再分配', d: '分析显示社交媒体 ROI 比传统广告高 40%，建议下月预算增加 15% 用于 TikTok/朋友圈。' },
-                { t: '🏷️ 会员卡升级建议', d: '当前 21 名黄金会员消费额已达钻石门槛，建议自动升级以增强客户粘性。' },
-                { t: '⚠️ 异常成本预警', d: '近两周汽车配件采购成本上涨 8%，建议重新与 3 家供应商展开价格谈判。' }
-            ];
-            document.getElementById('recommendList').innerHTML = recs.map(r => `<div class="rec-card"><div class="rec-title">${r.t}</div><div class="rec-desc">${r.d}</div></div>`).join('');
-
-            window.addEventListener('resize', function() { trendChart.resize(); pieChart.resize(); radarChart.resize(); forecastChart.resize(); });
-        });
-    </script>
-    <!-- Supabase 支持 -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <script src="/config.js"></script>
-    <script src="/js/supabase.js"></script>
-    <script src="/js/auth.js"></script>
-    <script src="/js/db.js"></script>
-    <script src="/js/permissions.js"></script>
-    <script src="/js/storage.js"></script>
-    <script src="/js/common.js"></script>
-</body>
+<script src="/config.js"></script>
+<script src="/js/supabase.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/db.js"></script>
+<script src="/js/permissions.js"></script>
+<script src="/js/storage.js"></script>
+<script src="../../js/common.js"></script></body>
 </html>
