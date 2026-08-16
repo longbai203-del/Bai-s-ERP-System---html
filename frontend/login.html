@@ -3,64 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>智能决策中心 - Enterprise ERP</title>
+    <title>登录 - Enterprise ERP</title>
     <link rel="stylesheet" href="css/common.css">
-    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
     <style>
-        /* 页面专属样式 (为保证采用统一卡片格式，仅做尺寸微调) */
-        .home-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
-        .chart-box { width: 100%; height: 200px; }
-        @media (max-width: 768px) { .home-grid { grid-template-columns: 1fr; } }
+        body { display: flex; justify-content: center; align-items: center; height: 100vh; background: var(--bg-main); }
+        .login-box { background: var(--card-bg); border: 1px solid var(--glass-edge); border-radius: 16px; padding: 40px; width: 100%; max-width: 400px; box-shadow: var(--shadow-card); }
+        .login-box h1 { color: var(--text-main); text-align: center; margin-bottom: 24px; font-size: 24px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; color: var(--text-sub); margin-bottom: 6px; font-size: 14px; }
+        .form-control { width: 100%; padding: 10px 14px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--text-main); outline: none; }
+        .form-control:focus { border-color: var(--neon-blue); }
+        .btn-cyber { width: 100%; padding: 12px; margin-top: 8px; }
+        .error-msg { color: #EF4444; font-size: 13px; text-align: center; margin-top: 12px; display: none; }
     </style>
 </head>
 <body>
-    <div id="sidebar-container"></div>
-
-    <main class="main-content">
-        <div class="page-title" style="margin-bottom: 24px;">
-            <h1>📊 智能决策中心</h1>
-            <small>数字孪生 · 实时洞察</small>
-        </div>
-
-        <!-- 4 个核心 KPI 卡片 -->
-        <div class="kpi-grid-4">
-            <div class="kpi-box"><div class="kpi-label">📦 今日订单流</div><div class="kpi-val">1,280</div><div class="kpi-trend" style="color:#10B981;">↑ 12%</div></div>
-            <div class="kpi-box"><div class="kpi-label">💰 营收引擎</div><div class="kpi-val">¥83.2k</div><div class="kpi-trend" style="color:#10B981;">↑ 8%</div></div>
-            <div class="kpi-box"><div class="kpi-label">🌐 活跃节点</div><div class="kpi-val">156</div><div class="kpi-trend" style="color:#F59E0B;">持平</div></div>
-            <div class="kpi-box"><div class="kpi-label">⚠️ 风险预警</div><div class="kpi-val" style="color:#EF4444;">3</div><div class="kpi-trend" style="color:#94A3B8;">待处理</div></div>
-        </div>
-
-        <!-- 双栏图表区 -->
-        <div class="home-grid">
-            <div class="cyber-card">
-                <div class="card-title">📈 近7日收入趋势</div>
-                <div class="chart-box" id="trendChart"></div>
+    <div class="login-box">
+        <h1>📊 Enterprise ERP</h1>
+        <form id="loginForm">
+            <div class="form-group">
+                <label>邮箱地址</label>
+                <input type="email" id="email" class="form-control" placeholder="admin@example.com" required>
             </div>
-            <div class="cyber-card">
-                <div class="card-title">🏷️ 产品分类占比</div>
-                <div class="chart-box" id="pieChart"></div>
+            <div class="form-group">
+                <label>密码</label>
+                <input type="password" id="password" class="form-control" placeholder="••••••••" required>
             </div>
-        </div>
+            <button type="submit" class="btn-cyber" id="loginBtn">登 录</button>
+            <div class="error-msg" id="loginError">登录失败，请检查邮箱和密码。</div>
+        </form>
+    </div>
 
-        <!-- 执行记录表格 -->
-        <div class="cyber-card">
-            <div class="card-title">📋 执行记录</div>
-            <div class="table-wrap">
-                <table class="cyber-table">
-                    <thead><tr><th>订单号</th><th>客户</th><th>状态</th><th>金额</th></tr></thead>
-                    <tbody>
-                        <tr><td>CYB-0001</td><td>张伟</td><td><span class="status-pill green">已完成</span></td><td>¥128.00</td></tr>
-                        <tr><td>CYB-0002</td><td>王芳</td><td><span class="status-pill green">已完成</span></td><td>¥256.00</td></tr>
-                        <tr><td>CYB-0003</td><td>李明</td><td><span class="status-pill blue">处理中</span></td><td>¥89.00</td></tr>
-                        <tr><td>CYB-0004</td><td>刘洋</td><td><span class="status-pill yellow">待处理</span></td><td>¥342.00</td></tr>
-                        <tr><td>CYB-0005</td><td>陈静</td><td><span class="status-pill green">已完成</span></td><td>¥175.00</td></tr>
-                    </tbody>
-                </table>
-            </div>
-        </div>
-    </main>
-
-    <!-- Supabase 支持 -->
+    <!-- Supabase 支持 (确保按正确顺序加载) -->
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <script src="/config.js"></script>
     <script src="/js/supabase.js"></script>
@@ -71,34 +45,27 @@
     <script src="/js/common.js"></script>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
-            // 趋势图
-            var trend = echarts.init(document.getElementById('trendChart'));
-            trend.setOption({
-                grid: { left: '3%', right: '4%', bottom: '15%', top: '10%' },
-                xAxis: { type: 'category', data: ['周一','周二','周三','周四','周五','周六','周日'], axisLine: { lineStyle: { color: '#495670' } } },
-                yAxis: { type: 'value', splitLine: { lineStyle: { color: 'rgba(255,255,255,0.05)' } } },
-                series: [{
-                    data: [12000, 13200, 10100, 13400, 9000, 23000, 21000],
-                    type: 'line', smooth: true,
-                    lineStyle: { color: '#00D4FF', width: 3, shadowBlur: 10, shadowColor: '#00D4FF' },
-                    areaStyle: { color: new echarts.graphic.LinearGradient(0,0,0,1, [{offset:0,color:'rgba(0,212,255,0.5)'},{offset:1,color:'rgba(0,212,255,0)'}]) }
-                }]
-            });
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const btn = document.getElementById('loginBtn');
+            const errorEl = document.getElementById('loginError');
 
-            // 占比图
-            var pie = echarts.init(document.getElementById('pieChart'));
-            pie.setOption({
-                tooltip: { trigger: 'item' },
-                legend: { bottom: 0, textStyle: { color: '#94A3B8' } },
-                series: [{
-                    type: 'pie', radius: ['40%', '70%'],
-                    data: [{ value: 1048, name: '洗车', itemStyle: { color: '#00D4FF' } },
-                           { value: 735, name: '维修', itemStyle: { color: '#C084FC' } },
-                           { value: 580, name: '保养', itemStyle: { color: '#F472B6' } }]
-                }]
-            });
-            window.addEventListener('resize', function(){ trend.resize(); pie.resize(); });
+            btn.textContent = '登录中...';
+            btn.disabled = true;
+            errorEl.style.display = 'none';
+
+            const result = await authManager.login(email, password);
+
+            if (result.success) {
+                window.location.href = '/modules/dashboard/dashboard.html';
+            } else {
+                errorEl.textContent = result.error || '登录失败，请检查邮箱和密码。';
+                errorEl.style.display = 'block';
+                btn.textContent = '登 录';
+                btn.disabled = false;
+            }
         });
     </script>
 </body>

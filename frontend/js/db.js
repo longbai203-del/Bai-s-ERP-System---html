@@ -40,7 +40,7 @@ class Database {
             
             return { success: true, data };
         } catch (error) {
-            console.error(查询  失败:, error);
+            console.error('查询失败:', error);
             return { success: false, error: error.message };
         }
     }
@@ -55,7 +55,7 @@ class Database {
             if (error) throw error;
             return { success: true, data: result };
         } catch (error) {
-            console.error(插入  失败:, error);
+            console.error('插入失败:', error);
             return { success: false, error: error.message };
         }
     }
@@ -75,7 +75,7 @@ class Database {
             
             return { success: true, data: result };
         } catch (error) {
-            console.error(更新  失败:, error);
+            console.error('更新失败:', error);
             return { success: false, error: error.message };
         }
     }
@@ -95,7 +95,7 @@ class Database {
             
             return { success: true };
         } catch (error) {
-            console.error(删除  失败:, error);
+            console.error('删除失败:', error);
             return { success: false, error: error.message };
         }
     }
@@ -123,7 +123,7 @@ class Database {
                 const { data, error } = await this.supabase
                     .from('customers')
                     .select('*')
-                    .or(ull_name.ilike.%%,phone.ilike.%%,customer_code.ilike.%%)
+                    .or(`full_name.ilike.%${filters.search}%,phone.ilike.%${filters.search}%,customer_code.ilike.%${filters.search}%`)
                     .eq('organization_id', filters.organization_id || this.auth.userProfile?.organization_id);
                 
                 if (error) throw error;
@@ -169,8 +169,7 @@ class Database {
                 const { data, error } = await this.supabase
                     .from('products')
                     .select('*')
-                    .or(
-ame.ilike.%%,product_code.ilike.%%,barcode.ilike.%%)
+                    .or(`name.ilike.%${filters.search}%,product_code.ilike.%${filters.search}%,barcode.ilike.%${filters.search}%`)
                     .eq('organization_id', filters.organization_id || this.auth.userProfile?.organization_id);
                 
                 if (error) throw error;
