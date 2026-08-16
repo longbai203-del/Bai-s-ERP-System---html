@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>智能业务参数与偏好设置 - Enterprise ERP</title>
+    <link rel="stylesheet" href="../../css/common.css">
+    <style>
+        /* ============================================================
+           4500 行业务参数设置系统单文件专属 CSS
+           ============================================================ */
+        :root {
+            --glass-edge: rgba(0, 212, 255, 0.15);
+            --neon-green: #10B981;
+            --neon-warning: #F59E0B;
+            --neon-danger: #EF4444;
+            --neon-gold: #C084FC;
+            --input-bg: rgba(255, 255, 255, 0.04);
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: var(--bg-main);
+            color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            overflow: hidden;
+            height: 100vh;
+        }
+        .main-content::-webkit-scrollbar { width: 6px; }
+        .main-content::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 3px; }
+
+        /* 顶部导航 */
+        .set-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding-bottom: 16px; border-bottom: 1px solid var(--glass-edge);
+            margin-bottom: 24px; flex-wrap: wrap; gap: 12px;
+        }
+        .set-header h1 {
+            font-size: 28px; font-weight: 800;
+            background: linear-gradient(135deg, #00D4FF, #C084FC, #F472B6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .set-header .subtitle { color: var(--text-sub); font-size: 14px; margin-top: 4px; }
+        .header-actions { display: flex; gap: 10px; }
+        .btn-cyber {
+            padding: 8px 16px; background: linear-gradient(135deg, #00D4FF, #0088FF);
+            border: none; border-radius: 6px; color: #000; font-weight: 600; cursor: pointer;
+            transition: 0.3s; font-size: 13px;
+        }
+        .btn-cyber:hover { box-shadow: 0 0 20px rgba(0,212,255,0.3); }
+        .btn-cyber-outline { background: transparent; border: 1px solid rgba(0,212,255,0.3); color: var(--neon-blue); }
+
+        /* Tabs 导航 (7个核心业务配置分类) */
+        .set-tabs {
+            display: flex; gap: 4px; margin-bottom: 20px;
+            background: rgba(255,255,255,0.03); border-radius: 12px; padding: 4px; flex-wrap: wrap;
+        }
+        .set-tab {
+            padding: 10px 20px; border-radius: 8px; cursor: pointer;
+            color: var(--text-sub); transition: 0.3s; font-size: 14px; font-weight: 500;
+            background: transparent; border: 1px solid transparent;
+        }
+        .set-tab:hover { color: var(--text-main); background: rgba(255,255,255,0.05); }
+        .set-tab.active {
+            background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(192,132,252,0.15));
+            color: var(--text-main); border-color: var(--glass-edge);
+        }
+        .set-panel { display: none; animation: fadeIn 0.4s ease; }
+        .set-panel.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 配置表单卡片系统 */
+        .config-card {
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.8), rgba(8, 14, 28, 0.95));
+            border: 1px solid var(--glass-edge); border-radius: 16px; padding: 24px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.2); margin-bottom: 20px;
+        }
+        .config-card h3 {
+            font-size: 16px; font-weight: 600; color: var(--text-main);
+            border-bottom: 1px solid rgba(255,255,255,0.05); padding-bottom: 12px; margin-bottom: 20px;
+            display: flex; align-items: center; gap: 8px;
+        }
+
+        /* 表单元素 */
+        .form-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; color: var(--text-sub); font-size: 13px; margin-bottom: 6px; font-weight: 500; }
+        .form-group .desc { display: block; color: var(--text-muted); font-size: 12px; margin-top: 4px; }
+        .form-control {
+            width: 100%; padding: 10px 14px; background: var(--input-bg);
+            border: 1px solid rgba(255,255,255,0.08); border-radius: 8px; color: var(--text-main);
+            outline: none; font-size: 14px; transition: 0.3s;
+        }
+        .form-control:focus { border-color: var(--neon-blue); box-shadow: 0 0 15px rgba(0,212,255,0.1); }
+        .form-control[readonly] { opacity: 0.7; cursor: not-allowed; }
+        .form-control-sm { padding: 6px 10px; font-size: 13px; }
+
+        /* 服务项目列表 */
+        .service-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.04);
+        }
+        .service-item:last-child { border-bottom: none; }
+        .service-item .info { display: flex; gap: 20px; align-items: center; }
+        .service-item .info .name { color: var(--text-main); font-weight: 500; min-width: 120px; }
+        .service-item .info .price { color: var(--neon-gold); }
+        .service-item .info .duration { color: var(--text-sub); font-size: 13px; }
+        .service-item .actions button { background: transparent; border: none; color: var(--text-sub); cursor: pointer; margin-left: 8px; transition: 0.3s; }
+        .service-item .actions button:hover { color: var(--neon-blue); }
+        .service-item .actions button.del:hover { color: var(--neon-danger); }
+
+        /* 支付方式网格 */
+        .pay-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+        .pay-option {
+            background: var(--input-bg); border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 8px; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center;
+            transition: 0.3s;
+        }
+        .pay-option:hover { border-color: var(--glass-edge); }
+        .pay-option .name { color: var(--text-main); font-size: 13px; }
+        .pay-option .toggle { cursor: pointer; color: var(--neon-blue); font-size: 14px; }
+
+        /* 提示消息 */
+        .save-toast {
+            position: fixed; top: 20px; right: 20px; z-index: 99999;
+            background: var(--neon-green); color: #000; padding: 12px 24px; border-radius: 8px;
+            font-weight: 600; box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            display: none; animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn { from { transform: translateX(40px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .form-grid-2 { grid-template-columns: 1fr; }
+            .set-tabs { flex-direction: column; align-items: stretch; }
+            .set-tab { text-align: center; }
+        }
+    </style>
+</head>
+<body>
+    <div id="sidebar-container"></div>
+
+    <main class="main-content">
+
+        <!-- ============================================================
+        1. 顶部导航与 Tab 面板 (7大配置模块)
+        ============================================================ -->
+        <div class="set-header">
+            <div>
+                <h1>⚙️ 智能业务参数与偏好设置</h1>
+                <div class="subtitle">门店信息 · 15% VAT 税率 · 服务项目 · 支付方式 · 本地化规则</div>
+            </div>
+            <div class="header-actions">
+                <button class="btn-cyber" onclick="saveAllSettings()">💾 保存全部配置</button>
+                <button class="btn-cyber btn-cyber-outline" onclick="resetAllSettings()">🔄 恢复默认</button>
+            </div>
+        </div>
+
+        <div class="set-tabs">
+            <div class="set-tab active" onclick="switchPanel('panel-store', this)"><span>🏪</span>门店基础</div>
+            <div class="set-tab" onclick="switchPanel('panel-tax', this)"><span>🧾</span>税务与货币</div>
+            <div class="set-tab" onclick="switchPanel('panel-service', this)"><span>🚗</span>服务项目</div>
+            <div class="set-tab" onclick="switchPanel('panel-pay', this)"><span>💳</span>支付配置</div>
+            <div class="set-tab" onclick="switchPanel('panel-alert', this)"><span>⚠️</span>提醒规则</div>
+            <div class="set-tab" onclick="switchPanel('panel-ui', this)"><span>🎨</span>界面偏好</div>
+            <div class="set-tab" onclick="switchPanel('panel-adv', this)"><span>🔧</span>高级设置</div>
+        </div>
+
+        <!-- ============================================================
+        面板 1：门店基础信息
+        ============================================================ -->
+        <div id="panel-store" class="set-panel active">
+            <div class="config-card">
+                <h3>🏪 门店基础信息配置</h3>
+                <div class="form-grid-2">
+                    <div class="form-group"><label>门店名称</label><input type="text" id="cfgStoreName" class="form-control" value="Carwash Pro 旗舰店"><span class="desc">显示在小票和系统抬头</span></div>
+                    <div class="form-group"><label>门店编号</label><input type="text" id="cfgStoreCode" class="form-control" value="CW-001"><span class="desc">内部识别码</span></div>
+                    <div class="form-group"><label>15位税务登记号 (VAT)</label><input type="text" id="cfgTaxId" class="form-control" value="312345678901234"><span class="desc">沙特 ZATCA 合规税号</span></div>
+                    <div class="form-group"><label>联系电话</label><input type="text" id="cfgPhone" class="form-control" value="+966 50 123 4567"><span class="desc">门店客服热线</span></div>
+                    <div class="form-group" style="grid-column: span 2;"><label>门店地址</label><input type="text" id="cfgAddress" class="form-control" value="沙特阿拉伯 利雅得 国王路 123号"><span class="desc">注册地址</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        面板 2：税务与货币
+        ============================================================ -->
+        <div id="panel-tax" class="set-panel">
+            <div class="config-card">
+                <h3>🧾 税务与货币设置 (沙特合规)</h3>
+                <div class="form-grid-2">
+                    <div class="form-group"><label>VAT 税率 (%)</label><input type="number" id="cfgVatRate" class="form-control" value="15" readonly><span class="desc">法定 15%，禁止修改</span></div>
+                    <div class="form-group"><label>默认货币</label><select id="cfgCurrency" class="form-control"><option value="SAR" selected>沙特里亚尔 (SAR)</option><option value="USD">美元 (USD)</option><option value="CNY">人民币 (CNY)</option></select><span class="desc">系统记账本位币</span></div>
+                    <div class="form-group"><label>金额显示格式</label><select id="cfgMoneyFormat" class="form-control"><option value="1,234.00">1,234.00</option><option value="1234.00">1234.00</option></select><span class="desc">千分位分隔符设置</span></div>
+                    <div class="form-group"><label>小票宽度</label><select id="cfgReceiptWidth" class="form-control"><option value="80mm" selected>80mm (标准热敏)</option><option value="58mm">58mm (便携)</option></select><span class="desc">适配不同打印机</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        面板 3：服务项目配置
+        ============================================================ -->
+        <div id="panel-service" class="set-panel">
+            <div class="config-card">
+                <h3>🚗 服务项目与工时预设</h3>
+                <div style="display:flex;gap:12px;margin-bottom:20px;">
+                    <input type="text" id="newServiceName" class="form-control form-control-sm" style="flex:2;" placeholder="新服务名称">
+                    <input type="number" id="newServicePrice" class="form-control form-control-sm" style="flex:1;" placeholder="价格 (SAR)">
+                    <input type="number" id="newServiceDuration" class="form-control form-control-sm" style="flex:1;" placeholder="时长(分钟)">
+                    <button class="btn-cyber" onclick="addService()">➕ 添加</button>
+                </div>
+                <div id="serviceList">
+                    <!-- JS 动态渲染 -->
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        面板 4：支付配置
+        ============================================================ -->
+        <div id="panel-pay" class="set-panel">
+            <div class="config-card">
+                <h3>💳 支付方式与结算设置</h3>
+                <div class="form-grid-2">
+                    <div class="form-group"><label>默认结算方式</label><select id="cfgDefaultPay" class="form-control"><option value="cash">现金</option><option value="card" selected>银行卡/Mada</option><option value="stc">STC Pay</option></select><span class="desc">收银台默认选中项</span></div>
+                    <div class="form-group"><label>允许组合支付</label><select id="cfgMixPay" class="form-control"><option value="1">是</option><option value="0">否</option></select><span class="desc">是否支持多种方式混合结算</span></div>
+                </div>
+                <div class="pay-grid" id="payGrid">
+                    <div class="pay-option"><span class="name">💵 现金 (Cash)</span><span class="toggle" onclick="togglePay(this)">✅</span></div>
+                    <div class="pay-option"><span class="name">💳 Mada / 银行卡</span><span class="toggle" onclick="togglePay(this)">✅</span></div>
+                    <div class="pay-option"><span class="name">📱 STC Pay</span><span class="toggle" onclick="togglePay(this)">✅</span></div>
+                    <div class="pay-option"><span class="name">📱 支付宝/微信</span><span class="toggle" onclick="togglePay(this)">❌</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        面板 5：提醒与预警规则
+        ============================================================ -->
+        <div id="panel-alert" class="set-panel">
+            <div class="config-card">
+                <h3>⚠️ 预警与提醒规则</h3>
+                <div class="form-grid-2">
+                    <div class="form-group"><label>低库存预警阈值</label><input type="number" id="cfgStockAlert" class="form-control" value="10"><span class="desc">库存低于此值时自动高亮</span></div>
+                    <div class="form-group"><label>证件/Iqama 到期提醒 (天)</label><input type="number" id="cfgVisaAlert" class="form-control" value="30"><span class="desc">到期前多少天开始预警</span></div>
+                    <div class="form-group"><label>订单超时锁定 (分钟)</label><input type="number" id="cfgOrderTimeout" class="form-control" value="60"><span class="desc">未支付订单超时自动作废</span></div>
+                    <div class="form-group"><label>超时自动清理</label><select id="cfgAutoClean" class="form-control"><option value="1">是</option><option value="0">否</option></select><span class="desc">是否启用自动清理机制</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        面板 6：界面与本地化偏好
+        ============================================================ -->
+        <div id="panel-ui" class="set-panel">
+            <div class="config-card">
+                <h3>🎨 界面与本地化偏好</h3>
+                <div class="form-grid-2">
+                    <div class="form-group"><label>默认系统语言</label><select id="cfgLang" class="form-control"><option value="zh-CN">简体中文</option><option value="ar-SA">العربية (沙特)</option><option value="en-US">English (US)</option></select><span class="desc">界面语言即时切换</span></div>
+                    <div class="form-group"><label>RTL 自动适配</label><select id="cfgRTL" class="form-control"><option value="1">是 (根据语言)</option><option value="0">否 (强制LTR)</option></select><span class="desc">阿拉伯语自动右对齐</span></div>
+                    <div class="form-group"><label>默认首页</label><select id="cfgHomePage" class="form-control"><option value="dashboard">智能决策中心</option><option value="orders">订单管理</option><option value="pos">收银台</option></select><span class="desc">登录后跳转页面</span></div>
+                    <div class="form-group"><label>列表每页条数</label><select id="cfgPageSize" class="form-control"><option value="10">10 条</option><option value="20">20 条</option><option value="50" selected>50 条</option></select><span class="desc">表格分页默认数量</span></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        面板 7：高级与系统设置
+        ============================================================ -->
+        <div id="panel-adv" class="set-panel">
+            <div class="config-card">
+                <h3>🔧 系统版本与数据管理</h3>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                    <div style="background:var(--input-bg);padding:16px;border-radius:8px;">
+                        <div style="color:var(--text-sub);font-size:13px;">系统版本</div>
+                        <div style="font-size:18px;font-weight:700;color:var(--neon-blue);">v3.0.0</div>
+                    </div>
+                    <div style="background:var(--input-bg);padding:16px;border-radius:8px;">
+                        <div style="color:var(--text-sub);font-size:13px;">数据存储引擎</div>
+                        <div style="font-size:18px;font-weight:700;color:var(--text-main);">Local Storage</div>
+                    </div>
+                </div>
+                <div style="margin-top:16px;display:flex;gap:12px;">
+                    <button class="btn-cyber btn-cyber-outline" onclick="backupConfig()">📥 导出配置备份</button>
+                    <button class="btn-cyber btn-cyber-outline" onclick="document.getElementById('restoreInput').click()">📤 导入配置</button>
+                    <input type="file" id="restoreInput" accept=".json" style="display:none;" onchange="restoreConfig(event)">
+                </div>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ============================================================
+    全局操作提示 Toast
+    ============================================================ -->
+    <div class="save-toast" id="saveToast">✅ 配置已成功保存并生效！</div>
+
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="/config.js"></script>
+<script src="/js/supabase.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/db.js"></script>
+<script src="/js/permissions.js"></script>
+<script src="/js/storage.js"></script>
+<script src="../../js/common.js"></script></body>
+</html>

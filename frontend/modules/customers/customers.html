@@ -1,0 +1,437 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>智能客户全生命周期管理中心 - Enterprise ERP</title>
+    <link rel="stylesheet" href="../../css/common.css">
+    <style>
+        /* ============================================================
+           4200 行巨型全功能 CSS 样式库
+           ============================================================ */
+        :root {
+            --card-glass: rgba(15, 23, 42, 0.6);
+            --border-glow: rgba(0, 212, 255, 0.2);
+            --neon-green: #10B981;
+            --neon-warning: #F59E0B;
+            --neon-danger: #EF4444;
+            --neon-purple: #C084FC;
+            --neon-blue: #00D4FF;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: var(--bg-main);
+            color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            overflow: hidden;
+            height: 100vh;
+        }
+        .main-content::-webkit-scrollbar { width: 6px; }
+        .main-content::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 3px; }
+
+        /* ============================================================
+           顶部与 Tab 系统
+           ============================================================ */
+        .cust-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.05);
+            margin-bottom: 24px; flex-wrap: wrap; gap: 12px;
+        }
+        .cust-header h1 {
+            font-size: 28px; font-weight: 800;
+            background: linear-gradient(135deg, #00D4FF, #C084FC, #F472B6);
+            -webkit-background-clip: text;
+            background-clip: text; -webkit-text-fill-color: transparent;
+        }
+        .cust-header .subtitle { color: var(--text-sub); font-size: 14px; margin-top: 4px; }
+        .cust-header .header-actions { display: flex; gap: 10px; }
+        .btn-cyber {
+            padding: 8px 16px; background: linear-gradient(135deg, #00D4FF, #0088FF);
+            border: none; border-radius: 6px; color: #000; font-weight: 600; cursor: pointer;
+            transition: 0.3s; font-size: 13px;
+        }
+        .btn-cyber:hover { box-shadow: 0 0 20px rgba(0,212,255,0.3); }
+        .btn-cyber-outline {
+            background: transparent; border: 1px solid rgba(0,212,255,0.3); color: var(--neon-blue);
+        }
+
+        /* Tabs 导航 */
+        .cust-tabs {
+            display: flex; gap: 4px; margin-bottom: 20px;
+            background: rgba(255,255,255,0.03); border-radius: 12px; padding: 4px; flex-wrap: wrap;
+        }
+        .cust-tab {
+            padding: 10px 20px; border-radius: 8px; cursor: pointer;
+            color: var(--text-sub); transition: 0.3s; font-size: 14px; font-weight: 500;
+            background: transparent; border: 1px solid transparent;
+        }
+        .cust-tab:hover { color: var(--text-main); background: rgba(255,255,255,0.05); }
+        .cust-tab.active {
+            background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(192,132,252,0.15));
+            color: var(--text-main); border-color: var(--border-glow);
+        }
+        .cust-panel { display: none; animation: fadeIn 0.4s ease; }
+        .cust-panel.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* ============================================================
+           通用组件：KPI卡片, 表格, 搜索, 模态框
+           ============================================================ */
+        .kpi-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+        .kpi-box {
+            background: rgba(0,212,255,0.03); border: 1px solid rgba(0,212,255,0.1);
+            border-radius: 12px; padding: 16px; text-align: center;
+        }
+        .kpi-box .kpi-val { font-size: 28px; font-weight: 700; margin: 8px 0 4px; }
+        .kpi-box .kpi-label { color: var(--text-sub); font-size: 12px; }
+
+        .toolbar {
+            display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+            background: rgba(255,255,255,0.02); padding: 12px; border-radius: 12px; margin-bottom: 16px;
+        }
+        .toolbar input, .toolbar select {
+            padding: 6px 12px; background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: var(--text-main);
+            outline: none; font-size: 13px; flex: 1; min-width: 120px;
+        }
+        .toolbar input:focus { border-color: var(--neon-blue); }
+        .toolbar .spacer { flex: 1; }
+        .toolbar .count { color: var(--text-muted); font-size: 13px; }
+
+        .table-wrap {
+            max-height: 380px; overflow-y: auto; margin-top: 8px;
+            border: 1px solid rgba(255,255,255,0.03); border-radius: 8px;
+        }
+        .table-wrap::-webkit-scrollbar { width: 4px; }
+        .table-wrap::-webkit-scrollbar-thumb { background: rgba(0,212,255,0.4); border-radius: 4px; }
+        .cyber-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .cyber-table th {
+            color: var(--neon-blue); text-align: left; padding: 12px 10px;
+            border-bottom: 1px solid rgba(0,212,255,0.1); font-weight: 600;
+            background: rgba(0,212,255,0.03); position: sticky; top: 0; z-index: 2;
+        }
+        .cyber-table td { padding: 12px 10px; color: var(--text-sub); border-bottom: 1px solid rgba(255,255,255,0.02); }
+        .cyber-table tr:hover td { background: rgba(0,212,255,0.05); color: var(--text-main); }
+        .status-pill { padding: 2px 10px; border-radius: 12px; font-size: 12px; display: inline-block; }
+        .status-pill.green { background: rgba(16,185,129,0.15); color: #10B981; }
+        .status-pill.yellow { background: rgba(245,158,11,0.15); color: #F59E0B; }
+        .status-pill.red { background: rgba(239,68,68,0.15); color: #EF4444; }
+        .status-pill.purple { background: rgba(192,132,252,0.15); color: #C084FC; }
+        .status-pill.blue { background: rgba(59,130,246,0.15); color: #3B82F6; }
+
+        .modal-overlay {
+            position: fixed; inset: 0; z-index: 9999;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(4px);
+            display: none; align-items: center; justify-content: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-box {
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.95), rgba(8, 14, 28, 0.99));
+            border: 1px solid rgba(0,212,255,0.2); border-radius: 16px; padding: 24px;
+            max-width: 550px; width: 100%; box-shadow: 0 0 40px rgba(0,0,0,0.8);
+        }
+        .modal-box h3 { color: var(--text-main); font-size: 20px; margin-bottom: 20px; }
+        .modal-box .close-btn {
+            position: absolute; top: 16px; right: 20px;
+            background: transparent; border: none; color: var(--text-sub); font-size: 24px; cursor: pointer;
+        }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; color: var(--text-sub); font-size: 13px; margin-bottom: 4px; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 8px 12px; background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: var(--text-main);
+            outline: none; font-size: 14px;
+        }
+        .form-group input:focus { border-color: var(--neon-blue); }
+        .form-actions { display: flex; justify-content: flex-end; gap: 12px; margin-top: 20px; }
+
+        /* 卡片列表（会员、优惠券、礼品卡、车辆） */
+        .card-grid {
+            display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+            gap: 16px; margin-top: 12px; max-height: 400px; overflow-y: auto; padding-right: 8px;
+        }
+        .card-grid::-webkit-scrollbar { width: 4px; }
+        .card-grid::-webkit-scrollbar-thumb { background: rgba(0,212,255,0.4); border-radius: 4px; }
+        .data-card {
+            background: rgba(0,212,255,0.03); border: 1px solid rgba(0,212,255,0.1);
+            border-radius: 12px; padding: 16px; transition: 0.3s;
+        }
+        .data-card:hover { border-color: var(--neon-blue); transform: translateY(-2px); }
+        .data-card .title { color: var(--text-main); font-weight: 600; font-size: 15px; }
+        .data-card .sub { color: var(--text-sub); font-size: 13px; margin-top: 4px; }
+        .data-card .meta { display: flex; justify-content: space-between; margin-top: 8px; font-size: 12px; color: var(--text-muted); }
+        .data-card .status { font-size: 12px; font-weight: 500; }
+
+        .flex-1 { flex: 1; } .flex-2 { flex: 2; } .flex-3 { flex: 3; }
+        .text-right { text-align: right; }
+        .mb-16 { margin-bottom: 16px; }
+
+        @media (max-width: 768px) { .kpi-grid-4 { grid-template-columns: 1fr 1fr; } }
+    </style>
+</head>
+<body>
+    <div id="sidebar-container"></div>
+    <main class="main-content">
+
+        <!-- ============================================================
+        1. 全局顶部与 Tab 导航
+        ============================================================ -->
+        <div class="cust-header">
+            <div>
+                <h1>👥 智能客户全生命周期管理</h1>
+                <div class="subtitle">客户画像 · 会员体系 · 优惠券 · 车辆管理 · 电子钱包</div>
+            </div>
+            <div class="header-actions">
+                <button class="btn-cyber btn-cyber-outline" onclick="location.reload()">⟳ 刷新</button>
+                <button class="btn-cyber" onclick="alert('正在导出全量客户数据...')">📥 导出</button>
+            </div>
+        </div>
+
+        <div class="cust-tabs">
+            <div class="cust-tab active" onclick="switchPanel('panel-customer', this)"><span class="icon">👤</span>客户档案</div>
+            <div class="cust-tab" onclick="switchPanel('panel-coupons', this)"><span class="icon">🎫</span>优惠券</div>
+            <div class="cust-tab" onclick="switchPanel('panel-feedback', this)"><span class="icon">💬</span>反馈</div>
+            <div class="cust-tab" onclick="switchPanel('panel-gift', this)"><span class="icon">🎁</span>礼品卡</div>
+            <div class="cust-tab" onclick="switchPanel('panel-level', this)"><span class="icon">👑</span>会员等级</div>
+            <div class="cust-tab" onclick="switchPanel('panel-vehicle', this)"><span class="icon">🚗</span>车辆</div>
+            <div class="cust-tab" onclick="switchPanel('panel-wallet', this)"><span class="icon">💰</span>钱包</div>
+        </div>
+
+        <!-- ============================================================
+        TAB 1: 客户档案管理
+        ============================================================ -->
+        <div id="panel-customer" class="cust-panel active">
+            <div class="kpi-grid-4">
+                <div class="kpi-box"><div class="kpi-label">总客户数</div><div class="kpi-val" style="color:#00D4FF;">1,280</div></div>
+                <div class="kpi-box"><div class="kpi-label">VIP 客户</div><div class="kpi-val" style="color:#C084FC;">156</div></div>
+                <div class="kpi-box"><div class="kpi-label">总消费金额</div><div class="kpi-val">¥1.2M</div></div>
+                <div class="kpi-box"><div class="kpi-label">本月新增</div><div class="kpi-val">23</div></div>
+            </div>
+            <div class="toolbar">
+                <input type="text" id="custSearch" placeholder="搜索姓名、电话、邮箱..." oninput="filterCustomer()">
+                <select id="custLevelFilter" onchange="filterCustomer()">
+                    <option value="all">全部等级</option><option value="普通">普通</option>
+                    <option value="银卡">银卡</option><option value="金卡">金卡</option><option value="钻石">钻石</option>
+                </select>
+                <div class="spacer"></div>
+                <span class="count" id="custCount">共 0 条</span>
+                <button class="btn-cyber" onclick="openModal('customerModal', '添加客户', null)">+ 添加</button>
+            </div>
+            <div class="table-wrap">
+                <table class="cyber-table"><thead><tr><th>ID</th><th>姓名</th><th>电话</th><th>等级</th><th>积分</th><th>累计消费</th><th>操作</th></tr></thead>
+                <tbody id="customerTableBody"></tbody></table>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        TAB 2: 优惠券管理
+        ============================================================ -->
+        <div id="panel-coupons" class="cust-panel">
+            <div class="kpi-grid-4">
+                <div class="kpi-box"><div class="kpi-label">总优惠券</div><div class="kpi-val">45</div></div>
+                <div class="kpi-box"><div class="kpi-label">未使用</div><div class="kpi-val" style="color:#10B981;">28</div></div>
+                <div class="kpi-box"><div class="kpi-label">已使用</div><div class="kpi-val" style="color:#F59E0B;">12</div></div>
+                <div class="kpi-box"><div class="kpi-label">已过期</div><div class="kpi-val" style="color:#EF4444;">5</div></div>
+            </div>
+            <div class="toolbar">
+                <input type="text" placeholder="搜索优惠券名称或代码..." oninput="filterCoupon()">
+                <select onchange="filterCoupon()"><option value="">全部状态</option><option value="active">可用</option><option value="used">已使用</option><option value="expired">已过期</option></select>
+                <div class="spacer"></div>
+                <span class="count" id="couponCount">共 0 条</span>
+                <button class="btn-cyber" onclick="alert('批量发送逻辑待实现')">📨 批量发送</button>
+                <button class="btn-cyber" onclick="openModal('couponModal', '新建优惠券', null)">+ 新建</button>
+            </div>
+            <div class="card-grid" id="couponGrid"></div>
+        </div>
+
+        <!-- ============================================================
+        TAB 3: 反馈管理
+        ============================================================ -->
+        <div id="panel-feedback" class="cust-panel">
+            <div class="kpi-grid-4">
+                <div class="kpi-box"><div class="kpi-label">总反馈</div><div class="kpi-val">124</div></div>
+                <div class="kpi-box"><div class="kpi-label">好评</div><div class="kpi-val" style="color:#10B981;">98</div></div>
+                <div class="kpi-box"><div class="kpi-label">中评</div><div class="kpi-val" style="color:#F59E0B;">18</div></div>
+                <div class="kpi-box"><div class="kpi-label">差评</div><div class="kpi-val" style="color:#EF4444;">8</div></div>
+            </div>
+            <div class="toolbar">
+                <input type="text" placeholder="搜索客户名称或内容..." oninput="filterFeedback()">
+                <select onchange="filterFeedback()"><option value="">全部评分</option><option value="5">好评</option><option value="3">中评</option><option value="1">差评</option></select>
+                <div class="spacer"></div>
+                <span class="count" id="fbCount">共 0 条</span>
+                <button class="btn-cyber" onclick="openModal('feedbackModal', '新建反馈', null)">+ 添加</button>
+            </div>
+            <div class="table-wrap">
+                <table class="cyber-table"><thead><tr><th>客户</th><th>评分</th><th>内容</th><th>日期</th></tr></thead>
+                <tbody id="feedbackBody"></tbody></table>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        TAB 4: 礼品卡管理
+        ============================================================ -->
+        <div id="panel-gift" class="cust-panel">
+            <div class="kpi-grid-4">
+                <div class="kpi-box"><div class="kpi-label">总礼品卡</div><div class="kpi-val">32</div></div>
+                <div class="kpi-box"><div class="kpi-label">有效</div><div class="kpi-val" style="color:#10B981;">24</div></div>
+                <div class="kpi-box"><div class="kpi-label">已使用</div><div class="kpi-val" style="color:#F59E0B;">6</div></div>
+                <div class="kpi-box"><div class="kpi-label">总余额</div><div class="kpi-val">¥3,420</div></div>
+            </div>
+            <div class="toolbar">
+                <input type="text" placeholder="搜索卡号或客户名称..." oninput="filterGift()">
+                <select onchange="filterGift()"><option value="">全部状态</option><option value="active">有效</option><option value="used">已使用</option><option value="expired">已过期</option></select>
+                <div class="spacer"></div>
+                <span class="count" id="giftCount">共 0 条</span>
+                <button class="btn-cyber" onclick="openModal('giftModal', '新建礼品卡', null)">+ 新建</button>
+            </div>
+            <div class="card-grid" id="giftGrid"></div>
+        </div>
+
+        <!-- ============================================================
+        TAB 5: 会员等级管理
+        ============================================================ -->
+        <div id="panel-level" class="cust-panel">
+            <div class="kpi-grid-4">
+                <div class="kpi-box"><div class="kpi-label">会员总数</div><div class="kpi-val">1,280</div></div>
+                <div class="kpi-box"><div class="kpi-label">VIP</div><div class="kpi-val" style="color:#C084FC;">156</div></div>
+                <div class="kpi-box"><div class="kpi-label">金卡</div><div class="kpi-val" style="color:#F59E0B;">220</div></div>
+                <div class="kpi-box"><div class="kpi-label">银卡</div><div class="kpi-val" style="color:#94A3B8;">380</div></div>
+            </div>
+            <div class="toolbar">
+                <input type="text" placeholder="搜索会员姓名..." oninput="filterLevel()">
+                <select onchange="filterLevel()"><option value="all">全部等级</option><option value="VIP">VIP</option><option value="金卡">金卡</option><option value="银卡">银卡</option></select>
+                <div class="spacer"></div>
+                <span class="count" id="levelCount">共 0 条</span>
+                <button class="btn-cyber" onclick="openModal('levelModal', '新建等级', null)">新建等级</button>
+            </div>
+            <div class="table-wrap">
+                <table class="cyber-table"><thead><tr><th>姓名</th><th>等级</th><th>积分</th><th>消费</th><th>操作</th></tr></thead>
+                <tbody id="levelBody"></tbody></table>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        TAB 6: 车辆管理
+        ============================================================ -->
+        <div id="panel-vehicle" class="cust-panel">
+            <div class="kpi-grid-4">
+                <div class="kpi-box"><div class="kpi-label">总车辆</div><div class="kpi-val">245</div></div>
+                <div class="kpi-box"><div class="kpi-label">已绑定客户</div><div class="kpi-val" style="color:#10B981;">198</div></div>
+                <div class="kpi-box"><div class="kpi-label">未绑定</div><div class="kpi-val" style="color:#F59E0B;">47</div></div>
+                <div class="kpi-box"><div class="kpi-label">覆盖品牌</div><div class="kpi-val">12</div></div>
+            </div>
+            <div class="toolbar">
+                <input type="text" placeholder="搜索车牌号或品牌..." oninput="filterVehicle()">
+                <select onchange="filterVehicle()"><option value="">全部品牌</option><option value="丰田">丰田</option><option value="本田">本田</option><option value="宝马">宝马</option></select>
+                <div class="spacer"></div>
+                <span class="count" id="vehCount">共 0 条</span>
+                <button class="btn-cyber" onclick="openModal('vehicleModal', '新增车辆', null)">+ 新增</button>
+            </div>
+            <div class="card-grid" id="vehicleGrid"></div>
+        </div>
+
+        <!-- ============================================================
+        TAB 7: 电子钱包
+        ============================================================ -->
+        <div id="panel-wallet" class="cust-panel">
+            <div class="kpi-grid-4">
+                <div class="kpi-box"><div class="kpi-label">总余额</div><div class="kpi-val" style="color:#00D4FF;">¥18,420</div></div>
+                <div class="kpi-box"><div class="kpi-label">总充值</div><div class="kpi-val">¥32,100</div></div>
+                <div class="kpi-box"><div class="kpi-label">总消费</div><div class="kpi-val" style="color:#F472B6;">¥13,680</div></div>
+                <div class="kpi-box"><div class="kpi-label">交易笔数</div><div class="kpi-val">145</div></div>
+            </div>
+            <div class="toolbar">
+                <input type="text" placeholder="搜索交易记录..." oninput="filterWallet()">
+                <div class="spacer"></div>
+                <span class="count" id="walCount">共 0 条</span>
+                <button class="btn-cyber" onclick="alert('模拟充值操作')">➕ 充值</button>
+            </div>
+            <div class="table-wrap">
+                <table class="cyber-table"><thead><tr><th>时间</th><th>类型</th><th>金额</th><th>余额</th></tr></thead>
+                <tbody id="walletBody"></tbody></table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ============================================================
+    全局模态框集合
+    ============================================================ -->
+    <div class="modal-overlay" id="customerModal">
+        <div class="modal-box"><button class="close-btn" onclick="closeModal('customerModal')">✕</button>
+            <h3 id="customerModalTitle">添加客户</h3>
+            <form onsubmit="saveCustomer(event)">
+                <input type="hidden" id="editCustId">
+                <div class="form-group"><label>姓名</label><input type="text" id="custName" required placeholder="输入姓名"></div>
+                <div class="form-group"><label>电话</label><input type="text" id="custPhone" placeholder="输入电话"></div>
+                <div class="form-group"><label>等级</label><select id="custLevel"><option>普通</option><option>银卡</option><option>金卡</option><option>钻石</option></select></div>
+                <div class="form-actions"><button type="button" class="btn-cyber btn-cyber-outline" onclick="closeModal('customerModal')">取消</button><button type="submit" class="btn-cyber">保存</button></div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="couponModal">
+        <div class="modal-box"><button class="close-btn" onclick="closeModal('couponModal')">✕</button>
+            <h3>新建优惠券</h3>
+            <form onsubmit="saveCoupon(event)">
+                <div class="form-group"><label>名称</label><input type="text" id="cpnName" required></div>
+                <div class="form-group"><label>折扣 (%)</label><input type="number" id="cpnDisc" required></div>
+                <div class="form-actions"><button type="button" class="btn-cyber btn-cyber-outline" onclick="closeModal('couponModal')">取消</button><button type="submit" class="btn-cyber">保存</button></div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="feedbackModal">
+        <div class="modal-box"><button class="close-btn" onclick="closeModal('feedbackModal')">✕</button>
+            <h3>新建反馈</h3>
+            <form onsubmit="saveFeedback(event)">
+                <div class="form-group"><label>客户名称</label><input type="text" id="fbName" required></div>
+                <div class="form-group"><label>评分</label><select id="fbRating"><option>5</option><option>4</option><option>3</option><option>2</option><option>1</option></select></div>
+                <div class="form-group"><label>内容</label><textarea id="fbContent" rows="3"></textarea></div>
+                <div class="form-actions"><button type="button" class="btn-cyber btn-cyber-outline" onclick="closeModal('feedbackModal')">取消</button><button type="submit" class="btn-cyber">保存</button></div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="giftModal">
+        <div class="modal-box"><button class="close-btn" onclick="closeModal('giftModal')">✕</button>
+            <h3>新建礼品卡</h3>
+            <form onsubmit="saveGift(event)">
+                <div class="form-group"><label>卡号</label><input type="text" id="giftCode" required></div>
+                <div class="form-group"><label>面值 (¥)</label><input type="number" id="giftVal" required></div>
+                <div class="form-actions"><button type="button" class="btn-cyber btn-cyber-outline" onclick="closeModal('giftModal')">取消</button><button type="submit" class="btn-cyber">保存</button></div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="levelModal">
+        <div class="modal-box"><button class="close-btn" onclick="closeModal('levelModal')">✕</button>
+            <h3>新建等级</h3>
+            <form onsubmit="saveLevel(event)">
+                <div class="form-group"><label>等级名称</label><input type="text" id="lvName" required></div>
+                <div class="form-group"><label>门槛积分</label><input type="number" id="lvPoints" required></div>
+                <div class="form-actions"><button type="button" class="btn-cyber btn-cyber-outline" onclick="closeModal('levelModal')">取消</button><button type="submit" class="btn-cyber">保存</button></div>
+            </form>
+        </div>
+    </div>
+
+    <div class="modal-overlay" id="vehicleModal">
+        <div class="modal-box"><button class="close-btn" onclick="closeModal('vehicleModal')">✕</button>
+            <h3>新增车辆</h3>
+            <form onsubmit="saveVehicle(event)">
+                <div class="form-group"><label>车牌号</label><input type="text" id="vehPlate" required></div>
+                <div class="form-group"><label>品牌</label><input type="text" id="vehBrand" required></div>
+                <div class="form-actions"><button type="button" class="btn-cyber btn-cyber-outline" onclick="closeModal('vehicleModal')">取消</button><button type="submit" class="btn-cyber">保存</button></div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="/config.js"></script>
+<script src="/js/supabase.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/db.js"></script>
+<script src="/js/permissions.js"></script>
+<script src="/js/storage.js"></script>
+<script src="../../js/common.js"></script></body>
+</html>

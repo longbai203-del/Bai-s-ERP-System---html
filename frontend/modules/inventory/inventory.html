@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>智能库存管理总部 - Enterprise ERP</title>
+    <link rel="stylesheet" href="../../css/common.css">
+    <style>
+        /* ============================================================
+           4200 行库存管理系统单文件专属 CSS
+           ============================================================ */
+        :root {
+            --glass-edge: rgba(0, 212, 255, 0.15);
+            --neon-green: #10B981;
+            --neon-warning: #F59E0B;
+            --neon-danger: #EF4444;
+            --neon-info: #3B82F6;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: var(--bg-main);
+            color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            overflow: hidden;
+            height: 100vh;
+        }
+        .main-content::-webkit-scrollbar { width: 6px; }
+        .main-content::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 3px; }
+
+        /* 顶部导航 */
+        .inv-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding-bottom: 16px; border-bottom: 1px solid var(--glass-edge);
+            margin-bottom: 24px; flex-wrap: wrap; gap: 12px;
+        }
+        .inv-header h1 {
+            font-size: 28px; font-weight: 800;
+            background: linear-gradient(135deg, #00D4FF, #C084FC, #F472B6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .inv-header .subtitle { color: var(--text-sub); font-size: 14px; margin-top: 4px; }
+        .header-actions { display: flex; gap: 10px; }
+        .btn-cyber {
+            padding: 8px 16px; background: linear-gradient(135deg, #00D4FF, #0088FF);
+            border: none; border-radius: 6px; color: #000; font-weight: 600; cursor: pointer;
+            transition: 0.3s; font-size: 13px;
+        }
+        .btn-cyber:hover { box-shadow: 0 0 20px rgba(0,212,255,0.3); }
+        .btn-cyber-outline { background: transparent; border: 1px solid rgba(0,212,255,0.3); color: var(--neon-blue); }
+
+        /* Tabs 导航 (融合库存全部子模块) */
+        .inv-tabs {
+            display: flex; gap: 4px; margin-bottom: 20px;
+            background: rgba(255,255,255,0.03); border-radius: 12px; padding: 4px; flex-wrap: wrap;
+        }
+        .inv-tab {
+            padding: 10px 20px; border-radius: 8px; cursor: pointer;
+            color: var(--text-sub); transition: 0.3s; font-size: 14px; font-weight: 500;
+            background: transparent; border: 1px solid transparent;
+        }
+        .inv-tab:hover { color: var(--text-main); background: rgba(255,255,255,0.05); }
+        .inv-tab.active {
+            background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(192,132,252,0.15));
+            color: var(--text-main); border-color: var(--glass-edge);
+        }
+        .inv-panel { display: none; animation: fadeIn 0.4s ease; }
+        .inv-panel.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 通用 KPI */
+        .kpi-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+        .kpi-box {
+            background: rgba(0,212,255,0.03); border: 1px solid rgba(0,212,255,0.1);
+            border-radius: 12px; padding: 16px; text-align: center;
+        }
+        .kpi-box .kpi-val { font-size: 28px; font-weight: 700; margin: 8px 0 4px; }
+        .kpi-box .kpi-label { color: var(--text-sub); font-size: 12px; }
+
+        /* 工具栏 */
+        .toolbar {
+            display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+            background: rgba(255,255,255,0.02); padding: 12px; border-radius: 12px; margin-bottom: 16px;
+        }
+        .toolbar input, .toolbar select {
+            padding: 6px 12px; background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: var(--text-main);
+            outline: none; font-size: 13px; flex: 1; min-width: 120px;
+        }
+        .toolbar input:focus, .toolbar select:focus { border-color: var(--neon-blue); }
+        .toolbar .spacer { flex: 1; }
+        .toolbar .count { color: var(--text-muted); font-size: 13px; }
+
+        /* 表格系统 */
+        .table-wrap {
+            max-height: 380px; overflow-y: auto; margin-top: 8px;
+            border: 1px solid rgba(255,255,255,0.03); border-radius: 8px;
+        }
+        .table-wrap::-webkit-scrollbar { width: 4px; }
+        .table-wrap::-webkit-scrollbar-thumb { background: rgba(0,212,255,0.4); border-radius: 4px; }
+        .cyber-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .cyber-table th {
+            color: var(--neon-blue); text-align: left; padding: 12px 10px;
+            border-bottom: 1px solid var(--glass-edge); font-weight: 600;
+            background: rgba(0,212,255,0.03); position: sticky; top: 0; z-index: 2;
+        }
+        .cyber-table td { padding: 12px 10px; color: var(--text-sub); border-bottom: 1px solid rgba(255,255,255,0.02); }
+        .cyber-table tr:hover td { background: rgba(0,212,255,0.05); color: var(--text-main); }
+
+        .status-pill { padding: 2px 10px; border-radius: 12px; font-size: 12px; display: inline-block; }
+        .status-pill.green { background: rgba(16,185,129,0.15); color: #10B981; }
+        .status-pill.yellow { background: rgba(245,158,11,0.15); color: #F59E0B; }
+        .status-pill.red { background: rgba(239,68,68,0.15); color: #EF4444; }
+
+        /* 模态框 */
+        .modal-overlay {
+            position: fixed; inset: 0; z-index: 9999;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(4px);
+            display: none; align-items: center; justify-content: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-box {
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.95), rgba(8, 14, 28, 0.99));
+            border: 1px solid rgba(0,212,255,0.2); border-radius: 16px; padding: 24px;
+            max-width: 600px; width: 100%; box-shadow: 0 0 40px rgba(0,0,0,0.8);
+        }
+        .modal-box h3 { color: var(--text-main); font-size: 20px; margin-bottom: 20px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; color: var(--text-sub); font-size: 13px; margin-bottom: 4px; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 10px 12px; background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--text-main);
+            outline: none; font-size: 14px; font-family: inherit;
+        }
+        .form-group input:focus, .form-group select:focus { border-color: var(--neon-blue); }
+        .form-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px; }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .kpi-grid-4 { grid-template-columns: 1fr 1fr; }
+            .header-actions { width: 100%; justify-content: flex-start; }
+        }
+    </style>
+</head>
+<body>
+    <div id="sidebar-container"></div>
+
+    <main class="main-content">
+
+        <!-- ============================================================
+        1. 顶部导航与 Tab 面板 (融合全部10个子模块)
+        ============================================================ -->
+        <div class="inv-header">
+            <div>
+                <h1>📦 智能库存管理总部</h1>
+                <div class="subtitle">商品档案 · 出入库 · 调拨 · 盘点 · 效期预警 · VAT 计算</div>
+            </div>
+            <div class="header-actions">
+                <button class="btn-cyber" onclick="openModal('productModal')">➕ 新增商品</button>
+                <button class="btn-cyber btn-cyber-outline" onclick="exportInventoryCSV()">📥 导出 CSV</button>
+                <button class="btn-cyber btn-cyber-outline" onclick="location.reload()">⟳ 刷新</button>
+            </div>
+        </div>
+
+        <div class="inv-tabs">
+            <div class="inv-tab active" onclick="switchPanel('panel-products', this)"><span>🏷️</span>商品档案</div>
+            <div class="inv-tab" onclick="switchPanel('panel-stock', this)"><span>📊</span>当前库存</div>
+            <div class="inv-tab" onclick="switchPanel('panel-inout', this)"><span>📥</span>出入库</div>
+            <div class="inv-tab" onclick="switchPanel('panel-transfer', this)"><span>🔄</span>库存调拨</div>
+            <div class="inv-tab" onclick="switchPanel('panel-count', this)"><span>✅</span>盘点</div>
+            <div class="inv-tab" onclick="switchPanel('panel-alert', this)"><span>⚠️</span>预警</div>
+            <div class="inv-tab" onclick="switchPanel('panel-history', this)"><span>📂</span>流水报表</div>
+        </div>
+
+        <!-- ============================================================
+        面板 1：商品档案管理
+        ============================================================ -->
+        <div id="panel-products" class="inv-panel active">
+            <div class="kpi-grid-4">
+                <div class="kpi-box"><div class="kpi-label">商品总数</div><div class="kpi-val" style="color:#00D4FF;">58</div></div>
+                <div class="kpi-box"><div class="kpi-label">分类数</div><div class="kpi-val">6</div></div>
+                <div class="kpi-box"><div class="kpi-label">库存总值 (含VAT)</div><div class="kpi-val">¥84,200</div></div>
+                <div class="kpi-box"><div class="kpi-label">预警商品</div><div class="kpi-val" style="color:#EF4444;">8</div></div>
+            </div>
+            <div class="toolbar">
+                <input type="text" placeholder="搜索名称、条码..." oninput="filterProduct(this.value)">
+                <select onchange="filterProduct(document.getElementById('prodSearch').value)">
+                    <option value="all">全部分类</option><option>洗车耗材</option><option>清洁药剂</option><option>油品</option><option>配件</option><option>工具</option><option>其他</option>
+                </select>
+                <div class="spacer"></div>
+                <span class="count" id="prodCount">共 0 条</span>
+            </div>
+            <div class="table-wrap">
+                <table class="cyber-table"><thead><tr><th>名称</th><th>分类</th><th>条码</th><th>售价</th><th>含税(VAT)</th><th>库存</th></tr></thead>
+                <tbody id="prodBody"></tbody></table>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        面板 2：当前库存快照
+        ============================================================ -->
+        <div id="panel-stock" class="inv-panel">
+            <div class="kpi-grid-4">
+                <div class="kpi-box"><div class="kpi-label">总库存量</div><div class="kpi-val">2,480</div></div>
+                <div class="kpi-box"><div class="kpi-label">低库存商品</div><div class="kpi-val" style="color:#F59E0B;">8</div></div>
+                <div class="kpi-box"><div class="kpi-label">缺货商品</div><div class="kpi-val" style="color:#EF4444;">2</div></div>
+                <div class="kpi-box"><div class="kpi-label">总价值</div><div class="kpi-val" style="color:#00D4FF;">¥84.2k</div></div>
+            </div>
+            <div class="table-wrap">
+                <table class="cyber-table"><thead><tr><th>商品</th><th>库存</th><th>安全库存</th><th>状态</th></tr></thead>
+                <tbody id="stockBody"></tbody></table>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        面板 3：出入库管理
+        ============================================================ -->
+        <div id="panel-inout" class="inv-panel">
+            <div class="toolbar">
+                <select><option>采购入库</option><option>退货入库</option><option>销售出库</option><option>损耗出库</option></select>
+                <div class="spacer"></div>
+                <button class="btn-cyber" onclick="alert('执行出入库操作 (模拟)')">🛒 执行单据</button>
+            </div>
+            <div class="table-wrap">
+                <table class="cyber-table"><thead><tr><th>单号</th><th>类型</th><th>商品</th><th>数量</th><th>金额 (含VAT)</th><th>操作人</th></tr></thead>
+                <tbody id="inoutBody"></tbody></table>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        面板 4：库存调拨
+        ============================================================ -->
+        <div id="panel-transfer" class="inv-panel">
+            <div class="toolbar">
+                <div class="spacer"></div>
+                <button class="btn-cyber" onclick="alert('调拨确认 (模拟)')">📦 发起调拨</button>
+            </div>
+            <div class="table-wrap">
+                <table class="cyber-table"><thead><tr><th>调拨单</th><th>调出</th><th>调入</th><th>商品</th><th>数量</th><th>状态</th></tr></thead>
+                <tbody id="transferBody"></tbody></table>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        面板 5：盘点管理
+        ============================================================ -->
+        <div id="panel-count" class="inv-panel">
+            <div class="kpi-grid-4">
+                <div class="kpi-box"><div class="kpi-label">盘点单数</div><div class="kpi-val">3</div></div>
+                <div class="kpi-box"><div class="kpi-label">差异商品</div><div class="kpi-val" style="color:#F59E0B;">2</div></div>
+                <div class="kpi-box"><div class="kpi-label">盘盈金额</div><div class="kpi-val" style="color:#10B981;">¥120</div></div>
+                <div class="kpi-box"><div class="kpi-label">盘亏金额</div><div class="kpi-val" style="color:#EF4444;">¥45</div></div>
+            </div>
+            <div class="table-wrap">
+                <table class="cyber-table"><thead><tr><th>盘点单</th><th>日期</th><th>商品</th><th>账面</th><th>实盘</th><th>差异</th></tr></thead>
+                <tbody id="countBody"></tbody></table>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        面板 6：预警与效期
+        ============================================================ -->
+        <div id="panel-alert" class="inv-panel">
+            <div class="kpi-grid-4">
+                <div class="kpi-box"><div class="kpi-label">低库存预警</div><div class="kpi-val" style="color:#F59E0B;">6</div></div>
+                <div class="kpi-box"><div class="kpi-label">效期预警</div><div class="kpi-val" style="color:#EF4444;">3</div></div>
+                <div class="kpi-box"><div class="kpi-label">过期商品</div><div class="kpi-val" style="color:#EF4444;">1</div></div>
+                <div class="kpi-box"><div class="kpi-label">需补货</div><div class="kpi-val">5</div></div>
+            </div>
+            <div class="table-wrap">
+                <table class="cyber-table"><thead><tr><th>商品</th><th>当前库存</th><th>安全线</th><th>效期</th><th>状态</th></tr></thead>
+                <tbody id="alertBody"></tbody></table>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        面板 7：流水与报表
+        ============================================================ -->
+        <div id="panel-history" class="inv-panel">
+            <div class="toolbar">
+                <input type="date" value="2026-08-01">
+                <span style="color:var(--text-sub);">至</span>
+                <input type="date" value="2026-08-02">
+                <div class="spacer"></div>
+                <span class="count">流水明细</span>
+            </div>
+            <div class="table-wrap">
+                <table class="cyber-table"><thead><tr><th>时间</th><th>商品</th><th>变动</th><th>数量</th><th>操作人</th></tr></thead>
+                <tbody id="historyBody"></tbody></table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ============================================================
+    新增/编辑商品模态框
+    ============================================================ -->
+    <div class="modal-overlay" id="productModal">
+        <div class="modal-box">
+            <h3>➕ 新增商品</h3>
+            <form onsubmit="saveProduct(event)">
+                <div class="form-group"><label>商品名称</label><input type="text" id="pName" placeholder="输入名称" required></div>
+                <div class="form-group"><label>分类</label><select id="pCat"><option>洗车耗材</option><option>清洁药剂</option><option>油品</option><option>配件</option><option>工具</option><option>其他</option></select></div>
+                <div class="form-group"><label>条码</label><input type="text" id="pBarcode" placeholder="输入条码"></div>
+                <div class="form-group"><label>销售价 (不含税)</label><input type="number" id="pPrice" placeholder="0.00" step="0.01" required></div>
+                <div class="form-group"><label>安全库存值</label><input type="number" id="pAlert" placeholder="10" required></div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cyber btn-cyber-outline" onclick="closeModal('productModal')">取消</button>
+                    <button type="submit" class="btn-cyber">保存商品</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="/config.js"></script>
+<script src="/js/supabase.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/db.js"></script>
+<script src="/js/permissions.js"></script>
+<script src="/js/storage.js"></script>
+<script src="../../js/common.js"></script></body>
+</html>

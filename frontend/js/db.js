@@ -58,7 +58,7 @@ class Database {
     async deleteById(table, id) { return this.delete(table, { id }); }
 
     // ==========================================================
-    // 2. 客户管理 (05-customers)
+    // 2. 客户管理
     // ==========================================================
     async getCustomers(filters = {}) {
         if (filters.search) {
@@ -66,7 +66,7 @@ class Database {
                 const { data, error } = await this.supabase
                     .from('customers')
                     .select('*')
-                    .or(`full_name.ilike.%${filters.search}%,phone.ilike.%${filters.search}%,customer_code.ilike.%${filters.search}%`)
+                    .or(ull_name.ilike.%%,phone.ilike.%%,customer_code.ilike.%%)
                     .eq('organization_id', filters.organization_id || this.auth.userProfile?.organization_id);
                 if (error) throw error;
                 return { success: true, data };
@@ -80,7 +80,7 @@ class Database {
     }
 
     // ==========================================================
-    // 3. 产品与库存管理 (04-products / 07-inventory)
+    // 3. 产品与库存管理
     // ==========================================================
     async getProducts(filters = {}) {
         if (filters.search) {
@@ -88,7 +88,8 @@ class Database {
                 const { data, error } = await this.supabase
                     .from('products')
                     .select('*')
-                    .or(`name.ilike.%${filters.search}%,product_code.ilike.%${filters.search}%,barcode.ilike.%${filters.search}%`)
+                    .or(
+ame.ilike.%%,product_code.ilike.%%,barcode.ilike.%%)
                     .eq('organization_id', filters.organization_id || this.auth.userProfile?.organization_id);
                 if (error) throw error;
                 return { success: true, data };
@@ -108,7 +109,7 @@ class Database {
     }
 
     // ==========================================================
-    // 4. 订单与 POS (02-pos / 03-orders)
+    // 4. 订单与 POS
     // ==========================================================
     async createOrder(orderData, items) {
         try {
@@ -134,7 +135,7 @@ class Database {
     }
 
     // ==========================================================
-    // 5. 采购管理 (08-purchase)
+    // 5. 采购管理
     // ==========================================================
     async getSuppliers(filters = {}) {
         return this.query('suppliers', { eq: { organization_id: filters.organization_id || this.auth.userProfile?.organization_id } });
@@ -155,35 +156,35 @@ class Database {
     }
 
     // ==========================================================
-    // 6. 财务管理 (09-finance)
+    // 6. 财务管理
     // ==========================================================
     async getFinancialTransactions(filters = {}) {
         return this.query('financial_transactions', { eq: { organization_id: filters.organization_id || this.auth.userProfile?.organization_id }, order: { column: 'created_at', ascending: false } });
     }
 
     // ==========================================================
-    // 7. 人力资源管理 (10-hr)
+    // 7. 人力资源管理
     // ==========================================================
     async getEmployees(filters = {}) {
         return this.query('employees', { eq: { organization_id: filters.organization_id || this.auth.userProfile?.organization_id } });
     }
 
     // ==========================================================
-    // 8. SaaS 订阅 (11-saas)
+    // 8. SaaS 订阅
     // ==========================================================
     async getSubscriptions(filters = {}) {
         return this.query('subscriptions', { eq: { organization_id: filters.organization_id || this.auth.userProfile?.organization_id } });
     }
 
     // ==========================================================
-    // 9. 系统设置与审计 (12-system / 14-settings)
+    // 9. 系统设置与审计
     // ==========================================================
     async getAuditLogs() {
         return this.query('audit_logs', { order: { column: 'created_at', ascending: false } });
     }
 
     // ==========================================================
-    // 10. 统计看板 (01-dashboard)
+    // 10. 统计看板
     // ==========================================================
     async getDashboardStats(organizationId) {
         try {

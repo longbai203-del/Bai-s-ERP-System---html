@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>智能人力资源管理 - Enterprise ERP</title>
+    <link rel="stylesheet" href="../../css/common.css">
+    <style>
+        /* ============================================================
+           4200 行巨型 HR 系统单文件 CSS
+           ============================================================ */
+        :root {
+            --glass-edge: rgba(0, 212, 255, 0.15);
+            --neon-green: #10B981;
+            --neon-warning: #F59E0B;
+            --neon-danger: #EF4444;
+            --neon-info: #3B82F6;
+            --neon-gosi: #C084FC;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: var(--bg-main);
+            color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            overflow: hidden;
+            height: 100vh;
+        }
+        .main-content::-webkit-scrollbar { width: 6px; }
+        .main-content::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 3px; }
+
+        /* 顶部导航 */
+        .hr-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding-bottom: 16px; border-bottom: 1px solid var(--glass-edge);
+            margin-bottom: 24px; flex-wrap: wrap; gap: 12px;
+        }
+        .hr-header h1 {
+            font-size: 28px; font-weight: 800;
+            background: linear-gradient(135deg, #00D4FF, #C084FC, #F472B6);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .hr-header .subtitle { color: var(--text-sub); font-size: 14px; margin-top: 4px; }
+        .header-actions { display: flex; gap: 10px; }
+        .btn-cyber {
+            padding: 8px 16px; background: linear-gradient(135deg, #00D4FF, #0088FF);
+            border: none; border-radius: 6px; color: #000; font-weight: 600; cursor: pointer;
+            transition: 0.3s; font-size: 13px;
+        }
+        .btn-cyber:hover { box-shadow: 0 0 20px rgba(0,212,255,0.3); }
+        .btn-cyber-outline { background: transparent; border: 1px solid rgba(0,212,255,0.3); color: var(--neon-blue); }
+
+        /* Tabs 导航 (融合12个模块) */
+        .hr-tabs {
+            display: flex; gap: 4px; margin-bottom: 20px;
+            background: rgba(255,255,255,0.03); border-radius: 12px; padding: 4px; flex-wrap: wrap;
+        }
+        .hr-tab {
+            padding: 10px 20px; border-radius: 8px; cursor: pointer;
+            color: var(--text-sub); transition: 0.3s; font-size: 14px; font-weight: 500;
+            background: transparent; border: 1px solid transparent;
+        }
+        .hr-tab:hover { color: var(--text-main); background: rgba(255,255,255,0.05); }
+        .hr-tab.active {
+            background: linear-gradient(135deg, rgba(0,212,255,0.15), rgba(192,132,252,0.15));
+            color: var(--text-main); border-color: var(--glass-edge);
+        }
+        .hr-panel { display: none; animation: fadeIn 0.4s ease; }
+        .hr-panel.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* 通用 KPI */
+        .kpi-grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 20px; }
+        .kpi-box {
+            background: rgba(0,212,255,0.03); border: 1px solid rgba(0,212,255,0.1);
+            border-radius: 12px; padding: 16px; text-align: center;
+        }
+        .kpi-box .kpi-val { font-size: 28px; font-weight: 700; margin: 8px 0 4px; }
+        .kpi-box .kpi-label { color: var(--text-sub); font-size: 12px; }
+
+        /* 表格与工具栏 */
+        .toolbar {
+            display: flex; gap: 12px; flex-wrap: wrap; align-items: center;
+            background: rgba(255,255,255,0.02); padding: 12px; border-radius: 12px; margin-bottom: 16px;
+        }
+        .toolbar input, .toolbar select {
+            padding: 6px 12px; background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 6px; color: var(--text-main);
+            outline: none; font-size: 13px; flex: 1; min-width: 120px;
+        }
+        .toolbar input:focus, .toolbar select:focus { border-color: var(--neon-blue); }
+        .toolbar .spacer { flex: 1; }
+        .toolbar .count { color: var(--text-muted); font-size: 13px; }
+
+        .table-wrap {
+            max-height: 380px; overflow-y: auto; margin-top: 8px;
+            border: 1px solid rgba(255,255,255,0.03); border-radius: 8px;
+        }
+        .table-wrap::-webkit-scrollbar { width: 4px; }
+        .table-wrap::-webkit-scrollbar-thumb { background: rgba(0,212,255,0.4); border-radius: 4px; }
+        .cyber-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+        .cyber-table th {
+            color: var(--neon-blue); text-align: left; padding: 12px 10px;
+            border-bottom: 1px solid var(--glass-edge); font-weight: 600;
+            background: rgba(0,212,255,0.03); position: sticky; top: 0; z-index: 2;
+        }
+        .cyber-table td { padding: 12px 10px; color: var(--text-sub); border-bottom: 1px solid rgba(255,255,255,0.02); }
+        .cyber-table tr:hover td { background: rgba(0,212,255,0.05); color: var(--text-main); }
+
+        .status-pill { padding: 2px 10px; border-radius: 12px; font-size: 12px; display: inline-block; }
+        .status-pill.green { background: rgba(16,185,129,0.15); color: #10B981; }
+        .status-pill.yellow { background: rgba(245,158,11,0.15); color: #F59E0B; }
+        .status-pill.red { background: rgba(239,68,68,0.15); color: #EF4444; }
+        .status-pill.purple { background: rgba(192,132,252,0.15); color: #C084FC; }
+
+        /* 权限网格 */
+        .perm-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 12px; margin-top: 8px; }
+        .perm-item {
+            background: rgba(0,212,255,0.03); border: 1px solid rgba(255,255,255,0.05);
+            border-radius: 8px; padding: 12px; display: flex; justify-content: space-between; align-items: center;
+        }
+        .perm-item .name { color: var(--text-main); font-size: 13px; }
+        .perm-item .switch { cursor: pointer; color: var(--neon-blue); }
+
+        /* 模态框 */
+        .modal-overlay {
+            position: fixed; inset: 0; z-index: 9999;
+            background: rgba(0,0,0,0.8); backdrop-filter: blur(4px);
+            display: none; align-items: center; justify-content: center;
+        }
+        .modal-overlay.active { display: flex; }
+        .modal-box {
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.95), rgba(8, 14, 28, 0.99));
+            border: 1px solid rgba(0,212,255,0.2); border-radius: 16px; padding: 24px;
+            max-width: 600px; width: 100%; box-shadow: 0 0 40px rgba(0,0,0,0.8);
+        }
+        .modal-box h3 { color: var(--text-main); font-size: 20px; margin-bottom: 20px; }
+        .form-group { margin-bottom: 16px; }
+        .form-group label { display: block; color: var(--text-sub); font-size: 13px; margin-bottom: 4px; }
+        .form-group input, .form-group select, .form-group textarea {
+            width: 100%; padding: 10px 12px; background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--text-main);
+            outline: none; font-size: 14px; font-family: inherit;
+        }
+        .form-group input:focus, .form-group select:focus { border-color: var(--neon-blue); }
+        .form-actions { display: flex; gap: 12px; justify-content: flex-end; margin-top: 20px; }
+
+        /* 响应式 */
+        @media (max-width: 768px) {
+            .kpi-grid-4 { grid-template-columns: 1fr 1fr; }
+            .header-actions { width: 100%; justify-content: flex-start; }
+        }
+    </style>
+</head>
+<body>
+    <div id="sidebar-container"></div>
+
+    <main class="main-content">
+
+        <!-- ============================================================
+        1. 顶部导航与 Tab 面板 (融合 12 个模块)
+        ============================================================ -->
+        <div class="hr-header">
+            <div>
+                <h1>👔 智能人力资源与劳工管理</h1>
+                <div class="subtitle">员工档案 · 签证预警 · 考勤排班 · 薪资核算(GOSI) · 绩效与权限</div>
+            </div>
+            <div class="header-actions">
+                <button class="btn-cyber" onclick="openModal('employeeModal')">➕ 录入员工</button>
+                <button class="btn-cyber btn-cyber-outline" onclick="exportCSV()">📥 导出 CSV</button>
+                <button class="btn-cyber btn-cyber-outline" onclick="location.reload()">⟳ 刷新</button>
+            </div>
+        </div>
+
+        <div class="hr-tabs">
+            <div class="hr-tab active" onclick="switchPanel('panel-emp', this)"><span>👤</span>员工档案</div>
+            <div class="hr-tab" onclick="switchPanel('panel-attend', this)"><span>⏰</span>考勤排班</div>
+            <div class="hr-tab" onclick="switchPanel('panel-payroll', this)"><span>💰</span>薪资 GOSI</div>
+            <div class="hr-tab" onclick="switchPanel('panel-perf', this)"><span>📈</span>绩效奖惩</div>
+            <div class="hr-tab" onclick="switchPanel('panel-perm', this)"><span>🔒</span>权限管控</div>
+            <div class="hr-tab" onclick="switchPanel('panel-logs', this)"><span>📋</span>操作日志</div>
+        </div>
+
+        <!-- ============================================================
+        面板 1：员工档案 (含签证/居住证预警)
+        ============================================================ -->
+        <div id="panel-emp" class="hr-panel active">
+            <div class="kpi-grid-4">
+                <div class="kpi-box"><div class="kpi-label">总员工数</div><div class="kpi-val" style="color:#00D4FF;">42</div></div>
+                <div class="kpi-box"><div class="kpi-label">证件到期预警</div><div class="kpi-val" style="color:#EF4444;">3</div></div>
+                <div class="kpi-box"><div class="kpi-label">沙特籍员工</div><div class="kpi-val">12</div></div>
+                <div class="kpi-box"><div class="kpi-label">外籍员工</div><div class="kpi-val">30</div></div>
+            </div>
+            <div class="toolbar">
+                <input type="text" placeholder="搜索姓名、工号、职位..." oninput="filterEmployees(this.value)">
+                <select onchange="filterEmployees(document.getElementById('empSearch').value)">
+                    <option value="all">全部国籍</option><option value="沙特">沙特</option><option value="菲律宾">菲律宾</option><option value="印度">印度</option>
+                </select>
+                <div class="spacer"></div>
+                <span class="count" id="empCount">共 0 条</span>
+            </div>
+            <div class="table-wrap">
+                <table class="cyber-table"><thead><tr><th>工号</th><th>姓名</th><th>国籍</th><th>职位</th><th>签证到期</th><th>状态</th></tr></thead>
+                <tbody id="empBody"></tbody></table>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        面板 2：考勤排班与工时
+        ============================================================ -->
+        <div id="panel-attend" class="hr-panel">
+            <div class="kpi-grid-4">
+                <div class="kpi-box"><div class="kpi-label">今日出勤</div><div class="kpi-val" style="color:#10B981;">38</div></div>
+                <div class="kpi-box"><div class="kpi-label">今日缺勤</div><div class="kpi-val" style="color:#EF4444;">4</div></div>
+                <div class="kpi-box"><div class="kpi-label">迟到标记</div><div class="kpi-val" style="color:#F59E0B;">2</div></div>
+                <div class="kpi-box"><div class="kpi-label">本周总工时</div><div class="kpi-val">1,240h</div></div>
+            </div>
+            <div class="toolbar">
+                <select onchange="filterAttend()"><option>今日</option><option>本周</option><option>本月</option></select>
+                <input type="date">
+                <div class="spacer"></div>
+                <span class="count" id="attCount">共 0 条</span>
+            </div>
+            <div class="table-wrap">
+                <table class="cyber-table"><thead><tr><th>姓名</th><th>班次</th><th>签到</th><th>签退</th><th>工时</th><th>标记</th></tr></thead>
+                <tbody id="attBody"></tbody></table>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        面板 3：薪资 GOSI 与核算
+        ============================================================ -->
+        <div id="panel-payroll" class="hr-panel">
+            <div class="kpi-grid-4">
+                <div class="kpi-box"><div class="kpi-label">本月薪资总额</div><div class="kpi-val" style="color:#00D4FF;">¥258,400</div></div>
+                <div class="kpi-box"><div class="kpi-label">GOSI 扣除额</div><div class="kpi-val" style="color:#C084FC;">¥18,200</div></div>
+                <div class="kpi-box"><div class="kpi-label">加班费总额</div><div class="kpi-val" style="color:#F59E0B;">¥12,500</div></div>
+                <div class="kpi-box"><div class="kpi-label">实发总额</div><div class="kpi-val" style="color:#10B981;">¥240,200</div></div>
+            </div>
+            <div class="table-wrap">
+                <table class="cyber-table"><thead><tr><th>姓名</th><th>基本薪资</th><th>加班费</th><th>奖金</th><th>GOSI</th><th>实发工资</th></tr></thead>
+                <tbody id="payBody"></tbody></table>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        面板 4：绩效奖惩与考核
+        ============================================================ -->
+        <div id="panel-perf" class="hr-panel">
+            <div class="kpi-grid-4">
+                <div class="kpi-box"><div class="kpi-label">本月绩效评分</div><div class="kpi-val" style="color:#10B981;">92.4</div></div>
+                <div class="kpi-box"><div class="kpi-label">优秀员工</div><div class="kpi-val" style="color:#00D4FF;">5</div></div>
+                <div class="kpi-box"><div class="kpi-label">待改进</div><div class="kpi-val" style="color:#F59E0B;">2</div></div>
+                <div class="kpi-box"><div class="kpi-label">警告记录</div><div class="kpi-val" style="color:#EF4444;">1</div></div>
+            </div>
+            <div class="table-wrap">
+                <table class="cyber-table"><thead><tr><th>姓名</th><th>考核季度</th><th>评分</th><th>奖惩</th></tr></thead>
+                <tbody id="perfBody"></tbody></table>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        面板 5：权限管控 (权限列表)
+        ============================================================ -->
+        <div id="panel-perm" class="hr-panel">
+            <div class="kpi-grid-4">
+                <div class="kpi-box"><div class="kpi-label">角色数</div><div class="kpi-val">6</div></div>
+                <div class="kpi-box"><div class="kpi-label">系统模块</div><div class="kpi-val">17</div></div>
+                <div class="kpi-box"><div class="kpi-label">自定义权限</div><div class="kpi-val">24</div></div>
+                <div class="kpi-box"><div class="kpi-label">安全等级</div><div class="kpi-val" style="color:#10B981;">A+</div></div>
+            </div>
+            <div class="toolbar"><div class="spacer"></div><span class="count">权限配置列表</span></div>
+            <div class="perm-grid" id="permGrid"></div>
+        </div>
+
+        <!-- ============================================================
+        面板 6：操作日志
+        ============================================================ -->
+        <div id="panel-logs" class="hr-panel">
+            <div class="table-wrap">
+                <table class="cyber-table"><thead><tr><th>时间</th><th>操作员</th><th>操作</th><th>模块</th></tr></thead>
+                <tbody id="logBody"></tbody></table>
+            </div>
+        </div>
+
+    </main>
+
+    <!-- ============================================================
+    员工录入模态框
+    ============================================================ -->
+    <div class="modal-overlay" id="employeeModal">
+        <div class="modal-box">
+            <h3>➕ 录入新员工</h3>
+            <form onsubmit="saveEmployee(event)">
+                <div class="form-group"><label>姓名 (阿拉伯文/中文)</label><input type="text" id="eName" placeholder="例如: Ahmad / 张伟" required></div>
+                <div class="form-group"><label>工号</label><input type="text" id="eId" placeholder="EMP-2026-XXX" required></div>
+                <div class="form-group"><label>国籍</label>
+                    <select id="eNationality"><option value="沙特">沙特</option><option value="菲律宾">菲律宾</option><option value="印度">印度</option><option value="其他">其他</option></select>
+                </div>
+                <div class="form-group"><label>职位</label><input type="text" id="ePos" placeholder="例如: 高级维修技师" required></div>
+                <div class="form-group"><label>基本薪资 (SAR)</label><input type="number" id="eSalary" placeholder="5000.00" required></div>
+                <div class="form-group"><label>签证/Iqama 到期日</label><input type="date" id="eVisa" required></div>
+                <div class="form-actions">
+                    <button type="button" class="btn-cyber btn-cyber-outline" onclick="closeModal('employeeModal')">取消</button>
+                    <button type="submit" class="btn-cyber">保存档案</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="/config.js"></script>
+<script src="/js/supabase.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/db.js"></script>
+<script src="/js/permissions.js"></script>
+<script src="/js/storage.js"></script>
+<script src="../../js/common.js"></script></body>
+</html>

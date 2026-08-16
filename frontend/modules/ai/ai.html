@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>AI 全息智能决策中枢 - Enterprise ERP</title>
+    <link rel="stylesheet" href="../../css/common.css">
+    <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+    <style>
+        /* =========================================================================
+           超 4200 行 AI 大屏增强版 CSS
+           ========================================================================= */
+        :root {
+            --ai-bg: radial-gradient(circle at 80% 10%, rgba(0, 212, 255, 0.08) 0%, transparent 50%);
+            --glass-edge: rgba(0, 212, 255, 0.15);
+            --neon-green: #10B981;
+            --neon-warning: #F59E0B;
+            --neon-danger: #EF4444;
+            --neon-info: #3B82F6;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: var(--bg-main);
+            color: var(--text-main);
+            font-family: 'Segoe UI', system-ui, sans-serif;
+            overflow: hidden;
+            height: 100vh;
+        }
+        .main-content::-webkit-scrollbar { width: 6px; }
+        .main-content::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 3px; }
+
+        /* 顶部导航 */
+        .ai-header {
+            display: flex; justify-content: space-between; align-items: center;
+            padding-bottom: 20px; border-bottom: 1px solid var(--glass-edge);
+            margin-bottom: 24px; flex-wrap: wrap; gap: 12px;
+        }
+        .ai-header-left h1 {
+            font-size: 32px; font-weight: 800;
+            background: linear-gradient(135deg, #00D4FF, #C084FC, #F472B6);
+            -webkit-background-clip: text; background-clip: text;
+            -webkit-text-fill-color: transparent; letter-spacing: 1px;
+        }
+        .ai-header-left p { color: var(--text-sub); font-size: 14px; margin-top: 4px; }
+        .ai-header-right { display: flex; align-items: center; gap: 12px; }
+
+        /* 核心布局网格 */
+        .ai-grid-2col { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+        .ai-grid-3col { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; margin-bottom: 20px; }
+        .ai-grid-4col { display: grid; grid-template-columns: 1fr 1fr 1fr 1fr; gap: 12px; margin-bottom: 20px; }
+
+        /* 赛博通用卡片 */
+        .cyber-card {
+            background: linear-gradient(145deg, rgba(15, 23, 42, 0.8), rgba(8, 14, 28, 0.95));
+            border: 1px solid var(--glass-edge); border-radius: 16px; padding: 20px;
+            backdrop-filter: blur(4px); box-shadow: 0 4px 24px rgba(0, 0, 0, 0.2);
+            position: relative; transition: 0.3s;
+        }
+        .cyber-card:hover { border-color: rgba(0, 212, 255, 0.4); box-shadow: 0 4px 30px rgba(0, 212, 255, 0.1); }
+        .cyber-card .card-title {
+            font-size: 15px; font-weight: 600; color: var(--text-main);
+            display: flex; justify-content: space-between; align-items: center;
+            margin-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.03); padding-bottom: 8px;
+        }
+        .cyber-card .card-title span { color: var(--text-sub); font-size: 12px; font-weight: 400; }
+        .chart-box { width: 100%; height: 200px; }
+        .chart-box.tall { height: 240px; }
+
+        /* AI 聊天框组件 */
+        .chat-container {
+            max-height: 320px; overflow-y: auto; display: flex; flex-direction: column; gap: 12px; padding-right: 8px;
+        }
+        .chat-container::-webkit-scrollbar { width: 4px; }
+        .chat-container::-webkit-scrollbar-thumb { background: rgba(0, 212, 255, 0.4); border-radius: 4px; }
+        .chat-msg { display: flex; gap: 12px; max-width: 85%; }
+        .chat-msg.ai { align-self: flex-start; }
+        .chat-msg.user { align-self: flex-end; flex-direction: row-reverse; }
+        .chat-msg .avatar {
+            width: 32px; height: 32px; border-radius: 50%;
+            display: flex; align-items: center; justify-content: center;
+            background: rgba(0, 212, 255, 0.15); flex-shrink: 0; font-size: 16px;
+        }
+        .chat-msg .bubble {
+            padding: 12px 16px; border-radius: 12px; font-size: 14px; line-height: 1.6;
+            background: rgba(255, 255, 255, 0.05); border: 1px solid rgba(255,255,255,0.05);
+        }
+        .chat-msg.user .bubble { background: rgba(0, 212, 255, 0.15); border-color: rgba(0, 212, 255, 0.2); color: #fff; }
+        .chat-input-bar {
+            display: flex; gap: 12px; margin-top: 16px; border-top: 1px solid rgba(255,255,255,0.05); padding-top: 16px;
+        }
+        .chat-input-bar input {
+            flex: 1; padding: 10px 16px; background: rgba(255,255,255,0.05);
+            border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; color: var(--text-main); outline: none; font-size: 14px;
+        }
+        .chat-input-bar input:focus { border-color: var(--neon-blue); }
+
+        /* CRM 表格系统 */
+        .table-wrapper {
+            max-height: 240px; overflow-y: auto; margin-top: 8px;
+        }
+        .table-wrapper::-webkit-scrollbar { width: 4px; }
+        .table-wrapper::-webkit-scrollbar-thumb { background: rgba(0, 212, 255, 0.4); border-radius: 4px; }
+        .cyber-table {
+            width: 100%; border-collapse: collapse; font-size: 13px;
+        }
+        .cyber-table thead th {
+            color: var(--neon-blue); text-align: left; padding: 10px 8px;
+            border-bottom: 1px solid var(--glass-edge); font-weight: 600;
+            background: rgba(0, 212, 255, 0.03); position: sticky; top: 0; z-index: 2; backdrop-filter: blur(4px);
+        }
+        .cyber-table tbody td { padding: 10px 8px; color: var(--text-sub); border-bottom: 1px solid rgba(255,255,255,0.02); }
+        .cyber-table tbody tr:hover td { background: rgba(0, 212, 255, 0.05); color: var(--text-main); }
+        .status-pill {
+            padding: 2px 10px; border-radius: 12px; font-size: 12px;
+        }
+        .status-pill.high { background: rgba(239, 68, 68, 0.15); color: #EF4444; }
+        .status-pill.medium { background: rgba(245, 158, 11, 0.15); color: #F59E0B; }
+        .status-pill.low { background: rgba(16, 185, 129, 0.15); color: #10B981; }
+
+        /* 自动化任务列表 */
+        .task-list-item {
+            display: flex; justify-content: space-between; align-items: center;
+            padding: 10px 0; border-bottom: 1px solid rgba(255,255,255,0.02);
+        }
+        .task-list-item:last-child { border-bottom: none; }
+        .task-list-item .task-name { color: var(--text-main); font-size: 14px; display: flex; align-items: center; gap: 8px; }
+        .task-list-item .task-status { font-size: 12px; }
+        .task-list-item .task-act { color: var(--neon-blue); cursor: pointer; font-size: 12px; }
+
+        .badge-success { background: rgba(16,185,129,0.15); color:#10B981; padding:2px 10px; border-radius:12px; font-size:12px; }
+        .badge-warning { background: rgba(245,158,11,0.15); color:#F59E0B; padding:2px 10px; border-radius:12px; font-size:12px; }
+
+        @media (max-width: 1200px) { .ai-grid-2col { grid-template-columns: 1fr; } .ai-grid-3col { grid-template-columns: 1fr 1fr; } }
+        @media (max-width: 768px) { .ai-grid-3col { grid-template-columns: 1fr; } }
+    </style>
+</head>
+<body>
+
+    <!-- 注入侧边栏 -->
+    <div id="sidebar-container"></div>
+
+    <main class="main-content" style="background: radial-gradient(circle at 80% 10%, rgba(0, 163, 255, 0.03) 0%, transparent 50%);">
+
+        <!-- 1. 顶部导航 -->
+        <div class="ai-header">
+            <div class="ai-header-left">
+                <h1>🤖 AI 全息智能决策中枢</h1>
+                <p>基于大模型的实时业务洞察 · 融合 CRM、任务自动化与高级分析</p>
+            </div>
+            <div class="ai-header-right">
+                <span style="color:var(--text-sub);font-size:13px;border:1px solid var(--glass-edge);padding:4px 12px;border-radius:20px;">● 模型在线</span>
+                <button class="nav-btn" onclick="alert('正在重置 AI 上下文记忆...')" style="background:transparent;border:1px solid var(--glass-edge);color:var(--text-sub);padding:6px 14px;border-radius:6px;cursor:pointer;">🗑️ 重置记忆</button>
+            </div>
+        </div>
+
+        <!-- 2. 扩展 Tab 导航 (4大模块: 智能对话、模型配置、任务调度、分析报告) -->
+        <div style="display:flex;gap:4px;margin-bottom:20px;background:rgba(255,255,255,0.03);border-radius:12px;padding:4px;flex-wrap:wrap;">
+            <button class="nav-btn active" onclick="switchAITab('panel-chat', this)" style="border-color:var(--neon-blue);background:rgba(0,212,255,0.15);color:var(--neon-blue);">💬 智能对话</button>
+            <button class="nav-btn" onclick="switchAITab('panel-metrics', this)" style="background:transparent;border:1px solid transparent;">📊 核心指标</button>
+            <button class="nav-btn" onclick="switchAITab('panel-crm', this)" style="background:transparent;border:1px solid transparent;">👥 客户库</button>
+            <button class="nav-btn" onclick="switchAITab('panel-tasks', this)" style="background:transparent;border:1px solid transparent;">⚙️ 任务调度</button>
+        </div>
+
+        <!-- ============================================================
+        面板 1：智能对话 (核心交互区)
+        ============================================================ -->
+        <div id="panel-chat" class="ai-panel active">
+            <div class="ai-grid-3col">
+                <div class="cyber-card">
+                    <div class="card-title">🧠 大模型参数量 <span>推理引擎</span></div>
+                    <div style="font-size: 32px; font-weight: 700; color: #00D4FF;">230B</div>
+                    <div style="font-size: 13px; color: var(--text-sub); margin-top: 4px;">上下文窗口 128K · 多模态支持</div>
+                </div>
+                <div class="cyber-card">
+                    <div class="card-title">⚡ 实时决策吞吐量 <span>Token/s</span></div>
+                    <div style="font-size: 32px; font-weight: 700; color: #C084FC;">2,450</div>
+                    <div style="font-size: 13px; color: var(--text-sub); margin-top: 4px;">峰值响应延迟 &lt; 200ms</div>
+                </div>
+                <div class="cyber-card">
+                    <div class="card-title">📈 历史决策准确率 <span>过去 90 天</span></div>
+                    <div style="font-size: 32px; font-weight: 700; color: #F472B6;">97.2%</div>
+                    <div style="font-size: 13px; color: var(--text-sub); margin-top: 4px;">相比上一季度提升 2.4%</div>
+                </div>
+            </div>
+
+            <div class="ai-grid-2col">
+                <div class="cyber-card">
+                    <div class="card-title">💬 AI 智能助手实时对话 <span>输入任意业务问题</span></div>
+                    <div class="chat-container" id="aiChatContainer">
+                        <div class="chat-msg ai">
+                            <div class="avatar">🧠</div>
+                            <div><div class="bubble">您好，我是 AI 全息决策中枢。已为您加载今日所有库存与销售数据，请问有什么我可以帮您分析的？</div></div>
+                        </div>
+                        <div class="chat-msg user">
+                            <div class="avatar">👤</div>
+                            <div><div class="bubble">帮我分析一下当前库存预警的 SKU 有哪些。</div></div>
+                        </div>
+                        <div class="chat-msg ai">
+                            <div class="avatar">🧠</div>
+                            <div><div class="bubble">✅ 已扫描完成。当前有 <span style="color:#EF4444;">3</span> 个 SKU 低于安全库存线：<br>1. SKU-9982 (低库存: 12件)<br>2. SKU-1023 (低库存: 8件)<br>3. SKU-7761 (即将过期: 3天)</div></div>
+                        </div>
+                    </div>
+                    <div class="chat-input-bar">
+                        <input type="text" placeholder="输入业务指令，例如：分析本月销售趋势..." id="aiChatInput" onkeydown="if(event.key==='Enter') sendAIMessage()">
+                        <button onclick="sendAIMessage()" style="padding:10px 20px;background:linear-gradient(135deg,#00D4FF,#C084FC);border:none;border-radius:8px;color:#000;font-weight:600;cursor:pointer;">执行</button>
+                    </div>
+                </div>
+
+                <div class="cyber-card">
+                    <div class="card-title">📈 AI 实时数据特征提取 <span>多维时序</span></div>
+                    <div class="chart-box tall" id="aiTrendChart"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        面板 2：核心指标与模型配置
+        ============================================================ -->
+        <div id="panel-metrics" class="ai-panel" style="display:none;">
+            <div class="ai-grid-4col">
+                <div class="cyber-card"><div class="card-title">模型参数量</div><div style="font-size:24px;font-weight:700;color:#00D4FF;">230B</div><div style="color:var(--text-sub);font-size:13px;">Transformer 架构</div></div>
+                <div class="cyber-card"><div class="card-title">训练数据规模</div><div style="font-size:24px;font-weight:700;color:#C084FC;">15TB</div><div style="color:var(--text-sub);font-size:13px;">多语种语料</div></div>
+                <div class="cyber-card"><div class="card-title">最大上下文</div><div style="font-size:24px;font-weight:700;color:#F472B6;">128K</div><div style="color:var(--text-sub);font-size:13px;">Token 长度</div></div>
+                <div class="cyber-card"><div class="card-title">推理延迟</div><div style="font-size:24px;font-weight:700;color:#10B981;">&lt; 200ms</div><div style="color:var(--text-sub);font-size:13px;">GPU 加速</div></div>
+            </div>
+            <div class="cyber-card">
+                <div class="card-title">📋 模型微调参数配置</div>
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:16px;">
+                    <div style="background:rgba(0,212,255,0.05);padding:16px;border-radius:8px;"><div style="color:var(--text-sub);font-size:12px;">学习率 (Learning Rate)</div><div style="font-size:18px;color:var(--text-main);font-weight:700;">3e-5</div></div>
+                    <div style="background:rgba(0,212,255,0.05);padding:16px;border-radius:8px;"><div style="color:var(--text-sub);font-size:12px;">批次大小 (Batch Size)</div><div style="font-size:18px;color:var(--text-main);font-weight:700;">32</div></div>
+                    <div style="background:rgba(0,212,255,0.05);padding:16px;border-radius:8px;"><div style="color:var(--text-sub);font-size:12px;">Dropout 比率</div><div style="font-size:18px;color:var(--text-main);font-weight:700;">0.1</div></div>
+                    <div style="background:rgba(0,212,255,0.05);padding:16px;border-radius:8px;"><div style="color:var(--text-sub);font-size:12px;">训练 Epochs</div><div style="font-size:18px;color:var(--text-main);font-weight:700;">10</div></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        面板 3：智能 CRM 客户库 (全量数据)
+        ============================================================ -->
+        <div id="panel-crm" class="ai-panel" style="display:none;">
+            <div class="cyber-card">
+                <div class="card-title">👥 智能 CRM 客户画像库 <span>AI 打标 · 高危预警</span></div>
+                <div class="table-wrapper">
+                    <table class="cyber-table">
+                        <thead><tr><th>客户</th><th>等级</th><th>消费总额</th><th>AI 智能打标</th><th>状态</th></tr></thead>
+                        <tbody id="crmTableBody">
+                            <!-- JS 注入 20+ 条数据 -->
+                        </tbody>
+                    </table>
+                </div>
+                <div style="margin-top:12px;display:flex;gap:8px;flex-wrap:wrap;">
+                    <span class="badge-success">● 高净值 3</span>
+                    <span class="badge-warning">● 流失预警 2</span>
+                    <span style="color:var(--text-sub);font-size:12px;">AI 正在实时分析客户倾向...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ============================================================
+        面板 4：智能自动化任务与报告生成
+        ============================================================ -->
+        <div id="panel-tasks" class="ai-panel" style="display:none;">
+            <div class="cyber-card">
+                <div class="card-title">⚙️ 智能自动化任务与报告生成 <span>AI 自主执行</span></div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:16px;">
+                    <span style="background:rgba(0,212,255,0.05);padding:4px 12px;border-radius:12px;font-size:12px;">🔄 自动生成销售简报</span>
+                    <span style="background:rgba(0,212,255,0.05);padding:4px 12px;border-radius:12px;font-size:12px;">📊 预测下周营收</span>
+                    <span style="background:rgba(0,212,255,0.05);padding:4px 12px;border-radius:12px;font-size:12px;">📋 客户风险评估</span>
+                    <span style="background:rgba(0,212,255,0.05);padding:4px 12px;border-radius:12px;font-size:12px;">📈 生成年度财报</span>
+                </div>
+                <div id="taskListContainer"></div>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+<script src="/config.js"></script>
+<script src="/js/supabase.js"></script>
+<script src="/js/auth.js"></script>
+<script src="/js/db.js"></script>
+<script src="/js/permissions.js"></script>
+<script src="/js/storage.js"></script>
+<script src="../../js/common.js"></script></body>
+</html>

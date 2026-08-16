@@ -67,24 +67,26 @@
     window.switchTheme = function(themeKey) { applyTheme(themeKey); };
 
     // ==========================
-    // 5. 侧边栏渲染 (根据你当前的文件树 01-xx 结构)
+    // 5. 侧边栏渲染 (原始 17 模块路径)
     // ==========================
     var MENU_CONFIG = [
-        { id: '01-dashboard/dashboard', icon: '📈', name: '智能决策中心' },
-        { id: '02-pos/cash-register', icon: '🧾', name: '收银台' },
-        { id: '03-orders/list', icon: '📦', name: '订单管理' },
-        { id: '04-products/products', icon: '📦', name: '产品中心' },
-        { id: '05-customers/customers', icon: '👥', name: '客户管理' },
-        { id: '07-inventory', icon: '🏷️', name: '库存管理' },
-        { id: '08-purchase/orders', icon: '🛒', name: '采购管理' },
-        { id: '09-finance', icon: '💰', name: '财务管理' },
-        { id: '10-hr', icon: '🧑‍💼', name: '人力资源' },
-        { id: '06-marketing', icon: '📣', name: '营销管理' },
-        { id: '13-analytics', icon: '📊', name: '数据分析' },
-        { id: '15-ai/ai', icon: '🤖', name: 'AI 智能中枢' },
-        { id: '11-saas', icon: '☁️', name: 'SaaS 服务' },
-        { id: '14-settings', icon: '⚙️', name: '系统设置' },
-        { id: '12-system', icon: '🔒', name: '系统管理' }
+        { id: 'dashboard', icon: '📈', name: '智能决策中心', path: '/modules/dashboard/dashboard.html' },
+        { id: 'orders', icon: '📦', name: '订单管理', path: '/modules/orders/orders.html' },
+        { id: 'pos', icon: '🧾', name: 'POS 收银', path: '/modules/pos/pos.html' },
+        { id: 'customers', icon: '👥', name: '客户管理', path: '/modules/customers/customers.html' },
+        { id: 'products', icon: '📦', name: '产品中心', path: '/modules/products/products.html' },
+        { id: 'inventory', icon: '🏷️', name: '库存管理', path: '/modules/inventory/inventory.html' },
+        { id: 'purchase', icon: '🛒', name: '采购管理', path: '/modules/purchase/purchase.html' },
+        { id: 'finance', icon: '💰', name: '财务管理', path: '/modules/finance/finance.html' },
+        { id: 'hr', icon: '🧑‍💼', name: '人力资源', path: '/modules/hr/hr.html' },
+        { id: 'employee', icon: '👨‍💻', name: '员工管理', path: '/modules/employee/employee.html' },
+        { id: 'fleet', icon: '🚚', name: '车队管理', path: '/modules/fleet/fleet.html' },
+        { id: 'marketing', icon: '📣', name: '营销管理', path: '/modules/marketing/marketing.html' },
+        { id: 'analytics', icon: '📊', name: '数据分析', path: '/modules/analytics/analytics.html' },
+        { id: 'ai', icon: '🤖', name: 'AI 智能中枢', path: '/modules/ai/ai.html' },
+        { id: 'saas', icon: '☁️', name: 'SaaS 服务', path: '/modules/saas/saas.html' },
+        { id: 'settings', icon: '⚙️', name: '系统设置', path: '/modules/settings/settings.html' },
+        { id: 'system', icon: '🔒', name: '系统管理', path: '/modules/system/system.html' }
     ];
 
     window.renderDynamicSidebar = function() {
@@ -115,7 +117,7 @@
         MENU_CONFIG.forEach(function(mod) {
             var li = document.createElement('li');
             li.className = 'nav-item';
-            var fullPath = '/modules/' + mod.id + '.html';
+            var fullPath = mod.path;
             li.innerHTML = 
                 '<a href="' + fullPath + '" class="nav-link" data-module="' + mod.id + '">' +
                     '<span class="nav-icon">' + mod.icon + '</span>' +
