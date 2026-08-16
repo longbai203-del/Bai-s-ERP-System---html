@@ -180,3 +180,36 @@ CREATE POLICY "Users can view their own notifications"
 CREATE POLICY "Users can update their own notifications"
     ON notifications FOR UPDATE
     USING (user_id = auth.uid());
+-- ==========================================
+-- 修复缺失的 INSERT 策略 (用于支持首次初始化)
+-- ==========================================
+
+CREATE POLICY "Users can insert organizations"
+    ON organizations FOR INSERT
+    WITH CHECK (auth.role() = 'authenticated');
+
+CREATE POLICY "Users can insert branches"
+    ON branches FOR INSERT
+    WITH CHECK (organization_id IS NOT NULL);
+
+
+-- ==========================================
+-- 修复 RBAC 核心表的 RLS 读取阻断
+-- ==========================================
+
+CREATE POLICY "Allow users to view roles"
+    ON roles FOR SELECT
+    USING (organization_id = get_user_organization() OR organization_id IS NULL);
+
+CREATE POLICY "Allow users to view permissions"
+    ON permissions FOR SELECT
+    USING (true);
+
+CREATE POLICY "Allow users to view role_permissions"
+    ON role_permissions FOR SELECT
+    USING (role_id IN (SELECT id FROM roles WHERE organization_id = get_user_organization() OR organization_id IS NULL));
+
+CREATE POLICY "Allow users to view their own user_roles"
+    ON user_roles FOR SELECT
+    USING (user_id = auth.uid());
+

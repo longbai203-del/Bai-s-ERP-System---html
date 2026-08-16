@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>营销管理 - Carwash Pro</title>
+    <link rel="stylesheet" href="../../css/design-system.css">
+    <link rel="stylesheet" href="marketing.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        .marketing-container {
+            padding: 20px;
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        .page-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        .page-header h1 {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1F2937;
+            margin: 0;
+        }
+
+        .page-header .subtitle {
+            font-size: 14px;
+            color: #6B7280;
+            margin-top: 4px;
+        }
+
+        .header-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: white;
+            border-radius: 10px;
+            padding: 14px;
+            border: 1px solid #E5E7EB;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.06);
+        }
+
+        .stat-card .stat-number {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1F2937;
+        }
+
+        .stat-card .stat-label {
+            font-size: 12px;
+            color: #6B7280;
+            margin-top: 2px;
+        }
+
+        .stat-card .stat-number.primary { color: #4F46E5; }
+        .stat-card .stat-number.success { color: #10B981; }
+        .stat-card .stat-number.warning { color: #F59E0B; }
+
+        .campaign-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+
+        .campaign-card {
+            background: white;
+            border-radius: 12px;
+            border: 1px solid #E5E7EB;
+            padding: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .campaign-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            border-color: #4F46E5;
+        }
+
+        .campaign-card .campaign-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        .campaign-card .campaign-meta {
+            font-size: 13px;
+            color: #6B7280;
+            margin: 4px 0 8px;
+        }
+
+        .campaign-card .campaign-stats {
+            display: flex;
+            gap: 16px;
+            font-size: 13px;
+            padding: 10px 0;
+            border-top: 1px solid #F3F4F6;
+            margin-top: 8px;
+        }
+
+        .campaign-card .campaign-stats span {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .campaign-card .campaign-stats .stat-value {
+            font-weight: 600;
+            color: #1F2937;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 2px 10px;
+            border-radius: 9999px;
+            font-size: 11px;
+            font-weight: 500;
+        }
+
+        .badge-success { background: #D1FAE5; color: #065F46; }
+        .badge-warning { background: #FEF3C7; color: #92400E; }
+        .badge-danger { background: #FEE2E2; color: #991B1B; }
+        .badge-info { background: #DBEAFE; color: #1E40AF; }
+        .badge-secondary { background: #F3F4F6; color: #6B7280; }
+
+        .btn-sm {
+            padding: 4px 10px;
+            font-size: 12px;
+            border-radius: 6px;
+        }
+
+        .toolbar {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 16px;
+            align-items: center;
+        }
+
+        .toolbar .search-box {
+            flex: 1;
+            min-width: 160px;
+            padding: 8px 14px;
+            border: 1px solid #D1D5DB;
+            border-radius: 8px;
+            font-size: 14px;
+        }
+
+        .toolbar .search-box:focus {
+            border-color: #4F46E5;
+            outline: none;
+        }
+
+        .toolbar .filter-select {
+            padding: 8px 12px;
+            border: 1px solid #D1D5DB;
+            border-radius: 8px;
+            font-size: 14px;
+            background: white;
+        }
+
+        @media (max-width: 640px) {
+            .stats-grid {
+                grid-template-columns: repeat(3, 1fr);
+            }
+            .campaign-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .toolbar {
+                flex-direction: column;
+            }
+            .toolbar .search-box {
+                width: 100%;
+            }
+            .header-actions {
+                width: 100%;
+            }
+            .header-actions button {
+                flex: 1;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="marketing-container">
+        <!-- 页面头部 -->
+        <div class="page-header">
+            <div>
+                <h1><i class="fas fa-megaphone" style="color:#EC4899;margin-right:10px;"></i>营销管理</h1>
+                <div class="subtitle">营销活动策划、执行与效果分析</div>
+            </div>
+            <div class="header-actions">
+                <button class="btn btn-success" id="createCampaignBtn">
+                    <i class="fas fa-plus"></i> 新建活动
+                </button>
+                <button class="btn btn-outline" id="refreshMarketingBtn">
+                    <i class="fas fa-sync"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- 统计卡片 -->
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number primary">12</div>
+                <div class="stat-label">📢 总活动</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number success">4</div>
+                <div class="stat-label">🟢 进行中</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">2,340</div>
+                <div class="stat-label">👥 总线索量</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number success">8.5%</div>
+                <div class="stat-label">📊 转化率</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number success">215%</div>
+                <div class="stat-label">💰 ROI</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number warning">¥186</div>
+                <div class="stat-label">🎯 获客成本</div>
+            </div>
+        </div>
+
+        <!-- 工具栏 -->
+        <div class="toolbar">
+            <input type="text" class="search-box" id="mktSearch" placeholder="🔍 搜索活动名称...">
+            <select class="filter-select" id="mktStatusFilter">
+                <option value="">全部状态</option>
+                <option value="active">进行中</option>
+                <option value="ended">已结束</option>
+                <option value="draft">草稿</option>
+            </select>
+            <select class="filter-select" id="mktTypeFilter">
+                <option value="">全部类型</option>
+                <option value="promotion">促销活动</option>
+                <option value="member">会员活动</option>
+                <option value="social">社交媒体</option>
+                <option value="email">邮件营销</option>
+            </select>
+            <button class="btn btn-primary" id="mktSearchBtn">
+                <i class="fas fa-search"></i> 搜索
+            </button>
+            <button class="btn btn-outline" id="mktResetBtn">
+                <i class="fas fa-undo"></i> 重置
+            </button>
+        </div>
+
+        <!-- 活动卡片 -->
+        <div class="campaign-grid" id="campaignGrid">
+            <div class="campaign-card">
+                <div class="campaign-title">春季促销活动</div>
+                <div class="campaign-meta">
+                    📅 2024-03-01 ~ 2024-04-15
+                    <span class="badge badge-success" style="margin-left:8px;">进行中</span>
+                </div>
+                <div style="font-size:13px;color:#6B7280;">全店洗车服务8折优惠</div>
+                <div class="campaign-stats">
+                    <span>👥 <span class="stat-value">450</span></span>
+                    <span>📊 <span class="stat-value">42</span> 转化</span>
+                    <span>💰 <span class="stat-value">320%</span> ROI</span>
+                </div>
+                <div style="margin-top:8px;display:flex;gap:6px;">
+                    <button class="btn btn-sm btn-outline"><i class="fas fa-edit"></i> 编辑</button>
+                    <button class="btn btn-sm btn-outline"><i class="fas fa-chart-bar"></i> 分析</button>
+                </div>
+            </div>
+
+            <div class="campaign-card">
+                <div class="campaign-title">会员日活动</div>
+                <div class="campaign-meta">
+                    📅 2024-03-15 ~ 2024-03-15
+                    <span class="badge badge-success" style="margin-left:8px;">进行中</span>
+                </div>
+                <div style="font-size:13px;color:#6B7280;">会员双倍积分 + 专属礼品</div>
+                <div class="campaign-stats">
+                    <span>👥 <span class="stat-value">320</span></span>
+                    <span>📊 <span class="stat-value">38</span> 转化</span>
+                    <span>💰 <span class="stat-value">280%</span> ROI</span>
+                </div>
+                <div style="margin-top:8px;display:flex;gap:6px;">
+                    <button class="btn btn-sm btn-outline"><i class="fas fa-edit"></i> 编辑</button>
+                    <button class="btn btn-sm btn-outline"><i class="fas fa-chart-bar"></i> 分析</button>
+                </div>
+            </div>
+
+            <div class="campaign-card">
+                <div class="campaign-title">社交媒体推广</div>
+                <div class="campaign-meta">
+                    📅 2024-02-01 ~ 2024-02-28
+                    <span class="badge badge-secondary" style="margin-left:8px;">已结束</span>
+                </div>
+                <div style="font-size:13px;color:#6B7280;">小红书/抖音种草推广</div>
+                <div class="campaign-stats">
+                    <span>👥 <span class="stat-value">890</span></span>
+                    <span>📊 <span class="stat-value">56</span> 转化</span>
+                    <span>💰 <span class="stat-value">180%</span> ROI</span>
+                </div>
+                <div style="margin-top:8px;display:flex;gap:6px;">
+                    <button class="btn btn-sm btn-outline"><i class="fas fa-edit"></i> 编辑</button>
+                    <button class="btn btn-sm btn-outline"><i class="fas fa-chart-bar"></i> 分析</button>
+                </div>
+            </div>
+
+            <div class="campaign-card">
+                <div class="campaign-title">老客户回馈</div>
+                <div class="campaign-meta">
+                    📅 2024-04-01 ~ 2024-04-30
+                    <span class="badge badge-info" style="margin-left:8px;">待开始</span>
+                </div>
+                <div style="font-size:13px;color:#6B7280;">消费满500送洗车券</div>
+                <div class="campaign-stats">
+                    <span>👥 <span class="stat-value">0</span></span>
+                    <span>📊 <span class="stat-value">0</span> 转化</span>
+                    <span>💰 <span class="stat-value">-</span> ROI</span>
+                </div>
+                <div style="margin-top:8px;display:flex;gap:6px;">
+                    <button class="btn btn-sm btn-outline"><i class="fas fa-edit"></i> 编辑</button>
+                    <button class="btn btn-sm btn-outline"><i class="fas fa-chart-bar"></i> 分析</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- AI营销洞察 -->
+        <div class="card" style="background:linear-gradient(135deg,#F5F3FF,#EDE9FE);border:1px solid #C7D2FE;border-radius:12px;">
+            <div style="padding:16px 20px;display:flex;align-items:center;gap:12px;flex-wrap:wrap;">
+                <i class="fas fa-brain" style="font-size:28px;color:#7C3AED;"></i>
+                <div style="flex:1;">
+                    <div style="font-weight:600;color:#4C1D95;">AI营销洞察</div>
+                    <div style="font-size:14px;color:#6B7280;">
+                        💡 微信渠道转化率最高（12.5%），建议增加30%预算投入
+                    </div>
+                </div>
+                <button class="btn btn-sm btn-primary" style="background:#7C3AED;border-color:#7C3AED;">
+                    <i class="fas fa-arrow-right"></i> 查看详情
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { init } from './marketing.js';
+
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('📢 营销管理页面加载');
+            
+            init().catch(err => {
+                console.warn('营销模块初始化失败:', err);
+            });
+
+            document.getElementById('createCampaignBtn')?.addEventListener('click', function() {
+                const name = prompt('请输入活动名称：');
+                if (name) {
+                    alert('✅ 活动 "' + name + '" 已创建（模拟）');
+                }
+            });
+
+            document.getElementById('refreshMarketingBtn')?.addEventListener('click', function() {
+                const icon = this.querySelector('i');
+                icon.classList.add('fa-spin');
+                setTimeout(() => icon.classList.remove('fa-spin'), 800);
+            });
+        });
+    </script>
+</body>
+</html>

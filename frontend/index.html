@@ -7,8 +7,24 @@
 </head>
 <body>
     <script>
-        // 直接跳转到仪表盘
-        window.location.href = '/modules/dashboard/dashboard.html';
+        // 优先加载 Supabase 核心库以读取 Session
+        // 注意：此处使用同步/阻塞方式确保检查后再跳转
+        async function checkSessionAndRoute() {
+            // 加载 Supabase Client (浏览器环境有全局 supabase)
+            const { createClient } = supabase;
+            const supabaseClient = createClient(
+                'https://qryllswlfryaywiajilr.supabase.co',
+                'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InFyeWxsc3dsZnJ5YXl3aWFqaWxyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODY3MzUxMjgsImV4cCI6MjEwMjMxMTEyOH0.g0i02OViDEINfXLMksp1oWNKoactxOBlylyTdDXr5qs'
+            );
+            const { data: { session } } = await supabaseClient.auth.getSession();
+            
+            if (session) {
+                window.location.href = '/modules/dashboard/dashboard.html';
+            } else {
+                window.location.href = '/login.html';
+            }
+        }
+        checkSessionAndRoute();
     </script>
 </body>
 </html>
