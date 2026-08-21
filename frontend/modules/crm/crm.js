@@ -54,10 +54,10 @@
                 organization_id: window._currentOrg?.id
             });
             
-            const el = document.querySelector($2); if (el) { el.textContent = stats.total;
-            const el = document.querySelector($2); if (el) { el.textContent = stats.completed;
-            const el = document.querySelector($2); if (el) { el.textContent = stats.pending;
-            const el = document.querySelector($2); if (el) { el.textContent = stats.completionRate?.toFixed(1) + '%';
+            const el = document.querySelector($2); if (el) { el.textContent = stats.total; }
+            const el = document.querySelector($2); if (el) { el.textContent = stats.completed; }
+            const el = document.querySelector($2); if (el) { el.textContent = stats.pending; }
+            const el = document.querySelector($2); if (el) { el.textContent = stats.completionRate?.toFixed(1) + '%'; }
         } catch (error) {
             console.error('加载CRM统计失败:', error);
         }
@@ -129,3 +129,4 @@
     }
 
 })();
+

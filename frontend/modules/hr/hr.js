@@ -53,10 +53,10 @@
                 organization_id: window._currentOrg?.id
             });
             
-            const el = document.querySelector($2); if (el) { el.textContent = stats.attendanceRate?.toFixed(1) + '%';
-            const el = document.querySelector($2); if (el) { el.textContent = stats.present;
-            const el = document.querySelector($2); if (el) { el.textContent = stats.late;
-            const el = document.querySelector($2); if (el) { el.textContent = stats.absent;
+            const el = document.querySelector($2); if (el) { el.textContent = stats.attendanceRate?.toFixed(1) + '%'; }
+            const el = document.querySelector($2); if (el) { el.textContent = stats.present; }
+            const el = document.querySelector($2); if (el) { el.textContent = stats.late; }
+            const el = document.querySelector($2); if (el) { el.textContent = stats.absent; }
         } catch (error) {
             console.error('加载考勤失败:', error);
         }
@@ -108,3 +108,4 @@
     }
 
 })();
+

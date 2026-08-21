@@ -51,9 +51,9 @@
         try {
             const stats = await window.VehicleService.getStats(window._currentOrg?.id);
             
-            const el = document.querySelector($2); if (el) { el.textContent = stats.total;
-            const el = document.querySelector($2); if (el) { el.textContent = stats.active;
-            const el = document.querySelector($2); if (el) { el.textContent = stats.maintenance;
+            const el = document.querySelector($2); if (el) { el.textContent = stats.total; }
+            const el = document.querySelector($2); if (el) { el.textContent = stats.active; }
+            const el = document.querySelector($2); if (el) { el.textContent = stats.maintenance; }
         } catch (error) {
             console.error('加载车辆统计失败:', error);
         }
@@ -179,3 +179,4 @@
     }
 
 })();
+

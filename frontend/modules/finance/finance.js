@@ -54,9 +54,9 @@
                 organization_id: window._currentOrg?.id
             });
             
-            const el = document.querySelector($2); if (el) { el.textContent = stats.totalIncome + ' SAR';
-            const el = document.querySelector($2); if (el) { el.textContent = stats.totalExpense + ' SAR';
-            const el = document.querySelector($2); if (el) { el.textContent = stats.balance + ' SAR';
+            const el = document.querySelector($2); if (el) { el.textContent = stats.totalIncome + ' SAR'; }
+            const el = document.querySelector($2); if (el) { el.textContent = stats.totalExpense + ' SAR'; }
+            const el = document.querySelector($2); if (el) { el.textContent = stats.balance + ' SAR'; }
         } catch (error) {
             console.error('加载统计失败:', error);
         }
@@ -109,3 +109,4 @@
     }
 
 })();
+
