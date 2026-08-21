@@ -1,42 +1,23 @@
-﻿<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>fleet - Bai's ERP</title>
-    <link rel="stylesheet" href="/css/common.css">
-</head>
-<body>
-    <div id="app">
-        <div id="main-content">
-            <div class="module-container" data-module="fleet">
-                <div class="module-header">
-                    <h2>fleet</h2>
-                    <div class="module-actions">
-                        <button class="btn-refresh" onclick="window.location.reload()">🔄 刷新</button>
-                    </div>
-                </div>
-                <div class="module-content">
-                    <p>加载中...</p>
-                </div>
+﻿<div class="module-container" data-module="fleet">
+    <div class="module-header">
+        <h2>🚗 车队管理</h2>
+        <div class="module-actions">
+            <button class="btn-primary" onclick="window.addVehicle()">+ 添加车辆</button>
+            <button class="btn-refresh" onclick="window.initFleet()">🔄 刷新</button>
+        </div>
+    </div>
+    <div class="module-content" id="moduleContent">
+        <div id="fleet-stats" style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:20px;">
+            <div class="stat-card"><div class="stat-number" id="totalVehicles">0</div><div class="stat-label">总车辆</div></div>
+            <div class="stat-card"><div class="stat-number" id="activeVehicles">0</div><div class="stat-label">运营中</div></div>
+            <div class="stat-card"><div class="stat-number" id="maintenanceVehicles">0</div><div class="stat-label">维修中</div></div>
+            <div class="stat-card"><div class="stat-number" id="inactiveVehicles">0</div><div class="stat-label">已停用</div></div>
+        </div>
+        <div id="fleet-list">
+            <div class="loading-placeholder">
+                <div class="spinner"></div>
+                <p>加载车辆中...</p>
             </div>
         </div>
     </div>
-    
-    <script src="/config.js"></script>
-    <script src="/js/supabase.js"></script>
-    <script src="/js/auth.js"></script>
-    <script src="/js/db.js"></script>
-    <script src="/js/common.js"></script>
-    <script src="/js/bootstrap.js"></script>
-    <script src="/js/router.js"></script>
-    <script src="/js/i18n.js"></script>
-    <script src="/js/notifications.js"></script>
-    <script src="/js/modal.js"></script>
-    <script src="/js/table.js"></script>
-    <script src="/js/permissions.js"></script>
-    <script src="/js/storage.js"></script>
-    <script src="/modules/fleet/fleet.js"></script>
-</body>
-</html>
-
+</div>
