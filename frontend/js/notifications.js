@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Notifications - 通知系统
  * 支持 Toast 提示、站内通知、浏览器通知
  */
@@ -147,14 +147,25 @@
         }
 
         // 加载通知列表
-        async loadNotifications() {
-            try {
-                if (window.DB) {
-                    const result = await window.DB.getNotifications();
-                    if (result) {
-                        this.notifications = result;
-                        this.unreadCount = result.filter(n => !n.read).length;
-                    }
+            async loadNotifications() {
+        try {
+            if (window.DB) {
+                // 检查用户ID是否存在
+                var userId = window._currentUser?.id;
+                if (!userId) {
+                    console.log('⚠️ 用户未登录，跳过加载通知');
+                    return;
+                }
+                const result = await window.DB.getNotifications(userId);
+                if (result) {
+                    this.notifications = result;
+                    this.unreadCount = result.filter(n => !n.read).length;
+                }
+            }
+        } catch (error) {
+            console.warn('加载通知失败:', error);
+        }
+    }
                 }
             } catch (error) {
                 console.warn('加载通知失败:', error);
