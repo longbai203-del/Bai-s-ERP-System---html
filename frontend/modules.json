@@ -1,92 +1,37 @@
 ﻿{
-    "ai":  {
-               "title":  "AI助手",
-               "icon":  "🤖",
-               "enabled":  true
-           },
-    "suppliers":  {
-                      "title":  "供应商",
-                      "icon":  "🏭",
-                      "enabled":  true
-                  },
-    "crm":  {
-                "title":  "CRM",
-                "icon":  "🤝",
-                "enabled":  true
-            },
-    "analytics":  {
-                      "title":  "数据分析",
-                      "icon":  "📈",
-                      "enabled":  true
-                  },
-    "products":  {
-                     "title":  "产品管理",
-                     "icon":  "📦",
-                     "enabled":  true
-                 },
-    "members":  {
-                    "title":  "会员管理",
-                    "icon":  "💎",
-                    "enabled":  true
-                },
-    "fleet":  {
-                  "title":  "车队管理",
-                  "icon":  "🚗",
-                  "enabled":  true
-              },
-    "finance":  {
-                    "title":  "财务管理",
-                    "icon":  "💰",
-                    "enabled":  true
-                },
-    "reports":  {
-                    "title":  "报表中心",
-                    "icon":  "📊",
-                    "enabled":  true
-                },
-    "orders":  {
-                   "title":  "订单管理",
-                   "icon":  "📋",
-                   "enabled":  true
-               },
-    "pos":  {
-                "title":  "销售点",
-                "icon":  "🛒",
-                "enabled":  true
-            },
-    "dashboard":  {
-                      "title":  "仪表板",
-                      "icon":  "📊",
-                      "enabled":  true
-                  },
-    "purchase":  {
-                     "title":  "采购管理",
-                     "icon":  "📥",
-                     "enabled":  true
-                 },
-    "customers":  {
-                      "title":  "客户管理",
-                      "icon":  "👤",
-                      "enabled":  true
-                  },
-    "inventory":  {
-                      "title":  "库存管理",
-                      "icon":  "📈",
-                      "enabled":  true
-                  },
-    "saas":  {
-                 "title":  "SaaS 管理",
-                 "icon":  "☁️",
-                 "enabled":  true
-             },
-    "settings":  {
-                     "title":  "系统设置",
-                     "icon":  "⚙️",
-                     "enabled":  true
-                 },
-    "hr":  {
-               "title":  "人力资源",
-               "icon":  "👔",
-               "enabled":  true
-           }
+    "modules": {
+        "dashboard": { "title": "仪表板", "icon": "📊", "enabled": true, "order": 1 },
+        "pos": { "title": "销售点", "icon": "🛒", "enabled": true, "order": 2 },
+        "orders": { "title": "订单管理", "icon": "📋", "enabled": true, "order": 3 },
+        "customers": { "title": "客户管理", "icon": "👤", "enabled": true, "order": 4 },
+        "members": { "title": "会员管理", "icon": "💎", "enabled": true, "order": 5 },
+        "products": { "title": "产品管理", "icon": "📦", "enabled": true, "order": 6 },
+        "inventory": { "title": "库存管理", "icon": "📈", "enabled": true, "order": 7 },
+        "purchase": { "title": "采购管理", "icon": "📥", "enabled": true, "order": 8 },
+        "suppliers": { "title": "供应商管理", "icon": "🏭", "enabled": true, "order": 9 },
+        "finance": { "title": "财务管理", "icon": "💰", "enabled": true, "order": 10 },
+        "crm": { "title": "客户关系管理", "icon": "🤝", "enabled": true, "order": 11 },
+        "hr": { "title": "人力资源管理", "icon": "👔", "enabled": true, "order": 12 },
+        "reports": { "title": "报表中心", "icon": "📊", "enabled": true, "order": 13 },
+        "analytics": { "title": "数据分析", "icon": "📈", "enabled": true, "order": 14 },
+        "fleet": { "title": "车队管理", "icon": "🚗", "enabled": true, "order": 15 },
+        "ai": { "title": "AI助手", "icon": "🤖", "enabled": true, "order": 16 },
+        "settings": { "title": "系统设置", "icon": "⚙️", "enabled": true, "order": 17 },
+        "employee": { "title": "员工管理", "icon": "👔", "enabled": true, "order": 18 },
+        "marketing": { "title": "营销管理", "icon": "📣", "enabled": true, "order": 19 },
+        "organizations": { "title": "组织管理", "icon": "🏢", "enabled": true, "order": 20 },
+        "branches": { "title": "分支管理", "icon": "🏪", "enabled": true, "order": 21 },
+        "profiles": { "title": "用户管理", "icon": "👥", "enabled": true, "order": 22 },
+        "roles": { "title": "角色管理", "icon": "🔐", "enabled": true, "order": 23 },
+        "permissions": { "title": "权限管理", "icon": "🛡️", "enabled": true, "order": 24 },
+        "saas": { "title": "SaaS管理", "icon": "☁️", "enabled": true, "order": 25 },
+        "system": { "title": "系统管理", "icon": "🔧", "enabled": true, "order": 26 }
+    },
+    "sections": {
+        "main": ["dashboard", "pos", "orders"],
+        "business": ["customers", "members", "products", "inventory", "purchase", "suppliers"],
+        "finance": ["finance", "reports", "analytics"],
+        "management": ["crm", "hr", "employee", "marketing", "fleet", "ai"],
+        "system": ["settings", "organizations", "branches", "profiles", "roles", "permissions", "saas", "system"]
+    }
 }
