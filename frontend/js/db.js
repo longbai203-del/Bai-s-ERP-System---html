@@ -21,7 +21,10 @@ class Database {
             const { data, error } = await query;
             if (error) throw error;
             return { success: true, data };
-        } catch (error) { console.error('查询失败:', error); return { success: false, error: error.message }; }
+        } catch (error) { 
+            console.error('查询失败:', error); 
+            return { success: false, error: error.message }; 
+        }
     }
 
     async insert(table, data) {
@@ -29,7 +32,10 @@ class Database {
             const { data: result, error } = await this.supabase.from(table).insert(data).select();
             if (error) throw error;
             return { success: true, data: result };
-        } catch (error) { console.error('插入失败:', error); return { success: false, error: error.message }; }
+        } catch (error) { 
+            console.error('插入失败:', error); 
+            return { success: false, error: error.message }; 
+        }
     }
 
     async update(table, data, match) {
@@ -39,7 +45,10 @@ class Database {
             const { data: result, error } = await query.select();
             if (error) throw error;
             return { success: true, data: result };
-        } catch (error) { console.error('更新失败:', error); return { success: false, error: error.message }; }
+        } catch (error) { 
+            console.error('更新失败:', error); 
+            return { success: false, error: error.message }; 
+        }
     }
 
     async delete(table, match) {
@@ -49,7 +58,10 @@ class Database {
             const { error } = await query;
             if (error) throw error;
             return { success: true };
-        } catch (error) { console.error('删除失败:', error); return { success: false, error: error.message }; }
+        } catch (error) { 
+            console.error('删除失败:', error); 
+            return { success: false, error: error.message }; 
+        }
     }
 
     // 快捷方法
@@ -66,11 +78,14 @@ class Database {
                 const { data, error } = await this.supabase
                     .from('customers')
                     .select('*')
-                    .or(ull_name.ilike.%%,phone.ilike.%%,customer_code.ilike.%%)
+                    .or(`full_name.ilike.%${filters.search}%,phone.ilike.%${filters.search}%,customer_code.ilike.%${filters.search}%`)
                     .eq('organization_id', filters.organization_id || this.auth.userProfile?.organization_id);
                 if (error) throw error;
                 return { success: true, data };
-            } catch (error) { console.error('搜索客户失败:', error); return { success: false, error: error.message }; }
+            } catch (error) { 
+                console.error('搜索客户失败:', error); 
+                return { success: false, error: error.message }; 
+            }
         }
         return this.query('customers', { eq: { organization_id: filters.organization_id || this.auth.userProfile?.organization_id } });
     }
@@ -88,12 +103,14 @@ class Database {
                 const { data, error } = await this.supabase
                     .from('products')
                     .select('*')
-                    .or(
-ame.ilike.%%,product_code.ilike.%%,barcode.ilike.%%)
+                    .or(`name.ilike.%${filters.search}%,product_code.ilike.%${filters.search}%,barcode.ilike.%${filters.search}%`)
                     .eq('organization_id', filters.organization_id || this.auth.userProfile?.organization_id);
                 if (error) throw error;
                 return { success: true, data };
-            } catch (error) { console.error('搜索产品失败:', error); return { success: false, error: error.message }; }
+            } catch (error) { 
+                console.error('搜索产品失败:', error); 
+                return { success: false, error: error.message }; 
+            }
         }
         return this.query('products', { eq: { organization_id: filters.organization_id || this.auth.userProfile?.organization_id } });
     }
@@ -122,7 +139,10 @@ ame.ilike.%%,product_code.ilike.%%,barcode.ilike.%%)
                 if (itemsError) throw itemsError;
             }
             return { success: true, data: order[0] };
-        } catch (error) { console.error('创建订单失败:', error); return { success: false, error: error.message }; }
+        } catch (error) { 
+            console.error('创建订单失败:', error); 
+            return { success: false, error: error.message }; 
+        }
     }
 
     async getOrders(filters = {}) {
@@ -152,7 +172,10 @@ ame.ilike.%%,product_code.ilike.%%,barcode.ilike.%%)
                 if (itemsError) throw itemsError;
             }
             return { success: true, data: po[0] };
-        } catch (error) { console.error('创建采购订单失败:', error); return { success: false, error: error.message }; }
+        } catch (error) { 
+            console.error('创建采购订单失败:', error); 
+            return { success: false, error: error.message }; 
+        }
     }
 
     // ==========================================================
@@ -197,7 +220,10 @@ ame.ilike.%%,product_code.ilike.%%,barcode.ilike.%%)
             const { data: orders } = await this.supabase.from('orders').select('total').eq('organization_id', orgId).eq('status', 'completed').gte('created_at', firstDay);
             const totalRevenue = orders ? orders.reduce((sum, order) => sum + (order.total || 0), 0) : 0;
             return { success: true, data: { totalCustomers: totalCustomers || 0, totalProducts: totalProducts || 0, todayOrders: todayOrders || 0, totalRevenue: totalRevenue } };
-        } catch (error) { console.error('获取统计数据失败:', error); return { success: false, error: error.message }; }
+        } catch (error) { 
+            console.error('获取统计数据失败:', error); 
+            return { success: false, error: error.message }; 
+        }
     }
 }
 

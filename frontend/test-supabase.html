@@ -1,0 +1,95 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Supabase 连接测试</title>
+    <style>
+        body { font-family: Arial; padding: 20px; background: #f5f5f5; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 30px; border-radius: 8px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        .status { padding: 15px; border-radius: 4px; margin: 10px 0; }
+        .success { background: #d4edda; color: #155724; border: 1px solid #c3e6cb; }
+        .error { background: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; }
+        .info { background: #d1ecf1; color: #0c5460; border: 1px solid #bee5eb; }
+        pre { background: #f8f9fa; padding: 15px; border-radius: 4px; overflow: auto; max-height: 300px; }
+        h1 { color: #333; }
+        .loading { color: #666; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔌 Supabase 连接测试</h1>
+        <div id="status" class="loading">正在测试连接...</div>
+        <div id="details"></div>
+    </div>
+
+    <script>
+        (async function() {
+            const statusEl = document.getElementById('status');
+            const detailsEl = document.getElementById('details');
+
+            try {
+                // 1. 测试 Supabase 客户端
+                statusEl.textContent = '⏳ 初始化 Supabase 客户端...';
+                statusEl.className = 'status info';
+
+                await window.Supabase.init();
+                const client = window.Supabase.getClient();
+
+                // 2. 测试认证状态
+                statusEl.textContent = '⏳ 检查认证状态...';
+                const { data: { session }, error: sessionError } = await client.auth.getSession();
+                
+                if (sessionError) {
+                    throw new Error('认证检查失败: ' + sessionError.message);
+                }
+
+                // 3. 测试数据库查询
+                statusEl.textContent = '⏳ 测试数据库查询...';
+                const { data: tables, error: tablesError } = await client
+                    .from('organizations')
+                    .select('*')
+                    .limit(1);
+
+                if (tablesError && tablesError.code !== '42P01') {
+                    throw new Error('数据库查询失败: ' + tablesError.message);
+                }
+
+                // 4. 显示结果
+                statusEl.textContent = '✅ 连接成功！';
+                statusEl.className = 'status success';
+
+                detailsEl.innerHTML = `
+                    <h3>连接信息</h3>
+                    <ul>
+                        <li><strong>Supabase URL:</strong> https://qryllswlfryaywiajilr.supabase.co</li>
+                        <li><strong>认证状态:</strong> ${session ? '✅ 已登录' : '⚠️ 未登录'}</li>
+                        <li><strong>用户:</strong> ${session?.user?.email || '未登录'}</li>
+                        <li><strong>数据库:</strong> ${tablesError ? '⚠️ 表不存在（需要执行迁移）' : '✅ 可访问'}</li>
+                    </ul>
+                    <h3>下一步</h3>
+                    <p>请在 Supabase SQL Editor 中执行迁移文件：</p>
+                    <ol>
+                        <li>访问 SQL Editor</li>
+                        <li>执行 supabase/migrations/00_ALL_MIGRATIONS.sql</li>
+                        <li>或按顺序执行各个迁移文件</li>
+                    </ol>
+                `;
+
+            } catch (error) {
+                statusEl.textContent = '❌ 连接失败: ' + error.message;
+                statusEl.className = 'status error';
+                detailsEl.innerHTML = `
+                    <h3>错误详情</h3>
+                    <pre>${error.stack || error.message}</pre>
+                    <h3>解决方案</h3>
+                    <ul>
+                        <li>检查 Supabase 项目是否正常运行</li>
+                        <li>检查网络连接</li>
+                        <li>确认 API Key 是否正确</li>
+                    </ul>
+                `;
+            }
+        })();
+    </script>
+</body>
+</html>

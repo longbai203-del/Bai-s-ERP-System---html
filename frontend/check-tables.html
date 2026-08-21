@@ -1,0 +1,232 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Supabase 表检查</title>
+    <style>
+        body { font-family: 'Segoe UI', Arial, sans-serif; padding: 20px; background: #f0f2f5; }
+        .container { max-width: 1000px; margin: 0 auto; background: white; padding: 30px; border-radius: 12px; box-shadow: 0 2px 10px rgba(0,0,0,0.1); }
+        h1 { color: #333; border-bottom: 2px solid #4CAF50; padding-bottom: 15px; }
+        .loading { text-align: center; padding: 40px; color: #666; font-size: 18px; }
+        .spinner { display: inline-block; animation: spin 1s linear infinite; font-size: 30px; }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
+        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
+        th, td { padding: 12px 15px; border: 1px solid #ddd; text-align: left; }
+        th { background: #4CAF50; color: white; font-weight: 600; }
+        tr:nth-child(even) { background: #f9f9f9; }
+        tr:hover { background: #f1f1f1; }
+        .status-ok { color: #4CAF50; font-weight: bold; }
+        .status-fail { color: #f44336; font-weight: bold; }
+        .status-empty { color: #ff9800; }
+        .badge { display: inline-block; padding: 3px 10px; border-radius: 12px; font-size: 12px; font-weight: bold; }
+        .badge-ok { background: #4CAF50; color: white; }
+        .badge-empty { background: #ff9800; color: white; }
+        .badge-fail { background: #f44336; color: white; }
+        .summary { margin: 20px 0; padding: 15px; background: #e3f2fd; border-radius: 8px; border-left: 4px solid #2196F3; }
+        .summary strong { font-size: 16px; }
+        .error { color: #f44336; padding: 15px; background: #ffebee; border-radius: 8px; margin: 10px 0; }
+        .success { color: #4CAF50; padding: 15px; background: #e8f5e9; border-radius: 8px; margin: 10px 0; }
+        .refresh-btn { padding: 10px 25px; background: #4CAF50; color: white; border: none; border-radius: 6px; cursor: pointer; font-size: 16px; }
+        .refresh-btn:hover { background: #388E3C; }
+        .total { font-size: 14px; color: #666; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📊 Supabase 表结构检查</h1>
+        <p style="color: #666; margin-bottom: 20px;">
+            Project: <strong>qryllswlfryaywiajilr.supabase.co</strong>
+            <button class="refresh-btn" onclick="location.reload()" style="margin-left: 20px;">🔄 刷新</button>
+        </p>
+        
+        <div id="result">
+            <div class="loading">
+                <span class="spinner">⏳</span><br>
+                正在检查数据库表...
+            </div>
+        </div>
+    </div>
+
+    <script src="config.js"></script>
+    <script src="js/supabase.js"></script>
+    <script>
+        (async function() {
+            const resultEl = document.getElementById('result');
+            
+            try {
+                // 初始化 Supabase
+                await window.Supabase.init();
+                const client = window.Supabase.getClient();
+                
+                // 要检查的表列表（按功能分组）
+                const tableGroups = {
+                    '🏢 组织管理': ['organizations', 'branches', 'profiles'],
+                    '👤 客户管理': ['customers', 'members'],
+                    '📦 产品库存': ['products', 'inventory', 'inventory_movements'],
+                    '🛍️ 订单管理': ['orders', 'order_items', 'payments'],
+                    '📥 采购管理': ['suppliers', 'purchases', 'purchase_items'],
+                    '💰 财务管理': ['finances', 'financial_transactions', 'expenses'],
+                    '👔 人力资源': ['employees', 'attendances'],
+                    '🚗 车辆管理': ['vehicles', 'vehicle_service_records'],
+                    '📈 CRM与营销': ['crm_activities', 'marketing_campaigns', 'marketing_logs'],
+                    '⚙️ 系统设置': ['settings', 'notifications', 'audit_logs', 'reports'],
+                    '🔐 权限控制': ['permissions', 'role_permissions', 'user_roles']
+                };
+                
+                let allTables = [];
+                for (const group in tableGroups) {
+                    allTables = allTables.concat(tableGroups[group]);
+                }
+                
+                let results = [];
+                let totalOk = 0;
+                let totalEmpty = 0;
+                let totalFail = 0;
+                
+                // 逐个检查表
+                for (const table of allTables) {
+                    try {
+                        const { data, error, count } = await client
+                            .from(table)
+                            .select('*', { count: 'exact' })
+                            .limit(1);
+                        
+                        if (error) {
+                            results.push({ name: table, status: 'fail', message: error.message, count: 0 });
+                            totalFail++;
+                        } else {
+                            const rowCount = data ? data.length : 0;
+                            // 获取总数（如果有）
+                            let totalCount = rowCount;
+                            if (data && data.length > 0) {
+                                try {
+                                    const { count: exactCount } = await client
+                                        .from(table)
+                                        .select('*', { count: 'exact', head: true });
+                                    totalCount = exactCount || rowCount;
+                                } catch (e) {}
+                            }
+                            
+                            if (rowCount === 0) {
+                                results.push({ name: table, status: 'empty', message: '表存在，但无数据', count: totalCount });
+                                totalEmpty++;
+                            } else {
+                                results.push({ name: table, status: 'ok', message: '✅ 有数据', count: totalCount });
+                                totalOk++;
+                            }
+                        }
+                    } catch (e) {
+                        results.push({ name: table, status: 'fail', message: e.message || '检查失败', count: 0 });
+                        totalFail++;
+                    }
+                }
+                
+                // 检查是否存在 Seed 数据
+                const seedData = {
+                    organizations: false,
+                    branches: false,
+                    profiles: false
+                };
+                
+                try {
+                    const orgResult = await client.from('organizations').select('*', { count: 'exact', head: true });
+                    seedData.organizations = orgResult.count > 0;
+                } catch (e) {}
+                
+                try {
+                    const branchResult = await client.from('branches').select('*', { count: 'exact', head: true });
+                    seedData.branches = branchResult.count > 0;
+                } catch (e) {}
+                
+                try {
+                    const profileResult = await client.from('profiles').select('*', { count: 'exact', head: true });
+                    seedData.profiles = profileResult.count > 0;
+                } catch (e) {}
+                
+                // 生成 HTML 结果
+                let html = '';
+                
+                // 摘要
+                html += `
+                    <div class="summary">
+                        <strong>📊 检查结果摘要</strong><br>
+                        ✅ 正常: ${totalOk} 个表 &nbsp;|&nbsp; 
+                        📭 空表: ${totalEmpty} 个表 &nbsp;|&nbsp; 
+                        ❌ 失败: ${totalFail} 个表
+                        &nbsp;&nbsp;|&nbsp;&nbsp;
+                        📦 总计: ${allTables.length} 个表
+                        <br><br>
+                        ${seedData.organizations ? '✅ 组织数据存在' : '⚠️ 组织数据为空'} &nbsp;|&nbsp;
+                        ${seedData.branches ? '✅ 分支数据存在' : '⚠️ 分支数据为空'} &nbsp;|&nbsp;
+                        ${seedData.profiles ? '✅ 用户数据存在' : '⚠️ 用户数据为空'}
+                    </div>
+                `;
+                
+                // 按分组显示
+                for (const group in tableGroups) {
+                    const tables = tableGroups[group];
+                    html += `<h3 style="margin-top: 25px; color: #333;">${group}</h3>`;
+                    html += `<table><thead><tr><th>表名</th><th>状态</th><th>记录数</th><th>说明</th></tr></thead><tbody>`;
+                    
+                    for (const table of tables) {
+                        const result = results.find(r => r.name === table);
+                        if (result) {
+                            let statusHtml = '';
+                            let badgeHtml = '';
+                            if (result.status === 'ok') {
+                                statusHtml = '<span class="status-ok">✅ 正常</span>';
+                                badgeHtml = '<span class="badge badge-ok">有数据</span>';
+                            } else if (result.status === 'empty') {
+                                statusHtml = '<span class="status-empty">📭 空表</span>';
+                                badgeHtml = '<span class="badge badge-empty">空</span>';
+                            } else {
+                                statusHtml = '<span class="status-fail">❌ 失败</span>';
+                                badgeHtml = '<span class="badge badge-fail">错误</span>';
+                            }
+                            html += `<tr>
+                                <td><code style="background: #f5f5f5; padding: 2px 8px; border-radius: 4px;">${result.name}</code></td>
+                                <td>${statusHtml}</td>
+                                <td>${result.count}</td>
+                                <td>${result.message}</td>
+                            </tr>`;
+                        }
+                    }
+                    html += `</tbody></table>`;
+                }
+                
+                // 添加 Supabase 管理链接
+                html += `
+                    <div style="margin-top: 30px; padding: 15px; background: #f5f5f5; border-radius: 8px;">
+                        <p style="margin: 0;">
+                            🔗 <a href="https://supabase.com/dashboard/project/qryllswlfryaywiajilr/database/tables" target="_blank" style="color: #2196F3;">
+                                在 Supabase Dashboard 中查看完整表列表
+                            </a>
+                        </p>
+                        <p style="margin: 5px 0 0 0; font-size: 13px; color: #666;">
+                            🔐 如果表显示"失败"，可能是因为 RLS 策略限制，在 Supabase 中可能实际存在
+                        </p>
+                    </div>
+                `;
+                
+                html += `<p class="total">🕐 检查时间: ${new Date().toLocaleString()}</p>`;
+                
+                resultEl.innerHTML = html;
+                
+            } catch (error) {
+                resultEl.innerHTML = `
+                    <div class="error">
+                        ❌ 检查失败: ${error.message}
+                        <br><br>
+                        <details>
+                            <summary>详细信息</summary>
+                            <pre style="background: #f5f5f5; padding: 15px; border-radius: 4px; overflow: auto;">${error.stack || error.message}</pre>
+                        </details>
+                        <br>
+                        <button onclick="location.reload()" style="padding: 10px 20px; background: #4CAF50; color: white; border: none; border-radius: 4px; cursor: pointer;">🔄 重试</button>
+                    </div>
+                `;
+            }
+        })();
+    </script>
+</body>
+</html>
