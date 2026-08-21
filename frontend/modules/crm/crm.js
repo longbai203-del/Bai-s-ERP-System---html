@@ -1,4 +1,4 @@
-/**
+﻿/**
  * CRM Module - 客户关系管理
  */
 
@@ -54,10 +54,10 @@
                 organization_id: window._currentOrg?.id
             });
             
-            document.querySelector('.crm-total')?.textContent = stats.total;
-            document.querySelector('.crm-completed')?.textContent = stats.completed;
-            document.querySelector('.crm-pending')?.textContent = stats.pending;
-            document.querySelector('.crm-rate')?.textContent = stats.completionRate?.toFixed(1) + '%';
+            const el = document.querySelector($2); if (el) { el.textContent = stats.total;
+            const el = document.querySelector($2); if (el) { el.textContent = stats.completed;
+            const el = document.querySelector($2); if (el) { el.textContent = stats.pending;
+            const el = document.querySelector($2); if (el) { el.textContent = stats.completionRate?.toFixed(1) + '%';
         } catch (error) {
             console.error('加载CRM统计失败:', error);
         }

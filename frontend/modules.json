@@ -1,121 +1,92 @@
-[
-    {
-      "id": "ai",
-      "version": "1.0.0",
-      "description": "AI 智能中枢模块",
-      "name": "AI 智能中枢",
-      "children": []
-    },
-    {
-      "id": "analytics",
-      "version": "1.0.0",
-      "description": "数据分析模块",
-      "name": "数据分析",
-      "children": []
-    },
-    {
-      "id": "customers",
-      "version": "1.0.0",
-      "description": "客户管理模块",
-      "name": "客户管理",
-      "children": []
-    },
-    {
-      "id": "dashboard",
-      "version": "1.0.0",
-      "description": "智能决策中心模块",
-      "name": "智能决策中心",
-      "children": []
-    },
-    {
-      "id": "employee",
-      "version": "1.0.0",
-      "description": "员工管理模块",
-      "name": "员工管理",
-      "children": []
-    },
-    {
-      "id": "finance",
-      "version": "1.0.0",
-      "description": "财务管理模块",
-      "name": "财务管理",
-      "children": []
-    },
-    {
-      "id": "fleet",
-      "version": "1.0.0",
-      "description": "车队管理模块",
-      "name": "车队管理",
-      "children": []
-    },
-    {
-      "id": "hr",
-      "version": "1.0.0",
-      "description": "人力资源模块",
-      "name": "人力资源",
-      "children": []
-    },
-    {
-      "id": "inventory",
-      "version": "1.0.0",
-      "description": "库存管理模块",
-      "name": "库存管理",
-      "children": []
-    },
-    {
-      "id": "marketing",
-      "version": "1.0.0",
-      "description": "营销管理模块",
-      "name": "营销管理",
-      "children": []
-    },
-    {
-      "id": "orders",
-      "version": "1.0.0",
-      "description": "订单管理模块",
-      "name": "订单管理",
-      "children": []
-    },
-    {
-      "id": "pos",
-      "version": "1.0.0",
-      "description": "POS 收银模块",
-      "name": "POS 收银",
-      "children": []
-    },
-    {
-      "id": "products",
-      "version": "1.0.0",
-      "description": "产品中心模块",
-      "name": "产品中心",
-      "children": []
-    },
-    {
-      "id": "purchase",
-      "version": "1.0.0",
-      "description": "采购管理模块",
-      "name": "采购管理",
-      "children": []
-    },
-    {
-      "id": "saas",
-      "version": "1.0.0",
-      "description": "SaaS 服务模块",
-      "name": "SaaS 服务",
-      "children": []
-    },
-    {
-      "id": "settings",
-      "version": "1.0.0",
-      "description": "系统设置模块",
-      "name": "系统设置",
-      "children": []
-    },
-    {
-      "id": "system",
-      "version": "1.0.0",
-      "description": "系统管理模块",
-      "name": "系统管理",
-      "children": []
-    }
-  ]
+﻿{
+    "ai":  {
+               "title":  "AI助手",
+               "icon":  "🤖",
+               "enabled":  true
+           },
+    "suppliers":  {
+                      "title":  "供应商",
+                      "icon":  "🏭",
+                      "enabled":  true
+                  },
+    "crm":  {
+                "title":  "CRM",
+                "icon":  "🤝",
+                "enabled":  true
+            },
+    "analytics":  {
+                      "title":  "数据分析",
+                      "icon":  "📈",
+                      "enabled":  true
+                  },
+    "products":  {
+                     "title":  "产品管理",
+                     "icon":  "📦",
+                     "enabled":  true
+                 },
+    "members":  {
+                    "title":  "会员管理",
+                    "icon":  "💎",
+                    "enabled":  true
+                },
+    "fleet":  {
+                  "title":  "车队管理",
+                  "icon":  "🚗",
+                  "enabled":  true
+              },
+    "finance":  {
+                    "title":  "财务管理",
+                    "icon":  "💰",
+                    "enabled":  true
+                },
+    "reports":  {
+                    "title":  "报表中心",
+                    "icon":  "📊",
+                    "enabled":  true
+                },
+    "orders":  {
+                   "title":  "订单管理",
+                   "icon":  "📋",
+                   "enabled":  true
+               },
+    "pos":  {
+                "title":  "销售点",
+                "icon":  "🛒",
+                "enabled":  true
+            },
+    "dashboard":  {
+                      "title":  "仪表板",
+                      "icon":  "📊",
+                      "enabled":  true
+                  },
+    "purchase":  {
+                     "title":  "采购管理",
+                     "icon":  "📥",
+                     "enabled":  true
+                 },
+    "customers":  {
+                      "title":  "客户管理",
+                      "icon":  "👤",
+                      "enabled":  true
+                  },
+    "inventory":  {
+                      "title":  "库存管理",
+                      "icon":  "📈",
+                      "enabled":  true
+                  },
+    "saas":  {
+                 "title":  "SaaS 管理",
+                 "icon":  "☁️",
+                 "enabled":  true
+             },
+    "settings":  {
+                     "title":  "系统设置",
+                     "icon":  "⚙️",
+                     "enabled":  true
+                 },
+    "hr":  {
+               "title":  "人力资源",
+               "icon":  "👔",
+               "enabled":  true
+           }
+}

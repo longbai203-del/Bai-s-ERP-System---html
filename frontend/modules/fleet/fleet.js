@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Fleet Module - 车队管理
  */
 
@@ -51,9 +51,9 @@
         try {
             const stats = await window.VehicleService.getStats(window._currentOrg?.id);
             
-            document.querySelector('.fleet-total')?.textContent = stats.total;
-            document.querySelector('.fleet-active')?.textContent = stats.active;
-            document.querySelector('.fleet-maintenance')?.textContent = stats.maintenance;
+            const el = document.querySelector($2); if (el) { el.textContent = stats.total;
+            const el = document.querySelector($2); if (el) { el.textContent = stats.active;
+            const el = document.querySelector($2); if (el) { el.textContent = stats.maintenance;
         } catch (error) {
             console.error('加载车辆统计失败:', error);
         }

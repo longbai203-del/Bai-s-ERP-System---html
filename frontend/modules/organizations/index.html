@@ -1,0 +1,95 @@
+﻿<div class="module-container" data-module="organizations">
+    <div class="module-header">
+        <h2>🏢 组织管理</h2>
+        <div class="module-actions">
+            <button class="btn-primary" onclick="window.showCreateOrganization()">+ 新建组织</button>
+            <button class="btn-refresh" onclick="window.initOrganizations()">🔄 刷新</button>
+        </div>
+    </div>
+    <div class="module-content">
+        <div id="orgTableWrapper">
+            <div class="loading-placeholder">
+                <div class="spinner"></div>
+                <p>加载组织中...</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .org-card {
+        background: #fff;
+        border-radius: 8px;
+        padding: 16px 20px;
+        margin-bottom: 12px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.08);
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        transition: all 0.2s;
+    }
+    .org-card:hover {
+        box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+    .org-card .org-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+    }
+    .org-card .org-info .org-name {
+        font-size: 16px;
+        font-weight: 600;
+        color: #333;
+    }
+    .org-card .org-info .org-code {
+        font-size: 13px;
+        color: #999;
+    }
+    .org-card .org-info .org-meta {
+        font-size: 13px;
+        color: #666;
+    }
+    .org-card .org-actions {
+        display: flex;
+        gap: 8px;
+    }
+    .org-card .org-actions button {
+        padding: 6px 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 13px;
+    }
+    .org-card .org-actions .btn-edit {
+        background: #e3f2fd;
+        color: #1976d2;
+    }
+    .org-card .org-actions .btn-edit:hover {
+        background: #bbdefb;
+    }
+    .org-card .org-actions .btn-delete {
+        background: #fce4ec;
+        color: #c62828;
+    }
+    .org-card .org-actions .btn-delete:hover {
+        background: #f8bbd0;
+    }
+    .org-card .org-status {
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+    }
+    .org-status.active {
+        background: #e8f5e9;
+        color: #2e7d32;
+    }
+    .org-status.inactive {
+        background: #f5f5f5;
+        color: #757575;
+    }
+    .org-status.suspended {
+        background: #fff3e0;
+        color: #e65100;
+    }
+</style>

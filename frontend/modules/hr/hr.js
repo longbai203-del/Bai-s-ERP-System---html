@@ -1,4 +1,4 @@
-/**
+﻿/**
  * HR Module - 人力资源管理
  */
 
@@ -53,10 +53,10 @@
                 organization_id: window._currentOrg?.id
             });
             
-            document.querySelector('.attendance-rate')?.textContent = stats.attendanceRate?.toFixed(1) + '%';
-            document.querySelector('.attendance-present')?.textContent = stats.present;
-            document.querySelector('.attendance-late')?.textContent = stats.late;
-            document.querySelector('.attendance-absent')?.textContent = stats.absent;
+            const el = document.querySelector($2); if (el) { el.textContent = stats.attendanceRate?.toFixed(1) + '%';
+            const el = document.querySelector($2); if (el) { el.textContent = stats.present;
+            const el = document.querySelector($2); if (el) { el.textContent = stats.late;
+            const el = document.querySelector($2); if (el) { el.textContent = stats.absent;
         } catch (error) {
             console.error('加载考勤失败:', error);
         }

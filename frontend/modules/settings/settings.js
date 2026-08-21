@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Settings Module - 系统设置
  */
 
@@ -39,7 +39,7 @@
     // 更新预览
     function updatePreview(settings) {
         // 公司名称预览
-        document.querySelector('.preview-company')?.textContent = settings.companyName || 'Bai\'s ERP';
+        const el = document.querySelector($2); if (el) { el.textContent = settings.companyName || 'Bai\'s ERP';
         
         // 货币符号
         const currencySymbols = {
@@ -48,7 +48,7 @@
             'EUR': '€',
             'CNY': '¥'
         };
-        document.querySelector('.preview-currency')?.textContent = currencySymbols[settings.currency] || 'ر.س';
+        const el = document.querySelector($2); if (el) { el.textContent = currencySymbols[settings.currency] || 'ر.س';
         
         // 语言
         const languageNames = {
@@ -56,7 +56,7 @@
             'en-US': 'English',
             'ar-SA': 'العربية'
         };
-        document.querySelector('.preview-language')?.textContent = languageNames[settings.language] || '简体中文';
+        const el = document.querySelector($2); if (el) { el.textContent = languageNames[settings.language] || '简体中文';
     }
 
     // 保存设置

@@ -1,4 +1,4 @@
-// ============================================================
+﻿// ============================================================
 // Bai's ERP System - 配置文件
 // ============================================================
 
@@ -115,6 +115,7 @@ const CONFIG = {
     // 模块配置
     // ============================================================
     MODULES: {
+        SAAS: { enabled: true, order: 8 },
         DASHBOARD: { enabled: true, order: 1 },
         POS: { enabled: true, order: 2 },
         ORDERS: { enabled: true, order: 3 },
@@ -153,3 +154,4 @@ console.log('✅ Bai\'s ERP System 配置加载完成');
 console.log(`📌 应用: ${CONFIG.APP_NAME} v${CONFIG.APP_VERSION}`);
 console.log(`📌 Supabase: ${CONFIG.SUPABASE_URL}`);
 console.log(`📌 环境: ${window.location.hostname === 'localhost' ? '开发' : '生产'}`);
+

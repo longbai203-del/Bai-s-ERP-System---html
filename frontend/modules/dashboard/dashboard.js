@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Dashboard Module
  */
 
@@ -30,10 +30,10 @@
 
     // 更新统计卡片
     function updateStats(data) {
-        document.querySelector('.stat-revenue')?.textContent = formatCurrency(data.sales.revenue);
-        document.querySelector('.stat-orders')?.textContent = data.sales.orders;
-        document.querySelector('.stat-customers')?.textContent = data.customers.total;
-        document.querySelector('.stat-profit')?.textContent = formatCurrency(data.finance.profit);
+        const el = document.querySelector($2); if (el) { el.textContent = formatCurrency(data.sales.revenue);
+        const el = document.querySelector($2); if (el) { el.textContent = data.sales.orders;
+        const el = document.querySelector($2); if (el) { el.textContent = data.customers.total;
+        const el = document.querySelector($2); if (el) { el.textContent = formatCurrency(data.finance.profit);
     }
 
     // 更新图表

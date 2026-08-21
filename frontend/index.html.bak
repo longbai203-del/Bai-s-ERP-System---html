@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>跳转中 - Enterprise ERP</title>
+</head>
+<body>
+    <script>
+        /**
+         * 入口路由判断：
+         * 如果用户已登录 -> 跳转仪表盘
+         * 如果用户未登录 -> 跳转登录页
+         */
+        (async function() {
+            try {
+                // 1. 检查全局 supabaseClient 是否已加载
+                if (typeof supabaseClient === 'undefined') {
+                    console.warn("⚠️ Supabase 客户端未加载，强制跳转至登录页面。");
+                    window.location.href = '/login.html';
+                    return;
+                }
+
+                // 2. 读取当前 Session
+                const { data: { session } } = await supabaseClient.auth.getSession();
+                
+                // 3. 根据 Session 状态跳转
+                if (session) {
+                    window.location.href = '/modules/dashboard/dashboard.html';
+                } else {
+                    window.location.href = '/login.html';
+                }
+            } catch (error) {
+                // 4. 捕获异常，保底跳转登录页
+                console.error("入口路由检查异常:", error);
+                window.location.href = '/login.html';
+            }
+        })();
+    </script>
+</body>
+</html>

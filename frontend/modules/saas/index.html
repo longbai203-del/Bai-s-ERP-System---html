@@ -1,0 +1,259 @@
+﻿<div class="module-container" data-module="saas">
+    <div class="module-header">
+        <h2>☁️ SaaS 管理</h2>
+        <div class="module-actions">
+            <button class="btn-primary" onclick="window.showCreateTenant()">+ 新建租户</button>
+            <button class="btn-refresh" onclick="window.initSaaS()">🔄 刷新</button>
+        </div>
+    </div>
+    <div class="module-content">
+        <!-- 统计卡片 -->
+        <div class="saas-stats" id="saasStats">
+            <div class="stat-card">
+                <div class="stat-icon">🏢</div>
+                <div class="stat-info">
+                    <div class="stat-number" id="totalTenants">0</div>
+                    <div class="stat-label">总租户</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">✅</div>
+                <div class="stat-info">
+                    <div class="stat-number" id="activeTenants">0</div>
+                    <div class="stat-label">活跃租户</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">⏸️</div>
+                <div class="stat-info">
+                    <div class="stat-number" id="inactiveTenants">0</div>
+                    <div class="stat-label">停用租户</div>
+                </div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-icon">📅</div>
+                <div class="stat-info">
+                    <div class="stat-number" id="expiringSoon">0</div>
+                    <div class="stat-label">即将到期</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 租户列表 -->
+        <div class="saas-table-wrapper">
+            <div class="table-toolbar">
+                <div class="table-toolbar-left">
+                    <input type="text" id="tenantSearch" placeholder="🔍 搜索租户..." class="search-input">
+                    <select id="tenantFilter" class="filter-select">
+                        <option value="all">全部状态</option>
+                        <option value="active">活跃</option>
+                        <option value="inactive">停用</option>
+                        <option value="suspended">暂停</option>
+                        <option value="trial">试用</option>
+                    </select>
+                </div>
+                <div class="table-toolbar-right">
+                    <span id="tenantCount" style="color:#999;font-size:14px;">共 0 个租户</span>
+                </div>
+            </div>
+            <div id="tenantTableWrapper">
+                <div class="loading-placeholder">
+                    <div class="spinner"></div>
+                    <p>加载租户中...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .saas-stats {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+        gap: 16px;
+        margin-bottom: 24px;
+    }
+    .saas-stats .stat-card {
+        background: #fff;
+        border-radius: 8px;
+        padding: 16px 20px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        display: flex;
+        align-items: center;
+        gap: 16px;
+    }
+    .saas-stats .stat-card .stat-icon {
+        font-size: 28px;
+        width: 48px;
+        height: 48px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        background: #f0f2f5;
+        border-radius: 8px;
+    }
+    .saas-stats .stat-card .stat-info .stat-number {
+        font-size: 24px;
+        font-weight: 700;
+        color: #333;
+    }
+    .saas-stats .stat-card .stat-info .stat-label {
+        font-size: 13px;
+        color: #999;
+    }
+    .saas-stats .stat-card:nth-child(1) .stat-icon { background: #e3f2fd; }
+    .saas-stats .stat-card:nth-child(2) .stat-icon { background: #e8f5e9; }
+    .saas-stats .stat-card:nth-child(3) .stat-icon { background: #fce4ec; }
+    .saas-stats .stat-card:nth-child(4) .stat-icon { background: #fff3e0; }
+
+    .saas-table-wrapper {
+        background: #fff;
+        border-radius: 8px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        overflow: hidden;
+    }
+    .table-toolbar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 20px;
+        border-bottom: 1px solid #f0f0f0;
+        flex-wrap: wrap;
+        gap: 12px;
+    }
+    .table-toolbar-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+    }
+    .table-toolbar .search-input {
+        padding: 8px 14px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
+        min-width: 200px;
+    }
+    .table-toolbar .search-input:focus {
+        outline: none;
+        border-color: #667eea;
+    }
+    .table-toolbar .filter-select {
+        padding: 8px 14px;
+        border: 1px solid #ddd;
+        border-radius: 6px;
+        font-size: 14px;
+        background: #fff;
+    }
+    .table-toolbar .filter-select:focus {
+        outline: none;
+        border-color: #667eea;
+    }
+    .tenant-card {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 16px 20px;
+        border-bottom: 1px solid #f5f5f5;
+        transition: background 0.2s;
+    }
+    .tenant-card:hover {
+        background: #fafafa;
+    }
+    .tenant-card:last-child {
+        border-bottom: none;
+    }
+    .tenant-card .tenant-info {
+        display: flex;
+        flex-direction: column;
+        gap: 4px;
+        flex: 1;
+    }
+    .tenant-card .tenant-info .tenant-name {
+        font-size: 16px;
+        font-weight: 600;
+        color: #333;
+    }
+    .tenant-card .tenant-info .tenant-details {
+        font-size: 13px;
+        color: #999;
+        display: flex;
+        gap: 16px;
+        flex-wrap: wrap;
+    }
+    .tenant-card .tenant-info .tenant-details span {
+        display: flex;
+        align-items: center;
+        gap: 4px;
+    }
+    .tenant-card .tenant-status {
+        padding: 4px 12px;
+        border-radius: 12px;
+        font-size: 12px;
+        font-weight: 500;
+        margin-right: 12px;
+    }
+    .tenant-status.active {
+        background: #e8f5e9;
+        color: #2e7d32;
+    }
+    .tenant-status.inactive {
+        background: #f5f5f5;
+        color: #757575;
+    }
+    .tenant-status.suspended {
+        background: #fff3e0;
+        color: #e65100;
+    }
+    .tenant-status.trial {
+        background: #e3f2fd;
+        color: #1565c0;
+    }
+    .tenant-card .tenant-actions {
+        display: flex;
+        gap: 6px;
+        flex-shrink: 0;
+    }
+    .tenant-card .tenant-actions button {
+        padding: 6px 12px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 13px;
+        transition: all 0.2s;
+    }
+    .tenant-card .tenant-actions .btn-edit {
+        background: #e3f2fd;
+        color: #1976d2;
+    }
+    .tenant-card .tenant-actions .btn-edit:hover {
+        background: #bbdefb;
+    }
+    .tenant-card .tenant-actions .btn-delete {
+        background: #fce4ec;
+        color: #c62828;
+    }
+    .tenant-card .tenant-actions .btn-delete:hover {
+        background: #f8bbd0;
+    }
+    .tenant-card .tenant-actions .btn-subscription {
+        background: #e8f5e9;
+        color: #2e7d32;
+    }
+    .tenant-card .tenant-actions .btn-subscription:hover {
+        background: #c8e6c9;
+    }
+    .no-tenants {
+        text-align: center;
+        padding: 60px 20px;
+        color: #999;
+    }
+    .no-tenants .icon {
+        font-size: 48px;
+        margin-bottom: 16px;
+    }
+    .no-tenants h3 {
+        color: #555;
+        margin-bottom: 8px;
+    }
+</style>

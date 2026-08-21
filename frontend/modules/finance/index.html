@@ -1,41 +1,78 @@
-<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>finance - Bai's ERP</title>
-    <link rel="stylesheet" href="/css/common.css">
-</head>
-<body>
-    <div id="app">
-        <div id="main-content">
-            <div class="module-container" data-module="finance">
-                <div class="module-header">
-                    <h2>finance</h2>
-                    <div class="module-actions">
-                        <button class="btn-refresh" onclick="window.location.reload()">🔄 刷新</button>
-                    </div>
-                </div>
-                <div class="module-content">
-                    <p>加载中...</p>
-                </div>
-            </div>
+﻿<div class="module-container" data-module="finance">
+    <div class="module-header">
+        <h2 id="moduleTitle">finance</h2>
+        <div class="module-actions">
+            <button class="btn-refresh" onclick="window.location.reload()">🔄 刷新</button>
         </div>
     </div>
-    
-    <script src="/config.js"></script>
-    <script src="/js/supabase.js"></script>
-    <script src="/js/auth.js"></script>
-    <script src="/js/db.js"></script>
-    <script src="/js/common.js"></script>
-    <script src="/js/bootstrap.js"></script>
-    <script src="/js/router.js"></script>
-    <script src="/js/i18n.js"></script>
-    <script src="/js/notifications.js"></script>
-    <script src="/js/modal.js"></script>
-    <script src="/js/table.js"></script>
-    <script src="/js/permissions.js"></script>
-    <script src="/js/storage.js"></script>
-    <script src="modules/finance/finance.js"></script>
-</body>
-</html>
+    <div class="module-content" id="moduleContent">
+        <div class="loading-placeholder">
+            <div class="spinner"></div>
+            <p>加载中...</p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .module-header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-bottom: 20px;
+        padding-bottom: 16px;
+        border-bottom: 2px solid #e8ecf1;
+    }
+    .module-header h2 {
+        font-size: 22px;
+        color: #333;
+        margin: 0;
+        text-transform: capitalize;
+    }
+    .module-header .module-actions {
+        display: flex;
+        gap: 10px;
+    }
+    .module-header .module-actions button {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        font-size: 14px;
+        transition: all 0.2s;
+    }
+    .module-header .module-actions .btn-refresh {
+        background: #667eea;
+        color: #fff;
+    }
+    .module-header .module-actions .btn-refresh:hover {
+        background: #5a6fd6;
+    }
+    .loading-placeholder {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        padding: 60px 20px;
+        color: #999;
+    }
+    .loading-placeholder .spinner {
+        width: 36px;
+        height: 36px;
+        border: 3px solid #e8ecf1;
+        border-top-color: #667eea;
+        border-radius: 50%;
+        animation: spin 0.8s linear infinite;
+        margin-bottom: 16px;
+    }
+    @keyframes spin {
+        to { transform: rotate(360deg); }
+    }
+    .module-content {
+        background: #fff;
+        border-radius: 8px;
+        padding: 20px;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.06);
+        min-height: 300px;
+    }
+</style>
+

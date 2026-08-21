@@ -1,5 +1,6 @@
 ﻿/**
- * Supabase 客户端 - 使用 CDN 同步加载
+ * Supabase 客户端 - 统一全局对象
+ * 使用 window.Supabase 作为唯一入口
  */
 
 (function() {
@@ -11,33 +12,15 @@
     let supabaseClient = null;
     let initPromise = null;
 
-    // 加载 Supabase SDK
-    function loadSupabaseSDK() {
+    function loadSDK() {
         return new Promise((resolve, reject) => {
-            // 如果已经存在
             if (typeof window.supabase !== 'undefined' && typeof window.supabase.createClient === 'function') {
                 resolve(window.supabase);
                 return;
             }
 
-            // 检查是否已有 script 标签
-            const existingScript = document.querySelector('script[src*="supabase"]');
-            if (existingScript) {
-                existingScript.addEventListener('load', function() {
-                    if (typeof window.supabase !== 'undefined' && typeof window.supabase.createClient === 'function') {
-                        resolve(window.supabase);
-                    } else {
-                        reject(new Error('Supabase SDK 加载失败'));
-                    }
-                });
-                return;
-            }
-
-            // 创建 script 标签
             const script = document.createElement('script');
             script.src = 'https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js';
-            script.async = true;
-            
             script.onload = function() {
                 if (typeof window.supabase !== 'undefined' && typeof window.supabase.createClient === 'function') {
                     resolve(window.supabase);
@@ -45,28 +28,20 @@
                     reject(new Error('Supabase SDK 加载失败'));
                 }
             };
-            
             script.onerror = function() {
                 reject(new Error('Supabase SDK 加载失败，请检查网络'));
             };
-            
             document.head.appendChild(script);
         });
     }
 
-    // 初始化 Supabase
-    async function initSupabase() {
-        if (supabaseClient) {
-            return supabaseClient;
-        }
-
-        if (initPromise) {
-            return initPromise;
-        }
+    async function init() {
+        if (supabaseClient) return supabaseClient;
+        if (initPromise) return initPromise;
 
         initPromise = (async () => {
             try {
-                const supabase = await loadSupabaseSDK();
+                const supabase = await loadSDK();
                 supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
                 console.log('✅ Supabase 客户端初始化成功');
                 return supabaseClient;
@@ -79,69 +54,58 @@
         return initPromise;
     }
 
-    // 立即初始化（非阻塞）
-    initSupabase().catch(function(err) {
+    // 立即初始化
+    init().catch(function(err) {
         console.warn('⚠️ Supabase 初始化警告:', err);
     });
 
-    // 暴露 API
+    // 统一暴露为 window.Supabase
     window.Supabase = {
-        // 确保初始化完成
-        init: function() {
-            return initSupabase();
-        },
-
-        // 获取客户端（同步，如果未初始化则抛出错误）
+        init: init,
         getClient: function() {
             if (!supabaseClient) {
-                throw new Error('Supabase 客户端未初始化，请先调用 Supabase.init()');
+                throw new Error('Supabase 未初始化，请先调用 Supabase.init()');
             }
             return supabaseClient;
         },
-
-        // 从表查询
         from: function(table) {
             return this.getClient().from(table);
         },
-
-        // 认证
         auth: function() {
             return this.getClient().auth;
         },
-
-        // 存储
         storage: function() {
             return this.getClient().storage;
         },
-
-        // 函数
         functions: function() {
             return this.getClient().functions;
         },
-
-        // 实时
         realtime: function() {
             return this.getClient().realtime;
         },
-
-        // 通道
         channel: function(name) {
             return this.getClient().channel(name);
         },
-
         removeChannel: function(channel) {
             return this.getClient().removeChannel(channel);
         },
-
         getChannels: function() {
             return this.getClient().getChannels();
         },
-
-        // 检查是否就绪
         isReady: function() {
             return !!supabaseClient;
         }
     };
+
+    // 兼容旧代码 - 同时暴露 window.supabaseClient
+    Object.defineProperty(window, 'supabaseClient', {
+        get: function() {
+            return window.Supabase.getClient();
+        },
+        set: function(val) {
+            console.warn('⚠️ window.supabaseClient 已弃用，请使用 window.Supabase');
+        }
+    });
 
     console.log('📦 Supabase 模块加载完成');
 })();

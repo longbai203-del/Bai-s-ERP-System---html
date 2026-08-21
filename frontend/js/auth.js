@@ -1,5 +1,6 @@
 ﻿/**
  * Auth - 认证管理
+ * 统一使用 window.Supabase
  */
 
 (function() {
@@ -9,25 +10,18 @@
         constructor() {
             this.currentUser = null;
             this.session = null;
-            this._initialized = false;
         }
 
-        // 确保 Supabase 已初始化
         async _ensureInit() {
             if (!window.Supabase) {
                 throw new Error('Supabase 未加载');
             }
-            
-            // 如果已经初始化且有客户端，直接返回
             if (window.Supabase.isReady && window.Supabase.isReady()) {
                 return;
             }
-
-            // 调用初始化
             await window.Supabase.init();
         }
 
-        // 获取 Supabase 客户端
         getClient() {
             if (!window.Supabase || !window.Supabase.getClient) {
                 throw new Error('Supabase 未初始化');
@@ -35,26 +29,22 @@
             return window.Supabase.getClient();
         }
 
-        // 注册
         async register(email, password, fullName, organizationName) {
             try {
                 await this._ensureInit();
                 const client = this.getClient();
-                
+
                 const { data: authData, error: authError } = await client.auth.signUp({
                     email: email,
                     password: password,
                     options: {
-                        data: {
-                            full_name: fullName
-                        }
+                        data: { full_name: fullName }
                     }
                 });
 
                 if (authError) throw authError;
                 if (!authData.user) throw new Error('注册失败');
 
-                // 创建组织
                 const { data: orgData, error: orgError } = await client
                     .from('organizations')
                     .insert([{
@@ -67,7 +57,6 @@
 
                 if (orgError) throw orgError;
 
-                // 创建分支
                 const { data: branchData, error: branchError } = await client
                     .from('branches')
                     .insert([{
@@ -81,7 +70,6 @@
 
                 if (branchError) throw branchError;
 
-                // 创建用户资料
                 const { error: profileError } = await client
                     .from('profiles')
                     .insert([{
@@ -102,12 +90,11 @@
             }
         }
 
-        // 登录
         async login(email, password) {
             try {
                 await this._ensureInit();
                 const client = this.getClient();
-                
+
                 const { data, error } = await client.auth.signInWithPassword({
                     email: email,
                     password: password
@@ -117,7 +104,6 @@
 
                 this.currentUser = data.user;
                 this.session = data.session;
-
                 await this.loadProfile();
 
                 return { success: true, user: data.user };
@@ -128,7 +114,6 @@
             }
         }
 
-        // 登出
         async logout() {
             try {
                 await this._ensureInit();
@@ -148,7 +133,6 @@
             }
         }
 
-        // 获取当前会话
         async getSession() {
             try {
                 await this._ensureInit();
@@ -170,7 +154,6 @@
             }
         }
 
-        // 加载用户资料
         async loadProfile() {
             if (!this.currentUser) return null;
 
@@ -233,6 +216,16 @@
         }
     }
 
+    // 统一暴露为 window.Auth
     window.Auth = new Auth();
 
+    // 兼容旧代码
+    Object.defineProperty(window, 'authManager', {
+        get: function() {
+            console.warn('⚠️ window.authManager 已弃用，请使用 window.Auth');
+            return window.Auth;
+        }
+    });
+
+    console.log('🔐 Auth 模块加载完成');
 })();

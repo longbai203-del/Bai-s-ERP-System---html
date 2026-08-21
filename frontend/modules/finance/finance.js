@@ -1,4 +1,4 @@
-/**
+﻿/**
  * Finance Module - 财务管理
  */
 
@@ -54,9 +54,9 @@
                 organization_id: window._currentOrg?.id
             });
             
-            document.querySelector('.stat-income')?.textContent = stats.totalIncome + ' SAR';
-            document.querySelector('.stat-expense')?.textContent = stats.totalExpense + ' SAR';
-            document.querySelector('.stat-balance')?.textContent = stats.balance + ' SAR';
+            const el = document.querySelector($2); if (el) { el.textContent = stats.totalIncome + ' SAR';
+            const el = document.querySelector($2); if (el) { el.textContent = stats.totalExpense + ' SAR';
+            const el = document.querySelector($2); if (el) { el.textContent = stats.balance + ' SAR';
         } catch (error) {
             console.error('加载统计失败:', error);
         }

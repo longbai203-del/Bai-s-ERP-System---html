@@ -1,4 +1,4 @@
-/**
+﻿/**
  * System Module - 系统管理
  */
 
@@ -70,7 +70,7 @@
 
     // 更新审计统计
     function updateAuditStats(stats) {
-        document.querySelector('.audit-total')?.textContent = stats.total || 0;
+        const el = document.querySelector($2); if (el) { el.textContent = stats.total || 0;
         
         // 显示操作类型统计
         const container = document.querySelector('.audit-by-action');

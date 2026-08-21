@@ -1,0 +1,17 @@
+﻿<div class="module-container" data-module="permissions">
+    <div class="module-header">
+        <h2>🛡️ 权限管理</h2>
+        <div class="module-actions">
+            <button class="btn-primary" onclick="window.showCreatePermission()">+ 新建权限</button>
+            <button class="btn-refresh" onclick="window.initPermissions()">🔄 刷新</button>
+        </div>
+    </div>
+    <div class="module-content">
+        <div id="permissionTableWrapper">
+            <div class="loading-placeholder">
+                <div class="spinner"></div>
+                <p>加载权限中...</p>
+            </div>
+        </div>
+    </div>
+</div>
