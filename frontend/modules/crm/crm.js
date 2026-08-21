@@ -1,4 +1,4 @@
-﻿/**
+/**
  * CRM Module - 客户关系管理
  */
 
@@ -48,11 +48,23 @@
     }
 
     // 加载统计
-    async function loadStats() {
+        function loadStats() {
         try {
-            const stats = await window.CRMService.getStats({
+            var stats = await window.CRMService.getStats({
                 organization_id: window._currentOrg?.id
             });
+            var el = document.querySelector('.crm-total');
+            if (el) { el.textContent = stats.total; }
+            var el2 = document.querySelector('.crm-completed');
+            if (el2) { el2.textContent = stats.completed; }
+            var el3 = document.querySelector('.crm-pending');
+            if (el3) { el3.textContent = stats.pending; }
+            var el4 = document.querySelector('.crm-rate');
+            if (el4) { el4.textContent = stats.completionRate?.toFixed(1) + '%'; }
+        } catch (error) {
+            console.error('加载CRM统计失败:', error);
+        }
+    });
             
             const el = document.querySelector($2); if (el) { el.textContent = stats.total; }
             const el = document.querySelector($2); if (el) { el.textContent = stats.completed; }
@@ -129,6 +141,7 @@
     }
 
 })();
+
 
 
 

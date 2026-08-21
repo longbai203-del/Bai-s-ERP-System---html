@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Supabase 客户端 - 统一全局对象
  * 使用 window.Supabase 作为唯一入口
  */

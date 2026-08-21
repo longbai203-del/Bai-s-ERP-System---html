@@ -1,4 +1,4 @@
-﻿/**
+/**
  * HR Module - 人力资源管理
  */
 
@@ -47,11 +47,23 @@
     }
 
     // 加载考勤
-    async function loadAttendance() {
+        function loadAttendance() {
         try {
-            const stats = await window.AttendanceService.getStats({
+            var stats = await window.AttendanceService.getStats({
                 organization_id: window._currentOrg?.id
             });
+            var el = document.querySelector('.attendance-rate');
+            if (el) { el.textContent = stats.attendanceRate?.toFixed(1) + '%'; }
+            var el2 = document.querySelector('.attendance-present');
+            if (el2) { el2.textContent = stats.present; }
+            var el3 = document.querySelector('.attendance-late');
+            if (el3) { el3.textContent = stats.late; }
+            var el4 = document.querySelector('.attendance-absent');
+            if (el4) { el4.textContent = stats.absent; }
+        } catch (error) {
+            console.error('加载考勤失败:', error);
+        }
+    });
             
             const el = document.querySelector($2); if (el) { el.textContent = stats.attendanceRate?.toFixed(1) + '%'; }
             const el = document.querySelector($2); if (el) { el.textContent = stats.present; }
@@ -108,6 +120,7 @@
     }
 
 })();
+
 
 
 

@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Dashboard Module
  */
 
@@ -29,8 +29,16 @@
     }
 
     // 更新统计卡片
-    function updateStats(data) {
-        const el = document.querySelector($2); if (el) { el.textContent = formatCurrency(data.sales.revenue); }
+        function updateStats(data) {
+        var el = document.querySelector('.stat-revenue');
+        if (el) { el.textContent = formatCurrency(data.sales.revenue); }
+        var el2 = document.querySelector('.stat-orders');
+        if (el2) { el2.textContent = data.sales.orders; }
+        var el3 = document.querySelector('.stat-customers');
+        if (el3) { el3.textContent = data.customers.total; }
+        var el4 = document.querySelector('.stat-profit');
+        if (el4) { el4.textContent = formatCurrency(data.finance.profit); }
+    }
         const el = document.querySelector($2); if (el) { el.textContent = data.sales.orders; }
         const el = document.querySelector($2); if (el) { el.textContent = data.customers.total; }
         const el = document.querySelector($2); if (el) { el.textContent = formatCurrency(data.finance.profit); }
@@ -66,6 +74,7 @@
     }
 
 })();
+
 
 
 

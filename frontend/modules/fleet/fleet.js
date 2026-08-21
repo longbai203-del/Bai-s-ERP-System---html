@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Fleet Module - 车队管理
  */
 
@@ -47,11 +47,19 @@
     }
 
     // 加载统计
-    async function loadStats() {
+        function loadStats() {
         try {
-            const stats = await window.VehicleService.getStats(window._currentOrg?.id);
-            
-            const el = document.querySelector($2); if (el) { el.textContent = stats.total; }
+            var stats = await window.VehicleService.getStats(window._currentOrg?.id);
+            var el = document.querySelector('.fleet-total');
+            if (el) { el.textContent = stats.total; }
+            var el2 = document.querySelector('.fleet-active');
+            if (el2) { el2.textContent = stats.active; }
+            var el3 = document.querySelector('.fleet-maintenance');
+            if (el3) { el3.textContent = stats.maintenance; }
+        } catch (error) {
+            console.error('加载车辆统计失败:', error);
+        }
+    }
             const el = document.querySelector($2); if (el) { el.textContent = stats.active; }
             const el = document.querySelector($2); if (el) { el.textContent = stats.maintenance; }
         } catch (error) {
@@ -179,6 +187,7 @@
     }
 
 })();
+
 
 
 

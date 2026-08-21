@@ -1,4 +1,4 @@
-﻿/**
+/**
  * System Module - 系统管理
  */
 
@@ -69,8 +69,17 @@
     }
 
     // 更新审计统计
-    function updateAuditStats(stats) {
-        const el = document.querySelector($2); if (el) { el.textContent = stats.total || 0; }
+        function updateAuditStats(stats) {
+        var el = document.querySelector('.audit-total');
+        if (el) { el.textContent = stats.total || 0; }
+        var container = document.querySelector('.audit-by-action');
+        if (!container) return;
+        var byAction = stats.byAction || {};
+        var actions = Object.keys(byAction).slice(0, 5);
+        container.innerHTML = actions.map(function(action) {
+            return '<span class="action-badge">' + action + ': ' + byAction[action] + '</span>';
+        }).join('');
+    }
         
         // 显示操作类型统计
         const container = document.querySelector('.audit-by-action');
@@ -175,6 +184,7 @@
     }
 
 })();
+
 
 
 

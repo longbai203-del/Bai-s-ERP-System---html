@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Finance Module - 财务管理
  */
 
@@ -48,11 +48,21 @@
     }
 
     // 加载统计
-    async function loadStats() {
+        function loadStats() {
         try {
-            const stats = await window.FinanceService.getStats({
+            var stats = await window.FinanceService.getStats({
                 organization_id: window._currentOrg?.id
             });
+            var el = document.querySelector('.stat-income');
+            if (el) { el.textContent = stats.totalIncome + ' SAR'; }
+            var el2 = document.querySelector('.stat-expense');
+            if (el2) { el2.textContent = stats.totalExpense + ' SAR'; }
+            var el3 = document.querySelector('.stat-balance');
+            if (el3) { el3.textContent = stats.balance + ' SAR'; }
+        } catch (error) {
+            console.error('加载统计失败:', error);
+        }
+    });
             
             const el = document.querySelector($2); if (el) { el.textContent = stats.totalIncome + ' SAR'; }
             const el = document.querySelector($2); if (el) { el.textContent = stats.totalExpense + ' SAR'; }
@@ -109,6 +119,7 @@
     }
 
 })();
+
 
 
 

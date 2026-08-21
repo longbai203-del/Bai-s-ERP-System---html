@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Auth - 认证管理
  * 统一使用 window.Supabase
  */

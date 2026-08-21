@@ -1,4 +1,4 @@
-﻿/**
+/**
  * Permissions Module - 权限管理
  */
 

@@ -1,4 +1,4 @@
-﻿{
+{
     "modules": {
         "dashboard": { "title": "仪表板", "icon": "📊", "enabled": true, "order": 1 },
         "pos": { "title": "销售点", "icon": "🛒", "enabled": true, "order": 2 },
