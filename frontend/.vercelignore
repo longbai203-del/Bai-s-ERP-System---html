@@ -1,0 +1,33 @@
+﻿# 忽略不必要的文件
+node_modules/
+.git/
+.gitignore
+README.md
+CHANGELOG.md
+package.json
+package-lock.json
+.env
+.env.local
+.DS_Store
+*.log
+*.tmp
+*.bak
+
+# 忽略测试文件
+test/
+tests/
+__tests__/
+
+# 忽略文档
+docs/
+*.md
+
+# 忽略 IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# 忽略 Supabase 备份
+supabase/migrations/*.bak
+supabase/migrations/*.backup

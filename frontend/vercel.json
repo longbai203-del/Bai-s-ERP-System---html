@@ -1,16 +1,25 @@
-{
-  "version": 2,
-  "cleanUrls": true,
-  "trailingSlash": false,
-  "rewrites": [
-    { "source": "/modules/(.*)", "destination": "/modules/$1" }
-  ],
-  "headers": [
-    {
-      "source": "/(.*)\\.(json|ico|png|jpg|jpeg|svg|webp|ttf|woff|woff2)",
-      "headers": [
-        { "key": "Cache-Control", "value": "public, max-age=31536000, immutable" }
-      ]
-    }
-  ]
+﻿{
+    "version": 2,
+    "name": "bais-erp",
+    "builds": [
+        { "src": "*.html", "use": "@vercel/static" },
+        { "src": "*.js", "use": "@vercel/static" },
+        { "src": "css/**", "use": "@vercel/static" },
+        { "src": "js/**", "use": "@vercel/static" },
+        { "src": "services/**", "use": "@vercel/static" },
+        { "src": "modules/**", "use": "@vercel/static" },
+        { "src": "layouts/**", "use": "@vercel/static" },
+        { "src": "locales/**", "use": "@vercel/static" },
+        { "src": "assets/**", "use": "@vercel/static" },
+        { "src": "supabase/**", "use": "@vercel/static" }
+    ],
+    "routes": [
+        { "src": "/", "dest": "/index.html" },
+        { "src": "/login", "dest": "/login.html" },
+        { "src": "/register", "dest": "/register.html" },
+        { "src": "/verify-db", "dest": "/verify-db.html" },
+        { "src": "/check-tables", "dest": "/check-tables.html" },
+        { "src": "/modules/(.*)", "dest": "/modules/$1" },
+        { "src": "/(.*)", "dest": "/404.html" }
+    ]
 }
