@@ -3,6 +3,7 @@ node_modules/
 .git/
 .gitignore
 README.md
+DEPLOY.md
 CHANGELOG.md
 package.json
 package-lock.json
@@ -12,15 +13,13 @@ package-lock.json
 *.log
 *.tmp
 *.bak
+*.backup
 
 # 忽略测试文件
-test/
-tests/
-__tests__/
-
-# 忽略文档
-docs/
-*.md
+test-supabase.html
+check-tables.html
+verify-db.html
+table-check.csv
 
 # 忽略 IDE
 .vscode/
@@ -28,6 +27,7 @@ docs/
 *.swp
 *.swo
 
-# 忽略 Supabase 备份
-supabase/migrations/*.bak
-supabase/migrations/*.backup
+# 忽略备份
+*.bak
+*.backup
+index.html.bak*
